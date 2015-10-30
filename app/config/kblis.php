@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'country' => 'Kenya',
+	'country' => 'Malawi',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ return array(
 	|
 	*/
 
-	'organization' => 'Basic Laboratory Information System',
+	'organization' => 'Kamuzu Central Hospital',
 	
 
 
@@ -47,10 +47,9 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'address-info' => 'COUNTY REFERRAL HOSPITAL, BLIS<br>
-                    REFERRAL HOSPITAL LOCATION<br>
+	'address-info' => 'Kamuzu Central Hospital<br>
                     P.O. BOX PRIVATE BAG,<br>
-                    KENYA.<br>
+                    Malawi.<br>
                     Phone: +0000000 Ext 203/208</p>',
 	
 	/*
@@ -60,7 +59,7 @@ return array(
 	|
 	*/
 
-	'organization-logo' => '/i/org_logo_90x90.png',
+	'organization-logo' => '/i/emblem.gif',
 	
 	/*
 	|--------------------------------------------------------------------------
