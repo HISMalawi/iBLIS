@@ -10,18 +10,6 @@ class TestDataSeeder extends DatabaseSeeder
                 "username" => "administrator", "password" => Hash::make("password"), "email" => "admin@kblis.org",
                 "name" => "kBLIS Administrator", "designation" => "Programmer"
             ),
-            array(
-                "username" => "external", "password" => Hash::make("password"), "email" => "admin@kblis.org",
-                "name" => "External System User", "designation" => "Administrator", "image" => "/i/users/user-2.jpg"
-            ),
-            array(
-                "username" => "lmorena", "password" => Hash::make("password"), "email" => "lmorena@kblis.org",
-                "name" => "L. Morena", "designation" => "Lab Technologist", "image" => "/i/users/user-3.png"
-            ),
-            array(
-                "username" => "abumeyang", "password" => Hash::make("password"), "email" => "abumeyang@kblis.org",
-                "name" => "A. Abumeyang", "designation" => "Doctor"
-            ),
         );
 
         foreach ($usersData as $user)
@@ -32,6 +20,10 @@ class TestDataSeeder extends DatabaseSeeder
         
 
         /* Specimen Types table */
+	/**========
+	 **========
+			 Ignore specimen types
+ 
         $specTypesData = array(
             array("name" => "Ascitic Tap"),
             array("name" => "Aspirate"),
@@ -63,7 +55,8 @@ class TestDataSeeder extends DatabaseSeeder
             $specTypes[] = SpecimenType::create($specimenType);
         }
         $this->command->info('specimen_types seeded');
-        
+        ====*/
+
         /* Test Categories table - These map on to the lab sections */
         $test_categories = TestCategory::create(array("name" => "PARASITOLOGY","description" => ""));
         $lab_section_microbiology = TestCategory::create(array("name" => "MICROBIOLOGY","description" => ""));
@@ -225,7 +218,10 @@ class TestDataSeeder extends DatabaseSeeder
 
         $this->command->info('measures seeded');
         
-        /* Test Types table */
+	/* Test Types table */
+	/** ==============
+	 ** ============== Ignored Test Types table
+
         $testTypeBS = TestType::create(array("name" => "BS for mps", "test_category_id" => $test_categories->id, "orderable_test" => 1));
         $testTypeStoolCS = TestType::create(array("name" => "Stool for C/S", "test_category_id" => $lab_section_microbiology->id));
         $testTypeGXM = TestType::create(array("name" => "GXM", "test_category_id" => $test_categories->id));
@@ -234,6 +230,8 @@ class TestDataSeeder extends DatabaseSeeder
         $testTypeWBC = TestType::create(array("name" => "WBC", "test_category_id" => $test_categories->id));
 
         $this->command->info('test_types seeded');
+
+	 ===================*/
 
         /* TestType Measure table */
         TestTypeMeasure::create(array("test_type_id" => $testTypeBS->id, "measure_id" => $measureBSforMPS->id));
@@ -274,6 +272,10 @@ class TestDataSeeder extends DatabaseSeeder
         $this->command->info('testtype_specimentypes seeded');
 
         /* Patients table */
+	/** ===============
+	 ** ===============
+		Ignore Patient Table
+
         $patients_array = array(
             array("name" => "Jam Felicia", "email" => "fj@x.com", "patient_number" => "1002", "dob" => "2000-01-01", "gender" => "1", "created_by" => "2"),
             array("name" => "Emma Wallace", "email" => "emma@snd.com", "patient_number" => "1003", "dob" => "1990-03-01", "gender" => "1", "created_by" => "2"),
@@ -285,6 +287,7 @@ class TestDataSeeder extends DatabaseSeeder
         }
 
         $this->command->info('patients seeded');
+	 ** ================ */
 
         /* Test Phase table */
         $test_phases = array(
@@ -380,6 +383,10 @@ class TestDataSeeder extends DatabaseSeeder
         $now = new DateTime();
 
         /* Test table */
+	/** =================
+	 ** =================
+		Ignore Test Table
+
         Test::create(
             array(
                 "visit_id" => $visits[rand(0,count($visits)-1)]->id,
@@ -641,8 +648,13 @@ class TestDataSeeder extends DatabaseSeeder
         );
 
         $this->command->info('tests seeded');
+	 ** ============ */
 
         /* Test Results table */
+	/** ==============
+	 ** ==============
+		Ignore Results for Test. Since test table has been ignored.
+
         $testResults = array(
             array(
                 "test_id" => $tests_accepted_verified->id,
@@ -688,7 +700,7 @@ class TestDataSeeder extends DatabaseSeeder
             TestResult::create($testResult);
         }
         $this->command->info('test results seeded');
-
+	 ** =================== */
         
         /* Permissions table */
         $permissions = array(
@@ -725,7 +737,8 @@ class TestDataSeeder extends DatabaseSeeder
         $roles = array(
             array("name" => "Superadmin"),
             array("name" => "Technologist"),
-            array("name" => "Receptionist")
+            array("name" => "Receptionist"),
+	    array("name" => "Supervisor")
         );
         foreach ($roles as $role) {
             Role::create($role);
@@ -873,6 +886,10 @@ class TestDataSeeder extends DatabaseSeeder
         $this->command->info('Lab Sections seeded');
 
         /* Test Types for prevalence */
+	/** ====================
+	 ** ====================
+		Ignore Test Types for prevalence since Test Type table has been ignored. ////////
+
         $test_types_salmonella = TestType::create(array("name" => "Salmonella Antigen Test", "test_category_id" => $test_categories->id));
         $test_types_direct = TestType::create(array("name" => "Direct COOMBS Test", "test_category_id" => $lab_section_trans->id));
         $test_types_du = TestType::create(array("name" => "DU Test", "test_category_id" => $lab_section_trans->id));
@@ -884,8 +901,13 @@ class TestDataSeeder extends DatabaseSeeder
         $test_types_pylori = TestType::create(array("name" => "H. Pylori", "test_category_id" => $lab_section_serology->id));
 
         $this->command->info('Test Types seeded');
+	 ** ============================ */
 
         /* Test Types and specimen types relationship for prevalence */
+	/** ===================
+	 ** ===================
+			Ignoring Test Types and Specimen this() since test related tables where ignored. /////////
+
         DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
             array($test_types_salmonella->id, "13"));
         DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
@@ -907,8 +929,13 @@ class TestDataSeeder extends DatabaseSeeder
         DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
             array($testTypeStoolCS->id, "16"));
         $this->command->info('TestTypes/SpecimenTypes seeded');
+
         
         /*New measures for prevalence*/
+	/** ==============================
+	 ** ==============================
+		Ignore this() since relates to Tests. //////////
+
         $measure_salmonella = Measure::create(array("measure_type_id" => "2", "name" => "Salmonella Antigen Test", "unit" => ""));
         $measure_direct = Measure::create(array("measure_type_id" => "2", "name" => "Direct COOMBS Test", "unit" => ""));
         $measure_du = Measure::create(array("measure_type_id" => "2", "name" => "Du Test", "unit" => ""));
@@ -937,8 +964,13 @@ class TestDataSeeder extends DatabaseSeeder
         MeasureRange::create(array("measure_id" => $measure_pylori->id, "alphanumeric" => "Positive"));
         MeasureRange::create(array("measure_id" => $measure_pylori->id, "alphanumeric" => "Negative"));
         $this->command->info('Measures seeded again');
+	 ** =================== */
 
         /* TestType Measure for prevalence */
+	/** ======================
+	 ** ======================
+		Ignore this() since relates to Test Tables. ////////
+
         $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_salmonella->id, "measure_id" => $measure_salmonella->id));
         $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_direct->id, "measure_id" => $measure_direct->id));
         $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_du->id, "measure_id" => $measure_du->id));
@@ -951,6 +983,8 @@ class TestDataSeeder extends DatabaseSeeder
         $this->command->info('Test Type Measures seeded again');
 
         /*  Tests for prevalence rates  */
+	/** Ignore, no test table relation. ///////////////
+
         $tests_completed_one = Test::create(array(
                 "visit_id" => "1",
                 "test_type_id" => $test_types_salmonella->id,
@@ -1263,7 +1297,13 @@ class TestDataSeeder extends DatabaseSeeder
             )
         );
         $this->command->info('Tests seeded again');
+	 ** ======================= */
+
         //  Test results for prevalence
+	/** ==========================
+	 ** ==========================
+			Ignore this(). No relation table.
+
         $results = array(
             array(
                 "test_id" => $tests_completed_one->id,
@@ -1372,8 +1412,13 @@ class TestDataSeeder extends DatabaseSeeder
         }
         $this->command->info('Test results seeded again');
         //  End prevalence rates seed
+	 ** ==================== */
 
         //Seed for facilities
+	/** ====================
+	 ** ====================
+		Ignore this(). No relations.
+	
         $facilitiesSeed = array(
             array('name' => "WALTER REED"),
             array('name' => "AGA KHAN UNIVERSITY HOSPITAL"),
@@ -1387,6 +1432,7 @@ class TestDataSeeder extends DatabaseSeeder
             Facility::create($facility);
         }
         $this->command->info('Facilities table seeded');
+	 ** ================ */
 
         //Seed for suppliers
         $supplier = Supplier::create(
