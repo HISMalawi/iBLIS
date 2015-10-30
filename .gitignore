@@ -6,3 +6,9 @@ composer.lock
 .env.php
 .DS_Store
 Thumbs.db
+.idea
+app/config/database.php
+app/config/app.php
+app/config/kblis.php
+app/config/mail.php
+app/config/remote.php
