@@ -19,43 +19,6 @@ class TestDataSeeder extends DatabaseSeeder
         $this->command->info('users seeded');
         
 
-        /* Specimen Types table */
-	/**========
-	 **========
-			 Ignore specimen types
- 
-        $specTypesData = array(
-            array("name" => "Ascitic Tap"),
-            array("name" => "Aspirate"),
-            array("name" => "CSF"),
-            array("name" => "Dried Blood Spot"),
-            array("name" => "High Vaginal Swab"),
-            array("name" => "Nasal Swab"),
-            array("name" => "Plasma"),
-            array("name" => "Plasma EDTA"),
-            array("name" => "Pleural Tap"),
-            array("name" => "Pus Swab"),
-            array("name" => "Rectal Swab"),
-            array("name" => "Semen"),
-            array("name" => "Serum"),
-            array("name" => "Skin"),
-            array("name" => "Sputum"),
-            array("name" => "Stool"),
-            array("name" => "Synovial Fluid"),
-            array("name" => "Throat Swab"),
-            array("name" => "Urethral Smear"),
-            array("name" => "Urine"),
-            array("name" => "Vaginal Smear"),
-            array("name" => "Water"),
-            array("name" => "Whole Blood"),
-        );
-
-        foreach ($specTypesData as $specimenType)
-        {
-            $specTypes[] = SpecimenType::create($specimenType);
-        }
-        $this->command->info('specimen_types seeded');
-        ====*/
 
         /* Test Categories table - These map on to the lab sections */
         $test_categories = TestCategory::create(array("name" => "PARASITOLOGY","description" => ""));
@@ -77,6 +40,142 @@ class TestDataSeeder extends DatabaseSeeder
             MeasureType::create($measureType);
         }
         $this->command->info('measure_types seeded');
+
+        // ================= Seed for Organisms and Drugs (+ Organism_Drugs) ========
+        	// DRUGS
+		$amoxicillin = Drug::create(array("name" => "Amoxicillin/Clavulanate"));
+		$ampicillin = Drug::create(array("name" => "Ampicillin"));
+		$ceftriaxone = Drug::create(array("name" => "Ceftriaxone"));
+		$chloramphenicol = Drug::create(array("name" => "Chloramphenicol"));
+		$ciprofloxacin = Drug::create(array("name" => "Ciprofloxacin"));
+		$tetracyline = Drug::create(array("name" => "Tetracyline"));
+		$trimethoprim = Drug::create(array("name" => "Trimethoprim/Sulfamethoxazole"));
+		$clindamycin = Drug::create(array("name" => "Clindamycin"));
+		$erythromycin = Drug::create(array("name" => "Erythromycin"));
+		$gentamicin = Drug::create(array("name" => "Gentamicin"));
+		$penicillin = Drug::create(array("name" => "Penicillin"));
+		$oxacillin = Drug::create(array("name" => "Oxacillin"));
+		$tetracycline = Drug::create(array("name" => "Tetracycline"));
+		$ceftazidime = Drug::create(array("name" => "Ceftazidime"));
+		$piperacillin = Drug::create(array("name" => "Piperacillin"));
+		$piperacillin_tazobactam = Drug::create(array("name" => "Piperacillin/Tazobactam"));
+		$ceftriaxon = Drug::create(array("name" => "Ceftriaxon"));
+		$cefotaxim = Drug::create(array("name" => "Cefotaxim"));
+
+		$this->command->info('Drugs seeded.');
+
+			// ORGANISM
+		$haemophilus = Organism::create(array("name" => "Haemophilus influenza"));
+		$staphylococci = Organism::create(array("name" => "Staphylococci"));
+		$streptococcus = Organism::create(array("name" => "Streptococcus pneumoniae"));
+		$pseudomonas = Organism::create(array("name" => "Pseudomonas aeruginosa"));
+		$neisseria = Organism::create(array("name" => "Neisseria meningitides"));
+
+		$this->command->info('Organisms seeded.');
+
+			// ORGANISM DRUGS
+		//++++++++ Haemophilus ++++++++++++++++
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $amoxicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ampicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ceftriaxone->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $chloramphenicol->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ciprofloxacin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $tetracyline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $trimethoprim->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $clindamycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $erythromycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $gentamicin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $penicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $oxacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $tetracycline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ceftazidime->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $piperacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $piperacillin_tazobactam->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ceftriaxon->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $cefotaxim->id));
+
+		//++++++++ Staphylococci ++++++++++++++
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $amoxicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ampicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ceftriaxone->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $chloramphenicol->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ciprofloxacin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $tetracyline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $trimethoprim->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $clindamycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $erythromycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $gentamicin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $penicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $oxacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $tetracycline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ceftazidime->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $piperacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $piperacillin_tazobactam->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ceftriaxon->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $cefotaxim->id));
+
+		//++++++++ Streptococcus ++++++++++++++
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $amoxicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ampicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ceftriaxone->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $chloramphenicol->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ciprofloxacin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $tetracyline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $trimethoprim->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $clindamycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $erythromycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $gentamicin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $penicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $oxacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $tetracycline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ceftazidime->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $piperacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $piperacillin_tazobactam->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ceftriaxon->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $cefotaxim->id));
+
+		//++++++++ Pseudomonas   ++++++++++++++
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $amoxicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ampicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ceftriaxone->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $chloramphenicol->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ciprofloxacin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $tetracyline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $trimethoprim->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $clindamycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $erythromycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $gentamicin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $penicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $oxacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $tetracycline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ceftazidime->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $piperacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $piperacillin_tazobactam->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ceftriaxon->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $cefotaxim->id));
+
+		//++++++++ Neisseria     ++++++++++++++
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $amoxicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ampicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ceftriaxone->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $chloramphenicol->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ciprofloxacin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $tetracyline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $trimethoprim->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $clindamycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $erythromycin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $gentamicin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $penicillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $oxacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $tetracycline->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ceftazidime->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $piperacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $piperacillin_tazobactam->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ceftriaxon->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $cefotaxim->id));
+
+		$this->command->info("organism_Drugs seeded.");
+        // ================= ++++++++++++++++++++++++++++++++++ ======= */
                 
         /* Measures table */
         $measureBSforMPS = Measure::create(
@@ -218,102 +317,6 @@ class TestDataSeeder extends DatabaseSeeder
 
         $this->command->info('measures seeded');
         
-	/* Test Types table */
-	/** ==============
-	 ** ============== Ignored Test Types table
-
-        $testTypeBS = TestType::create(array("name" => "BS for mps", "test_category_id" => $test_categories->id, "orderable_test" => 1));
-        $testTypeStoolCS = TestType::create(array("name" => "Stool for C/S", "test_category_id" => $lab_section_microbiology->id));
-        $testTypeGXM = TestType::create(array("name" => "GXM", "test_category_id" => $test_categories->id));
-        $testTypeHB = TestType::create(array("name" => "HB", "test_category_id" => $test_categories->id, "orderable_test" => 1));
-        $testTypeUrinalysis = TestType::create(array("name" => "Urinalysis", "test_category_id" => $test_categories->id));
-        $testTypeWBC = TestType::create(array("name" => "WBC", "test_category_id" => $test_categories->id));
-
-        $this->command->info('test_types seeded');
-
-	 ===================*/
-
-        /* TestType Measure table */
-        TestTypeMeasure::create(array("test_type_id" => $testTypeBS->id, "measure_id" => $measureBSforMPS->id));
-        TestTypeMeasure::create(array("test_type_id" => $testTypeGXM->id, "measure_id" => $measureGXM->id));
-        TestTypeMeasure::create(array("test_type_id" => $testTypeGXM->id, "measure_id" => $measureBG->id));
-        TestTypeMeasure::create(array("test_type_id" => $testTypeHB->id, "measure_id" => $measureHB->id));
-
-        foreach ($measuresUrinalysis as $value) {
-            TestTypeMeasure::create(array("test_type_id" => $testTypeUrinalysis->id, "measure_id" => $value->id));
-        }
-
-        foreach ($measuresWBC as $value) {
-            TestTypeMeasure::create(array("test_type_id" => $testTypeWBC->id, "measure_id" => $value->id));
-        }
-
-        $this->command->info('testtype_measures seeded');
-
-        /* testtype_specimentypes table */
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeBS->id, "specimen_type_id" => $specTypes[count($specTypes)-1]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeGXM->id, "specimen_type_id" => $specTypes[count($specTypes)-1]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeHB->id, "specimen_type_id" => $specTypes[count($specTypes)-1]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeHB->id, "specimen_type_id" => $specTypes[6]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeHB->id, "specimen_type_id" => $specTypes[7]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeHB->id, "specimen_type_id" => $specTypes[12]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeUrinalysis->id, "specimen_type_id" => $specTypes[19]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeUrinalysis->id, "specimen_type_id" => $specTypes[20]->id));
-        DB::table('testtype_specimentypes')->insert(
-            array("test_type_id" => $testTypeWBC->id, "specimen_type_id" => $specTypes[count($specTypes)-1]->id));
-
-        $this->command->info('testtype_specimentypes seeded');
-
-        /* Patients table */
-	/** ===============
-	 ** ===============
-		Ignore Patient Table
-
-        $patients_array = array(
-            array("name" => "Jam Felicia", "email" => "fj@x.com", "patient_number" => "1002", "dob" => "2000-01-01", "gender" => "1", "created_by" => "2"),
-            array("name" => "Emma Wallace", "email" => "emma@snd.com", "patient_number" => "1003", "dob" => "1990-03-01", "gender" => "1", "created_by" => "2"),
-            array("name" => "Jack Tee", "email" => "info@jt.co.ke", "patient_number" => "1004", "dob" => "1999-12-18", "gender" => "0", "created_by" => "1"),
-            array("name" => "Hu Jintao", "email" => "hu@.un.org", "patient_number" => "1005", "dob" => "1956-10-28", "gender" => "0", "created_by" => "2"),
-            array("name" => "Lance Opiyo", "email" => "lance@x.com", "patient_number" => "2150", "dob" => "2012-01-01", "gender" => "0", "created_by" => "1"));
-        foreach ($patients_array as $pat) {
-            $patients[] = Patient::create($pat);
-        }
-
-        $this->command->info('patients seeded');
-	 ** ================ */
-
-        /* Test Phase table */
-        $test_phases = array(
-          array("id" => "1", "name" => "Pre-Analytical"),
-          array("id" => "2", "name" => "Analytical"),
-          array("id" => "3", "name" => "Post-Analytical")
-        );
-        foreach ($test_phases as $test_phase)
-        {
-            TestPhase::create($test_phase);
-        }
-        $this->command->info('test_phases seeded');
-
-        /* Test Status table */
-        $test_statuses = array(
-          array("id" => "1","name" => "not-received","test_phase_id" => "1"),//Pre-Analytical
-          array("id" => "2","name" => "pending","test_phase_id" => "1"),//Pre-Analytical
-          array("id" => "3","name" => "started","test_phase_id" => "2"),//Analytical
-          array("id" => "4","name" => "completed","test_phase_id" => "3"),//Post-Analytical
-          array("id" => "5","name" => "verified","test_phase_id" => "3")//Post-Analytical
-        );
-        foreach ($test_statuses as $test_status)
-        {
-            TestStatus::create($test_status);
-        }
-        $this->command->info('test_statuses seeded');
 
         /* Specimen Status table */
         $specimen_statuses = array(
@@ -326,13 +329,6 @@ class TestDataSeeder extends DatabaseSeeder
             SpecimenStatus::create($specimen_status);
         }
         $this->command->info('specimen_statuses seeded');
-
-        /* Visits table */
-        
-        for ($i=0; $i < 7; $i++) { 
-            $visits[] = Visit::create(array("patient_id" => $patients[rand(0,count($patients)-1)]->id));
-        }
-        $this->command->info('visits seeded');
 
         /* Rejection Reasons table */
         $rejection_reasons_array = array(
@@ -381,326 +377,6 @@ class TestDataSeeder extends DatabaseSeeder
        
         $this->command->info('specimens seeded');
         $now = new DateTime();
-
-        /* Test table */
-	/** =================
-	 ** =================
-		Ignore Test Table
-
-        Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeBS->id,//BS for MPS
-                "specimen_id" => $this->createSpecimen(
-                        Test::NOT_RECEIVED, Specimen::NOT_COLLECTED,
-                        SpecimenType::all()->last()->id,
-                        $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::NOT_RECEIVED,
-                "requested_by" => "Dr. Abou Meyang",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-            )
-        );        
-        
-        Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeHB->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::PENDING, Specimen::NOT_COLLECTED,
-                        SpecimenType::all()->last()->id,
-                        $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::PENDING,
-                "requested_by" => "Dr. Abou Meyang",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-            )
-        );        
-        
-        Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeGXM->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::PENDING, Specimen::NOT_COLLECTED,
-                        SpecimenType::all()->last()->id,
-                        $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::PENDING,
-                "requested_by" => "Dr. Abou Meyang",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-            )
-        );        
-        
-        Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeBS->id,//BS for MPS
-                "specimen_id" => $this->createSpecimen(
-                        Test::PENDING, Specimen::ACCEPTED,
-                        SpecimenType::all()->last()->id,
-                        $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::PENDING,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Dr. Abou Meyang",
-            )
-        );        
-        
-        $test_gxm_accepted_completed = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeGXM->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::COMPLETED, Specimen::ACCEPTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id),
-                "interpretation" => "Perfect match.",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "tested_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Dr. Abou Meyang",
-                "time_started" => $now->format('Y-m-d H:i:s'),
-                "time_completed" => $now->add(new DateInterval('PT12M8S'))->format('Y-m-d H:i:s'),
-            )
-        );
-
-        $test_hb_accepted_completed = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeHB->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::COMPLETED, Specimen::ACCEPTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id),
-                "interpretation" => "Do nothing!",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "tested_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Genghiz Khan",
-                "time_started" => $now->format('Y-m-d H:i:s'),
-                "time_completed" => $now->add(new DateInterval('PT5M23S'))->format('Y-m-d H:i:s'),
-            )
-        );
-
-        $tests_accepted_started = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeGXM->id,
-                "specimen_id" => $this->createSpecimen(
-                    Test::STARTED, Specimen::ACCEPTED, SpecimenType::all()->last()->id, 
-                    $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::STARTED,
-                "requested_by" => "Dr. Abou Meyang",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "time_started" => $now->format('Y-m-d H:i:s'),
-            )
-        );
-
-        $tests_accepted_completed = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeBS->id,//BS for MPS
-                "specimen_id" => $this->createSpecimen(
-                        Test::COMPLETED, Specimen::ACCEPTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id),
-                "interpretation" => "Positive",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "tested_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Ariel Smith",
-                "time_started" => $now->format('Y-m-d H:i:s'),
-                "time_completed" => $now->add(new DateInterval('PT7M34S'))->format('Y-m-d H:i:s'),
-            )
-        );        
-        
-        $tests_accepted_verified = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeBS->id,//BS for MPS
-                "specimen_id" => $this->createSpecimen(
-                        Test::VERIFIED, Specimen::ACCEPTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id),
-                "interpretation" => "Very high concentration of parasites.",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "tested_by" => $users[rand(0, count($users)-1)]->id,
-                "verified_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Genghiz Khan",
-                "time_started" => $now,
-                "time_completed" => $now->add(new DateInterval('PT5M17S'))->format('Y-m-d H:i:s'),
-                "time_verified" => $now->add(new DateInterval('PT112M33S'))->format('Y-m-d H:i:s'),
-            )
-        );        
-        
-        $tests_rejected_pending = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeBS->id,//BS for MPS
-                "specimen_id" => $this->createSpecimen(
-                        Test::PENDING, Specimen::REJECTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id,
-                        $users[rand(0, count($users)-1)]->id,
-                        $rejection_reasons[rand(0,count($rejection_reasons)-1)]->id),
-                "test_status_id" => Test::PENDING,
-                "requested_by" => "Dr. Abou Meyang",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "time_started" => $now->format('Y-m-d H:i:s'),
-            )
-        );        
-
-        //  WBC Started
-        Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeWBC->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::STARTED, Specimen::ACCEPTED,
-                        SpecimenType::all()->last()->id,
-                        $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::PENDING,
-                "requested_by" => "Fred Astaire",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-            )
-        );        
-        
-        $tests_rejected_started = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeBS->id,//BS for MPS
-                "specimen_id" => $this->createSpecimen(
-                        Test::STARTED, Specimen::REJECTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id,
-                        $users[rand(0, count($users)-1)]->id,
-                        $rejection_reasons[rand(0,count($rejection_reasons)-1)]->id),
-                "test_status_id" => Test::STARTED,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Bony Em",
-                "time_started" => $now->format('Y-m-d H:i:s'),
-            )
-        );
-        
-        $tests_rejected_completed = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeBS->id,//BS for MPS
-                "specimen_id" => $this->createSpecimen(
-                        Test::COMPLETED, Specimen::REJECTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id,
-                        $users[rand(0, count($users)-1)]->id,
-                        $rejection_reasons[rand(0,count($rejection_reasons)-1)]->id),
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "tested_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Ed Buttler",
-                "time_started" => $now->format('Y-m-d H:i:s'),
-                "time_completed" => $now->add(new DateInterval('PT30M4S'))->format('Y-m-d H:i:s'),
-            )
-        );
-
-        Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeUrinalysis->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::PENDING, Specimen::NOT_COLLECTED,
-                        SpecimenType::all()->last()->id,
-                        $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::PENDING,
-                "requested_by" => "Dr. Abou Meyang",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-            )
-        );        
-        
-        Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeWBC->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::PENDING, Specimen::NOT_COLLECTED,
-                        SpecimenType::all()->last()->id,
-                        $users[rand(0, count($users)-1)]->id),
-                "test_status_id" => Test::PENDING,
-                "requested_by" => "Dr. Abou Meyang",
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-            )
-        );        
-        
-        $test_urinalysis_accepted_completed = Test::create(
-            array(
-                "visit_id" => $visits[rand(0,count($visits)-1)]->id,
-                "test_type_id" => $testTypeUrinalysis->id,
-                "specimen_id" => $this->createSpecimen(
-                        Test::COMPLETED, Specimen::ACCEPTED, 
-                        SpecimenType::all()->last()->id, 
-                        $users[rand(0, count($users)-1)]->id),
-                "interpretation" => "Whats this !!!! ###%%% ^ *() /",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => $users[rand(0, count($users)-1)]->id,
-                "tested_by" => $users[rand(0, count($users)-1)]->id,
-                "requested_by" => "Dr. Abou Meyang",
-                "time_started" => $now->format('Y-m-d H:i:s'),
-                "time_completed" => $now->add(new DateInterval('PT12M8S'))->format('Y-m-d H:i:s'),
-                "external_id" => 596699,
-            )
-        );
-
-        $this->command->info('tests seeded');
-	 ** ============ */
-
-        /* Test Results table */
-	/** ==============
-	 ** ==============
-		Ignore Results for Test. Since test table has been ignored.
-
-        $testResults = array(
-            array(
-                "test_id" => $tests_accepted_verified->id,
-                "measure_id" => $measureBSforMPS->id,//BS for MPS
-                "result" => "+++",
-            ),
-            array(
-                "test_id" => $tests_accepted_completed->id,
-                "measure_id" => $measureBSforMPS->id,//BS for MPS
-                "result" => "++",
-            ),
-            array(
-                "test_id" => $test_gxm_accepted_completed->id,
-                "measure_id" => $measureGXM->id,
-                "result" => "COMPATIBLE WITH 061832914 B/G A POS.EXPIRY19/8/14",
-            ),
-            array(
-                "test_id" => $test_gxm_accepted_completed->id,
-                "measure_id" => $measureBG->id,
-                "result" => "A+",
-            ),
-            array(
-                "test_id" => $test_hb_accepted_completed->id,
-                "measure_id" => $measureHB->id,
-                "result" => "13.7",
-            ),
-            array(
-                "test_id" => $tests_rejected_completed->id,
-                "measure_id" => $measureBSforMPS->id,//BS for MPS
-                "result" => "No mps seen",
-            ));
-
-        foreach ($measuresUrinalysis as $key => $measure) {
-            $testResults[] = array(
-                "test_id" => $test_urinalysis_accepted_completed->id,
-                "measure_id" => $measure->id,
-                "result" => $key."50",
-            );
-        }
-
-        foreach ($testResults as $testResult)
-        {
-            TestResult::create($testResult);
-        }
-        $this->command->info('test results seeded');
-	 ** =================== */
         
         /* Permissions table */
         $permissions = array(
@@ -738,7 +414,6 @@ class TestDataSeeder extends DatabaseSeeder
             array("name" => "Superadmin"),
             array("name" => "Technologist"),
             array("name" => "Receptionist"),
-	    array("name" => "Supervisor")
         );
         foreach ($roles as $role) {
             Role::create($role);
@@ -766,7 +441,7 @@ class TestDataSeeder extends DatabaseSeeder
         );
         
         $instrument = Instrument::create($instrumentsData);
-        $instrument->testTypes()->attach(array($testTypeWBC->id));
+        // $instrument->testTypes()->attach(array($testTypeWBC->id));
 
         $this->command->info('Instruments table seeded');
 
@@ -853,7 +528,7 @@ class TestDataSeeder extends DatabaseSeeder
             $dumper = new ExternalDump();
             $dumper->lab_no = $labRequestUrinalysis{$i}->labNo;
             $dumper->parent_lab_no = $labRequestUrinalysis{$i}->parentLabNo;
-            $dumper->test_id = ($i == 0) ? $test_urinalysis_accepted_completed->id : null;
+            // $dumper->test_id = ($i == 0) ? $test_urinalysis_accepted_completed->id : null;
             $dumper->requesting_clinician = $labRequestUrinalysis{$i}->requestingClinician;
             $dumper->investigation = $labRequestUrinalysis{$i}->investigation;
             $dumper->provisional_diagnosis = '';
@@ -884,555 +559,6 @@ class TestDataSeeder extends DatabaseSeeder
         $lab_section_serology = TestCategory::create(array("name" => "SEROLOGY","description" => ""));
         $lab_section_trans = TestCategory::create(array("name" => "BLOOD TRANSFUSION","description" => ""));
         $this->command->info('Lab Sections seeded');
-
-        /* Test Types for prevalence */
-	/** ====================
-	 ** ====================
-		Ignore Test Types for prevalence since Test Type table has been ignored. ////////
-
-        $test_types_salmonella = TestType::create(array("name" => "Salmonella Antigen Test", "test_category_id" => $test_categories->id));
-        $test_types_direct = TestType::create(array("name" => "Direct COOMBS Test", "test_category_id" => $lab_section_trans->id));
-        $test_types_du = TestType::create(array("name" => "DU Test", "test_category_id" => $lab_section_trans->id));
-        $test_types_sickling = TestType::create(array("name" => "Sickling Test", "test_category_id" => $lab_section_hematology->id));
-        $test_types_borrelia = TestType::create(array("name" => "Borrelia", "test_category_id" => $test_categories->id));
-        $test_types_vdrl = TestType::create(array("name" => "VDRL", "test_category_id" => $lab_section_serology->id));
-        $test_types_pregnancy = TestType::create(array("name" => "Pregnancy Test", "test_category_id" => $lab_section_serology->id));
-        $test_types_brucella = TestType::create(array("name" => "Brucella", "test_category_id" => $lab_section_serology->id));
-        $test_types_pylori = TestType::create(array("name" => "H. Pylori", "test_category_id" => $lab_section_serology->id));
-
-        $this->command->info('Test Types seeded');
-	 ** ============================ */
-
-        /* Test Types and specimen types relationship for prevalence */
-	/** ===================
-	 ** ===================
-			Ignoring Test Types and Specimen this() since test related tables where ignored. /////////
-
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_salmonella->id, "13"));
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_direct->id, "23"));
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_du->id, "23"));
-         DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_sickling->id, "23"));
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_borrelia->id, "23"));
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_vdrl->id, "13"));
-         DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_pregnancy->id, "20"));
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_brucella->id, "13"));
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($test_types_pylori->id, "13"));
-        DB::insert('INSERT INTO testtype_specimentypes (test_type_id, specimen_type_id) VALUES (?, ?)', 
-            array($testTypeStoolCS->id, "16"));
-        $this->command->info('TestTypes/SpecimenTypes seeded');
-
-        
-        /*New measures for prevalence*/
-	/** ==============================
-	 ** ==============================
-		Ignore this() since relates to Tests. //////////
-
-        $measure_salmonella = Measure::create(array("measure_type_id" => "2", "name" => "Salmonella Antigen Test", "unit" => ""));
-        $measure_direct = Measure::create(array("measure_type_id" => "2", "name" => "Direct COOMBS Test", "unit" => ""));
-        $measure_du = Measure::create(array("measure_type_id" => "2", "name" => "Du Test", "unit" => ""));
-        $measure_sickling = Measure::create(array("measure_type_id" => "2", "name" => "Sickling Test", "unit" => ""));
-        $measure_borrelia = Measure::create(array("measure_type_id" => "2", "name" => "Borrelia", "unit" => ""));
-        $measure_vdrl = Measure::create(array("measure_type_id" => "2", "name" => "VDRL", "unit" => ""));
-        $measure_pregnancy = Measure::create(array("measure_type_id" => "2", "name" => "Pregnancy Test", "unit" => ""));
-        $measure_brucella = Measure::create(array("measure_type_id" => "2", "name" => "Brucella", "unit" => ""));
-        $measure_pylori = Measure::create(array("measure_type_id" => "2", "name" => "H. Pylori", "unit" => ""));
-        MeasureRange::create(array("measure_id" => $measure_salmonella->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_salmonella->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_direct->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_direct->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_du->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_du->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_sickling->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_sickling->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_borrelia->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_borrelia->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_vdrl->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_vdrl->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_pregnancy->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_pregnancy->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_brucella->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_brucella->id, "alphanumeric" => "Negative"));
-        MeasureRange::create(array("measure_id" => $measure_pylori->id, "alphanumeric" => "Positive"));
-        MeasureRange::create(array("measure_id" => $measure_pylori->id, "alphanumeric" => "Negative"));
-        $this->command->info('Measures seeded again');
-	 ** =================== */
-
-        /* TestType Measure for prevalence */
-	/** ======================
-	 ** ======================
-		Ignore this() since relates to Test Tables. ////////
-
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_salmonella->id, "measure_id" => $measure_salmonella->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_direct->id, "measure_id" => $measure_direct->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_du->id, "measure_id" => $measure_du->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_sickling->id, "measure_id" => $measure_sickling->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_borrelia->id, "measure_id" => $measure_borrelia->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_vdrl->id, "measure_id" => $measure_vdrl->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_pregnancy->id, "measure_id" => $measure_pregnancy->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_brucella->id, "measure_id" => $measure_brucella->id));
-        $testtype_measure = TestTypeMeasure::create(array("test_type_id" => $test_types_pylori->id, "measure_id" => $measure_pylori->id));
-        $this->command->info('Test Type Measures seeded again');
-
-        /*  Tests for prevalence rates  */
-	/** Ignore, no test table relation. ///////////////
-
-        $tests_completed_one = Test::create(array(
-                "visit_id" => "1",
-                "test_type_id" => $test_types_salmonella->id,
-                "specimen_id" => "4",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-07-23 15:16:15",
-                "time_started" => "2014-07-23 16:07:15",
-                "time_completed" => "2014-07-23 16:17:19",
-            )
-        );
-        $tests_completed_two = Test::create(array(
-                "visit_id" => "2",
-                "test_type_id" => $test_types_direct->id,
-                "specimen_id" => "3",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-07-26 10:16:15",
-                "time_started" => "2014-07-26 13:27:15",
-                "time_completed" => "2014-07-26 13:57:01",
-            )
-        );
-        $tests_completed_three = Test::create(array(
-                "visit_id" => "3",
-                "test_type_id" => $test_types_du->id,
-                "specimen_id" => "2",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-08-13 09:16:15",
-                "time_started" => "2014-08-13 10:07:15",
-                "time_completed" => "2014-08-13 10:18:11",
-            )
-        );
-        $tests_completed_four = Test::create(array(
-                "visit_id" => "4",
-                "test_type_id" => $test_types_sickling->id,
-                "specimen_id" => "1",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-08-16 09:06:53",
-                "time_started" => "2014-08-16 09:09:15",
-                "time_completed" => "2014-08-16 09:23:37",
-            )
-        );
-        $tests_completed_five = Test::create(array(
-                "visit_id" => "5",
-                "test_type_id" => $test_types_borrelia->id,
-                "specimen_id" => "1",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-08-23 10:16:15",
-                "time_started" => "2014-08-23 11:54:39",
-                "time_completed" => "2014-08-23 12:07:18",
-            )
-        );
-        $tests_completed_six = Test::create(array(
-                "visit_id" => "6",
-                "test_type_id" => $test_types_vdrl->id,
-                "specimen_id" => "2",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-09-07 07:23:15",
-                "time_started" => "2014-09-07 08:07:20",
-                "time_completed" => "2014-09-07 08:41:13",
-            )
-        );
-        $tests_completed_seven = Test::create(array(
-                "visit_id" => "7",
-                "test_type_id" => $test_types_pregnancy->id,
-                "specimen_id" => "3",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-10-03 11:52:15",
-                "time_started" => "2014-10-03 12:31:04",
-                "time_completed" => "2014-10-03 12:45:18",
-            )
-        );
-        $tests_completed_eight = Test::create(array(
-                "visit_id" => "1",
-                "test_type_id" => $test_types_brucella->id,
-                "specimen_id" => "4",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-10-15 17:01:15",
-                "time_started" => "2014-10-15 17:05:24",
-                "time_completed" => "2014-10-15 18:07:15",
-            )
-        );
-        $tests_completed_nine = Test::create(array(
-                "visit_id" => "2",
-                "test_type_id" => $test_types_pylori->id,
-                "specimen_id" => "4",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-10-23 16:06:15",
-                "time_started" => "2014-10-23 16:07:15",
-                "time_completed" => "2014-10-23 16:39:02",
-            )
-        );
-        $tests_completed_ten = Test::create(array(
-                "visit_id" => "4",
-                "test_type_id" => $test_types_salmonella->id,
-                "specimen_id" => "3",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::COMPLETED,
-                "created_by" => "2",
-                "tested_by" => "3",
-                "requested_by" => "Ariel Smith",
-                "time_created" => "2014-10-21 19:16:15",
-                "time_started" => "2014-10-21 19:17:15",
-                "time_completed" => "2014-10-21 19:52:40",
-            )
-        );     
-        
-        $tests_verified_one = Test::create(
-            array(
-                "visit_id" => "3",
-                "test_type_id" => $test_types_direct->id,
-                "specimen_id" => "2",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-07-21 19:16:15",
-                "time_started" => "2014-07-21 19:17:15",
-                "time_completed" => "2014-07-21 19:52:40",
-                "time_verified" => "2014-07-21 19:53:48",
-            )
-        );
-        $tests_verified_two = Test::create(
-            array(
-                "visit_id" => "2",
-                "test_type_id" => $test_types_du->id,
-                "specimen_id" => "1",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-08-21 19:16:15",
-                "time_started" => "2014-08-21 19:17:15",
-                "time_completed" => "2014-08-21 19:52:40",
-                "time_verified" => "2014-08-21 19:53:48",
-            )
-        );
-        $tests_verified_three = Test::create(
-            array(
-                "visit_id" => "3",
-                "test_type_id" => $test_types_sickling->id,
-                "specimen_id" => "4",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-08-26 19:16:15",
-                "time_started" => "2014-08-26 19:17:15",
-                "time_completed" => "2014-08-26 19:52:40",
-                "time_verified" => "2014-08-26 19:53:48",
-            )
-        );
-        $tests_verified_four = Test::create(
-            array(
-                "visit_id" => "4",
-                "test_type_id" => $test_types_borrelia->id,
-                "specimen_id" => "2",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-09-21 19:16:15",
-                "time_started" => "2014-09-21 19:17:15",
-                "time_completed" => "2014-09-21 19:52:40",
-                "time_verified" => "2014-09-21 19:53:48",
-            )
-        );
-        $tests_verified_five = Test::create(
-            array(
-                "visit_id" => "1",
-                "test_type_id" => $test_types_vdrl->id,
-                "specimen_id" => "3",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-09-22 19:16:15",
-                "time_started" => "2014-09-22 19:17:15",
-                "time_completed" => "2014-09-22 19:52:40",
-                "time_verified" => "2014-09-22 19:53:48",
-            )
-        );
-        $tests_verified_six = Test::create(
-            array(
-                "visit_id" => "1",
-                "test_type_id" => $test_types_pregnancy->id,
-                "specimen_id" => "4",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-09-23 19:16:15",
-                "time_started" => "2014-09-23 19:17:15",
-                "time_completed" => "2014-09-23 19:52:40",
-                "time_verified" => "2014-09-23 19:53:48",
-            )
-        );
-        $tests_verified_seven = Test::create(
-            array(
-                "visit_id" => "1",
-                "test_type_id" => $test_types_brucella->id,
-                "specimen_id" => "2",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-09-27 19:16:15",
-                "time_started" => "2014-09-27 19:17:15",
-                "time_completed" => "2014-09-27 19:52:40",
-                "time_verified" => "2014-09-27 19:53:48",
-            )
-        );
-        $tests_verified_eight = Test::create(
-            array(
-                "visit_id" => "3",
-                "test_type_id" => $test_types_pylori->id,
-                "specimen_id" => "4",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-10-22 19:16:15",
-                "time_started" => "2014-10-22 19:17:15",
-                "time_completed" => "2014-10-22 19:52:40",
-                "time_verified" => "2014-10-22 19:53:48",
-            )
-        );
-        $tests_verified_nine = Test::create(
-            array(
-                "visit_id" => "4",
-                "test_type_id" => $test_types_pregnancy->id,
-                "specimen_id" => "3",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-10-17 19:16:15",
-                "time_started" => "2014-10-17 19:17:15",
-                "time_completed" => "2014-10-17 19:52:40",
-                "time_verified" => "2014-10-17 19:53:48",
-            )
-        );
-        $tests_verified_ten = Test::create(
-            array(
-                "visit_id" => "2",
-                "test_type_id" => $test_types_pregnancy->id,
-                "specimen_id" => "1",
-                "interpretation" => "Budda Boss",
-                "test_status_id" => Test::VERIFIED,
-                "created_by" => "3",
-                "tested_by" => "2",
-                "verified_by" => "3",
-                "requested_by" => "Genghiz Khan",
-                "time_created" => "2014-10-02 19:16:15",
-                "time_started" => "2014-10-02 19:17:15",
-                "time_completed" => "2014-10-02 19:52:40",
-                "time_verified" => "2014-10-02 19:53:48",
-            )
-        );
-        $this->command->info('Tests seeded again');
-	 ** ======================= */
-
-        //  Test results for prevalence
-	/** ==========================
-	 ** ==========================
-			Ignore this(). No relation table.
-
-        $results = array(
-            array(
-                "test_id" => $tests_completed_one->id,
-                "measure_id" => $measure_salmonella->id,//BS for MPS
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_completed_two->id,
-                "measure_id" => $measure_direct->id,
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_completed_three->id,
-                "measure_id" => $measure_du->id,
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_completed_four->id,
-                "measure_id" => $measure_sickling->id,
-                "result" => "Positive",
-            ),
-             array(
-                "test_id" => $tests_completed_five->id,
-                "measure_id" => $measure_borrelia->id,//BS for MPS
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_completed_six->id,
-                "measure_id" => $measure_vdrl->id,
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_completed_seven->id,
-                "measure_id" => $measure_pregnancy->id,
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_completed_eight->id,
-                "measure_id" => $measure_brucella->id,
-                "result" => "Positive",
-            ),
-             array(
-                "test_id" => $tests_completed_nine->id,
-                "measure_id" => $measure_pylori->id,//BS for MPS
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_completed_ten->id,
-                "measure_id" => $measure_salmonella->id,
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_verified_one->id,
-                "measure_id" => $measure_direct->id,
-                "result" => "Negative",
-            ),
-            array(
-                "test_id" => $tests_verified_two->id,
-                "measure_id" => $measure_du->id,
-                "result" => "Positive",
-            ),
-             array(
-                "test_id" => $tests_verified_three->id,
-                "measure_id" => $measure_sickling->id,//BS for MPS
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_verified_four->id,
-                "measure_id" => $measure_borrelia->id,
-                "result" => "Negative",
-            ),
-            array(
-                "test_id" => $tests_verified_five->id,
-                "measure_id" => $measure_vdrl->id,
-                "result" => "Negative",
-            ),
-            array(
-                "test_id" => $tests_verified_six->id,
-                "measure_id" => $measure_pregnancy->id,
-                "result" => "Negative",
-            ),
-             array(
-                "test_id" => $tests_verified_seven->id,
-                "measure_id" => $measure_brucella->id,//BS for MPS
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_verified_eight->id,
-                "measure_id" => $measure_pylori->id,
-                "result" => "Positive",
-            ),
-            array(
-                "test_id" => $tests_verified_nine->id,
-                "measure_id" => $measure_pregnancy->id,
-                "result" => "Negative",
-            ),
-            array(
-                "test_id" => $tests_verified_ten->id,
-                "measure_id" => $measure_pregnancy->id,
-                "result" => "Positive",
-            ),
-        );        
-        foreach ($results as $result)
-        {
-            TestResult::create($result);
-        }
-        $this->command->info('Test results seeded again');
-        //  End prevalence rates seed
-	 ** ==================== */
-
-        //Seed for facilities
-	/** ====================
-	 ** ====================
-		Ignore this(). No relations.
-	
-        $facilitiesSeed = array(
-            array('name' => "WALTER REED"),
-            array('name' => "AGA KHAN UNIVERSITY HOSPITAL"),
-            array('name' => "TEL AVIV GENERAL HOSPITAL"),
-            array('name' => "GK PRISON DISPENSARY"),
-            array('name' => "KEMRI ALUPE"),
-            array('name' => "AMPATH")
-        );
-
-        foreach ($facilitiesSeed as $facility) {
-            Facility::create($facility);
-        }
-        $this->command->info('Facilities table seeded');
-	 ** ================ */
 
         //Seed for suppliers
         $supplier = Supplier::create(
@@ -1511,20 +637,7 @@ class TestDataSeeder extends DatabaseSeeder
 
         $this->command->info("Dieases table seeded");
 
-        $reportDiseases = array(
-            array(
-                "test_type_id" => $testTypeBS->id,
-                "disease_id" => $malaria->id,
-                ),
-             array(
-                "test_type_id" => $test_types_salmonella->id,
-                "disease_id" => $typhoid->id,
-                ),
-             array(
-                "test_type_id" => $testTypeStoolCS->id,
-                "disease_id" => $dysentry->id,
-                ),
-        );
+        $reportDiseases = array();
 
         foreach ($reportDiseases as $reportDisease) {
             ReportDisease::create($reportDisease);
@@ -1608,13 +721,6 @@ class TestDataSeeder extends DatabaseSeeder
 
         //Control Tests
         $controlTests = array(
-                array('entered_by'=> 3, 'control_id'=> 1, 'created_at'=>date('Y-m-d', strtotime('-10 days'))),
-                array('entered_by'=> 3, 'control_id'=> 1, 'created_at'=>date('Y-m-d', strtotime('-9 days'))),
-                array('entered_by'=> 3, 'control_id'=> 1, 'created_at'=>date('Y-m-d', strtotime('-8 days'))),
-                array('entered_by'=> 3, 'control_id'=> 1, 'created_at'=>date('Y-m-d', strtotime('-7 days'))),
-                array('entered_by'=> 3, 'control_id'=> 1, 'created_at'=>date('Y-m-d', strtotime('-6 days'))),
-                array('entered_by'=> 3, 'control_id'=> 1, 'created_at'=>date('Y-m-d', strtotime('-5 days'))),
-                array('entered_by'=> 3, 'control_id'=> 1, 'created_at'=>date('Y-m-d', strtotime('-4 days'))),
                 array('entered_by'=> 1, 'control_id'=> 2, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
                 array('entered_by'=> 1, 'control_id'=> 2, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
             );
@@ -1638,61 +744,6 @@ class TestDataSeeder extends DatabaseSeeder
                 array('results' => '18.77', 'control_measure_id' => 3, 'control_test_id' => 2, 'created_at'=>date('Y-m-d', strtotime('-9 days'))),
                 array('results' => '30.92', 'control_measure_id' => 4, 'control_test_id' => 2, 'created_at'=>date('Y-m-d', strtotime('-9 days'))),
                 array('results' => '17.87', 'control_measure_id' => 5, 'control_test_id' => 2, 'created_at'=>date('Y-m-d', strtotime('-9 days'))),
-
-                 //Results fro Humatrol P
-                array('results' => '8.78', 'control_measure_id' => 1, 'control_test_id' => 3, 'created_at'=>date('Y-m-d', strtotime('-8 days'))),
-                array('results' => '17.56', 'control_measure_id' => 2, 'control_test_id' => 3, 'created_at'=>date('Y-m-d', strtotime('-8 days'))),
-                array('results' => '21.77', 'control_measure_id' => 3, 'control_test_id' => 3, 'created_at'=>date('Y-m-d', strtotime('-8 days'))),
-                array('results' => '27.92', 'control_measure_id' => 4, 'control_test_id' => 3, 'created_at'=>date('Y-m-d', strtotime('-8 days'))),
-                array('results' => '22.87', 'control_measure_id' => 5, 'control_test_id' => 3, 'created_at'=>date('Y-m-d', strtotime('-8 days'))),
-
-                 //Results fro Humatrol P
-                array('results' => '6.78', 'control_measure_id' => 1, 'control_test_id' => 4, 'created_at'=>date('Y-m-d', strtotime('-7 days'))),
-                array('results' => '18.56', 'control_measure_id' => 2, 'control_test_id' => 4, 'created_at'=>date('Y-m-d', strtotime('-7 days'))),
-                array('results' => '19.77', 'control_measure_id' => 3, 'control_test_id' => 4, 'created_at'=>date('Y-m-d', strtotime('-7 days'))),
-                array('results' => '12.92', 'control_measure_id' => 4, 'control_test_id' => 4, 'created_at'=>date('Y-m-d', strtotime('-7 days'))),
-                array('results' => '22.87', 'control_measure_id' => 5, 'control_test_id' => 4, 'created_at'=>date('Y-m-d', strtotime('-7 days'))),
-
-                 //Results fro Humatrol P
-                array('results' => '3.78', 'control_measure_id' => 1, 'control_test_id' => 5, 'created_at'=>date('Y-m-d', strtotime('-6 days'))),
-                array('results' => '16.56', 'control_measure_id' => 2, 'control_test_id' => 5, 'created_at'=>date('Y-m-d', strtotime('-6 days'))),
-                array('results' => '17.77', 'control_measure_id' => 3, 'control_test_id' => 5, 'created_at'=>date('Y-m-d', strtotime('-6 days'))),
-                array('results' => '28.92', 'control_measure_id' => 4, 'control_test_id' => 5, 'created_at'=>date('Y-m-d', strtotime('-6 days'))),
-                array('results' => '19.87', 'control_measure_id' => 5, 'control_test_id' => 5, 'created_at'=>date('Y-m-d', strtotime('-6 days'))),
-
-                 //Results fro Humatrol P
-                array('results' => '5.78', 'control_measure_id' => 1, 'control_test_id' => 6, 'created_at'=>date('Y-m-d', strtotime('-5 days'))),
-                array('results' => '15.56', 'control_measure_id' => 2, 'control_test_id' => 6, 'created_at'=>date('Y-m-d', strtotime('-5 days'))),
-                array('results' => '11.77', 'control_measure_id' => 3, 'control_test_id' => 6, 'created_at'=>date('Y-m-d', strtotime('-5 days'))),
-                array('results' => '29.92', 'control_measure_id' => 4, 'control_test_id' => 6, 'created_at'=>date('Y-m-d', strtotime('-5 days'))),
-                array('results' => '14.87', 'control_measure_id' => 5, 'control_test_id' => 6, 'created_at'=>date('Y-m-d', strtotime('-5 days'))),
-
-                 //Results fro Humatrol P
-                array('results' => '9.78', 'control_measure_id' => 1, 'control_test_id' => 7, 'created_at'=>date('Y-m-d', strtotime('-4 days'))),
-                array('results' => '11.56', 'control_measure_id' => 2, 'control_test_id' => 7, 'created_at'=>date('Y-m-d', strtotime('-4 days'))),
-                array('results' => '19.77', 'control_measure_id' => 3, 'control_test_id' => 7, 'created_at'=>date('Y-m-d', strtotime('-4 days'))),
-                array('results' => '32.92', 'control_measure_id' => 4, 'control_test_id' => 7, 'created_at'=>date('Y-m-d', strtotime('-4 days'))),
-                array('results' => '29.87', 'control_measure_id' => 5, 'control_test_id' => 7, 'created_at'=>date('Y-m-d', strtotime('-4 days'))),
-
-                //Results for Full blood count
-                array('results' => '5.45', 'control_measure_id' => 6, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-                array('results' => '5.01', 'control_measure_id' => 7, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-                array('results' => '12.3', 'control_measure_id' => 8, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-                array('results' => '89.7', 'control_measure_id' => 9, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-                array('results' => '2.15', 'control_measure_id' => 10, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-                array('results' => '34.0', 'control_measure_id' => 11, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-                array('results' => '37.2', 'control_measure_id' => 12, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-                array('results' => '141.5', 'control_measure_id' => 13, 'control_test_id' => 8, 'created_at'=>date('Y-m-d', strtotime('-3 days'))),
-
-                //Results for Full blood count
-                array('results' => '7.45', 'control_measure_id' => 6, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
-                array('results' => '9.01', 'control_measure_id' => 7, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
-                array('results' => '9.3',  'control_measure_id' => 8, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
-                array('results' => '94.7', 'control_measure_id' => 9, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
-                array('results' => '12.15','control_measure_id' => 10, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
-                array('results' => '37.0', 'control_measure_id' => 11, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
-                array('results' => '30.2', 'control_measure_id' => 12, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
-                array('results' => '121.5','control_measure_id' =>  13, 'control_test_id' => 9, 'created_at'=>date('Y-m-d', strtotime('-2 days'))),
             );
         
         foreach ($controlResults as $controlResult) {
