@@ -5,6 +5,8 @@
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap.min.css') }}" />
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-theme.min.css') }}" />
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/layout.css') }}" />
+        <script type="text/javascript" src="{{ URL::asset('js/jquery.js') }} "></script>
+        <script type="text/javascript" src="{{ URL::asset('js/script.js') }} "></script>
         <title>{{ Config::get('kblis.name') }} {{ Config::get('kblis.version') }}</title>
     </head>
     <body>
@@ -45,6 +47,15 @@
                             )) }}
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            {{ Form::label('lab_section', trans('messages.test-category-login')) }}
+                            {{ Form::select('lab_section', ([''] + $test_categories),
+                            Input::get('lab_section'), array('class' => 'form-control')) }}
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <div>
                             {{ Form::button(trans('messages.login'), array(

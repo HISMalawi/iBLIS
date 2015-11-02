@@ -36,7 +36,9 @@ class TestController extends \BaseController {
 		// Search Conditions
 		if($searchString||$testStatusId||$dateFrom||$dateTo){
 
-			$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+			//$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+
+			$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
 
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -44,8 +46,14 @@ class TestController extends \BaseController {
 		}
 		else
 		{
-		// List all the active tests
-			$tests = Test::orderBy('time_created', 'DESC');
+			// List all the active tests
+			//$tests = Test::orderBy('time_created', 'DESC');
+
+			$tests = DB::table('tests')
+				->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+				->select('tests.*')
+				->where('test_types.test_category_id', '=', Session::get("location_id"))
+				->orderBy('time_created', 'DESC');
 		}
 
 		// Create Test Statuses array. Include a first entry for ALL

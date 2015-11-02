@@ -43,6 +43,7 @@
 									'id' => 'form-edit-user'
 								 )) }}
 								<div class="container-fluid">
+
 									<div class="row">
 										<div class="col-md-8">
 											<div class="form-group">
@@ -72,21 +73,7 @@
 							                    <div>{{ Form::radio('gender', '1', false) }}<span class='input-tag'>
 							                    	{{trans('messages.female')}}</span></div>
 							                </div>
-											@if(Auth::id() != $user->id && Entrust::hasRole(Role::getAdminRole()->name))
-												<!-- For the administrator to reset other users' passwords -->
-								                <div class="form-group">
-								                	<label for="reset-password"><a class="reset-password" 
-								                		href="javascript:void(0)">{{trans('messages.reset-password')}}
-								                		</label></a>
-													{{ Form::password('reset-password', 
-														['class' => 'form-control reset-password hidden']) }}
-								                </div>
-							                @endif
-							                <div class="form-group actions-row">
-												{{ Form::button('<span class="glyphicon glyphicon-save"></span> '.
-													trans('messages.update'), 
-													['class' => 'btn btn-primary', 'onclick' => 'submit()']) }}
-											</div>
+
 							            </div>
 										<div class="col-md-4">
 											<div class="profile-photo">
@@ -96,12 +83,58 @@
 								                </div>
 								                <div class="form-group">
 								                	<img class="img-responsive img-thumbnail user-image"
-								                		src="{{ $user->image }}" 
+								                		src="{{ $user->image }}"
 								                		alt="{{trans('messages.image-alternative')}}"></img>
 								                </div>
 											</div>
 							            </div>
 						            </div>
+									<div class="row">
+										<div class="form-group">
+											{{ Form::label('test_categories', trans('messages.select-lab-section')) }}
+											<div class="form-pane panel panel-default">
+												<div class="container-fluid">
+													<?php
+													$cnt = 0;
+													$zebra = "";
+													?>
+													@foreach($testcategories as $key=>$value)
+														{{ ($cnt%4==0)?"<div class='row $zebra'>":"" }}
+														<?php
+														$cnt++;
+														$zebra = (((int)$cnt/4)%2==1?"row-striped":"");
+														?>
+														<div class="col-md-3">
+															<label  class="checkbox">
+																<input type="checkbox" name="testcategories[]" value="{{ $value->id}}"
+																		{{ in_array($value->id, $user_testcategories->lists('test_category_id'))?"checked":"" }}/>
+																{{$value->name }}
+															</label>
+														</div>
+														{{ ($cnt%4==0)?"</div>":"" }}
+													@endforeach
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+
+										@if(Auth::id() != $user->id && Entrust::hasRole(Role::getAdminRole()->name))
+											<!-- For the administrator to reset other users' passwords -->
+											<div class="form-group">
+												<label for="reset-password"><a class="reset-password"
+																			   href="javascript:void(0)">{{trans('messages.reset-password')}}
+												</label></a>
+												{{ Form::password('reset-password',
+                                                    ['class' => 'form-control reset-password hidden']) }}
+											</div>
+										@endif
+										<div class="form-group actions-row">
+											{{ Form::button('<span class="glyphicon glyphicon-save"></span> '.
+                                                trans('messages.update'),
+                                                ['class' => 'btn btn-primary', 'onclick' => 'submit()']) }}
+										</div>
+									</div>
 					            </div>
 								{{ Form::close() }}
 				            </div>
@@ -125,11 +158,14 @@
 									<span class="new-pwdrepeat-empty hidden" >{{trans('messages.field-required')}}</span>
 									<span class="new-pwdmatch-error hidden" >{{trans('messages.password-mismatch')}}</span>
 								</div>
+
 								<div class="form-group actions-row">
 									<a class="btn btn-primary update-reset-password" href="javascript:void(0);">
 										<span class="glyphicon glyphicon-save"></span>{{trans('messages.update')}}
 									</a>
 								</div>
+
+
 								{{ Form::close() }}
 							</div>
 			            </div>
