@@ -32,7 +32,7 @@
 						</div>
 					</div>
 					<div class="col-md-6">
-						<img class="img-responsive img-thumbnail user-image" src="{{ $user->image }}" 
+						<img class="img-responsive img-thumbnail user-image" src="../../../public{{ $user->image }}" 
 							alt="{{trans('messages.image-alternative')}}"></img>
 					</div>
 				</div>

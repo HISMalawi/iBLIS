@@ -77,100 +77,43 @@ class TestDataSeeder extends DatabaseSeeder
 		//++++++++ Haemophilus ++++++++++++++++
 		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $amoxicillin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ampicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ceftriaxone->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ceftriaxon->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $chloramphenicol->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ciprofloxacin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $tetracyline->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $trimethoprim->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $clindamycin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $erythromycin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $gentamicin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $penicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $oxacillin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $tetracycline->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ceftazidime->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $piperacillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $piperacillin_tazobactam->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $ceftriaxon->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $haemophilus->id, "drug_id" => $cefotaxim->id));
 
 		//++++++++ Staphylococci ++++++++++++++
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $amoxicillin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ampicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ceftriaxone->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $chloramphenicol->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ciprofloxacin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $tetracyline->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $trimethoprim->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $clindamycin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $erythromycin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $gentamicin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $penicillin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $oxacillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $tetracycline->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ceftazidime->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $piperacillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $piperacillin_tazobactam->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $ceftriaxon->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $staphylococci->id, "drug_id" => $cefotaxim->id));
 
 		//++++++++ Streptococcus ++++++++++++++
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $amoxicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ampicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ceftriaxone->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $chloramphenicol->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ciprofloxacin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $tetracyline->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $trimethoprim->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $clindamycin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $erythromycin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $gentamicin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $penicillin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $oxacillin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $tetracycline->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ceftazidime->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $piperacillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $piperacillin_tazobactam->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $ceftriaxon->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $streptococcus->id, "drug_id" => $cefotaxim->id));
 
 		//++++++++ Pseudomonas   ++++++++++++++
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $amoxicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ampicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ceftriaxone->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $chloramphenicol->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ciprofloxacin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $tetracyline->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $trimethoprim->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $clindamycin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $erythromycin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $gentamicin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $penicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $oxacillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $tetracycline->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ceftazidime->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $piperacillin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ciprofloxacin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $gentamicin->id));
+		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ceftazidime->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $piperacillin_tazobactam->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $ceftriaxon->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $pseudomonas->id, "drug_id" => $cefotaxim->id));
 
 		//++++++++ Neisseria     ++++++++++++++
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $amoxicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ampicillin->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ceftriaxone->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $chloramphenicol->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ciprofloxacin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $tetracyline->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $trimethoprim->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $clindamycin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $erythromycin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $gentamicin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $penicillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $oxacillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $tetracycline->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ceftazidime->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $piperacillin->id));
-		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $piperacillin_tazobactam->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $ceftriaxon->id));
 		DB::table('organism_drugs')->insert(array("organism_id" => $neisseria->id, "drug_id" => $cefotaxim->id));
 
