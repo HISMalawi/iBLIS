@@ -188,6 +188,7 @@ class CreatekBLIStables extends Migration {
 			$table->bigIncrements('id');
 			$table->integer('patient_id')->unsigned();
             $table->string('visit_type', 12)->default('Out-patient'); //'OUT-PATIENT' | 'IN-PATIENT'
+            $table->string('ward_or_location', 12);
             $table->integer('visit_number')->unsigned()->nullable(); //External
 
             $table->index('visit_number');

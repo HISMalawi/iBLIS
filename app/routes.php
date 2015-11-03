@@ -93,6 +93,18 @@ Route::group(array("before" => "auth"), function()
             "as"   => "testtype.delete",
             "uses" => "TestTypeController@delete"
         ));
+
+        Route::resource('visittype', 'VisitTypeController');
+        Route::get("/visittype/{id}/delete", array(
+            "as"   => "visittype.delete",
+            "uses" => "VisitTypeController@delete"
+        ));
+
+        Route::any("/visittype/getWards", array(
+            "as"   => "visittype.getwards",
+            "uses" => "VisitTypeController@store"
+        ));
+
         Route::resource('specimenrejection', 'SpecimenRejectionController');
         Route::any("/specimenrejection/{id}/delete", array(
             "as"   => "specimenrejection.delete",

@@ -11,6 +11,7 @@
 		case 'reportconfig':
 		case 'facility':
 		case 'facilityward':
+		case 'visittype':
 		$active[3] = "active"; break;
 		case 'testcategory': 
 		case 'testtype': 
@@ -101,6 +102,16 @@
 							<a href="{{ URL::route("facilityward.index") }}">
 								<span class="glyphicon glyphicon-tag"></span>
 								{{Lang::choice('messages.wards',2)}}
+							</a>
+						</div>
+					</li>
+				</ul>
+				<ul class="sub-menu-items">
+					<li>
+						<div>
+							<a href="{{ URL::route("visittype.index") }}">
+								<span class="glyphicon glyphicon-tag"></span>
+								{{Lang::choice('messages.visit-types',2)}}
 							</a>
 						</div>
 					</li>

@@ -492,6 +492,15 @@ return array(
     'successfully-updated-ward' => 'Ward was successfully updated!',
     'successfully-deleted-ward' => 'Ward was successfully deleted!',
 
+    'visit-types' => 'Visit Types',
+    'select-wards' => 'Select wards',
+    'add-visit-type' => 'New visit type',
+    'edit-visit-type' => 'Edit visit type',
+    'list-visit-types' => 'List of visit types',
+    'successfully-added-visit-type' => 'Visit type was successfully added!',
+    'successfully-deleted-visit-type' => 'Visit type was successfully deleted!',
+    'successfully-updated-visit-type' => 'Visit type was successfully updated!',
+    'failure-visit-type-in-use' => 'Failed to delete visit type: Visit type in use!',
     /*
     *   Instrumentation
     */
@@ -536,7 +545,7 @@ return array(
      */
 
     'facility' => 'Facility|Facilities',
-    'ward' => 'Ward|Wards',
+    'ward' => 'Requesting Ward/Location',
     'inventory' => 'Inventory',
     'inventory-list' => 'Inventory List',
     'new-inventory' => 'New Inventory',

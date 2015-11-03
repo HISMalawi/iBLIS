@@ -756,4 +756,11 @@ $(function(){
 	}
 	/*End toggle susceptibility*/
 
-	/*Get valid lab sections to populate select tag on login page*/
+	/*Get valid wards/locations to populate select tag on test ordering page*/
+	function loadWards($visit_type){
+		$.getJSON('/visittype/getWards', { visittype: $visit_type, action: 'results'},
+			function(data){
+				console.log(data);
+			}
+		);
+	}

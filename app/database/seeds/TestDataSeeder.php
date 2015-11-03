@@ -533,6 +533,19 @@ class TestDataSeeder extends DatabaseSeeder
                 "description" => "milligram"
             )
         );
+
+        VisitType::create(
+            array(
+                "name" => "Out Patient"
+            )
+        );
+
+        VisitType::create(
+            array(
+                "name" => "In Patient"
+            )
+        );
+
         $this->command->info('Metrics table seeded');
 
         //Seed for commodities
