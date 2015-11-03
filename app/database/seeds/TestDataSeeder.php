@@ -17,7 +17,6 @@ class TestDataSeeder extends DatabaseSeeder
             $users[] = User::create($user);
         }
         $this->command->info('users seeded');
-        
 
 
         /* Test Categories table - These map on to the lab sections */
@@ -25,7 +24,23 @@ class TestDataSeeder extends DatabaseSeeder
         $lab_section_microbiology = TestCategory::create(array("name" => "MICROBIOLOGY","description" => ""));
 
         $this->command->info('test_categories seeded');
+
+        /* Test Categories table - These map on to the lab sections */
+        $lab_section_hematology = TestCategory::create(array("name" => "HEMATOLOGY","description" => ""));
+        $lab_section_serology = TestCategory::create(array("name" => "SEROLOGY","description" => ""));
+        $lab_section_trans = TestCategory::create(array("name" => "BLOOD TRANSFUSION","description" => ""));
+        $this->command->info('Lab Sections seeded');
         
+        /* User Test Category Table */
+        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$test_categories->id));
+        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_microbiology->id));
+        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_hematology->id));
+        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_serology->id));
+        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_trans->id));
+
+        $this->command->info("User Test Category seeded.");
+
+        // ++++++++++++++++++++++++++++++        
         
         /* Measure Types */
         $measureTypes = array(
@@ -497,11 +512,7 @@ class TestDataSeeder extends DatabaseSeeder
 
 
         //  Begin seed for prevalence rates report
-        /* Test Categories table - These map on to the lab sections */
-        $lab_section_hematology = TestCategory::create(array("name" => "HEMATOLOGY","description" => ""));
-        $lab_section_serology = TestCategory::create(array("name" => "SEROLOGY","description" => ""));
-        $lab_section_trans = TestCategory::create(array("name" => "BLOOD TRANSFUSION","description" => ""));
-        $this->command->info('Lab Sections seeded');
+
 
         //Seed for suppliers
         $supplier = Supplier::create(
