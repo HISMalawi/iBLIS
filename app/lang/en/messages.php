@@ -478,12 +478,19 @@ return array(
      *   Configurations
      */
     'add-facility' => 'Add a facility',
+    'add-ward' => 'Add a ward/location',
     'edit-facility' => 'Edit facility',
+    'edit-ward' => 'Edit ward/location',
     'lab-configuration' => 'Lab Configuration',
     'list-facilities' => 'List of facilities',
+    'wards' => 'Wards/locations',
+    'list-wards' => 'List of Wards/locations',
+    'list-ward' => 'List of wards/locations',
     'new-disease' => 'New Disease',
     'successfully-updated-facility' => 'Facility was successfully updated!',
     'successfully-deleted-facility' => 'Facility was successfully deleted!',
+    'successfully-updated-ward' => 'Ward was successfully updated!',
+    'successfully-deleted-ward' => 'Ward was successfully deleted!',
 
     /*
     *   Instrumentation
@@ -529,6 +536,7 @@ return array(
      */
 
     'facility' => 'Facility|Facilities',
+    'ward' => 'Ward|Wards',
     'inventory' => 'Inventory',
     'inventory-list' => 'Inventory List',
     'new-inventory' => 'New Inventory',

@@ -243,6 +243,13 @@ Route::group(array("before" => "auth"), function()
             "as"   => "facility.delete",
             "uses" => "FacilityController@delete"
         ));
+
+        Route::resource("facilityward", "FacilityWardController");
+        Route::get("/facilityward/{id}/delete", array(
+            "as"   => "ward.delete",
+            "uses" => "FacilityWardController@delete"
+        ));
+
         Route::any("/reportconfig/surveillance", array(
             "as"   => "reportconfig.surveillance",
             "uses" => "ReportController@surveillanceConfig"

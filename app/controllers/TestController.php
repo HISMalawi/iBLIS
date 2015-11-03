@@ -101,12 +101,30 @@ class TestController extends \BaseController {
 			$patientID = Input::get('patient_id');
 		}
 
-		$testTypes = TestType::where('orderable_test', 1)-> orderBy('name', 'asc')->get();
+		if($patientID == 0){
+			$patientID = Session::get('patient_id');
+		}else{
+			Session::set('patient_id', $patientID);
+		}
+
+		$location = TestCategory::where("id", '=', Session::get('location_id'))->first();
+
+		if (str_is('*RECEPTION*', strtoupper($location))){
+			$testTypes = TestType::where('orderable_test', 1)
+				->orderBy('name', 'asc')->get();
+		}else {
+			$testTypes = TestType::where('orderable_test', 1)
+				->where("test_category_id", '=', Session::get('location_id'))
+				->orderBy('name', 'asc')->get();
+		}
+
+		$visit_types = FacilityWard::lists("name", "id");
 		$patient = Patient::find($patientID);
 
 		//Load Test Create View
 		return View::make('test.create')
 					->with('testtypes', $testTypes)
+					->with('visittypes', $visit_types)
 					->with('patient', $patient);
 	}
 
