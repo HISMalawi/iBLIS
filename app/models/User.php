@@ -209,4 +209,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $tests->get();
 	}
 
+	public function getLabSections(){
+
+		//return DB::table("user_testcategory")->where("user_id", "=", $this->id)->get();
+		return $this->belongsToMany('TestCategory', 'user_testcategory');
+	}
+
 }

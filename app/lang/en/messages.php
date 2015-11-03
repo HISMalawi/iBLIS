@@ -74,6 +74,8 @@ return array(
     'failure-creating-user' => 'Failed to create user.',
     'incorrect-current-passord' => 'Incorrect \''.trans('validation.attributes.current_password').'\' Entered',
     'invalid-login' => 'Username and/or password invalid.',
+    'invalid-location' => 'User cannot access specified location',
+    'empty-location' => 'Lab section is required',
     'new-password' => 'New Password',
     'new-user' => 'New User',
     'password-mismatch' => 'Passwords do not match',
@@ -212,6 +214,7 @@ return array(
     'test-category' => 'Lab Section|Lab Sections',
     'test-category-details' => 'Lab Section Details',
     'list-test-categories' => 'List Lab Sections',
+    'test-category-login' => 'Select Laboratory Section',
 
     /* Test Types*/
 

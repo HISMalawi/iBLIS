@@ -424,7 +424,7 @@ class Test extends Eloquent
 	* @param String $dateTo
 	* @return Collection 
 	*/
-	public static function search($searchString = '', $testStatusId = 0, $dateFrom = NULL, $dateTo = NULL)
+	public static function search($searchString = '', $testStatusId = 0, $dateFrom = NULL, $dateTo = NULL, $location_id=NULL)
 	{
 
 		$tests = Test::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
@@ -463,6 +463,15 @@ class Test extends Eloquent
 				});
 			});
 		});
+
+		if ($location_id){
+			$tests = $tests->whereHas('testType',  function($q) use ($location_id)
+			{
+				$q->where(function($q) use ($location_id){
+					$q->where('test_category_id', '=', $location_id );//Filter by lab section
+				});
+			});
+		}
 
 		if ($testStatusId > 0) {
 			$tests = $tests->where(function($q) use ($testStatusId)

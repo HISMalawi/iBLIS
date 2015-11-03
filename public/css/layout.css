@@ -210,37 +210,57 @@ label, input {
         display: none;
         background-color: #313131;
         border: 1px solid #CCCCCC;
-        width: 190px;
+        width: 200px;
         top: 52px;
         position: absolute;
-        right: 5px;
+        right: 0%;
         z-index: 2;
     }
-        .user-settings div{
-            background-color: #FFFFFF;
-            border-bottom: 1px solid #CCCCCC;
-            position: relative;
-            height: 40px;
+
+    .loc-settings {
+        display: none;
+        background-color: #313131;
+        border: 1px solid #CCCCCC;
+        width: 200px;
+        top: 52px;
+        position: absolute;
+        right: 6%;
+        z-index: 2;
+    }
+
+    .lab-section-banner{
+        background: rgb(0,0,0);
+    }
+
+    .lab-section-change{
+        padding-left: 10px;
+    }
+
+    .user-settings div, .loc-settings div{
+        background-color: #FFFFFF;
+        border-bottom: 1px solid #CCCCCC;
+        position: relative;
+        height: 40px;
+    }
+    .user-settings > div:hover, .loc-settings > div:hover{
+        background-color: #F1F1F1;
+        cursor: pointer;
+    }
+        .user-settings div a, .loc-settings div a{
+            line-height: 35px;
+            padding-left: 35px;
+            color: #333333;
+            display: inline-block;
+            width: 100%;
         }
-        .user-settings > div:hover{
-            background-color: #F1F1F1;
-            cursor: pointer;
+        .user-settings div a:hover, .loc-settings div a:hover{
+            text-decoration: none;
         }
-            .user-settings div a{
-                line-height: 35px;
-                padding-left: 35px;
-                color: #333333;
-                display: inline-block;
-                width: 100%;
-            }
-            .user-settings div a:hover{
-                text-decoration: none;
-            }
-            .user-settings div span{
-                position: absolute;
-                left: 5px;
-                top: 11px;
-            }
+        .user-settings div span, .loc-settings div span{
+            position: absolute;
+            left: 5px;
+            top: 11px;
+        }
 /*
  *
  *

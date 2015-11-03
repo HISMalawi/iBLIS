@@ -8,10 +8,20 @@ $(function(){
 	 */
 	$('.user-link').click(function(){
 		$('.user-settings').toggle();
+		$('.loc-settings').hide();
 	});
 
 	$('.user-profile .user-settings a').click(function(){
 		$('.user-settings').toggle();
+	});
+
+	$('.loc-link').click(function(){
+		$('.loc-settings').toggle();
+		$('.user-settings').hide();
+	});
+
+	$('.loc-profile .loc-settings a').click(function(){
+		$('.loc-settings').toggle();
 	});
 
 	/*	LEFT SIDEBAR FUNCTIONS	*/
@@ -745,3 +755,5 @@ $(function(){
 		$('#drugSusceptibilityForm_'+id).toggle(this.checked);
 	}
 	/*End toggle susceptibility*/
+
+	/*Get valid lab sections to populate select tag on login page*/

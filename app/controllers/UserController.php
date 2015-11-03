@@ -15,32 +15,59 @@ class UserController extends Controller {
         {
             $validator = Validator::make(Input::all(), array(
                 "username" => "required|min:4",
-                "password" => "required|min:6"
+                "password" => "required|min:6",
+                "lab_section" => "required"
             ));
 
-            if ($validator->passes())
-            {
-                $credentials = array(
-                    "username" => Input::get("username"),
-                    "password" => Input::get("password")
-                    );
+            $username = Input::get("username");
+            $test_category_id = Input::get("lab_section");
 
-                if(Auth::attempt($credentials)){
-                    return Redirect::route("user.home");
+            $message = trans('messages.invalid-login');
+
+
+                if ($validator->passes()) {
+                    $credentials = array(
+                        "username" => Input::get("username"),
+                        "password" => Input::get("password")
+                    );
+                    if (Input::get("lab_section")) {
+
+                        $lab_sections = DB::select("SELECT * FROM user_testcategory cc
+                                INNER JOIN users u ON cc.user_id = u.id
+                                WHERE u.username = '$username' AND cc.test_category_id = $test_category_id");
+
+                        if (COUNT($lab_sections) > 0) {
+                            if (Auth::attempt($credentials)) {
+                                Session::set("location_id", Input::get("lab_section"));
+                                return Redirect::route("user.home");
+                            }
+                        }else{
+                            $message = trans('messages.invalid-location');
+                        }
+                    }else{
+                        $message = trans('messages.empty-location');
+                    }
+
                 }
 
-            }
+
             return Redirect::route('user.login')->withInput(Input::except('password'))
                 ->withErrors($validator)
-                ->with('message', trans('messages.invalid-login'));
+                ->with('message', $message);
         }
-
-        return View::make("user.login");
+        $test_categories = TestCategory::lists("name", "id");
+        return View::make("user.login")->with('test_categories', $test_categories);
     }
 
     public function logoutAction(){
         Auth::logout();
+        Session::forget("location_id");
         return Redirect::route("user.login");
+    }
+
+    public function change_location($id){
+        Session::set("location_id", $id);
+        return Redirect::back();
     }
 
     public function homeAction(){
@@ -70,7 +97,8 @@ class UserController extends Controller {
     public function create()
     {
         //Create User
-        return View::make('user.create');
+        $testcategories = TestCategory::orderBy('name', 'ASC')->get();
+        return View::make('user.create')->with('testcategories', $testcategories);
     }
 
     /**
@@ -119,6 +147,21 @@ class UserController extends Controller {
                 } catch (Exception $e) {}
             }
 
+            $user_testcategories = Input::get("testcategories");
+
+            if ($user_testcategories) {
+                foreach ($user_testcategories AS $value) {
+
+                    $user_testcategory = array(
+                        'user_id' => $id,
+                        'test_category_id' => $value
+                    );
+
+                    DB::table('user_testcategory')->insert($user_testcategory);
+
+                }
+            }
+
             try{
                 $user->save();
                 return Redirect::route('user.index')->with('message', trans('messages.success-creating-user'));
@@ -158,8 +201,15 @@ class UserController extends Controller {
         //Get the user
         $user = User::find($id);
 
+        $specimentypes = SpecimenType::orderBy('name')->get();
+        $testcategories = TestCategory::orderBy('name', 'ASC')->get();
+        $user_testcategories = $user->getLabSections();
+
         //Open the Edit View and pass to it the $user
-        return View::make('user.edit')->with('user', $user);
+        return View::make('user.edit')->with('user', $user)
+                        ->with('specimentypes', $specimentypes)
+                        ->with('testcategories', $testcategories)
+                        ->with('user_testcategories', $user_testcategories);
     }
 
     /**
@@ -216,6 +266,25 @@ class UserController extends Controller {
             }
 
             $user->save();
+
+            //update user lab sections
+
+            DB::table('user_testcategory')->where('user_id', '=', $id)->delete();
+
+            $user_testcategories = Input::get("testcategories");
+
+            if ($user_testcategories) {
+                foreach ($user_testcategories AS $value) {
+
+                    $user_testcategory = array(
+                        'user_id' => $id,
+                        'test_category_id' => $value
+                    );
+
+                    DB::table('user_testcategory')->insert($user_testcategory);
+
+                }
+            }
 
             // redirect
             $url = Session::get('SOURCE_URL');
@@ -292,5 +361,10 @@ class UserController extends Controller {
         $url = Session::get('SOURCE_URL');
             
         return Redirect::to($url)->with('message', trans('messages.success-deleting-user'));
+    }
+
+    public function labsections(){
+
+        $user = $me;
     }
 }

@@ -95,7 +95,8 @@
                 </thead>
                 <tbody>
                 @foreach($testSet as $key => $test)
-                    <tr 
+                    <tr
+                        {{$test = Test::find($test->id)}}
                         @if(Session::has('activeTest'))
                             {{ in_array($test->id, Session::get('activeTest'))?"class='info'":""}}
                         @endif

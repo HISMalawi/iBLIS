@@ -27,7 +27,7 @@ Route::group(array("before" => "guest"), function()
         "as" => "user.login",
         "uses" => "UserController@loginAction"
     ));
-    
+
 });
 /* Routes accessible AFTER logging in */
 Route::group(array("before" => "auth"), function()
@@ -47,6 +47,10 @@ Route::group(array("before" => "auth"), function()
     Route::any("/logout", array(
         "as"   => "user.logout",
         "uses" => "UserController@logoutAction"
+    ));
+    Route::any('/user/change_location/{id}', array(
+        "as" => "user.change_location",
+        "uses" => "UserController@change_location"
     ));
     Route::any('/user/{id}/updateown', array(
         "as" => "user.updateOwnPassword",
