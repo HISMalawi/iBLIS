@@ -9,8 +9,9 @@
 		case 'labconfig': 
 		case 'instrument':
 		case 'reportconfig':
-		case 'facility': 
-			$active[3] = "active"; break;
+		case 'facility':
+		case 'facilitywards':
+		$active[3] = "active"; break;
 		case 'testcategory': 
 		case 'testtype': 
 		case 'measure': 
@@ -90,6 +91,16 @@
 							<a href="{{ URL::route("facility.index") }}">
 								<span class="glyphicon glyphicon-tag"></span>
 									{{Lang::choice('messages.facility',2)}}
+							</a>
+						</div>
+					</li>
+				</ul>
+				<ul class="sub-menu-items">
+					<li>
+						<div>
+							<a href="{{ URL::route("facilityward.index") }}">
+								<span class="glyphicon glyphicon-tag"></span>
+								{{Lang::choice('messages.wards',2)}}
 							</a>
 						</div>
 					</li>
