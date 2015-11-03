@@ -96,7 +96,7 @@
 								                </div>
 								                <div class="form-group">
 								                	<img class="img-responsive img-thumbnail user-image"
-								                		src="{{ $user->image }}" 
+								                		src="../../../../public{{ $user->image }}" 
 								                		alt="{{trans('messages.image-alternative')}}"></img>
 								                </div>
 											</div>
