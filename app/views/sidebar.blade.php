@@ -10,7 +10,7 @@
 		case 'instrument':
 		case 'reportconfig':
 		case 'facility':
-		case 'facilitywards':
+		case 'facilityward':
 		$active[3] = "active"; break;
 		case 'testcategory': 
 		case 'testtype': 
