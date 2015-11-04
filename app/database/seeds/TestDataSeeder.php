@@ -41,7 +41,19 @@ class TestDataSeeder extends DatabaseSeeder
         $this->command->info("User Test Category seeded.");
 
         // ++++++++++++++++++++++++++++++  
+        /* Test Phase table */
 
+        $test_phases = array(
+          array("id" => "1", "name" => "Pre-Analytical"),
+          array("id" => "2", "name" => "Analytical"),
+          array("id" => "3", "name" => "Post-Analytical")
+        );
+        foreach ($test_phases as $test_phase)
+        {
+            TestPhase::create($test_phase);
+        }
+        $this->command->info('test_phases seeded');
+        
         /* Test Status table */
         $test_statuses = array(
           array("id" => "1","name" => "not-received","test_phase_id" => "1"),//Pre-Analytical
