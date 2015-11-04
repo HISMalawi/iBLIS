@@ -30,7 +30,7 @@
 			</thead>
 			<tbody>
 			@foreach($wards as $ward)
-				<tr @if(Session::has('activefacility'))
+				<tr @if(Session::has('activeward'))
                             {{(Session::get('activeward') == $ward->id)?"class='info'":""}}
                         @endif
                     >

@@ -13,7 +13,7 @@ class CreateWardsTable extends Migration {
 	public function up()
 	{
 		//
-				Schema::create('wards', function ($table) {
+			Schema::create('wards', function ($table) {
 						$table->increments('id')->unsigned();
             $table->string('name');
 

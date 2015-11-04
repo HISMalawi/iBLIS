@@ -118,7 +118,7 @@ class TestController extends \BaseController {
 				->orderBy('name', 'asc')->get();
 		}
 
-		$visit_types = FacilityWard::lists("name", "id");
+		$visit_types = VisitType::lists("name", "id");
 		$patient = Patient::find($patientID);
 
 		//Load Test Create View

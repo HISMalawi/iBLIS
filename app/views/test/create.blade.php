@@ -52,9 +52,15 @@
 							<div class="form-group">
 								{{ Form::hidden('patient_id', $patient->id) }}
 								{{ Form::label('visit_type', trans("messages.visit-type")) }}
-								{{ Form::select('visit_type', [' ' => '--- Select visit type ---','0' => trans("messages.out-patient"),'1' => trans("messages.in-patient")], null,
+								{{ Form::select('visit_type', [' ' => '--- Select visit type ---'] + $visittypes, null,
+									 array('class' => 'form-control', 'onchange' => 'loadWards(this.value)')) }}
+							</div>
+							<div class="form-group">
+								{{ Form::label('ward', trans("messages.ward")) }}
+								{{ Form::select('ward', [], null,
 									 array('class' => 'form-control')) }}
 							</div>
+
 							<div class="form-group">
 								{{ Form::label('physician', trans("messages.physician")) }}
 								{{Form::text('physician', Input::old('physician'), array('class' => 'form-control'))}}
