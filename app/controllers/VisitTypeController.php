@@ -41,22 +41,34 @@ class VisitTypeController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store()
-	{
+	public static function getWards(){
 
-		$action = Input::get('action');
+		$visit_type = Input::get('visittype');
 
-		if ($action == "results") {
+		try{
+			$wards = DB::select("select name from wards where id IN
+							(SELECT ward_id FROM visittype_wards WHERE visit_type_id = $visit_type)");
 
-			$visit_type = Input::get('visittype');
-
-			$wards = FacilityWard::where('id', 'IN',
-				VisitTypeWard::where('visit_type_id', '=', $visit_type).lists('id')
-			);
-
-			return json_encode($wards);
+		}catch(QueryException $e){
+			$wards = [];
 		}
 
+		$addfacilities = false;
+		foreach($wards AS $ward){
+			if ($ward->name == 'Facilities'){
+				$addfacilities = true;
+			}
+		}
+
+		if ($addfacilities){
+			$facilities = DB::select("SELECT name FROM facilities");
+			$wards = array_merge($wards, $facilities);
+		}
+		return json_encode($wards);
+	}
+
+	public function store()
+	{
 		$rules = array(
 			'name' => 'required|unique:visit_types,name'
 		);
@@ -154,12 +166,14 @@ class VisitTypeController extends \BaseController {
 
 				VisitTypeWard::where('visit_type_id', '=', $visittype->id)->delete();
 
-				foreach ($wards AS $id => $v) {
-					$v_type_ward = array(
-						'visit_type_id' => $visittype->id,
-						'ward_id' => $v
-					);
-					DB::table('visittype_wards')->insert($v_type_ward);
+				if (count($wards) > 0) {
+					foreach ($wards AS $id => $v) {
+						$v_type_ward = array(
+							'visit_type_id' => $visittype->id,
+							'ward_id' => $v
+						);
+						DB::table('visittype_wards')->insert($v_type_ward);
+					}
 				}
 			}catch(QueryException $e){
 				Log::error($e);

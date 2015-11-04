@@ -124,10 +124,16 @@ class FacilityWardController extends \BaseController {
 		//Deleting the Item
 		$ward = FacilityWard::find($id);
 
-		//Soft delete
-		$ward->delete();
+		//VisitTypeWard::where('ward_id', '=', $id)->delete();
+		$inUseByvisits = VisitTypeWard::where('ward_id', '=', $id)->first();
+		if (empty($inUseByvisits)) {
+			$ward->delete();
+		} else {
+			// The ward is in use
+			return Redirect::route('facilityward.index')
+				->with('message', trans('messages.failure-ward-in-use'));
+		}
 
-		// redirect
 		$url = Session::get('SOURCE_URL');
 
 		return Redirect::to($url)
