@@ -257,7 +257,7 @@
                                         {{trans('messages.edit')}}
                                     </a>
                                 @endif
-                                @if(Auth::user()->can('verify_test_results') && Auth::user()->id != $test->tested_by)
+                                @if(Auth::user()->can('verify_test_results') && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
                                     <a class="btn btn-sm btn-success" id="verify-{{$test->id}}-link"
                                         href="{{ URL::route('test.viewDetails', array($test->id)) }}"
                                         title="{{trans('messages.verify-title')}}">

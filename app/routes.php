@@ -43,7 +43,10 @@ Route::group(array("before" => "auth"), function()
             "uses" => "UserController@delete"
         ));
     });
-    
+    Route::get("/visittype/getWards", array(
+        "as"   => "visittype.getwards",
+        "uses" => "VisitTypeController@getWards"
+    ));
     Route::any("/logout", array(
         "as"   => "user.logout",
         "uses" => "UserController@logoutAction"
@@ -98,11 +101,6 @@ Route::group(array("before" => "auth"), function()
         Route::get("/visittype/{id}/delete", array(
             "as"   => "visittype.delete",
             "uses" => "VisitTypeController@delete"
-        ));
-
-        Route::any("/visittype/getWards", array(
-            "as"   => "visittype.getwards",
-            "uses" => "VisitTypeController@store"
         ));
 
         Route::resource('specimenrejection', 'SpecimenRejectionController');

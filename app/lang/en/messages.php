@@ -501,6 +501,7 @@ return array(
     'successfully-deleted-visit-type' => 'Visit type was successfully deleted!',
     'successfully-updated-visit-type' => 'Visit type was successfully updated!',
     'failure-visit-type-in-use' => 'Failed to delete visit type: Visit type in use!',
+    'failure-ward-in-use' => 'Failed to delete ward: Ward in use!',
     /*
     *   Instrumentation
     */

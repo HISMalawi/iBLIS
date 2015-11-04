@@ -53,7 +53,7 @@
 								{{ Form::hidden('patient_id', $patient->id) }}
 								{{ Form::label('visit_type', trans("messages.visit-type")) }}
 								{{ Form::select('visit_type', [' ' => '--- Select visit type ---'] + $visittypes, null,
-									 array('class' => 'form-control', 'onchange' => 'loadWards(this.value)')) }}
+									 array('class' => 'form-control', 'onchange' => 'loadWards(this.value, this.outHTML)')) }}
 							</div>
 							<div class="form-group">
 								{{ Form::label('ward', trans("messages.ward")) }}

@@ -575,7 +575,11 @@ $(function(){
 
 	function UIComponents(){
 		/* Datepicker */
-		$( '.standard-datepicker').datepicker({ dateFormat: "yy-mm-dd" });
+		$( '.standard-datepicker').datepicker({
+			dateFormat: "yy-mm-dd",
+			changeMonth: true,
+			changeYear: true
+		});
 	}
 
 	function editUserProfile()
@@ -758,9 +762,27 @@ $(function(){
 
 	/*Get valid wards/locations to populate select tag on test ordering page*/
 	function loadWards($visit_type){
-		$.getJSON('/visittype/getWards', { visittype: $visit_type, action: 'results'},
+
+		$.getJSON('/visittype/getWards', { visittype: $visit_type},
 			function(data){
-				console.log(data);
+
+				$("#ward").empty();
+				var option = document.createElement("option");
+				option.setAttribute('value', ' ');
+				option.innerHTML = "--- Select ward/location ---";
+				$("#ward").append(option);
+
+				for (var i = 0; i < data.length; i++){
+
+					if (data[i]['name'].match(/facilities/i)){
+						continue;
+					}
+
+					var option = document.createElement("option");
+					option.setAttribute('value', data[i]['name']);
+					option.innerHTML = data[i]['name'];
+					$("#ward").append(option);
+				}
 			}
 		);
 	}
