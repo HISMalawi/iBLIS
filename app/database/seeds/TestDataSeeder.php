@@ -495,7 +495,7 @@ class TestDataSeeder extends DatabaseSeeder
 
             $user1 = User::find(1);
             $role1 = Role::find(1);
-            $permissions = Permission::all(); // originally [$permissions = Permission::find(1);]
+            $permissions = Permission::all(); // originally before checks[$permissions = Permission::find(1);]
             if ($permissions) {
                 # code...
                 //Assign all permissions to role administrator
