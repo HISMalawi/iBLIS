@@ -100,7 +100,10 @@ class TestDataSeeder extends DatabaseSeeder
 	        $this->command->info('test_statuses seeded');
         }
   
-        
+        $wards = array("name" => "Facilities");
+
+        FacilityWard::create($wards);
+
         /* Measure Types */
         $measureTypes = MeasureType::find(1);
         if ($measureTypes) {

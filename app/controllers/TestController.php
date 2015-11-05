@@ -182,8 +182,9 @@ class TestController extends \BaseController {
 					$testTypeID = (int)$value;
 					// Create Specimen - specimen_type_id, accepted_by, referred_from, referred_to
 					$specimen = new Specimen;
-					$specimen->specimen_type_id = TestType::find($testTypeID)->specimenTypes->lists('id')[0];
+					$specimen->specimen_type_id = Input::get('specimen_type');
 					$specimen->accepted_by = Auth::user()->id;
+					$specimen->accession_number = self::assignAccessionNumber();
 					$specimen->save();
 
 					$test = new Test;
@@ -204,6 +205,32 @@ class TestController extends \BaseController {
 			return Redirect::to($url)->with('message', 'messages.success-creating-test')
 					->with('activeTest', $activeTest);
 		}
+	}
+
+	public function assignAccessionNumber(){
+		# Generate the next accession number for specimen registration
+
+		$max_acc_num = null;
+		$return_value = null;
+		$sentinel = 999999;
+
+		$code = Config::get('kblis.facility-code');
+
+		$record = DB::select("SELECT * FROM specimens  WHERE accession_number IS NOT NULL ORDER BY id DESC LIMIT 1");
+
+		if(COUNT($record) > 0){
+			$max_acc_num = (int)filter_var($record[0]->accession_number, FILTER_SANITIZE_NUMBER_INT);
+			if ($max_acc_num < $sentinel){
+				$max_acc_num += 1;
+			}else{
+				$max_acc_num = 1;
+			}
+		}else{
+			$max_acc_num = 1;
+		}
+		$max_acc_num = str_pad($max_acc_num, 6, '0', STR_PAD_LEFT);
+		$return_value = $code.$max_acc_num;
+		return $return_value;
 	}
 
 	/**

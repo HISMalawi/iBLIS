@@ -190,8 +190,9 @@ class Test extends Eloquent
     */
     public function getSpecimenId()
     {
-    	$testCategoryName = $this->testType->testCategory->name;
-    	return substr($testCategoryName, 0 , 3).'-'.$this->specimen->id;
+    	#$testCategoryName = $this->testType->testCategory->name;
+    	#return substr($testCategoryName, 0 , 3).'-'.$this->specimen->id;
+		return $this->specimen->accession_number;
     }
 
 	/**

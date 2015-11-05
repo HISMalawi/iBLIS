@@ -230,6 +230,7 @@ class CreatekBLIStables extends Migration {
 		{
 			$table->increments('id')->unsigned();
 			$table->integer('specimen_type_id')->unsigned();
+            $table->string('accession_number');
 			$table->integer('specimen_status_id')->unsigned()->default(Specimen::NOT_COLLECTED);
             $table->integer('accepted_by')->unsigned()->default(0);
             $table->integer('rejected_by')->unsigned()->default(0);
