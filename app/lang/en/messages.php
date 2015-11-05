@@ -98,7 +98,7 @@ return array(
     'edit-patient' => 'Edit Patient',
     'edit-patient-details' => 'Edit Patient Details',
     'email-address' => 'Email Address',
-    'external-patient-number' => 'External Patient Number',
+    'external-patient-number' => 'External Patient No.',
     'list-patients' => 'List Patients',
     'new-patient' => 'New Patient',
     'patient' => 'Patient|Patients',

@@ -62,6 +62,7 @@ class PatientController extends \BaseController {
 			// store
 			$patient = new Patient;
 			$patient->patient_number = Input::get('patient_number');
+			$patient->external_patient_number = Input::get('external_patient_number');
 			$patient->name = Input::get('name');
 			$patient->gender = Input::get('gender');
 			$patient->dob = Input::get('dob');
@@ -139,6 +140,7 @@ class PatientController extends \BaseController {
 			// Update
 			$patient = Patient::find($id);
 			$patient->patient_number = Input::get('patient_number');
+			$patient->external_patient_number = Input::get('external_patient_number');
 			$patient->name = Input::get('name');
 			$patient->gender = Input::get('gender');
 			$patient->dob = Input::get('dob');
