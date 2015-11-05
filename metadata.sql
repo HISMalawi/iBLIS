@@ -543,6 +543,35 @@ LOCK TABLES `drugs` WRITE;
 INSERT INTO `drugs` VALUES (1,'Amoxicillin/Clavulanate',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(2,'Ampicillin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(3,'Ceftriaxone',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(4,'Chloramphenicol',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(5,'Ciprofloxacin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(6,'Tetracyline',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(7,'Trimethoprim/Sulfamethoxazole',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(8,'Clindamycin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(9,'Erythromycin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(10,'Gentamicin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(11,'Penicillin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(12,'Oxacillin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(13,'Tetracycline',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(14,'Ceftazidime',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(15,'Piperacillin',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(16,'Piperacillin/Tazobactam',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(17,'Ceftriaxon',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(18,'Cefotaxim',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20');
 /*!40000 ALTER TABLE `drugs` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `permission_role`
+--
+
+DROP TABLE IF EXISTS `permission_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `permission_role` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `permission_id` int(10) unsigned NOT NULL,
+  `role_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `permission_role_permission_id_foreign` (`permission_id`),
+  KEY `permission_role_role_id_foreign` (`role_id`),
+  CONSTRAINT `permission_role_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
+  CONSTRAINT `permission_role_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `permission_role`
+--
+
+LOCK TABLES `permission_role` WRITE;
+/*!40000 ALTER TABLE `permission_role` DISABLE KEYS */;
+INSERT INTO `permission_role` VALUES (1,1,1),(2,2,1),(3,3,1),(4,4,1),(5,5,1),(6,6,1),(7,7,1),(8,8,1),(9,9,1),(10,10,1),(11,11,1),(12,12,1),(13,13,1),(14,14,1),(15,15,1),(16,16,1),(17,17,1),(18,18,1),(19,19,1),(20,20,1),(21,1,1),(22,1,3),(23,2,1),(24,2,3),(25,3,1),(26,3,3),(27,4,1),(28,4,3),(29,5,1),(30,5,3),(31,6,1),(32,6,2),(33,7,1),(34,7,2),(35,8,1),(36,8,2),(37,9,1),(38,9,2),(39,10,1),(40,10,2),(41,11,1),(42,11,2),(43,12,1),(44,12,2),(45,13,1),(46,13,2),(47,14,1),(48,15,1),(49,16,1),(50,17,1),(51,17,2),(52,18,1),(53,19,1),(54,20,1),(55,1,1),(56,1,2),(57,1,3),(58,2,1),(59,2,2),(60,2,3),(61,3,1),(62,3,2),(63,3,3),(64,4,1),(65,4,3),(66,5,1),(67,5,2),(68,5,3),(69,6,1),(70,6,2),(71,7,1),(72,7,2),(73,8,1),(74,8,2),(75,9,1),(76,9,2),(77,10,1),(78,10,2),(79,11,1),(80,11,2),(81,12,1),(82,12,2),(83,13,1),(84,13,2),(85,14,1),(86,15,1),(87,16,1),(88,17,1),(89,17,2),(90,18,1),(91,19,1),(92,20,1);
+/*!40000 ALTER TABLE `permission_role` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -553,4 +582,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-05 14:55:43
+-- Dump completed on 2015-11-05 16:30:04
