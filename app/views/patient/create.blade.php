@@ -32,8 +32,12 @@
 					{{ Form::text('external_patient_number', Input::old('external_patient_number'), array('class' => 'form-control')) }}
 				</div>
 				<div class="form-group">
-					{{ Form::label('name', trans('messages.names')) }}
-					{{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
+					{{ Form::label('first_name', trans('messages.first-name')) }}
+					{{ Form::text('first_name', Input::old('name'), array('class' => 'form-control')) }}
+				</div>
+				<div class="form-group">
+					{{ Form::label('last_name', trans('messages.last-name')) }}
+					{{ Form::text('last_name', Input::old('name'), array('class' => 'form-control')) }}
 				</div>
 				<div class="form-group">
 					{{ Form::label('dob', trans('messages.date-of-birth')) }}
