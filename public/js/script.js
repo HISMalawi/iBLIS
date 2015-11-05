@@ -786,3 +786,26 @@ $(function(){
 			}
 		);
 	}
+
+	function loadTestTypes($specimen_id){
+
+		$.getJSON('/specimentype/getTestTypes', { specimentype: $specimen_id},
+			function(data){
+
+				var t = $('#testtypes').DataTable();
+				t.clear().draw();
+
+				for (var i in data){
+
+					t.row.add(
+						[
+							data[i],
+							("<input type='checkbox' name='testtypes[]' value='" + i + "' />")
+						]
+					);
+					t.draw();
+				}
+
+			}
+		);
+	}

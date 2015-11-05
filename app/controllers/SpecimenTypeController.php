@@ -164,4 +164,16 @@ class SpecimenTypeController extends \BaseController {
 			return Redirect::to($url)
 			->with('message', trans('messages.success-updating-specimen-type'));
 	}
+
+	public static function getTestTypes(){
+
+		$specimen_type = Input::get('specimentype');
+		$specimenType = SpecimenType::find($specimen_type);
+		$testTypes = [];
+		if($specimenType) {
+			$testTypes = $specimenType->testTypes->lists('name', 'id');
+		}
+
+		return json_encode($testTypes);
+	}
 }

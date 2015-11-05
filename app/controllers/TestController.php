@@ -127,12 +127,14 @@ class TestController extends \BaseController {
 
 		$visit_types = VisitType::lists("name", "id");
 		$patient = Patient::find($patientID);
+		$specimen_types = SpecimenType::all()->lists('name', 'id');
 
 		//Load Test Create View
 		return View::make('test.create')
 					->with('testtypes', $testTypes)
 					->with('visittypes', $visit_types)
-					->with('patient', $patient);
+					->with('patient', $patient)
+					->with('specimen_types', $specimen_types);
 	}
 
 	/**
@@ -145,6 +147,7 @@ class TestController extends \BaseController {
 		//Create New Test
 		$rules = array(
 			'visit_type' => 'required',
+			'ward' => 'required',
 			'physician' => 'required',
 			'testtypes' => 'required',
 		);
@@ -165,7 +168,8 @@ class TestController extends \BaseController {
 			*/
 			$visit = new Visit;
 			$visit->patient_id = Input::get('patient_id');
-			$visit->visit_type = "Out-patient";
+			$visit->visit_type = VisitType::find(Input::get('visit_type'))->name;
+			$visit->ward_or_location = Input::get('ward');
 			$visit->save();
 
 			/*

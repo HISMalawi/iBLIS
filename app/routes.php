@@ -47,6 +47,10 @@ Route::group(array("before" => "auth"), function()
         "as"   => "visittype.getwards",
         "uses" => "VisitTypeController@getWards"
     ));
+    Route::get("/specimentype/getTestTypes", array(
+        "as"   => "specimentype.testtypes",
+        "uses" => "SpecimenTypeController@getTestTypes"
+    ));
     Route::any("/logout", array(
         "as"   => "user.logout",
         "uses" => "UserController@logoutAction"
@@ -79,6 +83,7 @@ Route::group(array("before" => "auth"), function()
             "as"   => "specimentype.delete",
             "uses" => "SpecimenTypeController@delete"
         ));
+
         Route::resource('testcategory', 'TestCategoryController');
         
         Route::get("/testcategory/{id}/delete", array(

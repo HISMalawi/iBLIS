@@ -88,7 +88,7 @@
                         <th class="col-md-2">{{trans('messages.patient-name')}}</th>
                         <th class="col-md-1">{{trans('messages.specimen-id')}}</th>
                         <th>{{ Lang::choice('messages.test',1) }}</th>
-                        <th>{{trans('messages.visit-type')}}</th>
+                        <th>{{trans('messages.location')}}</th>
                         <th>{{trans('messages.test-status')}}</th>
                         <th class="col-md-3">{{trans('messages.test-status')}}</th>
                     </tr>
@@ -96,7 +96,9 @@
                 <tbody>
                 @foreach($testSet as $key => $test)
                     <tr
+
                         {{$test = Test::find($test->id)}}
+
                         @if(Session::has('activeTest'))
                             {{ in_array($test->id, Session::get('activeTest'))?"class='info'":""}}
                         @endif
@@ -114,7 +116,8 @@
                             '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
                         <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
                         <td>{{ $test->testType->name }}</td> <!--Test-->
-                        <td>{{ $test->visit->visit_type }}</td> <!--Visit Type -->
+                        <td>{{ $test->visit->ward_or_location }}</td> <!--Visit Type -->
+
                         <td id="test-status-{{$test->id}}" class='test-status'>
                             <!-- Test Statuses -->
                             <div class="container-fluid">
@@ -181,7 +184,7 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 {{trans('messages.view-details')}}
                             </a>
-                            
+
                         @if ($test->isNotReceived()) 
                             @if(Auth::user()->can('receive_external_test') && $test->isPaid())
                                 <a class="btn btn-sm btn-default receive-test" href="javascript:void(0)"
@@ -272,7 +275,7 @@
                 @endforeach
                 </tbody>
             </table>
-            
+
             {{ $testSet->links() }}
         {{ Session::put('SOURCE_URL', URL::full()) }}
         {{ Session::put('TESTS_FILTER_INPUT', Input::except('_token')); }}

@@ -53,7 +53,7 @@
 								{{ Form::hidden('patient_id', $patient->id) }}
 								{{ Form::label('visit_type', trans("messages.visit-type")) }}
 								{{ Form::select('visit_type', [' ' => '--- Select visit type ---'] + $visittypes, null,
-									 array('class' => 'form-control', 'onchange' => 'loadWards(this.value, this.outHTML)')) }}
+									 array('class' => 'form-control', 'onchange' => 'loadWards(this.value)')) }}
 							</div>
 							<div class="form-group">
 								{{ Form::label('ward', trans("messages.ward")) }}
@@ -65,11 +65,18 @@
 								{{ Form::label('physician', trans("messages.physician")) }}
 								{{Form::text('physician', Input::old('physician'), array('class' => 'form-control'))}}
 							</div>
+
+							<div class="form-group">
+								{{ Form::label('specimen_type', trans("messages.specimen-type-title")) }}
+								{{ Form::select('specimen_type', ([' ' => '--- Select specimen type ---'] + $specimen_types), null,
+									 array('class' => 'form-control',
+									 'onchange' => 'loadTestTypes(this.value)')) }}
+							</div>
 							<div class="form-group">
 								{{ Form::label('tests', trans("messages.select-tests")) }}
 								<div class="form-pane">
 
-									<table class="table table-striped table-hover table-condensed search-table">
+									<table class="table table-striped table-hover table-condensed search-table" id="testtypes">
 									<thead>
 										<tr>
 											<th>{{ Lang::choice('messages.test',2) }}</th>
@@ -78,15 +85,7 @@
 										</tr>
 									</thead>
 									<tbody>
-									@foreach($testtypes as $key => $value)
-										<tr>
-											<td>{{ $value->name }}</td>
-											<td><label  class="editor-active">
-												<input type="checkbox" name="testtypes[]" value="{{ $value->id}}" />
-												</label>
-											</td>
-										</tr>
-									@endforeach
+
 									</tbody>
 						            </table>
 				

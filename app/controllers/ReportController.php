@@ -379,7 +379,7 @@ class ReportController extends \BaseController {
 		$today = "'".date("Y-m-d")."'";
 		$year = date('Y');
 		$tests = Test::select('time_created')->distinct();
-	catch
+
 		if(strtotime($from)===strtotime($today)){
 			$tests = $tests->where('time_created', 'LIKE', $year.'%');
 		}
