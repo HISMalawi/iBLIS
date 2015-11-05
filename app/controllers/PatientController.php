@@ -49,7 +49,8 @@ class PatientController extends \BaseController {
 		//
 		$rules = array(
 			'patient_number' => 'required|unique:patients,patient_number',
-			'name'       => 'required',
+			'first_name' => 'required',
+			'last_name' => 'required',
 			'gender' => 'required',
 			'dob' => 'required'
 		);
@@ -62,7 +63,10 @@ class PatientController extends \BaseController {
 			// store
 			$patient = new Patient;
 			$patient->patient_number = Input::get('patient_number');
-			$patient->name = Input::get('name');
+			$patient->external_patient_number = Input::get('external_patient_number');
+			$first_name = Input::get('first_name');
+			$last_name = Input::get('last_name');
+			$patient->name = $first_name." ".$last_name;
 			$patient->gender = Input::get('gender');
 			$patient->dob = Input::get('dob');
 			$patient->email = Input::get('email');
@@ -124,7 +128,8 @@ class PatientController extends \BaseController {
 		//
 		$rules = array(
 			'patient_number' => 'required',
-			'name'       => 'required',
+			'first_name' => 'required',
+			'last_name' => 'required',
 			'gender' => 'required',
 			'dob' => 'required'
 		);
@@ -139,7 +144,10 @@ class PatientController extends \BaseController {
 			// Update
 			$patient = Patient::find($id);
 			$patient->patient_number = Input::get('patient_number');
-			$patient->name = Input::get('name');
+			$patient->external_patient_number = Input::get('external_patient_number');
+			$first_name = Input::get('first_name');
+			$last_name = Input::get('last_name');
+			$patient->name = $first_name." ".$last_name;
 			$patient->gender = Input::get('gender');
 			$patient->dob = Input::get('dob');
 			$patient->email = Input::get('email');
