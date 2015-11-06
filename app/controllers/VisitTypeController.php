@@ -114,9 +114,16 @@ class VisitTypeController extends \BaseController {
 	{
 		//Show a visittype
 		$visittype = VisitType::find($id);
+		$wards = DB::select("SELECT name FROM wards WHERE id IN (SELECT ward_id FROM visittype_wards WHERE visit_type_id = $id)");
+		$wards = DB::table('visittype_wards')
+			->join('wards', 'wards.id', '=', 'visittype_wards.ward_id')
+			->select('wards.*')
+			->where('visittype_wards.visit_type_id', '=', $id);
+		//dd($wards);
 
 		//Show the view and pass the $visittype to it
-		return View::make('visittype.show')->with('visittype', $visittype);
+		return View::make('visittype.show')->with('visittype', $visittype)
+			->with("wards", $wards);
 	}
 
 	/**

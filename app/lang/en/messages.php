@@ -325,6 +325,7 @@ return array(
     'patient-lab-number' => 'Lab No.',
     'visit-number' => 'Visit No.',
     'visit-type' => 'Visit Type',
+    'visit-type-details' => 'Visit Type Details',
 
     /** 
      *   Tests search panel
