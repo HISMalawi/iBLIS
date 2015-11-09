@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: iblis2
+-- Host: localhost    Database: iblis
 -- ------------------------------------------------------
 -- Server version	5.5.44-0ubuntu0.14.04.1
 
@@ -598,6 +598,62 @@ LOCK TABLES `permission_role` WRITE;
 INSERT INTO `permission_role` VALUES (1,1,1),(2,2,1),(3,3,1),(4,4,1),(5,5,1),(6,6,1),(7,7,1),(8,8,1),(9,9,1),(10,10,1),(11,11,1),(12,12,1),(13,13,1),(14,14,1),(15,15,1),(16,16,1),(17,17,1),(18,18,1),(19,19,1),(20,20,1),(21,1,1),(22,1,3),(23,2,1),(24,2,3),(25,3,1),(26,3,3),(27,4,1),(28,4,3),(29,5,1),(30,5,3),(31,6,1),(32,6,2),(33,7,1),(34,7,2),(35,8,1),(36,8,2),(37,9,1),(38,9,2),(39,10,1),(40,10,2),(41,11,1),(42,11,2),(43,12,1),(44,12,2),(45,13,1),(46,13,2),(47,14,1),(48,15,1),(49,16,1),(50,17,1),(51,17,2),(52,18,1),(53,19,1),(54,20,1),(55,1,1),(56,1,2),(57,1,3),(58,2,1),(59,2,2),(60,2,3),(61,3,1),(62,3,2),(63,3,3),(64,4,1),(65,4,3),(66,5,1),(67,5,2),(68,5,3),(69,6,1),(70,6,2),(71,7,1),(72,7,2),(73,8,1),(74,8,2),(75,9,1),(76,9,2),(77,10,1),(78,10,2),(79,11,1),(80,11,2),(81,12,1),(82,12,2),(83,13,1),(84,13,2),(85,14,1),(86,15,1),(87,16,1),(88,17,1),(89,17,2),(90,18,1),(91,19,1),(92,20,1);
 /*!40000 ALTER TABLE `permission_role` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `panel_types`
+--
+
+DROP TABLE IF EXISTS `panel_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `panel_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `panel_types`
+--
+
+LOCK TABLES `panel_types` WRITE;
+/*!40000 ALTER TABLE `panel_types` DISABLE KEYS */;
+INSERT INTO `panel_types` VALUES (1,'CSF Analysis','2015-11-08 16:58:13','2015-11-08 16:58:13',NULL);
+/*!40000 ALTER TABLE `panel_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `panels`
+--
+
+DROP TABLE IF EXISTS `panels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `panels` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `panel_type_id` int(10) unsigned NOT NULL,
+  `test_type_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `panels_panel_type_id_foreign` (`panel_type_id`),
+  KEY `panels_test_type_id_foreign` (`test_type_id`),
+  CONSTRAINT `panels_panel_type_id_foreign` FOREIGN KEY (`panel_type_id`) REFERENCES `panel_types` (`id`),
+  CONSTRAINT `panels_test_type_id_foreign` FOREIGN KEY (`test_type_id`) REFERENCES `test_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `panels`
+--
+
+LOCK TABLES `panels` WRITE;
+/*!40000 ALTER TABLE `panels` DISABLE KEYS */;
+INSERT INTO `panels` VALUES (1,1,5),(2,1,4),(3,1,7),(4,1,3),(5,1,6);
+/*!40000 ALTER TABLE `panels` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -608,4 +664,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-08  9:50:53
+-- Dump completed on 2015-11-09  9:22:53
