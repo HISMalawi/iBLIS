@@ -25,7 +25,7 @@ do
     password+="$char"
 done
 
-mysqldump -u $username -p$password iblis --tables wards visit_types visittype_wards test_types test_statuses testtype_specimentypes testtype_measures testtype_organisms test_categories specimen_types specimen_statuses roles organisms organism_drugs measures measure_types measure_ranges drugs permission_role> metadata.sql
+mysqldump -u $username -p$password iblis2 --tables facilities wards visit_types visittype_wards test_types test_statuses testtype_specimentypes testtype_measures testtype_organisms test_categories specimen_types specimen_statuses roles organisms organism_drugs measures measure_types measure_ranges drugs permission_role panel_types panels> metadata.sql
 
 clear
 

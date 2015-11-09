@@ -39,7 +39,7 @@
 				        {{$specimen->specimenType->name}}</p>
 				    <p>
 				        <strong>{{trans('messages.specimen-number-title')}}</strong>
-				        {{$specimen->id}}
+				        {{$specimen->accession_number}}
 				    </p>
 				</div>
 				<div class="form-group">

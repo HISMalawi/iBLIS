@@ -796,11 +796,18 @@ $(function(){
 				t.clear().draw();
 
 				for (var i in data){
+					var text = data[i];
+					var value = i;
+
+					if (data[i]['name']){
+						text = data[i]['name'];
+						value = data[i]['name'];
+					}
 
 					t.row.add(
 						[
-							data[i],
-							("<input type='checkbox' name='testtypes[]' value='" + i + "' />")
+							text,
+							("<input type='checkbox' name='testtypes[]' value='" + value + "' />")
 						]
 					);
 					t.draw();
@@ -808,4 +815,14 @@ $(function(){
 
 			}
 		);
+	}
+
+	function flipPanelRows(id){
+
+		$(".panel-row:not(.panel"+ id +")").hide();
+		$(".panel"+id).slideToggle(100);
+		$(".panel"+id).css({
+			'border-right' : '5px solid orange',
+			'border-left' : '2px solid #428bca'
+		})
 	}

@@ -696,5 +696,22 @@ return array(
     'baseline'  =>  'Baseline',
     'follow-up' =>  'Follow Up',
     'cd4-less'  =>  '< 500',
-    'cd4-greater'   =>  '> 500',   
+    'cd4-greater'   =>  '> 500',
+    /**
+     *
+     * Test Panels
+     *
+     **/
+    'test-panel' => 'Test Panel',
+    'test-panels' => 'Test Panels',
+    'add-test-panel' => 'Add Test Panel',
+    'test-panel-details' => 'Test Panel Details',
+    'list-test-panels' => 'List Test Panels',
+    'new-test-panel' => 'New Test Panel',
+    'failure-test-panel-in-use' => 'Failed to delete test panel! Test panel in use!',
+    'successfully-deleted-test-panel' => 'Test panel has been succesfully deleted!',
+    'create-test-panel' => 'Create Test Panel',
+    'edit-test-panel' => 'Edit Test Panel',
+    'success-updating-test-panel' => 'The test panel has been succesfully updated!',
+    'success-creating-test-panel' => 'The test panel has been succesfully created!'
 );

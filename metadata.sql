@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: iblis
+-- Host: localhost    Database: iblis2
 -- ------------------------------------------------------
 -- Server version	5.5.44-0ubuntu0.14.04.1
 
@@ -16,6 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `facilities`
+--
+
+DROP TABLE IF EXISTS `facilities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `facilities` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `facilities`
+--
+
+LOCK TABLES `facilities` WRITE;
+/*!40000 ALTER TABLE `facilities` DISABLE KEYS */;
+INSERT INTO `facilities` VALUES (1,'Bwaila Hospital','2015-11-06 07:51:09','2015-11-06 07:51:09'),(2,'Kawale Health Center','2015-11-06 07:51:23','2015-11-06 07:51:23'),(3,'Dowa District Hospital','2015-11-06 07:51:38','2015-11-06 07:51:38'),(4,'Lighthouse','2015-11-06 07:51:56','2015-11-06 07:51:56');
+/*!40000 ALTER TABLE `facilities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `wards`
 --
 
@@ -28,7 +54,7 @@ CREATE TABLE `wards` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +63,7 @@ CREATE TABLE `wards` (
 
 LOCK TABLES `wards` WRITE;
 /*!40000 ALTER TABLE `wards` DISABLE KEYS */;
-INSERT INTO `wards` VALUES (1,'Ward 7A','2015-11-03 11:36:20','2015-11-03 11:36:20'),(2,'Ward 7B','2015-11-03 12:32:37','2015-11-03 12:32:37'),(3,'Ward 4A','2015-11-03 12:32:47','2015-11-03 12:32:47'),(4,'OPD 2','2015-11-04 10:00:57','2015-11-04 10:00:57'),(5,'Facilities','2015-11-04 10:09:30','2015-11-04 10:09:30');
+INSERT INTO `wards` VALUES (1,'Ward 7A','2015-11-03 11:36:20','2015-11-03 11:36:20'),(2,'Ward 7B','2015-11-03 12:32:37','2015-11-03 12:32:37'),(3,'Ward 4A','2015-11-03 12:32:47','2015-11-03 12:32:47'),(4,'OPD 2','2015-11-04 10:00:57','2015-11-04 10:00:57'),(5,'Facilities','2015-11-04 10:09:30','2015-11-04 10:09:30'),(6,'OPD 1','2015-11-05 19:58:10','2015-11-05 19:58:10'),(7,'Ward 1A','2015-11-06 07:50:05','2015-11-06 07:50:05');
 /*!40000 ALTER TABLE `wards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,7 +109,7 @@ CREATE TABLE `visittype_wards` (
   KEY `visittype_wards_ward_id_foreign` (`ward_id`),
   CONSTRAINT `visittype_wards_visit_type_id_foreign` FOREIGN KEY (`visit_type_id`) REFERENCES `visit_types` (`id`),
   CONSTRAINT `visittype_wards_ward_id_foreign` FOREIGN KEY (`ward_id`) REFERENCES `wards` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +118,7 @@ CREATE TABLE `visittype_wards` (
 
 LOCK TABLES `visittype_wards` WRITE;
 /*!40000 ALTER TABLE `visittype_wards` DISABLE KEYS */;
-INSERT INTO `visittype_wards` VALUES (23,2,3),(24,2,1),(25,2,2),(40,15,5),(41,15,4),(43,15,2),(44,13,5),(45,13,4),(46,13,2);
+INSERT INTO `visittype_wards` VALUES (23,2,3),(24,2,1),(25,2,2),(48,13,6),(49,13,4),(50,15,5);
 /*!40000 ALTER TABLE `visittype_wards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +144,7 @@ CREATE TABLE `test_types` (
   PRIMARY KEY (`id`),
   KEY `test_types_test_category_id_foreign` (`test_category_id`),
   CONSTRAINT `test_types_test_category_id_foreign` FOREIGN KEY (`test_category_id`) REFERENCES `test_categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +153,7 @@ CREATE TABLE `test_types` (
 
 LOCK TABLES `test_types` WRITE;
 /*!40000 ALTER TABLE `test_types` DISABLE KEYS */;
-INSERT INTO `test_types` VALUES (1,'Microscopy','',2,'2',1,'',NULL,'2015-11-04 10:14:00','2015-11-03 13:49:09','2015-11-04 10:14:00'),(2,'Culture and Sensitivity','',2,'',1,'',1,NULL,'2015-11-04 08:59:00','2015-11-04 08:59:00'),(3,'Gram Stain','',2,'',1,'',NULL,NULL,'2015-11-05 12:29:16','2015-11-05 12:29:16');
+INSERT INTO `test_types` VALUES (1,'Microscopy','',2,'2',1,'',NULL,'2015-11-04 10:14:00','2015-11-03 13:49:09','2015-11-04 10:14:00'),(2,'Culture and Sensitivity','',2,'',NULL,'',1,NULL,'2015-11-04 08:59:00','2015-11-06 07:39:24'),(3,'Gram Stain','',2,'30 min',1,'',NULL,NULL,'2015-11-05 12:29:16','2015-11-06 07:44:14'),(4,'culture','',2,'7 days',1,'',NULL,NULL,'2015-11-06 05:24:20','2015-11-06 07:43:45'),(5,'cell count','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:30:59','2015-11-06 07:43:55'),(6,'India Ink','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:32:32','2015-11-06 07:44:21'),(7,'Differential','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:43:01','2015-11-06 07:44:05');
 /*!40000 ALTER TABLE `test_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +200,7 @@ CREATE TABLE `testtype_specimentypes` (
   KEY `testtype_specimentypes_specimen_type_id_foreign` (`specimen_type_id`),
   CONSTRAINT `testtype_specimentypes_specimen_type_id_foreign` FOREIGN KEY (`specimen_type_id`) REFERENCES `specimen_types` (`id`),
   CONSTRAINT `testtype_specimentypes_test_type_id_foreign` FOREIGN KEY (`test_type_id`) REFERENCES `test_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +209,7 @@ CREATE TABLE `testtype_specimentypes` (
 
 LOCK TABLES `testtype_specimentypes` WRITE;
 /*!40000 ALTER TABLE `testtype_specimentypes` DISABLE KEYS */;
-INSERT INTO `testtype_specimentypes` VALUES (2,1,1),(5,2,1),(4,2,2),(3,2,3),(8,3,1),(7,3,2),(6,3,5);
+INSERT INTO `testtype_specimentypes` VALUES (2,1,1),(43,2,1),(42,2,2),(41,2,3),(77,3,1),(71,3,2),(69,3,3),(75,3,4),(68,3,5),(73,3,6),(74,3,7),(72,3,8),(70,3,9),(76,3,10),(78,3,11),(79,3,12),(56,4,1),(52,4,2),(51,4,3),(55,4,4),(50,4,5),(53,4,6),(54,4,7),(58,5,2),(61,5,4),(57,5,5),(59,5,6),(60,5,7),(80,6,2),(67,7,1),(63,7,2),(66,7,4),(62,7,5),(64,7,6),(65,7,7);
 /*!40000 ALTER TABLE `testtype_specimentypes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,7 +231,7 @@ CREATE TABLE `testtype_measures` (
   KEY `testtype_measures_measure_id_foreign` (`measure_id`),
   CONSTRAINT `testtype_measures_measure_id_foreign` FOREIGN KEY (`measure_id`) REFERENCES `measures` (`id`),
   CONSTRAINT `testtype_measures_test_type_id_foreign` FOREIGN KEY (`test_type_id`) REFERENCES `test_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +240,7 @@ CREATE TABLE `testtype_measures` (
 
 LOCK TABLES `testtype_measures` WRITE;
 /*!40000 ALTER TABLE `testtype_measures` DISABLE KEYS */;
-INSERT INTO `testtype_measures` VALUES (2,1,52,NULL,NULL),(3,2,53,NULL,NULL),(4,2,54,NULL,NULL),(5,2,55,NULL,NULL),(6,2,56,NULL,NULL),(7,2,57,NULL,NULL),(8,2,58,NULL,NULL),(9,3,59,NULL,NULL);
+INSERT INTO `testtype_measures` VALUES (2,1,52,NULL,NULL),(17,2,53,NULL,NULL),(18,2,54,NULL,NULL),(19,2,55,NULL,NULL),(20,2,56,NULL,NULL),(21,2,57,NULL,NULL),(22,2,58,NULL,NULL),(25,4,60,NULL,NULL),(26,5,61,NULL,NULL),(27,5,62,NULL,NULL),(28,7,65,NULL,NULL),(29,7,66,NULL,NULL),(30,3,59,NULL,NULL),(31,3,64,NULL,NULL),(32,6,63,NULL,NULL);
 /*!40000 ALTER TABLE `testtype_measures` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -237,7 +263,7 @@ CREATE TABLE `testtype_organisms` (
   KEY `testtype_organisms_organism_id_foreign` (`organism_id`),
   CONSTRAINT `testtype_organisms_organism_id_foreign` FOREIGN KEY (`organism_id`) REFERENCES `organisms` (`id`),
   CONSTRAINT `testtype_organisms_test_type_id_foreign` FOREIGN KEY (`test_type_id`) REFERENCES `test_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +272,7 @@ CREATE TABLE `testtype_organisms` (
 
 LOCK TABLES `testtype_organisms` WRITE;
 /*!40000 ALTER TABLE `testtype_organisms` DISABLE KEYS */;
-INSERT INTO `testtype_organisms` VALUES (1,2,1,NULL,'2015-11-04 08:59:01','2015-11-04 08:59:01'),(2,2,5,NULL,'2015-11-04 08:59:01','2015-11-04 08:59:01'),(3,2,4,NULL,'2015-11-04 08:59:01','2015-11-04 08:59:01'),(4,2,2,NULL,'2015-11-04 08:59:01','2015-11-04 08:59:01'),(5,2,3,NULL,'2015-11-04 08:59:01','2015-11-04 08:59:01');
+INSERT INTO `testtype_organisms` VALUES (16,2,1,NULL,'2015-11-06 07:39:24','2015-11-06 07:39:24'),(17,2,5,NULL,'2015-11-06 07:39:24','2015-11-06 07:39:24'),(18,2,4,NULL,'2015-11-06 07:39:24','2015-11-06 07:39:24'),(19,2,2,NULL,'2015-11-06 07:39:24','2015-11-06 07:39:24'),(20,2,3,NULL,'2015-11-06 07:39:24','2015-11-06 07:39:24'),(21,4,1,NULL,'2015-11-06 07:43:45','2015-11-06 07:43:45'),(22,4,5,NULL,'2015-11-06 07:43:45','2015-11-06 07:43:45'),(23,4,4,NULL,'2015-11-06 07:43:45','2015-11-06 07:43:45'),(24,4,2,NULL,'2015-11-06 07:43:45','2015-11-06 07:43:45'),(25,4,3,NULL,'2015-11-06 07:43:45','2015-11-06 07:43:45');
 /*!40000 ALTER TABLE `testtype_organisms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -439,7 +465,7 @@ CREATE TABLE `measures` (
   PRIMARY KEY (`id`),
   KEY `measures_measure_type_id_foreign` (`measure_type_id`),
   CONSTRAINT `measures_measure_type_id_foreign` FOREIGN KEY (`measure_type_id`) REFERENCES `measure_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -448,7 +474,7 @@ CREATE TABLE `measures` (
 
 LOCK TABLES `measures` WRITE;
 /*!40000 ALTER TABLE `measures` DISABLE KEYS */;
-INSERT INTO `measures` VALUES (1,2,'BS for mps','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(2,2,'Grams stain','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(3,2,'SERUM AMYLASE','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(4,2,'calcium','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(5,2,'SGOT','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(6,2,'Indirect COOMBS test','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(7,2,'Direct COOMBS test','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(8,2,'Du test','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(9,1,'URIC ACID','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(10,4,'CSF for biochemistry','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(11,4,'PSA','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(12,1,'Total','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(13,1,'Alkaline Phosphate','u/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(14,1,'Direct','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(15,1,'Total Proteins','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(16,4,'LFTS','NULL',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(17,1,'Chloride','mmol/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(18,1,'Potassium','mmol/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(19,1,'Sodium','mmol/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(20,4,'Electrolytes','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(21,1,'Creatinine','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(22,1,'Urea','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(23,4,'RFTS','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(24,4,'TFT','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(25,4,'GXM','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(26,2,'Blood Grouping','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(27,1,'HB','g/dL',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(28,4,'Urine microscopy','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(29,4,'Pus cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(30,4,'S. haematobium','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(31,4,'T. vaginalis','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(32,4,'Yeast cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(33,4,'Red blood cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(34,4,'Bacteria','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(35,4,'Spermatozoa','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(36,4,'Epithelial cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(37,4,'ph','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(38,4,'Urine chemistry','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(39,4,'Glucose','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(40,4,'Ketones','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(41,4,'Proteins','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(42,4,'Blood','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(43,4,'Bilirubin','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(44,4,'Urobilinogen Phenlpyruvic acid','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(45,4,'pH','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(46,1,'WBC','x10³/µL',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(47,1,'Lym','L',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(48,1,'Mon','*',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(49,1,'Neu','*',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(50,1,'Eos','',NULL,'2015-11-03 11:05:21','2015-11-03 11:05:21',NULL),(51,1,'Baso','',NULL,'2015-11-03 11:05:21','2015-11-03 11:05:21',NULL),(52,4,'tb','','','2015-11-03 13:49:09','2015-11-03 13:49:09',NULL),(53,4,'Sample Location (Swab)','','','2015-11-04 08:59:00','2015-11-04 08:59:00',NULL),(54,4,'Sample Appearance (Fluids)','','','2015-11-04 08:59:00','2015-11-04 08:59:00',NULL),(55,2,'Culture','','','2015-11-04 08:59:00','2015-11-04 08:59:00',NULL),(56,2,'Gram Stain','','','2015-11-04 08:59:01','2015-11-04 08:59:01',NULL),(57,2,'Gram Stain Morphology','','','2015-11-04 08:59:01','2015-11-04 08:59:01',NULL),(58,4,'Gram Stain Remarks','','','2015-11-04 08:59:01','2015-11-04 08:59:01',NULL),(59,4,'gram','','','2015-11-05 12:29:16','2015-11-05 12:29:16',NULL);
+INSERT INTO `measures` VALUES (1,2,'BS for mps','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(2,2,'Grams stain','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(3,2,'SERUM AMYLASE','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(4,2,'calcium','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(5,2,'SGOT','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(6,2,'Indirect COOMBS test','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(7,2,'Direct COOMBS test','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(8,2,'Du test','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(9,1,'URIC ACID','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(10,4,'CSF for biochemistry','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(11,4,'PSA','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(12,1,'Total','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(13,1,'Alkaline Phosphate','u/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(14,1,'Direct','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(15,1,'Total Proteins','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(16,4,'LFTS','NULL',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(17,1,'Chloride','mmol/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(18,1,'Potassium','mmol/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(19,1,'Sodium','mmol/l',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(20,4,'Electrolytes','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(21,1,'Creatinine','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(22,1,'Urea','mg/dl',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(23,4,'RFTS','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(24,4,'TFT','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(25,4,'GXM','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(26,2,'Blood Grouping','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(27,1,'HB','g/dL',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(28,4,'Urine microscopy','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(29,4,'Pus cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(30,4,'S. haematobium','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(31,4,'T. vaginalis','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(32,4,'Yeast cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(33,4,'Red blood cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(34,4,'Bacteria','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(35,4,'Spermatozoa','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(36,4,'Epithelial cells','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(37,4,'ph','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(38,4,'Urine chemistry','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(39,4,'Glucose','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(40,4,'Ketones','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(41,4,'Proteins','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(42,4,'Blood','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(43,4,'Bilirubin','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(44,4,'Urobilinogen Phenlpyruvic acid','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(45,4,'pH','',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(46,1,'WBC','x10³/µL',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(47,1,'Lym','L',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(48,1,'Mon','*',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(49,1,'Neu','*',NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20',NULL),(50,1,'Eos','',NULL,'2015-11-03 11:05:21','2015-11-03 11:05:21',NULL),(51,1,'Baso','',NULL,'2015-11-03 11:05:21','2015-11-03 11:05:21',NULL),(52,4,'tb','','','2015-11-03 13:49:09','2015-11-03 13:49:09',NULL),(53,4,'Sample Location (Swab)','','','2015-11-04 08:59:00','2015-11-04 08:59:00',NULL),(54,4,'Sample Appearance (Fluids)','','','2015-11-04 08:59:00','2015-11-04 08:59:00',NULL),(55,2,'Culture','','','2015-11-04 08:59:00','2015-11-04 08:59:00',NULL),(56,2,'Gram Stain','','','2015-11-04 08:59:01','2015-11-04 08:59:01',NULL),(57,2,'Gram Stain Morphology','','','2015-11-04 08:59:01','2015-11-04 08:59:01',NULL),(58,4,'Gram Stain Remarks','','','2015-11-04 08:59:01','2015-11-04 08:59:01',NULL),(59,2,'gram','','','2015-11-05 12:29:16','2015-11-06 07:37:36',NULL),(60,2,'culture','','','2015-11-06 05:24:20','2015-11-06 05:24:20',NULL),(61,1,'wbc','cmm','','2015-11-06 07:30:59','2015-11-06 07:30:59',NULL),(62,1,'rbc','cmm','','2015-11-06 07:30:59','2015-11-06 07:30:59',NULL),(63,2,'india ink','','','2015-11-06 07:32:32','2015-11-06 07:32:32',NULL),(64,2,'gram morphology','','','2015-11-06 07:37:36','2015-11-06 07:37:36',NULL),(65,1,'polymorphs','%','','2015-11-06 07:43:01','2015-11-06 07:43:01',NULL),(66,1,'lymphocytes','%','','2015-11-06 07:43:01','2015-11-06 07:43:01',NULL);
 /*!40000 ALTER TABLE `measures` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -502,7 +528,7 @@ CREATE TABLE `measure_ranges` (
   KEY `measure_ranges_alphanumeric_index` (`alphanumeric`),
   KEY `measure_ranges_measure_id_foreign` (`measure_id`),
   CONSTRAINT `measure_ranges_measure_id_foreign` FOREIGN KEY (`measure_id`) REFERENCES `measures` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -511,7 +537,7 @@ CREATE TABLE `measure_ranges` (
 
 LOCK TABLES `measure_ranges` WRITE;
 /*!40000 ALTER TABLE `measure_ranges` DISABLE KEYS */;
-INSERT INTO `measure_ranges` VALUES (1,1,NULL,NULL,NULL,NULL,NULL,'No mps seen','Negative',NULL),(2,1,NULL,NULL,NULL,NULL,NULL,'+','Positive',NULL),(3,1,NULL,NULL,NULL,NULL,NULL,'++','Positive',NULL),(4,1,NULL,NULL,NULL,NULL,NULL,'+++','Positive',NULL),(5,2,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(6,2,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(7,3,NULL,NULL,NULL,NULL,NULL,'Low',NULL,NULL),(8,3,NULL,NULL,NULL,NULL,NULL,'High',NULL,NULL),(9,3,NULL,NULL,NULL,NULL,NULL,'Normal',NULL,NULL),(10,4,NULL,NULL,NULL,NULL,NULL,'High',NULL,NULL),(11,4,NULL,NULL,NULL,NULL,NULL,'Low',NULL,NULL),(12,4,NULL,NULL,NULL,NULL,NULL,'Normal',NULL,NULL),(13,5,NULL,NULL,NULL,NULL,NULL,'High',NULL,NULL),(14,5,NULL,NULL,NULL,NULL,NULL,'Low',NULL,NULL),(15,5,NULL,NULL,NULL,NULL,NULL,'Normal',NULL,NULL),(16,6,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(17,6,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(18,7,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(19,7,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(20,8,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(21,8,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(22,26,NULL,NULL,NULL,NULL,NULL,'O-',NULL,NULL),(23,26,NULL,NULL,NULL,NULL,NULL,'O+',NULL,NULL),(24,26,NULL,NULL,NULL,NULL,NULL,'A-',NULL,NULL),(25,26,NULL,NULL,NULL,NULL,NULL,'A+',NULL,NULL),(26,26,NULL,NULL,NULL,NULL,NULL,'B-',NULL,NULL),(27,26,NULL,NULL,NULL,NULL,NULL,'B+',NULL,NULL),(28,26,NULL,NULL,NULL,NULL,NULL,'AB-',NULL,NULL),(29,26,NULL,NULL,NULL,NULL,NULL,'AB+',NULL,NULL),(30,46,0,100,2,4.000,11.000,NULL,NULL,NULL),(31,47,0,100,2,1.500,4.000,NULL,NULL,NULL),(32,48,0,100,2,0.100,9.000,NULL,NULL,NULL),(33,49,0,100,2,2.500,7.000,NULL,NULL,NULL),(34,50,0,100,2,0.000,6.000,NULL,NULL,NULL),(35,51,0,100,2,0.000,2.000,NULL,NULL,NULL),(36,55,NULL,NULL,NULL,NULL,NULL,'Not performed','',NULL),(37,55,NULL,NULL,NULL,NULL,NULL,'No growth 24 hrs','',NULL),(38,55,NULL,NULL,NULL,NULL,NULL,'No growth 48 hrs','',NULL),(39,55,NULL,NULL,NULL,NULL,NULL,'No growth 72 hrs','NEGATIVE',NULL),(40,55,NULL,NULL,NULL,NULL,NULL,'Growth','POSITIVE',NULL),(41,56,NULL,NULL,NULL,NULL,NULL,'Gram Positve','',NULL),(42,56,NULL,NULL,NULL,NULL,NULL,'Gram Negative','',NULL),(43,56,NULL,NULL,NULL,NULL,NULL,'Gram Variable','',NULL),(44,57,NULL,NULL,NULL,NULL,NULL,'Cocci','',NULL),(45,57,NULL,NULL,NULL,NULL,NULL,'Bacilli','',NULL),(46,57,NULL,NULL,NULL,NULL,NULL,'Cocci-Bacilli','',NULL),(47,57,NULL,NULL,NULL,NULL,NULL,'Diplococci','',NULL),(48,57,NULL,NULL,NULL,NULL,NULL,'Yeast','',NULL),(49,57,NULL,NULL,NULL,NULL,NULL,'Other','',NULL);
+INSERT INTO `measure_ranges` VALUES (1,1,NULL,NULL,NULL,NULL,NULL,'No mps seen','Negative',NULL),(2,1,NULL,NULL,NULL,NULL,NULL,'+','Positive',NULL),(3,1,NULL,NULL,NULL,NULL,NULL,'++','Positive',NULL),(4,1,NULL,NULL,NULL,NULL,NULL,'+++','Positive',NULL),(5,2,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(6,2,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(7,3,NULL,NULL,NULL,NULL,NULL,'Low',NULL,NULL),(8,3,NULL,NULL,NULL,NULL,NULL,'High',NULL,NULL),(9,3,NULL,NULL,NULL,NULL,NULL,'Normal',NULL,NULL),(10,4,NULL,NULL,NULL,NULL,NULL,'High',NULL,NULL),(11,4,NULL,NULL,NULL,NULL,NULL,'Low',NULL,NULL),(12,4,NULL,NULL,NULL,NULL,NULL,'Normal',NULL,NULL),(13,5,NULL,NULL,NULL,NULL,NULL,'High',NULL,NULL),(14,5,NULL,NULL,NULL,NULL,NULL,'Low',NULL,NULL),(15,5,NULL,NULL,NULL,NULL,NULL,'Normal',NULL,NULL),(16,6,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(17,6,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(18,7,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(19,7,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(20,8,NULL,NULL,NULL,NULL,NULL,'Positive',NULL,NULL),(21,8,NULL,NULL,NULL,NULL,NULL,'Negative',NULL,NULL),(22,26,NULL,NULL,NULL,NULL,NULL,'O-',NULL,NULL),(23,26,NULL,NULL,NULL,NULL,NULL,'O+',NULL,NULL),(24,26,NULL,NULL,NULL,NULL,NULL,'A-',NULL,NULL),(25,26,NULL,NULL,NULL,NULL,NULL,'A+',NULL,NULL),(26,26,NULL,NULL,NULL,NULL,NULL,'B-',NULL,NULL),(27,26,NULL,NULL,NULL,NULL,NULL,'B+',NULL,NULL),(28,26,NULL,NULL,NULL,NULL,NULL,'AB-',NULL,NULL),(29,26,NULL,NULL,NULL,NULL,NULL,'AB+',NULL,NULL),(30,46,0,100,2,4.000,11.000,NULL,NULL,NULL),(31,47,0,100,2,1.500,4.000,NULL,NULL,NULL),(32,48,0,100,2,0.100,9.000,NULL,NULL,NULL),(33,49,0,100,2,2.500,7.000,NULL,NULL,NULL),(34,50,0,100,2,0.000,6.000,NULL,NULL,NULL),(35,51,0,100,2,0.000,2.000,NULL,NULL,NULL),(36,55,NULL,NULL,NULL,NULL,NULL,'Not performed','',NULL),(37,55,NULL,NULL,NULL,NULL,NULL,'No growth 24 hrs','',NULL),(38,55,NULL,NULL,NULL,NULL,NULL,'No growth 48 hrs','',NULL),(39,55,NULL,NULL,NULL,NULL,NULL,'No growth 72 hrs','NEGATIVE',NULL),(40,55,NULL,NULL,NULL,NULL,NULL,'Growth','POSITIVE',NULL),(41,56,NULL,NULL,NULL,NULL,NULL,'Gram Positve','',NULL),(42,56,NULL,NULL,NULL,NULL,NULL,'Gram Negative','',NULL),(43,56,NULL,NULL,NULL,NULL,NULL,'Gram Variable','',NULL),(44,57,NULL,NULL,NULL,NULL,NULL,'Cocci','',NULL),(45,57,NULL,NULL,NULL,NULL,NULL,'Bacilli','',NULL),(46,57,NULL,NULL,NULL,NULL,NULL,'Cocci-Bacilli','',NULL),(47,57,NULL,NULL,NULL,NULL,NULL,'Diplococci','',NULL),(48,57,NULL,NULL,NULL,NULL,NULL,'Yeast','',NULL),(49,57,NULL,NULL,NULL,NULL,NULL,'Other','',NULL),(50,60,NULL,NULL,NULL,NULL,NULL,'No growth 24hrs','',NULL),(51,60,NULL,NULL,NULL,NULL,NULL,'No growth 48hrs','',NULL),(52,60,NULL,NULL,NULL,NULL,NULL,'No growth 72hrs','',NULL),(53,60,NULL,NULL,NULL,NULL,NULL,'Growth','',NULL),(54,61,0,120,2,0.000,9999.999,NULL,'',NULL),(55,62,0,120,2,0.000,9999.999,NULL,'',NULL),(56,63,NULL,NULL,NULL,NULL,NULL,'Positive','POSITIVE',NULL),(57,63,NULL,NULL,NULL,NULL,NULL,'Negative','NEGATIVE',NULL),(58,64,NULL,NULL,NULL,NULL,NULL,'Cocci','',NULL),(59,64,NULL,NULL,NULL,NULL,NULL,'Bacilli','',NULL),(60,64,NULL,NULL,NULL,NULL,NULL,'Cocco-bacilli','',NULL),(61,59,NULL,NULL,NULL,NULL,NULL,'Positive','POSITIVE',NULL),(62,59,NULL,NULL,NULL,NULL,NULL,'Negative','NEGATIVE',NULL),(63,59,NULL,NULL,NULL,NULL,NULL,'Yeast','YEAST',NULL),(64,65,0,120,2,0.000,100.000,NULL,'',NULL),(65,66,0,120,2,0.000,100.000,NULL,'',NULL);
 /*!40000 ALTER TABLE `measure_ranges` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -558,8 +584,8 @@ CREATE TABLE `permission_role` (
   PRIMARY KEY (`id`),
   KEY `permission_role_permission_id_foreign` (`permission_id`),
   KEY `permission_role_role_id_foreign` (`role_id`),
-  CONSTRAINT `permission_role_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
-  CONSTRAINT `permission_role_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`)
+  CONSTRAINT `permission_role_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`),
+  CONSTRAINT `permission_role_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -582,4 +608,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-05 16:30:04
+-- Dump completed on 2015-11-08  9:50:53

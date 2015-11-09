@@ -114,7 +114,6 @@ class VisitTypeController extends \BaseController {
 	{
 		//Show a visittype
 		$visittype = VisitType::find($id);
-		$wards = DB::select("SELECT name FROM wards WHERE id IN (SELECT ward_id FROM visittype_wards WHERE visit_type_id = $id)");
 		$wards = DB::table('visittype_wards')
 			->join('wards', 'wards.id', '=', 'visittype_wards.ward_id')
 			->select('wards.*')

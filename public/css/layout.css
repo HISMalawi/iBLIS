@@ -469,3 +469,16 @@ table.table.report-table-border > tbody > tr > td{
     background: #fff -ms-linear-gradient(top, #fcfcfc 0%, #fff 100%); /* IE10+ */
     background: #fff linear-gradient(top, #fcfcfc 0%, #fff 100%); /* W3C */
 }
+.panel-row{
+    display: none;
+    padding-left: 20px;
+}
+
+.panel-header{
+    font-style: italic;
+    border-bottom: 1px solid gray;
+}
+
+.test-actions, .test-actions{
+    padding: 0px;
+}

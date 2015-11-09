@@ -94,15 +94,55 @@
                     </tr>
                 </thead>
                 <tbody>
+                <?php
+                    $panels = array();
+                ?>
                 @foreach($testSet as $key => $test)
-                    <tr
 
-                        {{$test = Test::find($test->id)}}
+                        <?php
+                            $testName = '';
+                            $test = Test::find($test->id);
+                        ?>
+
+                        @if($test->panel_id > 0 && in_array($test->panel_id, $panels))
+                            <?php
+
+                            ?>
+                        @endif
+
+                        @if($test->panel_id > 0 && !in_array($test->panel_id, $panels))
+                            <?php
+                                array_push($panels, $test->panel_id);
+                                $testName = PanelType::find(Panel::find($test->panel_id)->panel_type_id)->name;
+                            ?>
+                        @endif
 
                         @if(Session::has('activeTest'))
                             {{ in_array($test->id, Session::get('activeTest'))?"class='info'":""}}
                         @endif
-                        >
+
+                        @if($testName)
+                            <tr class="panel-header panel-header{{$test->panel_id}}"
+                                onclick="flipPanelRows({{$test->panel_id}})">
+                                <td>{{ date('d-m-Y H:i', strtotime($test->time_created));}}</td>
+                                <td>{{ empty($test->visit->patient->external_patient_number)?
+                                $test->visit->patient->patient_number:
+                                $test->visit->patient->external_patient_number
+                            }}</td>
+                                <td>{{ empty($test->visit->visit_number)?
+                                $test->visit->id:
+                                $test->visit->visit_number
+                            }}</td> <!--Visit Number -->
+                                <td>{{ $test->visit->patient->name.' ('.($test->visit->patient->getGender(true)).',
+                            '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
+                                <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
+                                <td>{{ $testName ? $testName : $test->testType->name }}</td> <!--Test-->
+                                <td>{{ $test->visit->ward_or_location }}</td> <!--Visit Type -->
+                                <td id="test-status-{{$test->id}}" class='test-status'>&nbsp;</td>
+                            </tr>
+                        @endif
+
+                        <tr class="{{($test->panel_id > 0 && in_array($test->panel_id, $panels))? 'panel-row panel'.$test->panel_id : ''}}" >
                         <td>{{ date('d-m-Y H:i', strtotime($test->time_created));}}</td>  <!--Date Ordered-->
                         <td>{{ empty($test->visit->patient->external_patient_number)?
                                 $test->visit->patient->patient_number:
@@ -146,6 +186,7 @@
                                             <span class='label label-success'>
                                                 {{trans('messages.verified')}}</span>
                                         @endif
+
                                     </div>
     
                                     </div>
@@ -173,10 +214,11 @@
                                             <span class='label label-danger'>
                                                 {{trans('messages.specimen-rejected-label')}}</span>
                                         @endif
+
                                         </div></div></div>
                         </td>
                         <!-- ACTION BUTTONS -->
-                        <td>
+                        <td class="test-actions">
                             <a class="btn btn-sm btn-success"
                                 href="{{ URL::route('test.viewDetails', $test->id) }}"
                                 id="view-details-{{$test->id}}-link" 

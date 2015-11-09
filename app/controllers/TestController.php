@@ -177,26 +177,71 @@ class TestController extends \BaseController {
 			* - Fields required: visit_id, test_type_id, specimen_id, test_status_id, created_by, requested_by
 			*/
 			$testTypes = Input::get('testtypes');
-			if(is_array($testTypes)){
+			if(is_array($testTypes) && count($testTypes) > 0){
+
+				// Create Specimen - specimen_type_id, accepted_by, referred_from, referred_to
+				$specimen = new Specimen;
+				$specimen->specimen_type_id = Input::get('specimen_type');
+				$specimen->accepted_by = Auth::user()->id;
+				$specimen->accession_number = self::assignAccessionNumber();
+				$specimen->save();
+
 				foreach ($testTypes as $value) {
 					$testTypeID = (int)$value;
-					// Create Specimen - specimen_type_id, accepted_by, referred_from, referred_to
-					$specimen = new Specimen;
-					$specimen->specimen_type_id = Input::get('specimen_type');
-					$specimen->accepted_by = Auth::user()->id;
-					$specimen->accession_number = self::assignAccessionNumber();
-					$specimen->save();
 
-					$test = new Test;
-					$test->visit_id = $visit->id;
-					$test->test_type_id = $testTypeID;
-					$test->specimen_id = $specimen->id;
-					$test->test_status_id = Test::PENDING;
-					$test->created_by = Auth::user()->id;
-					$test->requested_by = Input::get('physician');
-					$test->save();
+					if ($testTypeID == 0){
+						$panelType = PanelType::where('name', '=', $value)->first()->id;
 
-					$activeTest[] = $test->id;
+						$panelTests = DB::select("SELECT test_type_id FROM panels
+											WHERE panel_type_id = $panelType"
+										);
+
+						if(count($panelTests) > 0) {
+
+							$panel = new TestPanel;
+							$panel->panel_type_id = $panelType;
+							$panel->save();
+
+							foreach ($panelTests AS $tType) {
+
+								$duplicateCheck = DB::select("SELECT * FROM tests
+											WHERE test_type_id = ".$tType->test_type_id
+									." AND specimen_id = ".$specimen->id);
+
+								if(count($duplicateCheck) == 0) {
+									$test = new Test;
+									$test->visit_id = $visit->id;
+									$test->test_type_id = $tType->test_type_id;
+									$test->specimen_id = $specimen->id;
+									$test->test_status_id = Test::PENDING;
+									$test->created_by = Auth::user()->id;
+									$test->panel_id = $panel->id;
+									$test->requested_by = Input::get('physician');
+									$test->save();
+
+									$activeTest[] = $test->id;
+								}
+							}
+						}
+
+					}else {
+
+						$duplicateCheck = DB::select("SELECT * FROM tests
+											WHERE test_type_id = $testTypeID AND specimen_id = ".$specimen->id);
+
+						if(count($duplicateCheck) == 0) {
+							$test = new Test;
+							$test->visit_id = $visit->id;
+							$test->test_type_id = $testTypeID;
+							$test->specimen_id = $specimen->id;
+							$test->test_status_id = Test::PENDING;
+							$test->created_by = Auth::user()->id;
+							$test->requested_by = Input::get('physician');
+							$test->save();
+
+							$activeTest[] = $test->id;
+						}
+					}
 				}
 			}
 

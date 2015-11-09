@@ -133,6 +133,30 @@ class CreatekBLIStables extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('panel_types', function ($table) {
+            $table->increments('id')->unsigned();
+            $table->string('name');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('panels', function ($table) {
+            $table->increments('id')->unsigned();
+            $table->integer('panel_type_id')->unsigned();
+            $table->integer('test_type_id')->unsigned();
+
+            $table->foreign('panel_type_id')->references('id')->on('panel_types');
+            $table->foreign('test_type_id')->references('id')->on('test_types');
+        });
+
+        Schema::create('test_panels', function ($table) {
+            $table->increments('id')->unsigned();
+            $table->integer('panel_type_id')->unsigned();
+            $table->timestamps();
+
+            $table->foreign('panel_type_id')->references('id')->on('panel_types');
+        });
+
         Schema::create('testtype_measures', function(Blueprint $table)
         {
             $table->increments('id')->unsigned();
@@ -264,7 +288,8 @@ class CreatekBLIStables extends Migration {
 			$table->timestamp('time_started')->nullable();
 			$table->timestamp('time_completed')->nullable();
 			$table->timestamp('time_verified')->nullable();
-			$table->timestamp('time_sent')->nullable();
+			$table->integer('panel_id')->unsigned()->nullable();
+            $table->timestamp('time_sent')->nullable();
             $table->integer('external_id')->nullable();//Unique ID for external records
 			
             $table->index('created_by');
@@ -274,7 +299,8 @@ class CreatekBLIStables extends Migration {
 			$table->foreign('test_type_id')->references('id')->on('test_types');
 			$table->foreign('specimen_id')->references('id')->on('specimens');
 			$table->foreign('test_status_id')->references('id')->on('test_statuses');
-		});
+            $table->foreign('panel_id')->references('id')->on('test_panels');
+        });
 
 		Schema::create('test_results', function(Blueprint $table)
 		{
@@ -334,6 +360,9 @@ class CreatekBLIStables extends Migration {
 		Schema::dropIfExists('testtype_specimentypes');
         Schema::dropIfExists('testtype_measures');
         Schema::dropIfExists('test_types');
+        Schema::dropIfExists('test_panels');
+        Schema::dropIfExists('panel_types');
+        Schema::dropIfExists('panels');
         Schema::dropIfExists('measure_ranges');
         Schema::dropIfExists('measures');
         Schema::dropIfExists('measure_types');

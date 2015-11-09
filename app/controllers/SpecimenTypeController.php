@@ -171,9 +171,38 @@ class SpecimenTypeController extends \BaseController {
 		$specimenType = SpecimenType::find($specimen_type);
 		$testTypes = [];
 		if($specimenType) {
-			$testTypes = $specimenType->testTypes->lists('name', 'id');
+			$location = TestCategory::where("id", '=', Session::get('location_id'))->first();
+
+			if (str_is('*RECEPTION*', strtoupper($location))) {
+				$testTypes = $specimenType->testTypes->lists('name', 'id');
+			}else {
+				$testTypes = DB::table('testtype_specimentypes')
+					->join('test_types', 'test_types.id', '=', 'testtype_specimentypes.test_type_id')
+					->select('test_types.*')
+					->where('testtype_specimentypes.specimen_type_id', '=', $specimen_type)
+					->where('test_types.test_category_id', '=', Session::get('location_id'))->lists('name', 'id');
+			}
+
+			//check for test panels
+			if (str_is('*RECEPTION*', strtoupper($location))) {
+				$testPanels = DB::table('panel_types')
+					->join('panels', 'panel_types.id', '=', 'panels.panel_type_id')
+					->join('test_types', 'test_types.id', '=', 'panels.test_type_id')
+					->join('testtype_specimentypes', 'test_types.id', '=', 'testtype_specimentypes.test_type_id')
+					->select('panel_types.*')
+					->where('testtype_specimentypes.specimen_type_id', '=', $specimen_type)->lists('name', 'name');
+
+			}else {
+				$testPanels = DB::table('panel_types')
+					->join('panels', 'panel_types.id', '=', 'panels.panel_type_id')
+					->join('test_types', 'test_types.id', '=', 'panels.test_type_id')
+					->join('testtype_specimentypes', 'test_types.id', '=', 'testtype_specimentypes.test_type_id')
+					->select('panel_types.*')
+					->where('testtype_specimentypes.specimen_type_id', '=', $specimen_type)
+					->where('test_types.test_category_id', '=', Session::get('location_id'))->lists('name', 'name');
+			}
 		}
 
-		return json_encode($testTypes);
+		return json_encode(($testTypes + $testPanels));
 	}
 }

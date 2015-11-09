@@ -14,7 +14,8 @@
 		case 'visittype':
 		$active[3] = "active"; break;
 		case 'testcategory': 
-		case 'testtype': 
+		case 'testtype':
+		case 'testpanel':
 		case 'measure': 
 		case 'specimentype': 
 		case 'specimenrejection': 
@@ -157,6 +158,12 @@
 						<div>
 							<a href="{{ URL::route("testtype.index")}}">
 								<span class="glyphicon glyphicon-tag"></span> {{ Lang::choice('messages.test-type', 2)}}</a>
+						</div>
+					</li>
+					<li>
+						<div>
+							<a href="{{ URL::route("testpanel.index")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{ Lang::choice('messages.test-panels', 2)}}</a>
 						</div>
 					</li>
 					<li>
