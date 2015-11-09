@@ -110,10 +110,10 @@
                             ?>
                         @endif
 
-                        @if($test->panel_id > 0 && !in_array($test->panel_id, $panels))
+                        @if($test->panel_id && !in_array($test->panel_id, $panels))
                             <?php
                                 array_push($panels, $test->panel_id);
-                                $testName = PanelType::find(Panel::find($test->panel_id)->panel_type_id)->name;
+                                $testName = PanelType::find(TestPanel::find($test->panel_id)->panel_type_id)->name;
                             ?>
                         @endif
 
@@ -122,8 +122,7 @@
                         @endif
 
                         @if($testName)
-                            <tr class="panel-header panel-header{{$test->panel_id}}"
-                                onclick="flipPanelRows({{$test->panel_id}})">
+                            <tr class="panel-header panel-header{{$test->panel_id}}">
                                 <td>{{ date('d-m-Y H:i', strtotime($test->time_created));}}</td>
                                 <td>{{ empty($test->visit->patient->external_patient_number)?
                                 $test->visit->patient->patient_number:
@@ -138,7 +137,92 @@
                                 <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
                                 <td>{{ $testName ? $testName : $test->testType->name }}</td> <!--Test-->
                                 <td>{{ $test->visit->ward_or_location }}</td> <!--Visit Type -->
-                                <td id="test-status-{{$test->id}}" class='test-status'>&nbsp;</td>
+                                <td id="test-status-{{$test->id}}" class='test-status'>
+                                    <!-- Specimen statuses -->
+                                    @if($test->specimen->isNotCollected())
+                                        @if(($test->isPaid()))
+                                            <span class='label label-default'>
+                                                {{trans('messages.specimen-not-collected-label')}}</span>
+                                        @endif
+                                    @elseif($test->specimen->isReferred())
+                                        <span class='label label-primary'>
+                                                {{trans('messages.specimen-referred-label') }}
+                                            @if($test->specimen->referral->status == Referral::REFERRED_IN)
+                                                {{ trans("messages.in") }}
+                                            @elseif($test->specimen->referral->status == Referral::REFERRED_OUT)
+                                                {{ trans("messages.out") }}
+                                            @endif
+                                            </span>
+                                    @elseif($test->specimen->isAccepted())
+                                        <span class='label label-success'>
+                                                {{trans('messages.specimen-accepted-label')}}</span>
+                                    @elseif($test->specimen->isRejected())
+                                        <span class='label label-danger'>
+                                                {{trans('messages.specimen-rejected-label')}}</span>
+                                    @endif
+
+                                </td>
+                                <!--Actions for test panel specimens  -->
+                                <td class="test-actions">
+
+                                    <a class="btn btn-sm btn-success"
+                                       href="{{ URL::route('test.viewDetails', $test->id) }}"
+                                       id="view-details-{{$test->id}}-link"
+                                       title="{{trans('messages.view-details-title')}}">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        {{trans('messages.view-details')}}
+                                    </a>
+
+                                    @if ($test->specimen->isNotCollected())
+                                        @if(Auth::user()->can('accept_test_specimen'))
+                                            <a class="btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
+                                               data-test-id="{{$test->id}}" data-specimen-id="{{$test->specimen->id}}"
+                                               title="{{trans('messages.accept-specimen-title')}}"
+                                               data-url="{{ URL::route('test.acceptSpecimen') }}">
+                                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                                {{trans('messages.accept-specimen')}}
+                                            </a>
+                                        @endif
+                                    @endif
+
+                                    @if ($test->specimen->isAccepted() && !($test->isVerified()))
+                                        @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()) && !$test->panel_id)
+
+                                            <a class="btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
+                                               href="{{URL::route('test.reject', array($test->specimen_id))}}"
+                                               title="{{trans('messages.reject-title')}}">
+                                                <span class="glyphicon glyphicon-thumbs-down"></span>
+                                                {{trans('messages.reject')}}
+                                            </a>
+                                        @endif
+
+                                        @if ($test->isPending())
+
+                                            @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()))
+                                                <a class="btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
+                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                    {{trans('messages.refer-sample')}}
+                                                </a>
+                                            @endif
+                                        @endif
+
+                                    @endif
+
+                                    @if($test->isPanelCompleted() == true && Auth::user()->can('verify_test_results')
+                                        && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
+                                        <a class="btn btn-sm btn-success" id="verify-{{$test->id}}-link"
+                                           href="{{ URL::route('test.viewDetails', array($test->id)) }}"
+                                           title="{{trans('messages.verify-title')}}">
+                                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                                            {{trans('messages.verify')}}
+                                        </a>
+                                    @endif
+
+                                    <a onclick="flipPanelRows({{$test->panel_id}})"
+                                       class="btn-expand btn btn-sm btn-primary pull-right" href="#">
+                                        <span class="glyphicon glyphicon-list"> &nbsp; </span>
+                                    </a>
+                                </td>
                             </tr>
                         @endif
 
@@ -193,28 +277,29 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <!-- Specimen statuses -->
-                                        @if($test->specimen->isNotCollected())
-                                         @if(($test->isPaid()))
-                                            <span class='label label-default'>
-                                                {{trans('messages.specimen-not-collected-label')}}</span>
-                                            @endif
-                                        @elseif($test->specimen->isReferred())
-                                            <span class='label label-primary'>
-                                                {{trans('messages.specimen-referred-label') }}
-                                                @if($test->specimen->referral->status == Referral::REFERRED_IN)
-                                                    {{ trans("messages.in") }}
-                                                @elseif($test->specimen->referral->status == Referral::REFERRED_OUT)
-                                                    {{ trans("messages.out") }}
+                                        @if(!$test->panel_id)
+                                            @if($test->specimen->isNotCollected())
+                                             @if(($test->isPaid()))
+                                                <span class='label label-default'>
+                                                    {{trans('messages.specimen-not-collected-label')}}</span>
                                                 @endif
-                                            </span>
-                                        @elseif($test->specimen->isAccepted())
-                                            <span class='label label-success'>
-                                                {{trans('messages.specimen-accepted-label')}}</span>
-                                        @elseif($test->specimen->isRejected())
-                                            <span class='label label-danger'>
-                                                {{trans('messages.specimen-rejected-label')}}</span>
+                                            @elseif($test->specimen->isReferred())
+                                                <span class='label label-primary'>
+                                                    {{trans('messages.specimen-referred-label') }}
+                                                    @if($test->specimen->referral->status == Referral::REFERRED_IN)
+                                                        {{ trans("messages.in") }}
+                                                    @elseif($test->specimen->referral->status == Referral::REFERRED_OUT)
+                                                        {{ trans("messages.out") }}
+                                                    @endif
+                                                </span>
+                                            @elseif($test->specimen->isAccepted())
+                                                <span class='label label-success'>
+                                                    {{trans('messages.specimen-accepted-label')}}</span>
+                                            @elseif($test->specimen->isRejected())
+                                                <span class='label label-danger'>
+                                                    {{trans('messages.specimen-rejected-label')}}</span>
+                                            @endif
                                         @endif
-
                                         </div></div></div>
                         </td>
                         <!-- ACTION BUTTONS -->
@@ -236,7 +321,7 @@
                                     {{trans('messages.receive-test')}}
                                 </a>
                             @endif
-                        @elseif ($test->specimen->isNotCollected())
+                        @elseif ($test->specimen->isNotCollected() && !$test->panel_id)
                             @if(Auth::user()->can('accept_test_specimen'))
                                 <a class="btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
                                     data-test-id="{{$test->id}}" data-specimen-id="{{$test->specimen->id}}"
@@ -246,7 +331,7 @@
                                     {{trans('messages.accept-specimen')}}
                                 </a>
                             @endif
-                            @if(count($test->testType->specimenTypes) > 1 && Auth::user()->can('change_test_specimen'))
+                            @if(count($test->testType->specimenTypes) > 1 && Auth::user()->can('change_test_specimen') && !$test->panel_id )
                                 <!-- 
                                     If this test can be done using more than 1 specimen type,
                                     allow the user to change to any of the other eligible ones.
@@ -261,7 +346,7 @@
                             @endif
                         @endif
                         @if ($test->specimen->isAccepted() && !($test->isVerified()))
-                            @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()))
+                            @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()) && !$test->panel_id)
                                 <a class="btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
                                     href="{{URL::route('test.reject', array($test->specimen_id))}}"
                                     title="{{trans('messages.reject-title')}}">
@@ -278,7 +363,7 @@
                                         {{trans('messages.start-test')}}
                                     </a>
                                 @endif
-                                @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()))
+                                @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()) && !$test->panel_id)
                                     <a class="btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
                                         <span class="glyphicon glyphicon-edit"></span>
                                         {{trans('messages.refer-sample')}}
@@ -302,7 +387,8 @@
                                         {{trans('messages.edit')}}
                                     </a>
                                 @endif
-                                @if(Auth::user()->can('verify_test_results') && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
+                                @if(Auth::user()->can('verify_test_results') && (Auth::user()->id != $test->tested_by ||
+                                Entrust::hasRole(Role::getAdminRole()->name)) && !$test->panel_id)
                                     <a class="btn btn-sm btn-success" id="verify-{{$test->id}}-link"
                                         href="{{ URL::route('test.viewDetails', array($test->id)) }}"
                                         title="{{trans('messages.verify-title')}}">

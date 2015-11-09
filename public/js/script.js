@@ -819,10 +819,18 @@ $(function(){
 
 	function flipPanelRows(id){
 
+		$(".panel-header"+id).toggleClass('panel-selected');
 		$(".panel-row:not(.panel"+ id +")").hide();
 		$(".panel"+id).slideToggle(100);
 		$(".panel"+id).css({
 			'border-right' : '5px solid orange',
 			'border-left' : '2px solid #428bca'
+		});
+		$(".panel"+id+":last").css({
+			'border-bottom' : '2px solid #428bca'
+		});
+		$(".panel"+id+":first").css({
+			'border-top' : '2px solid #428bca'
 		})
+
 	}

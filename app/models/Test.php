@@ -170,6 +170,19 @@ class Test extends Eloquent
 			return false;
 	}
 
+	public function isPanelCompleted()
+	{
+		if(!$this->panel_id)
+			return false;
+		else {
+			$sibling_tests = Test::where("panel_id", '=', $this->panel_id);
+			$tested_sibling_tests = Test::where("panel_id", '=', $this->panel_id)
+				->where('test_by', '>', 0);
+			return $tested_sibling_tests;
+				//(count($sibling_tests) == count($tested_sibling_tests));
+		}
+	}
+
 	/**
 	 * Helper function: check if the Test status is VERIFIED
 	 *

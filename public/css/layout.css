@@ -475,10 +475,8 @@ table.table.report-table-border > tbody > tr > td{
 }
 
 .panel-header{
-    font-style: italic;
     border-bottom: 1px solid gray;
 }
-
-.test-actions, .test-actions{
-    padding: 0px;
+.btn-expand{
+    cursor: pointer;
 }
