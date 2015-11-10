@@ -479,3 +479,7 @@ table.table.report-table-border > tbody > tr > td{
 .btn-expand{
     cursor: pointer;
 }
+
+.ladbel{
+    margin-left: 10px !important;
+}

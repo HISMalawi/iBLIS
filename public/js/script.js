@@ -196,7 +196,7 @@ $(function(){
 		var url = $(this).data('url');
 		$.post(url, { test_type_id: testTypeID}).done(function(data){
 			$.each($.parseJSON(data), function (index, obj) {
-				console.log(index + " " + obj);
+
 				$('#'+index).val(obj);
 			});
 		});
@@ -269,8 +269,11 @@ $(function(){
 		var specID = $(this).data('specimen-id');
 
 		var url = location.protocol+ "//"+location.host+ "/test/" + testID+ "/receive";
-		$.post(url, { id: testID}).done(function(){});
+		$.post(url, { id: testID}).done(function(){
+			window.location.reload()
+		});
 
+		/*
 		var parent = $(e.currentTarget).parent();
 		// First replace the status
 		var newStatus = $('.pending-test-not-collected-specimen').html();
@@ -287,6 +290,7 @@ $(function(){
 		// Now remove the unnecessary buttons
 		$(this).siblings('.receive-test').remove();
 		$(this).remove();
+		*/
 	});
 
 	/** Accept Specimen button.
@@ -298,8 +302,11 @@ $(function(){
 		var testID = $(this).data('test-id');
 		var specID = $(this).data('specimen-id');
 		var url = $(this).data('url');
-		$.post(url, { id: specID}).done(function(){});
+		$.post(url, { id: specID}).done(function(){
+			window.location.reload()
+		});
 
+		/*
 		var parent = $(e.currentTarget).parent();
 		// First replace the status
 		var newStatus = $('.pending-test-accepted-specimen').html();
@@ -324,6 +331,7 @@ $(function(){
 		// Now remove the unnecessary buttons
 		$(this).siblings('.change-specimen').remove();
 		$(this).remove();
+		*/
 	});
 
 	/**
@@ -354,10 +362,14 @@ $(function(){
 	 *  - Changes the UI to show the right status and buttons
 	 */
 	$('.tests-log').on( "click", ".start-test", function(e) {
+
 		var testID = $(this).data('test-id');
 		var url = $(this).data('url');
-		$.post(url, { id: testID}).done(function(){});
+		$.post(url, { id: testID}).done(function(){
+			window.location.reload()
+		});
 
+		/*
 		var parent = $(e.currentTarget).parent();
 		// First replace the status
 		var newStatus = $('.started-test-accepted-specimen').html();
@@ -375,6 +387,7 @@ $(function(){
 		// Now remove the unnecessary buttons
 		$(this).siblings('.refer-button').remove();
 		$(this).remove();
+		*/
 	});
 
 	/**
@@ -649,6 +662,8 @@ $(function(){
             	return JSON.parse(localStorage.getItem('.search-table'));
         	}
    		});
+
+		$('.pre-select:first').click();
 	});
 
 	//Make sure all input fields are entered before submission

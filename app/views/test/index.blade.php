@@ -82,26 +82,37 @@
             <table class="table table-striped table-hover table-condensed">
                 <thead>
                     <tr>
-                        <th>{{trans('messages.date-ordered')}}</th>
+                        <th class="col-md-2"> {{trans('messages.date-ordered')}}</th>
                         <th>{{trans('messages.patient-number')}}</th>
-                        <th>{{trans('messages.visit-number')}}</th>
                         <th class="col-md-2">{{trans('messages.patient-name')}}</th>
                         <th class="col-md-1">{{trans('messages.specimen-id')}}</th>
-                        <th>{{ Lang::choice('messages.test',1) }}</th>
-                        <th>{{trans('messages.location')}}</th>
-                        <th>{{trans('messages.test-status')}}</th>
-                        <th class="col-md-3">{{trans('messages.test-status')}}</th>
+                        <th class="col-md-2">{{ Lang::choice('messages.test',1) }}</th>
+                        <th class="col-md-1">{{trans('messages.location')}}</th>
+                        <th class="col-md-1">{{trans('messages.test-status')}}</th>
+                        <th class="col-md-4">{{trans('messages.test-status')}}</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
                     $panels = array();
+                        $activePanel = -1;
+                        if(Session::has("activeTest")){
+                            $s_id = Session::get("activeTest");
+                            $s_id = end($s_id);
+                            $p_id = DB::table('tests')
+                                    ->where('id', $s_id)->pluck('panel_id');
+                            if((int)$p_id > 0){
+                                $activePanel = $p_id;
+                            }
+                        }
+
                 ?>
-                @foreach($testSet as $key => $test)
+                @foreach($testIds as $key)
 
                         <?php
                             $testName = '';
-                            $test = Test::find($test->id);
+                            $test = Test::find($key);
+
                         ?>
 
                         @if($test->panel_id > 0 && in_array($test->panel_id, $panels))
@@ -117,10 +128,6 @@
                             ?>
                         @endif
 
-                        @if(Session::has('activeTest'))
-                            {{ in_array($test->id, Session::get('activeTest'))?"class='info'":""}}
-                        @endif
-
                         @if($testName)
                             <tr class="panel-header panel-header{{$test->panel_id}}">
                                 <td>{{ date('d-m-Y H:i', strtotime($test->time_created));}}</td>
@@ -128,39 +135,49 @@
                                 $test->visit->patient->patient_number:
                                 $test->visit->patient->external_patient_number
                             }}</td>
-                                <td>{{ empty($test->visit->visit_number)?
-                                $test->visit->id:
-                                $test->visit->visit_number
-                            }}</td> <!--Visit Number -->
-                                <td>{{ $test->visit->patient->name.' ('.($test->visit->patient->getGender(true)).',
+                                <td>{{ $test->visit->patient->name.'('.($test->visit->patient->getGender(true)).',
                             '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
                                 <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
                                 <td>{{ $testName ? $testName : $test->testType->name }}</td> <!--Test-->
-                                <td>{{ $test->visit->ward_or_location }}</td> <!--Visit Type -->
+                                <?php
+                                $string = $test->visit->ward_or_location
+                                ?>
+                                <td>{{ $string = (strlen($string) > 17) ? substr($string,0,14).'..' : $string;}}</td> <!--Visit Type -->
                                 <td id="test-status-{{$test->id}}" class='test-status'>
                                     <!-- Specimen statuses -->
-                                    @if($test->specimen->isNotCollected())
-                                        @if(($test->isPaid()))
-                                            <span class='label label-default'>
-                                                {{trans('messages.specimen-not-collected-label')}}</span>
-                                        @endif
-                                    @elseif($test->specimen->isReferred())
-                                        <span class='label label-primary'>
-                                                {{trans('messages.specimen-referred-label') }}
-                                            @if($test->specimen->referral->status == Referral::REFERRED_IN)
-                                                {{ trans("messages.in") }}
-                                            @elseif($test->specimen->referral->status == Referral::REFERRED_OUT)
-                                                {{ trans("messages.out") }}
-                                            @endif
-                                            </span>
-                                    @elseif($test->specimen->isAccepted())
-                                        <span class='label label-success'>
-                                                {{trans('messages.specimen-accepted-label')}}</span>
-                                    @elseif($test->specimen->isRejected())
-                                        <span class='label label-danger'>
-                                                {{trans('messages.specimen-rejected-label')}}</span>
-                                    @endif
+                                    <div class="container-fluid">
+                                    <div class="row">
 
+                                    <div class="col-md-12">
+                                        @if($test->isVerified())
+                                            <span class='label label-success'>
+                                                {{trans('messages.verified')}}</span>
+                                        @else
+                                            @if($test->specimen->isNotCollected())
+                                                @if(($test->isPaid()))
+                                                    <span class='label label-default panel-label'>
+                                                        {{trans('messages.specimen-not-collected-label')}}</span>
+                                                @endif
+                                            @elseif($test->specimen->isReferred())
+                                                <span class='label label-primary panel-label'>
+                                                        {{trans('messages.specimen-referred-label') }}
+                                                    @if($test->specimen->referral->status == Referral::REFERRED_IN)
+                                                        {{ trans("messages.in") }}
+                                                    @elseif($test->specimen->referral->status == Referral::REFERRED_OUT)
+                                                        {{ trans("messages.out") }}
+                                                    @endif
+                                                    </span>
+                                            @elseif($test->specimen->isAccepted())
+                                                <span class='label label-success panel-label'>
+                                                        {{trans('messages.specimen-accepted-label')}}</span>
+                                            @elseif($test->specimen->isRejected())
+                                                <span class='label label-danger panel-label'>
+                                                        {{trans('messages.specimen-rejected-label')}}</span>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                                    </div>
                                 </td>
                                 <!--Actions for test panel specimens  -->
                                 <td class="test-actions">
@@ -208,7 +225,8 @@
 
                                     @endif
 
-                                    @if($test->isPanelCompleted() == true && Auth::user()->can('verify_test_results')
+                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) &&
+                                     Auth::user()->can('verify_test_results')
                                         && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
                                         <a class="btn btn-sm btn-success" id="verify-{{$test->id}}-link"
                                            href="{{ URL::route('test.viewDetails', array($test->id)) }}"
@@ -219,28 +237,28 @@
                                     @endif
 
                                     <a onclick="flipPanelRows({{$test->panel_id}})"
-                                       class="btn-expand btn btn-sm btn-primary pull-right" href="#">
+                                       class="btn-expand btn btn-sm btn-primary pull-right {{((int)$activePanel == (int)$test->panel_id) ? 'pre-select' : ''}}" href="#">
                                         <span class="glyphicon glyphicon-list"> &nbsp; </span>
                                     </a>
                                 </td>
                             </tr>
                         @endif
 
-                        <tr class="{{($test->panel_id > 0 && in_array($test->panel_id, $panels))? 'panel-row panel'.$test->panel_id : ''}}" >
+                        <tr class="{{($test->panel_id > 0 && in_array($test->panel_id, $panels))? 'info panel-row panel'.$test->panel_id : ''}}" >
                         <td>{{ date('d-m-Y H:i', strtotime($test->time_created));}}</td>  <!--Date Ordered-->
                         <td>{{ empty($test->visit->patient->external_patient_number)?
                                 $test->visit->patient->patient_number:
                                 $test->visit->patient->external_patient_number
                             }}</td> <!--Patient Number -->
-                        <td>{{ empty($test->visit->visit_number)?
-                                $test->visit->id:
-                                $test->visit->visit_number
-                            }}</td> <!--Visit Number -->
-                        <td>{{ $test->visit->patient->name.' ('.($test->visit->patient->getGender(true)).',
+
+                        <td>{{ $test->visit->patient->name.'('.($test->visit->patient->getGender(true)).',
                             '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
                         <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
                         <td>{{ $test->testType->name }}</td> <!--Test-->
-                        <td>{{ $test->visit->ward_or_location }}</td> <!--Visit Type -->
+                            <?php
+                                $string = $test->visit->ward_or_location
+                            ?>
+                        <td>{{ $string = (strlen($string) > 17) ? substr($string,0,14).'..' : $string;}}</td> <!--Visit Type -->
 
                         <td id="test-status-{{$test->id}}" class='test-status'>
                             <!-- Test Statuses -->
@@ -300,7 +318,8 @@
                                                     {{trans('messages.specimen-rejected-label')}}</span>
                                             @endif
                                         @endif
-                                        </div></div></div>
+                                        </div>
+                                </div></div>
                         </td>
                         <!-- ACTION BUTTONS -->
                         <td class="test-actions">
@@ -569,4 +588,7 @@
             {{trans('messages.refer-sample')}}
         </a>
     </div> <!-- /. referral-button -->
+    <?php
+        Session::forget('activeTest');
+    ?>
 @stop

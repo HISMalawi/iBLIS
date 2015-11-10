@@ -180,6 +180,7 @@ class SpecimenTypeController extends \BaseController {
 					->join('test_types', 'test_types.id', '=', 'testtype_specimentypes.test_type_id')
 					->select('test_types.*')
 					->where('testtype_specimentypes.specimen_type_id', '=', $specimen_type)
+					->whereNull('test_types.deleted_at')
 					->where('test_types.test_category_id', '=', Session::get('location_id'))->lists('name', 'id');
 			}
 

@@ -73,9 +73,30 @@ class TestController extends \BaseController {
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
 
+		$testIds = $tests->lists('id');
+
+		//Make sure that if first or last element is a panel sub test,
+		// pull all tests in that panel and append to pagination results- Baobab
+
+		if ($tests->last() && $tests->last()->panel_id){
+			$missingPanelTests = Test::where('panel_id', $tests->last()->panel_id)
+									->whereNotIn('id', $testIds);
+
+			$testIds = array_merge($testIds, $missingPanelTests->lists('id'));
+		}
+
+		if ($tests->first() && $tests->first()->panel_id){
+
+			$missingPanelTests = Test::where('panel_id', $tests->first()->panel_id)
+				->whereNotIn('id', $testIds);
+
+			$testIds = array_merge($missingPanelTests->lists('id'), $testIds);
+		}
+
 		// Load the view and pass it the tests
 		return View::make('test.index')
 					->with('testSet', $tests)
+					->with('testIds', $testIds)
 					->with('testStatus', $statuses)
 					->withInput($input);
 	}
@@ -93,6 +114,10 @@ class TestController extends \BaseController {
 		$test->time_created = date('Y-m-d H:i:s');
 		$test->created_by = Auth::user()->id;
 		$test->save();
+
+		if($test->panel_id){
+			Session::set('activeTest', array($test->id));
+		}
 
 		return $id;
 	}
@@ -383,7 +408,7 @@ class TestController extends \BaseController {
 		$test->test_status_id = Test::STARTED;
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
-
+		Session::set('activeTest', array($test->id));
 		return $test->test_status_id;
 	}
 
@@ -500,14 +525,32 @@ class TestController extends \BaseController {
 	 */
 	public function verify($testID)
 	{
+
 		$test = Test::find($testID);
-		$test->test_status_id = Test::VERIFIED;
-		$test->time_verified = date('Y-m-d H:i:s');
-		$test->verified_by = Auth::user()->id;
-		$test->save();
+
+		if(!$test->panel_id) {
+			$test->test_status_id = Test::VERIFIED;
+			$test->time_verified = date('Y-m-d H:i:s');
+			$test->verified_by = Auth::user()->id;
+			$test->save();
+			$testIds = array($testID);
+		}else{
+
+			Test::where('panel_id', $test->panel_id)
+					->update(
+						array(
+							'test_status_id' => Test::VERIFIED,
+							'time_verified' => date('Y-m-d H:i:s'),
+							'verified_by' => Auth::user()->id
+							)
+					);
+			$testIds = Test::where('panel_id', $test->panel_id)->lists('id');
+		}
 
 		//Fire of entry verified event
-		Event::fire('test.verified', array($testID));
+		foreach($testIds As $id) {
+			Event::fire('test.verified', array($id));
+		}
 
 		return View::make('test.viewDetails')->with('test', $test);
 	}
