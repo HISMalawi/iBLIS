@@ -175,11 +175,11 @@ class Test extends Eloquent
 		if(!$this->panel_id)
 			return false;
 		else {
-			$sibling_tests = Test::where("panel_id", '=', $this->panel_id);
-			$tested_sibling_tests = Test::where("panel_id", '=', $this->panel_id)
-				->where('test_by', '>', 0);
-			return $tested_sibling_tests;
-				//(count($sibling_tests) == count($tested_sibling_tests));
+			$sibling_tests = Test::where("panel_id", '=', $this->panel_id)
+				->count();
+			$tested_sibling_tests = Test::where("panel_id", '=', $this->panel_id)->where('tested_by', '>', 0)->count();
+
+			return ($sibling_tests == $tested_sibling_tests);
 		}
 	}
 

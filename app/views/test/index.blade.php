@@ -186,7 +186,7 @@
                                     @endif
 
                                     @if ($test->specimen->isAccepted() && !($test->isVerified()))
-                                        @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()) && !$test->panel_id)
+                                        @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()))
 
                                             <a class="btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
                                                href="{{URL::route('test.reject', array($test->specimen_id))}}"
