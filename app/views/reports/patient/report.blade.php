@@ -84,18 +84,15 @@
 					@endif
 					<th>{{ trans('messages.gender')}}</th>
 					<td>{{ $patient->getGender(false) }}</td>
-				</tr>
-				<tr>
-					<th>{{ trans('messages.patient-id')}}</th>
-					<td>{{ $patient->patient_number}}</td>
 					<th>{{ trans('messages.age')}}</th>
 					<td>{{ $patient->getAge()}}</td>
 				</tr>
+
 				<tr>
-					<th>{{ trans('messages.patient-lab-number')}}</th>
+					<th>{{trans('messages.patient-id')}}</th>
 					<td>{{ $patient->external_patient_number }}</td>
-					<th>{{ trans('messages.requesting-facility-department')}}</th>
-					<td>{{ Config::get('kblis.organization') }}</td>
+					<th colspan="2">{{ trans('messages.requesting-facility-department')}}</th>
+					<td colspan="2">{{ Config::get('kblis.organization') }}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -108,25 +105,25 @@
 				<div class="panel panel-success">
 					<div class="panel-heading ">
 						<span class="glyphicon glyphicon-tint"></span>
-						<span><strong>{{ $specimen->specimenType->name }}</strong></span>
+						<span><strong>{{ $specimen->accession_number }} &nbsp;:&nbsp; {{ $specimen->specimenType->name }}</strong></span>
 						<span class="pull-right"><strong>Date ordered: &nbsp;&nbsp;&nbsp;{{	$test->isExternal()?$test->external()->request_date:$test->time_created }}</strong></span>
 
 					</div>
 					<div class="panel-body">
 
-				<table class="table table-bordered">
-					<tbody>
+			<table class="table table-bordered">
+				<tbody>
 
 					<tr>
-						<td><strong>{{trans('messages.specimen-id')}}</strong></td>
-						<td>{{ $specimen->accession_number }}</td>
+						<td><strong>{{Lang::choice('messages.specimen-tests-ordered', 1)}}</strong></td>
+						<td>{{ $specimen->testTypes() }}</td>
 
 						<td><strong>{{Lang::choice('messages.test-category', 2)}}</strong></td>
 						<td>{{ $specimen->labSections() }}</td>
 					</tr>
 
 					<tr>
-						<td><strong>{{trans('messages.specimen-status')}}</strong></td>
+						<td><strong>{{trans('messages.ordered-specimen-status')}}</strong></td>
 						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
 							<td>{{trans('messages.specimen-not-collected')}}</td>
 						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
@@ -144,27 +141,29 @@
 							<td>{{$specimen->rejectedBy->name}}</td>
 						@endif
 					</tr>
-					<tr>
-						<td><strong>{{Lang::choice('messages.test-type', 1)}}</strong></td>
-						<td colspan="3">{{ $specimen->testTypes() }}</td>
-					</tr>
 
-			</tbody>
-		</table>
+					@if(count($verified) == count($tests))
+						<tr>
+							<td><strong>{{trans('messages.verified-by')}}</strong></td>
+							<td>{{ $test->verifiedBy->name or trans('messages.verification-pending')}}</td>
+							<td><strong> {{trans('messages.date-verified')}}</strong></td>
+							<td>{{ $test->time_verified }}</td>
+						</tr>
+					@endif
+				</tbody>
+			</table>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<th colspan="8">{{trans('messages.test-results')}}</th>
+					<th colspan="8">{{trans('messages.test-results')}}
+						{{(count($verified) != count($tests)) ?	('<span class="pull-right"><i>'.trans('messages.verification-pending')).'</i></span>' : ''}}</th>
 				</tr>
 				<tr>
 					<th>{{Lang::choice('messages.test-type', 1)}}</th>
 					<th>{{trans('messages.test-results-values')}}</th>
 					<th>{{trans('messages.test-remarks')}}</th>
 					<th>{{trans('messages.tested-by')}}</th>
-					<th>{{trans('messages.results-entry-date')}}</th>
 					<th>{{trans('messages.date-tested')}}</th>
-					<th>{{trans('messages.verified-by')}}</th>
-					<th>{{trans('messages.date-verified')}}</th>
 				</tr>
 				@forelse($tests as $test)
 						<tr>
@@ -181,10 +180,8 @@
 								@endforeach</td>
 							<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
 							<td>{{ $test->testedBy->name or trans('messages.pending')}}</td>
-							<td>{{ $test->testResults->last()->time_entered }}</td>
 							<td>{{ $test->time_completed }}</td>
-							<td>{{ $test->verifiedBy->name or trans('messages.verification-pending')}}</td>
-							<td>{{ $test->time_verified }}</td>
+
 						</tr>
 				@empty
 					<tr>
@@ -193,6 +190,51 @@
 				@endforelse
 			</tbody>
 		</table>
+
+						<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
+						@foreach($tests as $test)
+							<div class="row">
+								@if(count($test->susceptibility)>0)
+									@foreach($test->organisms() as $organism)
+										<?php
+										$organism = Organism::find($organism->organism_id);
+										?>
+										<div class="col-md-6">
+											<table class="table table-bordered">
+												<tbody>
+												<tr>
+													<th colspan="3">{{ $organism->name }}</th>
+												</tr>
+												<tr>
+													<th width="50%">{{ Lang::choice('messages.drug',1) }}</th>
+													<th>{{ trans('messages.zone-size')}}</th>
+													<th>{{ trans('messages.interp')}}</th>
+												</tr>
+												@foreach(Susceptibility::drugs_search($test->id, $organism->id) as $drug)
+													<?php
+													$drug = Drug::find($drug->drug_id);
+													?>
+													@if($drugSusceptibility = Susceptibility::getDrugSusceptibility($test->id, $organism->id, $drug->id))
+														<tr>
+															<td>{{ $drug->name }}</td>
+															<td>{{ $drugSusceptibility->zone!=null?$drugSusceptibility->zone:'' }}</td>
+															<td>{{ $drugSusceptibility->interpretation!=null?$drugSusceptibility->interpretation:'' }}</td>
+														</tr>
+													@else
+														<tr>
+															<td>{{ $drug->name }}</td>
+															<td></td>
+															<td></td>
+														</tr>
+													@endif
+												@endforeach
+												</tbody>
+											</table>
+										</div>
+									@endforeach
+								@endif
+							</div>
+						@endforeach
 				</div>
 			</div>
 		</div>

@@ -861,3 +861,13 @@ $(function(){
 		$('#organismsModel .checkbox').hide();
 		$("#organismsModel .checkbox:contains('" +text + "')").show();
 	}
+
+	function displayOrganisms(){
+		$(".organism-option:checkbox:not(:checked)").each(function() {
+			$('#organism'+$(this).val()).hide();
+		});
+
+		var nodes = $(".organism-option:checkbox:checked").each(function() {
+			$('#organism'+$(this).val()).show();
+		});
+	}

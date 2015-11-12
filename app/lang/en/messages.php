@@ -311,6 +311,8 @@ return array(
     'test-phase' => 'Test Phase',
     'test-remarks' => 'Remarks',
     'test-status' => 'Test Status',
+    'ordered-specimen-status' => 'Specimen Status',
+    'specimen-tests-ordered' => 'Test Type(s)',
     'tested-by' => 'Performed By',
     'turnaround-time' => 'Turnaround Time',
     'unknown' => 'Unknown',

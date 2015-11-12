@@ -62,6 +62,11 @@ class SusceptibilityController extends \BaseController {
 			}
 			
 		}
+		//Clean empty susceptibility values
+
+		DB::raw("").delete();
+
+
 		if ($action == "results"){
 			$test_id = Input::get('testId');
 			$organism_id = Input::get('organismId');

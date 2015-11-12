@@ -6,7 +6,7 @@
                 <td colspan="3" style="text-align:center;">
                     <strong><p> {{ strtoupper(Config::get('kblis.organization')) }}<br>
                     {{ strtoupper(Config::get('kblis.address-info')) }}</p>
-                    <p>{{ trans('messages.laboratory-report')}}<br>
+                    <p><u>{{ trans('messages.laboratory-report')}}</u><br>
                 </td>
                 <td>
                 @if($accredited)

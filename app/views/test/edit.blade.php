@@ -98,6 +98,7 @@
 		                            {{ Form::select($fieldName, $measure_values, array_search($ans, $measure_values),
 		                                array('class' => 'form-control result-interpretation-trigger',
 		                                'data-url' => URL::route('test.resultinterpretation'),
+										'onchange' => "if(this.value.match(/^Growth$/i)){showCultureOrganisms()}",
 		                                'data-measureid' => $measure->id
 		                                )) 
 		                            }}
@@ -179,7 +180,7 @@
 											<?php 
 												$cnt = 0;
 												$zebra = "";
-												$checked=false; 
+												$checked=false;
 												$checker = '';
 												$susOrgIds = array();
 												$defaultZone='';
@@ -189,23 +190,29 @@
 												@if(count($test->susceptibility)>0)
 													@foreach($test->susceptibility as $drugSusceptibility)
 														<?php
+
 														array_push($susOrgIds, $drugSusceptibility->organism_id);
-														if(in_array($value->id, $susOrgIds))
+														if(in_array($value->id, $susOrgIds)){
 															$checked='checked';
+														}
 														?>
 													@endforeach
+
 												@endif
 												{{ ($cnt%4==0)?"<div class='row $zebra'>":"" }}
 												<?php
 													$cnt++;
 													$zebra = (((int)$cnt/4)%2==1?"row-striped":"");
 												?>
-												<div class="col-md-4">
+												<div style="display: {{$checked ? '' : 'none'}}" class="col-md-4" id="organism{{$value->id}}">
 													<label  class="checkbox">
-														<input type="checkbox" name="organism[]" value="{{ $value->id}}" {{ $checked }} onchange="javascript:showSusceptibility(<?php echo $value->id; ?>)" />{{$value->name}}
+														<input  type="checkbox" name="organism[]" value="{{ $value->id}}" {{ $checked }} onchange="javascript:showSusceptibility(<?php echo $value->id; ?>)" />{{$value->name}}
 													</label>
 												</div>
 												{{ ($cnt%4==0)?"</div>":"" }}
+												<?php
+													$checked=false;
+												?>
 											@endforeach
 										</div>
 									</div>
@@ -240,6 +247,7 @@
 										{{ Form::hidden('organism[]', $value->id, array('id' => 'organism[]', 'name' => 'organism[]')) }}
 										@if($sensitivity=Susceptibility::getDrugSusceptibility($test->id, $value->id, $drug->id))
 											<?php
+
 											$defaultZone = $sensitivity->zone;
 											$defaultInterp = $sensitivity->interpretation;
 											?>
@@ -263,6 +271,9 @@
 									</tbody>
 								</table>
 								{{ Form::close() }}
+								<?php
+									$checker = false;
+								?>
 								@endforeach
                               </div>
 	                        </div> <!-- ./ panel-body -->
@@ -319,7 +330,7 @@
 	                                        <p><strong>{{trans('messages.specimen-number')}}</strong></p>
 	                                    </div>
 	                                    <div class="col-md-8">
-	                                        {{$test->specimen->id or trans('messages.pending') }}
+	                                        {{$test->specimen->accession_number or trans('messages.pending') }}
 	                                    </div>
 	                                </div>
 	                                <div class="row">
@@ -446,4 +457,58 @@
 				</div>
 			</div>
 		</div>
+
+	<!-- Modal -->
+	<div id="organismsModel" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Select organisms observed</h4>
+				</div>
+
+				<?php
+				$cnt = 0;
+				$zebra = "";
+				$checked=false;
+				$checker = '';
+				?>
+
+				<div class="modal-body">
+					<div class="row" style="padding: 0px;">
+						<div class="input-group pull-right" style="width: 250px;margin-top: -65px;margin-right: 45px;">
+
+							<input onkeydown="searchOrganisms(this.innerHTML);" type="text" class="form-control" placeholder="Search for...">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-default btn-primary" type="button">Search</button>
+                                  </span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="modal-data">
+						@foreach($test->testType->organisms as $key=>$value)
+
+							{{ ($cnt%6==0)?"<div class='row $zebra'>":"" }}
+							<?php
+							$cnt++;
+							$zebra = (((int)$cnt/6)%2==1?"row-striped":"");
+							?>
+							<span class="col-md-2">
+                            <label class="checkbox">
+								<input class="organism-option" type="checkbox" name="organism-option[]" value="{{ $value->id}}" />{{$value->name}}
+							</label>
+                        </span>
+							{{ ($cnt%6==0)?"</div>":"" }}
+						@endforeach
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button onclick="displayOrganisms(); hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
 @stop

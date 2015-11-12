@@ -39,11 +39,11 @@ class ReportController extends \BaseController {
 		}
 		//	Query to get tests of a particular patient
 		if(($visit || $visitId) && $id){
-			$tests = Test::where('visit_id', '=', $visit?$visit:$visitId);
+			$tests = Test::where('visit_id', '=', $visit?$visit:$visitId)->orderBy("time_completed", "ASC");
 		}
 		else{
 			$tests = Test::join('visits', 'visits.id', '=', 'tests.visit_id')
-							->where('patient_id', '=', $id);
+							->where('patient_id', '=', $id)->orderBy("time_completed", "ASC");;
 		}
 		//	Begin filters - include/exclude pending tests
 		if($pending){
@@ -68,6 +68,7 @@ class ReportController extends \BaseController {
 			}
 		}
 		//	Get tests collection
+		//$tests = $tests->orderBy('time_completed', 'ASC');
 		$tests = $tests->get(array('tests.*'));
 		//	Get patient details
 		$patient = Patient::find($id);

@@ -185,12 +185,13 @@
                                                     $cnt++;
                                                     $zebra = (((int)$cnt/2)%2==1?"row-striped":"");
                                                 ?>
-                                                <div class="col-md-4">
+                                                <div style="display: {{$checked ? '' : 'none'}}" class="col-md-4" id="organism{{$value->id}}">
                                                     <label  class="checkbox">
                                                         <input type="checkbox" name="organism[]" value="{{ $value->id}}" {{ $checked }} onchange="javascript:showSusceptibility(<?php echo $value->id; ?>)" />{{$value->name}}
                                                     </label>
                                                 </div>
                                                 {{ ($cnt%3==0)?"</div>":"" }}
+                                                <?php $checked = false ?>
                                             @endforeach
                                         </div>
                                     </div>
@@ -242,6 +243,7 @@
                                     </tbody>
                                 </table>
                                 {{ Form::close() }}
+                                    <?php $checker = false ?>
                                 @endforeach
                               </div>
                             </div> <!-- ./ panel-body -->
@@ -388,8 +390,8 @@
                                     <div class="display-details">
                                         <p class="view"><strong>{{ Lang::choice('messages.test-type',1) }}</strong>
                                             {{ $test->testType->name or trans('messages.unknown') }}</p>
-                                        <p class="view"><strong>{{trans('messages.visit-number')}}</strong>
-                                            {{$test->visit->visit_number or trans('messages.unknown') }}</p>
+                                        <p class="view"><strong>{{trans('messages.ward')}}</strong>
+                                            {{$test->visit->ward_or_location or trans('messages.unknown') }}</p>
                                         <p class="view"><strong>{{trans('messages.date-ordered')}}</strong>
                                             {{ $test->isExternal()?$test->external()->request_date:$test->time_created }}</p>
                                         <p class="view"><strong>{{trans('messages.lab-receipt-date')}}</strong>
@@ -466,7 +468,7 @@
                         ?>
                         <span class="col-md-2">
                             <label class="checkbox">
-                                <input  type="checkbox" name="organism[]" value="{{ $value->id}}" />{{$value->name}}
+                                <input  class="organism-option" type="checkbox" name="organism[]" value="{{ $value->id}}" />{{$value->name}}
                             </label>
                         </span>
                         {{ ($cnt%6==0)?"</div>":"" }}
@@ -474,7 +476,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button onclick="hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
+                    <button onclick="displayOrganisms(); hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
                 </div>
             </div>
 
