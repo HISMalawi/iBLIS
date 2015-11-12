@@ -545,6 +545,7 @@ class TestController extends \BaseController {
 							)
 					);
 			$testIds = Test::where('panel_id', $test->panel_id)->lists('id');
+
 		}
 
 		//Fire of entry verified event
@@ -552,7 +553,7 @@ class TestController extends \BaseController {
 			Event::fire('test.verified', array($id));
 		}
 
-		return View::make('test.viewDetails')->with('test', $test);
+		return View::make('test.viewDetails')->with('test', $test)->with('hideVerifyButton', true);
 	}
 
 	/**

@@ -99,45 +99,55 @@
 				</tr>
 			</tbody>
 		</table>
-		<table class="table table-bordered">
-			<tbody>
-				<tr>
-					<th colspan="7">{{trans('messages.specimen')}}</th>
-				</tr>
-				<tr>
-					<th>{{ Lang::choice('messages.specimen-type', 1)}}</th>
-					<th>{{ Lang::choice('messages.test', 2)}}</th>
-					<th>{{ trans('messages.date-ordered') }}</th>
-					<th>{{ Lang::choice('messages.test-category', 2)}}</th>
-					<th>{{ trans('messages.specimen-status')}}</th>
-					<th>{{ trans('messages.collected-by')."/".trans('messages.rejected-by')}}</th>
-					<th>{{ trans('messages.date-checked')}}</th>
-				</tr>
-				@forelse($tests as $test)
-						<tr>
-							<td>{{ $test->specimen->specimenType->name }}</td>
-							<td>{{ $test->testType->name }}</td>
-							<td>{{ $test->isExternal()?$test->external()->request_date:$test->time_created }}</td>
-							<td>{{ $test->testType->testCategory->name }}</td>
-							@if($test->specimen->specimen_status_id == Specimen::NOT_COLLECTED)
-								<td>{{trans('messages.specimen-not-collected')}}</td>
-								<td></td>
-								<td></td>
-							@elseif($test->specimen->specimen_status_id == Specimen::ACCEPTED)
-								<td>{{trans('messages.specimen-accepted')}}</td>
-								<td>{{$test->specimen->acceptedBy->name}}</td>
-								<td>{{$test->specimen->time_accepted}}</td>
-							@elseif($test->specimen->specimen_status_id == Specimen::REJECTED)
-								<td>{{trans('messages.specimen-rejected')}}</td>
-								<td>{{$test->specimen->rejectedBy->name}}</td>
-								<td>{{$test->specimen->time_rejected}}</td>
-							@endif
-						</tr>
-				@empty
+
+			@forelse($data as $accession_number => $tests)
+				<?php
+				$specimen = Specimen::where('accession_number', '=', $accession_number)->first();
+				$test = $tests[0];
+				?>
+				<div class="panel panel-success">
+					<div class="panel-heading ">
+						<span class="glyphicon glyphicon-tint"></span>
+						<span><strong>{{ $specimen->specimenType->name }}</strong></span>
+						<span class="pull-right"><strong>Date ordered: &nbsp;&nbsp;&nbsp;{{	$test->isExternal()?$test->external()->request_date:$test->time_created }}</strong></span>
+
+					</div>
+					<div class="panel-body">
+
+				<table class="table table-bordered">
+					<tbody>
+
 					<tr>
-						<td colspan="7">{{trans("messages.no-records-found")}}</td>
+						<td><strong>{{trans('messages.specimen-id')}}</strong></td>
+						<td>{{ $specimen->accession_number }}</td>
+
+						<td><strong>{{Lang::choice('messages.test-category', 2)}}</strong></td>
+						<td>{{ $specimen->labSections() }}</td>
 					</tr>
-				@endforelse
+
+					<tr>
+						<td><strong>{{trans('messages.specimen-status')}}</strong></td>
+						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+							<td>{{trans('messages.specimen-not-collected')}}</td>
+						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+							<td>{{trans('messages.specimen-accepted')}}</td>
+						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
+							<td>{{trans('messages.specimen-rejected')}}</td>
+						@endif
+
+						<td><strong>{{ trans('messages.collected-by')."/".trans('messages.rejected-by')}}</strong></td>
+						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+							<td></td>
+						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+							<td>{{$specimen->acceptedBy->name}}</td>
+						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
+							<td>{{$specimen->rejectedBy->name}}</td>
+						@endif
+					</tr>
+					<tr>
+						<td><strong>{{Lang::choice('messages.test-type', 1)}}</strong></td>
+						<td colspan="3">{{ $specimen->testTypes() }}</td>
+					</tr>
 
 			</tbody>
 		</table>
@@ -161,11 +171,13 @@
 							<td>{{ $test->testType->name }}</td>
 							<td>
 								@foreach($test->testResults as $result)
-									<p>
-										{{ Measure::find($result->measure_id)->name }}: {{ $result->result }}
-										{{ Measure::getRange($test->visit->patient, $result->measure_id) }}
-										{{ Measure::find($result->measure_id)->unit }}
-									</p>
+
+										@if($result->result)
+											<p>
+												{{ Measure::find($result->measure_id)->name }}: {{ $result->result }}
+												{{ Measure::find($result->measure_id)->unit }}
+											</p>
+										@endif
 								@endforeach</td>
 							<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
 							<td>{{ $test->testedBy->name or trans('messages.pending')}}</td>
@@ -180,7 +192,15 @@
 					</tr>
 				@endforelse
 			</tbody>
-		</table></div>
+		</table>
+				</div>
+			</div>
+		</div>
+			@empty
+				<tr>
+					<td colspan="7">{{trans("messages.no-records-found")}}</td>
+				</tr>
+			@endforelse
 		@endif
 		</div>
 	</div>

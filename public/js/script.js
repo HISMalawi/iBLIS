@@ -847,5 +847,17 @@ $(function(){
 		$(".panel"+id+":first").css({
 			'border-top' : '2px solid #428bca'
 		})
+	}
 
+	function showCultureOrganisms(){
+		$('#organismsModel').modal("show");
+	}
+
+	function hideCultureOrganisms(){
+		$('#organismsModel').modal("hide");
+	}
+
+	function searchOrganisms(text){
+		$('#organismsModel .checkbox').hide();
+		$("#organismsModel .checkbox:contains('" +text + "')").show();
 	}

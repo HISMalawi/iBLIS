@@ -151,4 +151,47 @@ class Specimen extends Eloquent
             return false;
         }
     }
+
+	public function testTypes(){
+
+		$types = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')
+			->join('test_panels', 'test_panels.id', '=', 'tests.panel_id')
+			->join('panel_types', 'panel_types.id', '=', 'test_panels.panel_type_id')
+			->where('specimens.id', $this->id)
+			->whereNotNull('tests.panel_id')
+			->selectRaw('distinct panel_types.name')->get();
+
+		$tnames = "";
+		foreach($types AS $type){
+			$tnames = !$tnames ? $type->name : ($tnames.', '.$type->name);
+		}
+
+		$types = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')
+			->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+			->where('specimens.id', $this->id)
+			->whereNull('tests.panel_id')
+			->selectRaw('distinct test_types.name')->get();
+
+		foreach($types AS $type){
+			$tnames = !$tnames ? $type->name : ($tnames.', '.$type->name);
+		}
+		return $tnames;
+	}
+
+	public function labSections(){
+		$sections = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')
+			->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+			->join('test_categories', 'test_categories.id', '=', 'test_types.test_category_id')
+			->where('specimens.id', $this->id)
+			->selectRaw('distinct test_categories.name')->get();
+
+		$names = "";
+
+		foreach($sections AS $name){
+			$names = !$names ? $name->name : $names.$name->name;
+		}
+
+		return $names;
+	}
+
 }

@@ -227,7 +227,7 @@ class Test extends Eloquent
 	public function getTurnaroundTime()
 	{
 		$startTime = new DateTime($this->time_started);
-		$endTime = new DateTime($this->time_completed);
+		$endTime = new DateTime($this->time_verified);
 		$interval = $startTime->diff($endTime);
 
 		$turnaroundTime = ($interval->days * 24 * 3600) + ($interval->h * 3600) + ($interval->i * 60) + ($interval->s);
@@ -644,6 +644,15 @@ class Test extends Eloquent
 			$measureIds = array_merge($measureIds, $testType->measures->lists('id'));
 		}
 		return $measureIds;
+	}
+
+	public function organisms(){
+
+		$drg_sus = Organism::join('drug_susceptibility', 'organisms.id', '=', 'drug_susceptibility.organism_id')
+			->whereRaw("drug_susceptibility.test_id = ? AND COALESCE(drug_susceptibility.interpretation, '') != '' "
+				,array($this->id))->selectRaw('distinct organism_id')->get();
+
+		return $drg_sus;
 	}
 	/**
 	 * External dump relationship

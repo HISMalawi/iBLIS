@@ -480,6 +480,21 @@ table.table.report-table-border > tbody > tr > td{
     cursor: pointer;
 }
 
-.ladbel{
-    margin-left: 10px !important;
+.bordered-top{
+    border-top: 1px solid lightgray;
+}
+.bordered-bottom{
+    border-bottom: 1px dotted lightgray;
+}
+
+.bordered-left{
+    border-left: 1px dotted lightgray;
+}
+
+.bordered-right{
+    border-right: 1px dotted lightgray;
+}
+
+.modal-dialog{
+    width: 75%;
 }

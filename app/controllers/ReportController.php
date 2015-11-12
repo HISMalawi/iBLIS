@@ -52,6 +52,7 @@ class ReportController extends \BaseController {
 		else{
 			$tests = $tests->whereIn('tests.test_status_id', [Test::COMPLETED, Test::VERIFIED]);
 		}
+
 		//	Date filters
 		if($from||$to){
 
@@ -85,6 +86,19 @@ class ReportController extends \BaseController {
 			else
 				continue;
 		}
+
+		$data = array();
+
+		foreach($tests as $test){
+			$specimen = Specimen::find($test->specimen_id);
+			if(empty($data[$specimen->accession_number])){
+				$data[$specimen->accession_number] = array();
+			}
+
+			array_push($data[$specimen->accession_number], $test);
+		}
+
+
 		if(Input::has('word')){
 			$date = date("Ymdhi");
 			$fileName = "blispatient_".$id."_".$date.".doc";
@@ -105,6 +119,7 @@ class ReportController extends \BaseController {
 			return View::make('reports.patient.report')
 						->with('patient', $patient)
 						->with('tests', $tests)
+						->with('data', $data)
 						->with('pending', $pending)
 						->with('error', $error)
 						->with('visit', $visit)

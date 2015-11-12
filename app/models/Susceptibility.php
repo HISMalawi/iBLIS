@@ -42,4 +42,13 @@ class Susceptibility extends Eloquent
     									->first();
     	return $susceptibility;
     }
+
+	public static function drugs_search($test_id,$organism_id){
+		$drugs = Susceptibility::where('test_id', $test_id)
+			->where('organism_id', $organism_id)
+			->whereRaw("COALESCE(interpretation, '') != '' ")
+			->selectRaw('distinct drug_id')->get();
+
+		return $drugs;
+	}
 }
