@@ -59,14 +59,15 @@
 
 								?>
 								{{ !empty($testName) ? $testName : $test->testType->name }}</h3>
-							<p class="view"><strong>{{trans('messages.visit-number')}}</strong>
-								{{$test->visit->visit_number or trans('messages.unknown') }}</p>
+
 							<p class="view"><strong>{{trans('messages.date-ordered')}}</strong>
 								{{ $test->isExternal()?$test->external()->request_date:$test->time_created }}</p>
 							<p class="view"><strong>{{trans('messages.lab-receipt-date')}}</strong>
 								{{$test->time_created}}</p>
 							<p class="view"><strong>{{trans('messages.test-status')}}</strong>
 								{{trans('messages.'.$test->testStatus->name)}}</p>
+							<p class="view"><strong>{{trans('messages.ward')}}</strong>
+								{{$test->visit->ward_or_location or trans('messages.unknown') }}</p>
 							<p class="view-striped"><strong>{{trans('messages.physician')}}</strong>
 								{{$test->requested_by or trans('messages.unknown') }}</p>
 							<p class="view-striped"><strong>{{trans('messages.request-origin')}}</strong>
