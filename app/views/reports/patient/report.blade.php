@@ -8,8 +8,16 @@
 	</ol>
 </div>
 <div class='container-fluid'>
-    {{ Form::open(array('url' => 'patientreport/'.$patient->id, 'class' => 'form-inline', 'id' => 'form-patientreport-filter', 'method'=>'POST')) }}
+	@if(empty($visit))
+    	{{ Form::open(array('url' => 'patientreport/'.$patient->id, 'class' => 'form-inline', 'id' => 'form-patientreport-filter', 'method'=>'POST')) }}
+	@else
+		{{ Form::open(array('url' => 'patientreport/'.$patient->id.'/'.$visit, 'class' => 'form-inline', 'id' => 'form-patientreport-filter', 'method'=>'POST')) }}
+	@endif
+
 		{{ Form::hidden('patient', $patient->id, array('id' => 'patient')) }}
+		{{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+		{{ Form::hidden('pdf', '', array('id' => 'word')) }}
+
 		<div class="row">
 			<div class="col-sm-3">
 				<label class="checkbox-inline">
@@ -20,7 +28,7 @@
 				<div class="row">
 					<div class="col-sm-2">
 						{{ Form::label('start', trans("messages.from")) }}</div><div class="col-sm-1">
-			        	{{ Form::text('start', isset($input['start'])?$input['start']:null, 
+			        	{{ Form::text('start', isset($input['start'])?$input['start']:null,
 			                array('class' => 'form-control standard-datepicker')) }}
 			        </div>
 		        </div>
@@ -31,7 +39,7 @@
 				        {{ Form::label('end', trans("messages.to")) }}
 				    </div>
 				    <div class="col-sm-1">
-		                {{ Form::text('end', isset($input['end'])?$input['end']:null, 
+		                {{ Form::text('end', isset($input['end'])?$input['end']:null,
 		                    array('class' => 'form-control standard-datepicker')) }}
 		            </div>
 	            </div>
@@ -39,13 +47,13 @@
             <div class="col-sm-3">
 				<div class="row">
 		            <div class="col-sm-4">
-			            {{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
+			            {{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'),
 			                    array('class' => 'btn btn-primary', 'id' => 'filter', 'type' => 'submit')) }}
 		            </div>
 		            @if(count($verified) == count($tests))
 		            <div class="col-sm-1">
-				        {{ Form::submit(trans('messages.print'), array('class' => 'btn btn-success',
-				        	'id' => 'word', 'name' => 'word')) }}
+				        {{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
+				        	'onclick' => "selectPrinter()")) }}
 				    </div>
 				    @endif
 			    </div>
@@ -193,13 +201,17 @@
 
 						<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
 						@foreach($tests as $test)
-							<div class="row">
+							<table class="table">
+
 								@if(count($test->susceptibility)>0)
+									<?php $i = 0 ?>
 									@foreach($test->organisms() as $organism)
 										<?php
 										$organism = Organism::find($organism->organism_id);
+
 										?>
-										<div class="col-md-6">
+										{{($i % 2 == 0) ? ('<tr class="row">') : ""}}
+										<td>
 											<table class="table table-bordered">
 												<tbody>
 												<tr>
@@ -230,10 +242,12 @@
 												@endforeach
 												</tbody>
 											</table>
-										</div>
+										</td>
+										{{($i % 2 == 1) ? ('</tr>') : ""}}
+										<?php $i = $i + 1 ?>
 									@endforeach
 								@endif
-							</div>
+							</table>
 						@endforeach
 				</div>
 			</div>
@@ -248,4 +262,37 @@
 	</div>
 
 </div>
+
+<!--PRINT CONFIRMATION POPUP BEGIN -->
+<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel" style="text-align: left;">
+					Select Printer
+				</h4>
+			</div>
+			<div class="modal-body">
+        <span style="text-align:center;">
+          <table align="center" id="printers">
+			   @foreach($available_printers AS $printer)
+			  <tr onmousedown="updateValue(this)" value="{{$printer}}">
+				  <td><input type="radio" class="printer_radio_button" value="{{$printer}}" name="printer_name"/></td>
+				  <td style="text-align: left; padding-left:50px;">{{$printer}}</td>
+			  </tr>
+			  @endforeach
+		  </table>
+        </span>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
+					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--CONFIRMATION POPUP END -->
 @stop

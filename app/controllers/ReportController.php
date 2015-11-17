@@ -1,5 +1,7 @@
 <?php
 set_time_limit(0); //60 seconds = 1 minute
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 class ReportController extends \BaseController {
 	//	Begin patient report functions
 	/**
@@ -21,18 +23,26 @@ class ReportController extends \BaseController {
 		return View::make('reports.patient.index')->with('patients', $patients)->withInput(Input::all());
 	}
 
+	public function printReport($id, $visit){
+
+		dd($id);
+	}
 	/**
 	 * Display data after applying the filters on the report uses patient ID
 	 *
 	 * @return Response
 	 */
 	public function viewPatientReport($id, $visit = null){
+
 		$from = Input::get('start');
 		$to = Input::get('end');
 		$pending = Input::get('pending');
 		$date = date('Y-m-d');
 		$error = '';
 		$visitId = Input::get('visit_id');
+
+		$visitId = (!$visitId && $visit) ? $visit : $visitId;
+
 		//	Check checkbox if checked and assign the 'checked' value
 		if (Input::get('tests') === '1') {
 		    $pending='checked';
@@ -43,7 +53,7 @@ class ReportController extends \BaseController {
 		}
 		else{
 			$tests = Test::join('visits', 'visits.id', '=', 'tests.visit_id')
-							->where('patient_id', '=', $id)->orderBy("time_completed", "ASC");;
+							->where('patient_id', '=', $id)->orderBy("time_completed", "ASC");
 		}
 		//	Begin filters - include/exclude pending tests
 		if($pending){
@@ -99,35 +109,38 @@ class ReportController extends \BaseController {
 			array_push($data[$specimen->accession_number], $test);
 		}
 
+		$view_url = "reports.patient.report";
 
-		if(Input::has('word')){
-			$date = date("Ymdhi");
-			$fileName = "blispatient_".$id."_".$date.".doc";
-			$headers = array(
-			    "Content-type"=>"text/html",
-			    "Content-Disposition"=>"attachment;Filename=".$fileName
-			);
-			$content = View::make('reports.patient.export')
-							->with('patient', $patient)
-							->with('tests', $tests)
-							->with('from', $from)
-							->with('to', $to)
-							->with('visit', $visit)
-							->with('accredited', $accredited);
-	    	return Response::make($content,200, $headers);
+		if(Input::has('pdf')){
+			if(!Input::has('page')){
+				$url = Request::url()."?pdf=true&page=true";
+				$fileName = "patientreport".$id."_".$date.".pdf";
+				$printer = Input::get("printer_name");
+
+				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 '$url'  $fileName");
+				$process->run();
+
+				$process = new Process("lp -d $printer $fileName");
+				$process->run();
+
+				$process = new Process("rm $fileName && rm patientreport*.pdf");
+				$process->run();
+			}else{
+				$view_url = "reports.patient.export";
+			}
 		}
-		else{
-			return View::make('reports.patient.report')
-						->with('patient', $patient)
-						->with('tests', $tests)
-						->with('data', $data)
-						->with('pending', $pending)
-						->with('error', $error)
-						->with('visit', $visit)
-						->with('accredited', $accredited)
-						->with('verified', $verified)
-						->withInput(Input::all());
-		}
+
+		return View::make($view_url)
+			->with('patient', $patient)
+			->with('tests', $tests)
+			->with('data', $data)
+			->with('pending', $pending)
+			->with('error', $error)
+			->with('visit', $visitId)
+			->with('accredited', $accredited)
+			->with('verified', $verified)
+			->with('available_printers', Config::get('kblis.A4_printers'))
+			->withInput(Input::all());
 	}
 	//	End patient report functions
 

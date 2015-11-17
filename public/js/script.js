@@ -871,3 +871,19 @@ $(function(){
 			$('#organism'+$(this).val()).show();
 		});
 	}
+
+	function submitPrintForm(){
+		document.getElementById("word").value = "true";
+		document.getElementById('form-patientreport-filter').submit();
+	}
+
+	function updateValue(obj){
+		obj.getElementsByTagName('input')[0].checked = true
+		document.getElementById("printer_name").value = obj.getAttribute('value');
+	}
+
+	function selectPrinter(){
+			$("#printer_name").value = '';
+			$(".printer_radio_button").prop( "checked", false );//Uncheck printer
+			$('#myModal').modal('show');
+		}

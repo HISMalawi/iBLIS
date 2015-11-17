@@ -29,6 +29,24 @@ Route::group(array("before" => "guest"), function()
     ));
 
 });
+
+
+/*
+ * *Routes accessible by cmd tools for generating printouts
+*/
+
+Route::group(array("before", "print"), function()
+{
+    Route::any("/patientreport/{id}/{visit}", array(
+        "as" => "reports.patient.report",
+        "uses" => "ReportController@viewPatientReport"
+    ));
+
+    Route::any("/print/{id}/{visit}", array(
+        "as" => "reports.patient.print",
+        "uses" => "ReportController@printReport"
+    ));
+});
 /* Routes accessible AFTER logging in */
 Route::group(array("before" => "auth"), function()
 {
@@ -289,13 +307,10 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@loadPatients"
         ));
         Route::any("/patientreport/{id}", array(
-            "as" => "reports.patient.report", 
+            "as" => "reports.patient.report",
             "uses" => "ReportController@viewPatientReport"
             ));
-        Route::any("/patientreport/{id}/{visit}", array(
-            "as" => "reports.patient.report", 
-            "uses" => "ReportController@viewPatientReport"
-            ));
+
         Route::any("/dailylog", array(
             "as"   => "reports.daily.log",
             "uses" => "ReportController@dailyLog"

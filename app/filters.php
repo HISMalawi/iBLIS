@@ -55,9 +55,14 @@ Route::filter('auth.basic', function()
 |
 */
 
+Route::filter('print', function()
+{
+
+});
+
 Route::filter('guest', function()
 {
-	if (Auth::check()) return Redirect::route('user.home');
+    if (Auth::check()) return Redirect::route('user.home');
 });
 
 /*

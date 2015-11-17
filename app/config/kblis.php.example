@@ -39,7 +39,7 @@ return array(
 
 	'organization' => 'Kamuzu Central Hospital',
 	
-
+	'facility-code' => 'KCH',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -47,9 +47,9 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'address-info' => 'Kamuzu Central Hospital<br>
+	'address-info' => '<p>
                     P.O. BOX PRIVATE BAG,<br>
-                    Malawi.<br>
+                    Lilongwe<br>
                     Phone: +0000000 Ext 203/208</p>',
 	
 	/*
@@ -90,5 +90,12 @@ return array(
 	|
 	*/
 
-	'kenas-logo' => '/i/kenas_logo.png',
+	'kenas-logo' => '/i/emblem.gif',
+        /*
+        |--------------------------------------------------------------------------
+        |       Available Printers
+        |--------------------------------------------------------------------------
+        |
+        */
+	'A4_printers' => array('TestPrinter1', 'TestPrinter2', 'TestPrinter3', 'productdpt')
 );
