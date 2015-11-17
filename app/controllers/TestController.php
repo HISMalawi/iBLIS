@@ -488,6 +488,9 @@ class TestController extends \BaseController {
 			$input['page'] = $pageParts[1];
 		}
 
+		if(count($test->susceptibility)>0){
+			//delete all susceptibility values if result has no culture worksheet
+		}
 		// redirect
 		return Redirect::action('TestController@index')
 					->with('message', trans('messages.success-saving-results'))

@@ -221,15 +221,25 @@
                                     </thead>
                                     <tbody id="enteredResults_<?php echo $value->id; ?>">
                                         @foreach($value->drugs as $drug)
+                                        <?php
+                                            $sus = Susceptibility::getDrugSusceptibility($test->id, $value->id, $drug->id);
+                                        ?>
                                         {{ Form::hidden('test[]', $test->id, array('id' => 'test[]', 'name' => 'test[]')) }}
                                         {{ Form::hidden('drug[]', $drug->id, array('id' => 'drug[]', 'name' => 'drug[]')) }}
                                         {{ Form::hidden('organism[]', $value->id, array('id' => 'organism[]', 'name' => 'organism[]')) }}
                                         <tr>
                                             <td>{{ $drug->name }}</td>
-                                            <td>
-                                                {{ Form::select('zone[]', ['' => '']+range(0, 50), '', ['class' => 'form-control', 'id' => 'zone[]', 'style'=>'width:auto']) }}
-                                            </td>
-                                            <td>{{ Form::select('interpretation[]', array('' => '', 'S' => 'S', 'I' => 'I', 'R' => 'R'),'', ['class' => 'form-control', 'id' => 'interpretation[]', 'style'=>'width:auto']) }}</td>
+                                            @if($sus)
+                                                <td>
+                                                    {{ Form::select('zone[]', [($sus->zone) => ($sus->zone)]+range(0, 50), '', ['class' => 'form-control', 'id' => 'zone[]', 'style'=>'width:auto']) }}
+                                                </td>
+                                                <td>{{ Form::select('interpretation[]', array(($sus->interpretation) => ($sus->interpretation), 'S' => 'S', 'I' => 'I', 'R' => 'R'),'', ['class' => 'form-control', 'id' => 'interpretation[]', 'style'=>'width:auto']) }}</td>
+                                            @else
+                                                <td>
+                                                    {{ Form::select('zone[]', ['' => '']+range(0, 50), '', ['class' => 'form-control', 'id' => 'zone[]', 'style'=>'width:auto']) }}
+                                                </td>
+                                                <td>{{ Form::select('interpretation[]', array('' => '', 'S' => 'S', 'I' => 'I', 'R' => 'R'),'', ['class' => 'form-control', 'id' => 'interpretation[]', 'style'=>'width:auto']) }}</td>
+                                            @endif
                                         </tr>
                                         @endforeach
                                         <tr id="submit_drug_susceptibility_<?php echo $value->id; ?>">
