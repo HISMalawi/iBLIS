@@ -42,6 +42,11 @@ Route::group(array("before", "print"), function()
         "uses" => "ReportController@viewPatientReport"
     ));
 
+    Route::any("/patientreport/{id}", array(
+        "as" => "reports.patient.report",
+        "uses" => "ReportController@viewPatientReport"
+    ));
+
     Route::any("/print/{id}/{visit}", array(
         "as" => "reports.patient.print",
         "uses" => "ReportController@printReport"
@@ -306,10 +311,6 @@ Route::group(array("before" => "auth"), function()
             "as"   => "reports.patient.index",
             "uses" => "ReportController@loadPatients"
         ));
-        Route::any("/patientreport/{id}", array(
-            "as" => "reports.patient.report",
-            "uses" => "ReportController@viewPatientReport"
-            ));
 
         Route::any("/dailylog", array(
             "as"   => "reports.daily.log",

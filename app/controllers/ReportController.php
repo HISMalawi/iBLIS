@@ -120,11 +120,11 @@ class ReportController extends \BaseController {
 				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 '$url'  $fileName");
 				$process->run();
 
-				$process = new Process("lp -d $printer $fileName");
-				$process->run();
+				//$process = new Process("lp -d $printer $fileName");
+				//$process->run();
 
-				$process = new Process("rm $fileName && rm patientreport*.pdf");
-				$process->run();
+				//$process = new Process("rm $fileName && rm patientreport*.pdf");
+				//$process->run();
 			}else{
 				$view_url = "reports.patient.export";
 			}

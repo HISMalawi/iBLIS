@@ -883,7 +883,29 @@ $(function(){
 	}
 
 	function selectPrinter(){
-			$("#printer_name").value = '';
-			$(".printer_radio_button").prop( "checked", false );//Uncheck printer
-			$('#myModal').modal('show');
+		$("#printer_name").value = '';
+		$(".printer_radio_button").prop( "checked", false );//Uncheck printer
+		$('#myModal').modal('show');
+	}
+
+	function checkBarcode(){
+		var node = document.getElementsByClassName('barcode')[0];
+		if(node){
+
+			if (node.value.match(/\$$/)){
+				node.value =node.value.replace(/\$$/, "");
+				node.form.submit();
+			}else{
+				if($(".force-open").size() == 0) {
+					node.focus();
+				}
+				setTimeout(function(){
+					checkBarcode();
+				}, 200);
+			}
 		}
+	}
+
+	setTimeout(function(){
+		checkBarcode();
+	}, 500);

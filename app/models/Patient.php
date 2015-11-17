@@ -51,6 +51,13 @@ class Patient extends Eloquent
 				$age = $interval->y;break;
 			case 'YY':
 				$age = $interval->y ." years ";break;
+			case 'YY/MM':
+				if((int)$interval->y >= 5) {
+					$age = $interval->y . " years ";
+				}else{
+					$age = $interval->m ." months";
+				}
+				break;
 			default:
 				$age = ($interval->y > 0)?$interval->y ." years ":"";
 				$age .= ($interval->m > 0)?$interval->m ." months":"";

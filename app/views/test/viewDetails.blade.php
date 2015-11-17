@@ -112,7 +112,7 @@
 										<div class="col-md-3">
 											<p><strong>{{trans("messages.age")}}</strong></p></div>
 										<div class="col-md-9">
-											{{$test->visit->patient->getAge()}}</div></div>
+											{{$test->visit->patient->getAge('YY/MM')}}</div></div>
 									<div class="row">
 										<div class="col-md-3">
 											<p><strong>{{trans("messages.gender")}}</strong></p></div>

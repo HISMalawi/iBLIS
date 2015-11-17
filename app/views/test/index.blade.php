@@ -37,13 +37,13 @@
                     </div>
                     <div class='col-md-7'>
                         {{ Form::select('test_status', $testStatus,
-                            Input::get('test_status'), array('class' => 'form-control')) }}
+                            Input::get('test_status'), array('class' => 'form-control', 'onmousedown' => '$(this).toggleClass("force-open")')) }}
                     </div>
                 </div>
                 <div class='col-md-2'>
                         {{ Form::label('search', trans('messages.search'), array('class' => 'sr-only')) }}
                         {{ Form::text('search', Input::get('search'),
-                            array('class' => 'form-control', 'placeholder' => 'Search')) }}
+                            array('class' => 'form-control barcode', 'placeholder' => 'Search')) }}
                 </div>
                 <div class='col-md-1'>
                         {{ Form::submit(trans('messages.search'), array('class'=>'btn btn-primary')) }}
@@ -79,7 +79,7 @@
             </div>
         </div>
         <div class="panel-body">
-            <table class="table table-striped table-hover table-condensed">
+            <table class="table table-striped table-bordered table-hover table-condensed">
                 <thead>
                     <tr>
                         <th class="col-md-2"> {{trans('messages.date-ordered')}}</th>
@@ -89,7 +89,7 @@
                         <th class="col-md-2">{{ Lang::choice('messages.test',1) }}</th>
                         <th class="col-md-1">{{trans('messages.location')}}</th>
                         <th class="col-md-1">{{trans('messages.test-status')}}</th>
-                        <th class="col-md-4">{{trans('messages.test-status')}}</th>
+                        <th class="col-md-4">{{trans('messages.actions')}}</th>
                     </tr>
                 </thead>
                 <tbody>

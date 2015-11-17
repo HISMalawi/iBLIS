@@ -123,7 +123,7 @@
 									</tr>
 									<tr>
 										<th>{{Lang::choice('messages.test-type', 1)}}</th>
-										<th>{{trans('messages.test-results-values')}}</th>
+										<th>{{trans('messages.test-results')}}</th>
 										<th>{{trans('messages.test-remarks')}}</th>
 										<th>{{trans('messages.tested-by')}}</th>
 										<th>{{trans('messages.date-tested')}}</th>
@@ -132,15 +132,35 @@
 										<tr>
 											<td>{{ $test->testType->name }}</td>
 											<td>
-												@foreach($test->testResults as $result)
+												@if(count($test->testResults) <= 1)
+													@foreach($test->testResults as $result)
 
-													@if($result->result)
-														<p>
-															{{ Measure::find($result->measure_id)->name }}: {{ $result->result }}
-															{{ Measure::find($result->measure_id)->unit }}
-														</p>
-													@endif
-												@endforeach</td>
+														@if($result->result)
+															<p>
+																{{ $result->result }}
+																{{ Measure::find($result->measure_id)->unit }}
+															</p>
+														@endif
+													@endforeach
+												@else
+													<table style="margin: 0px;" class="table table-bordered">
+														@foreach($test->testResults as $result)
+
+															@if(!empty($result->result))
+																<tr>
+																	<td style="width: 40%">
+																		{{ Measure::find($result->measure_id)->name }}
+																	</td>
+																	<td>
+																		{{ $result->result }}
+																		{{ Measure::find($result->measure_id)->unit }}
+																	</td>
+																</tr>
+															@endif
+														@endforeach
+													</table>
+												@endif
+											</td>
 											<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
 											<td>{{ $test->testedBy->name or trans('messages.pending')}}</td>
 											<td>{{ $test->time_completed }}</td>
@@ -156,9 +176,9 @@
 
 								<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
 								@foreach($tests as $test)
+									@if(count($test->susceptibility)>0)
 									<table class="table table-bordered ">
 
-										@if(count($test->susceptibility)>0)
 											<?php $i = 0 ?>
 											@foreach($test->organisms() as $organism)
 												<?php
@@ -201,8 +221,8 @@
 														{{($i % 2 == 1) ? ('</tr>') : ""}}
 													<?php $i = $i + 1 ?>
 											@endforeach
-										@endif
-									</table>
+										</table>
+									@endif
 								@endforeach
 							</div>
 						</div>

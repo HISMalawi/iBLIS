@@ -15,7 +15,7 @@
 				<div class="form-group">
 
 				    {{ Form::label('search', "search", array('class' => 'sr-only')) }}
-		            {{ Form::text('search', Input::get('search'), array('class' => 'form-control test-search')) }}
+		            {{ Form::text('search', Input::get('search'), array('class' => 'form-control test-search barcode')) }}
 				</div>
 				<div class="form-group">
 					{{ Form::button("<span class='glyphicon glyphicon-search'></span> ".trans('messages.search'), 
@@ -50,9 +50,9 @@
 					<th>{{trans('messages.patient-number')}}</th>
 					<th>{{trans('messages.external-patient-number')}}</th>
 					<th>{{Lang::choice('messages.name',1)}}</th>
-					<th>{{trans('messages.email')}}</th>
 					<th>{{trans('messages.gender')}}</th>
 					<th>{{trans('messages.date-of-birth')}}</th>
+					<th>{{trans('messages.physical-address')}}</th>
 					<th>{{trans('messages.actions')}}</th>
 				</tr>
 			</thead>
@@ -65,9 +65,9 @@
 					<td>{{ $patient->patient_number }}</td>
 					<td>{{ $patient->external_patient_number }}</td>
 					<td>{{ $patient->name }}</td>
-					<td>{{ $patient->email }}</td>
 					<td>{{ ($patient->gender==0?trans('messages.male'):trans('messages.female')) }}</td>
 					<td>{{ $patient->dob }}</td>
+					<td>{{ $patient->address }}</td>
 
 					<td>
 						@if(Auth::user()->can('request_test'))
