@@ -31,15 +31,16 @@ class TestDataSeeder extends DatabaseSeeder
         }
         else {
 	        /* Test Categories table - These map on to the lab sections */
-	        $test_categories = TestCategory::create(array("name" => "PARASITOLOGY","description" => ""));
-	        $lab_section_microbiology = TestCategory::create(array("name" => "MICROBIOLOGY","description" => ""));
+	        $test_categories = TestCategory::create(array("name" => "Parasitology","description" => ""));
+	        $lab_section_microbiology = TestCategory::create(array("name" => "Microbiology","description" => ""));
 
 	        $this->command->info('test_categories seeded');
 
 	        /* Test Categories table - These map on to the lab sections */
-	        $lab_section_hematology = TestCategory::create(array("name" => "HEMATOLOGY","description" => ""));
-	        $lab_section_serology = TestCategory::create(array("name" => "SEROLOGY","description" => ""));
-	        $lab_section_trans = TestCategory::create(array("name" => "BLOOD TRANSFUSION","description" => ""));
+	        $lab_section_hematology = TestCategory::create(array("name" => "Haematology","description" => ""));
+	        $lab_section_serology = TestCategory::create(array("name" => "Serology","description" => ""));
+	        $lab_section_trans = TestCategory::create(array("name" => "Blood Transfusion","description" => ""));
+            $lab_section_rec = TestCategory::create(array("name" => "Lab Reception","description" => ""));
 	        $this->command->info('Lab Sections seeded'); 	
         }
 
@@ -55,6 +56,7 @@ class TestDataSeeder extends DatabaseSeeder
 	        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_hematology->id));
 	        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_serology->id));
 	        DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_trans->id));
+            DB::table('user_testcategory')->insert(array("user_id"=>"1","test_category_id"=>$lab_section_rec->id));
 
 	        $this->command->info("User Test Category seeded.");  	
         }

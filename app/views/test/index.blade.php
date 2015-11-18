@@ -83,7 +83,7 @@
                 <thead>
                     <tr>
                         <th class="col-md-2"> {{trans('messages.date-ordered')}}</th>
-                        <th>{{trans('messages.patient-number')}}</th>
+                        <th class="col-md-1" >{{trans('messages.patient-number')}}</th>
                         <th class="col-md-2">{{trans('messages.patient-name')}}</th>
                         <th class="col-md-1">{{trans('messages.specimen-id')}}</th>
                         <th class="col-md-2">{{ Lang::choice('messages.test',1) }}</th>
