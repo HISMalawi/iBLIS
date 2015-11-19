@@ -229,7 +229,7 @@
 									@endif
 									<?php if($checker=='checked'){$display='display:block';}else if($checker!='checked'){$display='display:none';} ?>
 								{{ Form::open(array('','id' => 'drugSusceptibilityForm_'.$value->id, 'name' => 'drugSusceptibilityForm_'.$value->id, 'style'=>$display)) }}
-								<table class="table table-bordered">
+								<table class="table table-bordered" id="susc_<?php echo $value->id; ?>">
 									<thead>
 										<tr>
 											<th colspan="3">{{ $value->name }}</th>
@@ -262,11 +262,19 @@
 										@endforeach
 										<tr id="submit_drug_susceptibility_<?php echo $value->id; ?>">
 											<td colspan="3" align="right">
-												<div class="col-sm-offset-2 col-sm-10">
-													<a class="btn btn-default" href="javascript:void(0)" onclick="saveDrugSusceptibility(<?php echo $test->id; ?>, <?php echo $value->id; ?>)">
-													{{ trans('messages.save') }}</a>
-											    </div>
-										    </td>
+												<div class="col-sm-2">
+													<a class="btn btn-default" href="javascript:void(0)" onclick="addDrugSusceptibility(<?php echo $test->id; ?>, <?php echo $value->id; ?>)">
+														{{ trans('messages.insert-drug') }}</a>
+												</div>
+												<div class="col-sm-offset-6  col-sm-2">
+													<a class="btn btn-danger" href="javascript:void(0)" onclick="deleteDrugSusceptibility(<?php echo $test->id; ?>, <?php echo $value->id; ?>)">
+														{{ trans('messages.delete') }}</a>
+												</div>
+												<div class="col-sm-2">
+													<a class="btn btn-success" href="javascript:void(0)" onclick="saveDrugSusceptibility(<?php echo $test->id; ?>, <?php echo $value->id; ?>)">
+														{{ trans('messages.save') }}</a>
+												</div>
+											</td>
 										</tr>
 									</tbody>
 								</table>

@@ -2,6 +2,7 @@
  * Custom javascript function
  * @author  (c) @iLabAfrica
  */
+
 $(function(){
 	/**	HEADER
 	 *   Username display
@@ -702,7 +703,7 @@ $(function(){
 	 * @return {void}          No return
 	 */
 	function drawCultureWorksheet(tid, user, username){
-		console.log(username);
+		c
 		$.getJSON('/culture/storeObservation', { testId: tid, userId: user, action: "draw"}, 
 			function(data){
 				var tableBody ="";
@@ -727,7 +728,7 @@ $(function(){
 
 	/*Begin save drug susceptibility*/	
 	function saveDrugSusceptibility(tid, oid){
-		console.log(oid);
+
 		var dataString = $("#drugSusceptibilityForm_"+oid).serialize();
 		$.ajax({
 			type: 'POST',
@@ -743,6 +744,7 @@ $(function(){
 	 function drawSusceptibility(tid, oid){
 		$.getJSON('/susceptibility/saveSusceptibility', { testId: tid, organismId: oid, action: "results"}, 
 			function(data){
+
 				var tableRow ="";
 				var tableBody ="";
 				$.each(data, function(index, elem){
@@ -756,6 +758,18 @@ $(function(){
 				//tableBody +="<tbody>"+tableRow+"</tbody>";
 				$( "#enteredResults_"+oid).html(tableRow);
 				$("#submit_drug_susceptibility_"+oid).hide();
+			}
+		);
+	}
+
+	function deleteDrugSusceptibility(tid, oid){
+		$.getJSON('/susceptibility/saveSusceptibility', { testId: tid, organismId: oid, action: "delete"},
+			function(data){
+				var form = document.getElementById("drugSusceptibilityForm_"+oid);
+				form.reset();
+				form.style.display = "none";
+				$( "#organism"+oid+" input").prop("checked", false);
+				$( "#organism"+oid).hide();
 			}
 		);
 	}
@@ -774,6 +788,69 @@ $(function(){
 		$('#drugSusceptibilityForm_'+id).toggle(this.checked);
 	}
 	/*End toggle susceptibility*/
+
+	function addDrugSusceptibility(tid, oid){
+
+		$.getJSON('/susceptibility/saveSusceptibility', { testId: tid, organismId: oid, action: "row-values"},
+			function(data){
+				var drugs = data['drugs'];
+				var oid = data['oid'];
+				var tr = document.createElement("tr");
+				var td1 = document.createElement('td');
+				var dSelect = document.createElement('select');
+				td1.appendChild(dSelect);
+				tr.appendChild(td1);
+				dSelect.setAttribute('name', 'new_drug[]');
+				dSelect.className = 'form-control';
+				dSelect.style.width = 'auto';
+				var option = document.createElement('option');
+				option.setAttribute('value', '');
+				option.innerHTML = '';
+				dSelect.appendChild(option);
+				for(var i in drugs){
+					var option = document.createElement('option');
+					option.setAttribute('value', i);
+					option.innerHTML = drugs[i];
+					dSelect.appendChild(option);
+				}
+
+				var td2 = document.createElement('td');
+				var zSelect = document.createElement('select');
+				zSelect.className = 'form-control';
+				td2.appendChild(zSelect);
+				tr.appendChild(td2);
+				zSelect.setAttribute('name', 'new_zone[]');
+				zSelect.style.width = 'auto';
+				for(var i = 0; i < 50; i++){
+					var option = document.createElement('option');
+					option.setAttribute('value', i);
+					option.innerHTML = i;
+					zSelect.appendChild(option);
+				}
+
+				var td3 = document.createElement('td');
+				var iSelect = document.createElement('select');
+				td3.appendChild(iSelect);
+				tr.appendChild(td3);
+				iSelect.setAttribute('name', 'new_interp[]');
+				iSelect.className = 'form-control';
+				iSelect.style.width = 'auto';
+				var interp = ['', 'S', 'I', 'R'];
+
+				for(var i = 0; i < interp.length; i++){
+					var option = document.createElement('option');
+					option.setAttribute('value', interp[i]);
+					option.innerHTML = interp[i];
+					iSelect.appendChild(option);
+				}
+
+				var nodes = document.getElementById('enteredResults_' + oid).childNodes;
+
+				document.getElementById('enteredResults_' + oid).insertBefore(tr, nodes[nodes.length - 2]);
+			}
+		);
+
+	}
 
 	/*Get valid wards/locations to populate select tag on test ordering page*/
 	function loadWards($visit_type){
@@ -858,7 +935,8 @@ $(function(){
 	}
 
 	function searchOrganisms(text){
-		$('#organismsModel .checkbox').hide();
+
+		$("#organismsModel .checkbox").hide();
 		$("#organismsModel .checkbox:contains('" +text + "')").show();
 	}
 

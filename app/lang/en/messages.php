@@ -242,6 +242,7 @@ return array(
     'drug' => 'Drug|Drugs',
     'create-drug' => 'Create Drug',
     'edit-drug' => 'Edit Drug',
+    'insert-drug' => 'Insert Drug',
     'failure-drug-in-use' => 'This Drug is in use',
     'success-creating-drug' => 'Successfully created Drug.',
     'success-deleting-drug' => 'Successfully deleted the Drug.',

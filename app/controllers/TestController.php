@@ -427,7 +427,11 @@ class TestController extends \BaseController {
 			$EMPTY_FILE_URL = "http://192.168.1.88/celtac/emptyfile.php";
 			@file_get_contents($EMPTY_FILE_URL);
 		}
-		return View::make('test.enterResults')->with('test', $test);
+
+		$drugs = Drug::orderBy("name")->lists('name', 'id');
+
+		return View::make('test.enterResults')->with('test', $test)
+			->with('all_drugs', $drugs);
 	}
 
 	/**
@@ -508,7 +512,9 @@ class TestController extends \BaseController {
 	{
 		$test = Test::find($testID);
 
-		return View::make('test.edit')->with('test', $test);
+		$drugs = Drug::orderBy("name")->lists('name', 'id');
+
+		return View::make('test.edit')->with('test', $test)->with('all_drugs', $drugs);
 	}
 
 	/**

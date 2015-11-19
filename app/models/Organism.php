@@ -29,7 +29,7 @@ class Organism extends Eloquent
 	 *
 	 * @return void
 	 */
-	public function setDrugs($drugs){
+	public function setDrugs($drugs, $resetAll = true){
 
 		$drugsAdded = array();
 		$organismID = 0;	
@@ -46,9 +46,11 @@ class Organism extends Eloquent
 			}
 
 		}
-		// Delete existing test_type measure mappings
-		DB::table('organism_drugs')->where('organism_id', '=', $organismID)->delete();
 
+		if($resetAll) {
+			// Delete existing test_type measure mappings
+			DB::table('organism_drugs')->where('organism_id', '=', $organismID)->delete();
+		}
 		// Add the new mapping
 		DB::table('organism_drugs')->insert($drugsAdded);
 	}
