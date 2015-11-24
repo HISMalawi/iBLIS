@@ -28,6 +28,22 @@ Route::group(array("before" => "guest"), function()
         "uses" => "UserController@loginAction"
     ));
 
+    /*
+        Routes based on logic found in BLISInterfaceClient
+    */
+    Route::get('/api/get_test_types.php', array(
+        "as" => "api.get.test.types",
+        "uses" => "InterfacerController@getTestTypes"
+    ));
+    Route::get('/api/get_specimen.php', array(
+        "as" => "api.get.specimen",
+        "uses" => "InterfacerController@getSpecimen"
+    ));
+    Route::get('/api/update_result.php', array(
+        "as" => "api.update.result",
+        "uses" => "InterfacerController@updateResult"
+    ));
+
 });
 
 
