@@ -55,13 +55,16 @@ class InstrumentController extends \BaseController {
 			return Redirect::route('instrument.create')->withErrors($validator);
 		} else {
 			// Save the instrument
-			$newInstrument = new Instrument();
+			/*$newInstrument = new Instrument();
 			$newInstrument->name = Input::get('name');
 			$newInstrument->description = Input::get('description');
 			$newInstrument->ip = Input::get('ip');
 			$newInstrument->hostname = Input::get('hostname');
 
-			$newInstrument->save();
+			$newInstrument->save();*/
+
+			$response = Instrument::saveInstrument(Input::get('name'), Input::get('ip'), Input::get('hostname'));
+
 			return Redirect::route('instrument.index')->with('message', trans('messages.success-creating-instrument'));
 		}
 	}
@@ -175,8 +178,10 @@ class InstrumentController extends \BaseController {
 		$testType = TestType::find($testTypeID);
 		$instrument = $testType->instruments->first();
 
+		$accession_number = Input::get("accession_number");
+
  		// Fetch the results
-		return $instrument->fetchResult($testType);
+		return $instrument->fetchResult($testType, $accession_number);
 	}
 
 	/**

@@ -14,3 +14,4 @@ app/config/mail.php
 app/config/remote.php
 public/i/users/*
 public/patientreport*
+public/data

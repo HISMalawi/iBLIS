@@ -173,25 +173,26 @@ class Instrument extends Eloquent
 	 * Set compatible specimen types
 	 *
 	 * @param $testType
+	 * @param $accessionNumber
 	 * @return Response json
 	 */
-	public function fetchResult($testType){
+	public function fetchResult($testType, $accessionNumber){
 
  		// Invoke the Instrument Class to get the results
-		$result = (new $this->driver_name($this->ip))->getResult();
-
+		$result = (new $this->driver_name($this->ip))->getResult($accessionNumber);
 
 		// Change measure names to measure_ids in the returned array
 		$resultWithIDs = array();
 
-		foreach ($result as $measureName => $value) {
+		foreach ($result as $measureId => $value) {
+
 			$measureFound = $testType->measures->filter(
-				function($measure) use ($measureName){
-					if($measure->name == $measureName) return $measure;
+				function($measure) use ($measureId){
+					if($measure->id == $measureId) return $measure;
 			});
 
 			if(empty($measureFound->toArray())){
-				$resultWithIDs[$measureName] = $value;
+				$resultWithIDs[$measureId] = $value;
 			}else{
 				$resultWithIDs['m_'.$measureFound->first()->id] = $value;
 			}

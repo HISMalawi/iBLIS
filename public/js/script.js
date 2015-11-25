@@ -194,8 +194,9 @@ $(function(){
 
 	$('.fetch-test-data').click(function(){
 		var testTypeID = $(this).data('test-type-id');
+		var specimenId = $(this).data('accession-number');
 		var url = $(this).data('url');
-		$.post(url, { test_type_id: testTypeID}).done(function(data){
+		$.post(url, { test_type_id: testTypeID, accession_number: specimenId}).done(function(data){
 			$.each($.parseJSON(data), function (index, obj) {
 
 				$('#'+index).val(obj);
