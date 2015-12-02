@@ -153,7 +153,7 @@ CREATE TABLE `test_types` (
 
 LOCK TABLES `test_types` WRITE;
 /*!40000 ALTER TABLE `test_types` DISABLE KEYS */;
-INSERT INTO `test_types` VALUES (1,'Microscopy','',2,'2',1,'',NULL,'2015-11-04 10:14:00','2015-11-03 13:49:09','2015-11-04 10:14:00'),(2,'Culture and Sensitivity','',2,'',NULL,'',1,'2015-11-12 17:29:59','2015-11-04 08:59:00','2015-11-12 17:29:59'),(3,'Gram Stain','',2,'30 min',1,'',NULL,NULL,'2015-11-05 12:29:16','2015-11-06 07:44:14'),(4,'Culture and Sensitivity','',2,'7 days',1,'',NULL,NULL,'2015-11-06 05:24:20','2015-11-12 17:30:31'),(5,'Cell Count','',2,'30 min',1,'',1,NULL,'2015-11-06 07:30:59','2015-11-12 21:09:08'),(6,'India Ink','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:32:32','2015-11-06 07:44:21'),(7,'Differential','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:43:01','2015-11-06 07:44:05'),(8,'ZN Stain','',2,'30 min',1,'',NULL,NULL,'2015-11-12 21:43:18','2015-11-12 21:43:18'),(9,'Wet prep','',2,'30 min',1,'',NULL,NULL,'2015-11-12 21:45:55','2015-11-12 21:45:55'),(10,'Macroscopic Examination','',2,'30 min',1,'',NULL,NULL,'2015-11-12 21:54:38','2015-11-12 21:55:29');
+INSERT INTO `test_types` VALUES (1,'Microscopic Exam','',2,'20min',1,'',NULL,NULL,'2015-11-03 13:49:09','2015-11-04 10:14:00'),(2,'Gene-Xpert','',2,'30 min',1,'',NULL,NULL,'2015-11-04 08:59:00','2015-11-12 17:29:59'),(3,'Gram Stain','',2,'30 min',1,'',NULL,NULL,'2015-11-05 12:29:16','2015-11-06 07:44:14'),(4,'Culture and Sensitivity','',2,'7 days',1,'',NULL,NULL,'2015-11-06 05:24:20','2015-11-12 17:30:31'),(5,'Cell Count','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:30:59','2015-11-12 21:09:08'),(6,'India Ink','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:32:32','2015-11-06 07:44:21'),(7,'Differential','',2,'30 min',1,'',NULL,NULL,'2015-11-06 07:43:01','2015-11-06 07:44:05'),(8,'ZN Stain','',2,'30 min',1,'',NULL,NULL,'2015-11-12 21:43:18','2015-11-12 21:43:18'),(9,'Wet prep','',2,'30 min',1,'',NULL,NULL,'2015-11-12 21:45:55','2015-11-12 21:45:55'),(10,'Macroscopic Exam','',2,'30 min',1,'',NULL,NULL,'2015-11-12 21:54:38','2015-11-12 21:55:29');
 /*!40000 ALTER TABLE `test_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -664,4 +664,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-23 15:35:44
+-- Dump completed on 2015-12-02 15:22:14
