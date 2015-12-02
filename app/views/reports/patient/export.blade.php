@@ -40,22 +40,26 @@
 						<tbody>
 						<tr>
 							<th>{{ trans('messages.patient-name')}}</th>
-							@if(Entrust::can('view_names'))
 								<td>{{ $patient->name }}</td>
-							@else
-								<td>N/A</td>
-							@endif
 							<th>{{ trans('messages.gender')}}</th>
 							<td>{{ $patient->getGender(false) }}</td>
 							<th>{{ trans('messages.age')}}</th>
-							<td>{{ $patient->getAge()}}</td>
+							<td>{{ $patient->getAge("YY/MM")}}</td>
 						</tr>
+						<?php
+						$test = array();
+						if(!empty($tests[0])){
+							$test = $tests[0];
+						}
+						?>
 
 						<tr>
 							<th>{{trans('messages.patient-id')}}</th>
 							<td>{{ $patient->external_patient_number }}</td>
-							<th colspan="2">{{ trans('messages.requesting-facility-department')}}</th>
-							<td colspan="2">{{ Config::get('kblis.organization') }}</td>
+
+							<th colspan="2">Physical Address</th>
+							<td colspan="2">{{ $patient->address }}</td>
+
 						</tr>
 						</tbody>
 					</table>
@@ -68,14 +72,19 @@
 						<div class="panel panel-success">
 							<div class="panel-heading ">
 								<span class="glyphicon glyphicon-tint"></span>
-								<span><strong>{{ $specimen->accession_number }} &nbsp;:&nbsp; {{ $specimen->specimenType->name }}</strong></span>
-								<span class="pull-right"><strong>Date ordered: &nbsp;&nbsp;&nbsp;{{	$test->isExternal()?$test->external()->request_date:$test->time_created }}</strong></span>
-
-							</div>
+								<span><strong>{{Lang::choice('messages.specimen-id', 1)}}</strong>&nbsp;:&nbsp;  <strong> {{ $specimen->accession_number }}					</div>
 							<div class="panel-body">
 
-								<table class="table table-bordered">
+								<table class="table table-bordered rspecimen">
 									<tbody>
+
+									<tr>
+										<td><strong>{{Lang::choice('messages.specimen-type', 1)}}</strong></td>
+										<td>{{ $specimen->specimenType->name }}</td>
+
+										<td><strong>{{Lang::choice('messages.date-ordered', 1)}}</strong></td>
+										<td>{{	$test->isExternal()?$test->external()->request_date:$test->time_created }}</td>
+									</tr>
 
 									<tr>
 										<td><strong>{{Lang::choice('messages.specimen-tests-ordered', 1)}}</strong></td>
@@ -95,7 +104,12 @@
 											<td>{{trans('messages.specimen-rejected')}}</td>
 										@endif
 
-										<td><strong>{{ trans('messages.collected-by')."/".trans('messages.rejected-by')}}</strong></td>
+										@if($specimen->specimen_status_id == Specimen::ACCEPTED)
+											<td><strong>{{ trans('messages.collected-by') }}</strong></td>
+										@elseif($specimen->specimen_status_id == Specimen::REJECTED)
+											<td><strong>{{ trans('messages.rejected-by') }}</strong></td>
+										@endif
+
 										@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
 											<td></td>
 										@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
@@ -115,18 +129,18 @@
 									@endif
 									</tbody>
 								</table>
-								<table class="table table-bordered">
+								<table class="table table-bordered rtest">
 									<tbody>
 									<tr>
 										<th colspan="8">{{trans('messages.test-results')}}
 											{{(count($verified) != count($tests)) ?	('<span class="pull-right"><i>'.trans('messages.verification-pending')).'</i></span>' : ''}}</th>
 									</tr>
 									<tr>
-										<th>{{Lang::choice('messages.test-type', 1)}}</th>
+										<th class="col-md-2">{{Lang::choice('messages.test-type', 1)}}</th>
 										<th>{{trans('messages.test-results')}}</th>
-										<th>{{trans('messages.test-remarks')}}</th>
-										<th>{{trans('messages.tested-by')}}</th>
-										<th>{{trans('messages.date-tested')}}</th>
+										<th >{{trans('messages.test-remarks')}}</th>
+										<th >{{trans('messages.tested-by')}}</th>
+										<th >{{trans('messages.date-tested')}}</th>
 									</tr>
 									@forelse($tests as $test)
 										<tr>
@@ -138,6 +152,15 @@
 														@if($result->result)
 															<p>
 																{{ $result->result }}
+																<?php $organism_names = ''?>
+																@if(count($test->susceptibility)>0 && $result->result == "Growth")
+																	@foreach($test->organisms() AS $og)
+																		<?php
+																		$organism_name = Organism::find($og['organism_id'])->name;
+																		$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;																?>
+																	@endforeach
+																	of {{$organism_names ? $organism_names : '---'}}
+																@endif
 																{{ Measure::find($result->measure_id)->unit }}
 															</p>
 														@endif
@@ -153,6 +176,16 @@
 																	</td>
 																	<td>
 																		{{ $result->result }}
+																		<?php $organism_names = ''?>
+																		@if(count($test->susceptibility)>0 && $result->result == "Growth")
+																			@foreach($test->organisms() AS $og)
+																				<?php
+																				$organism_name = Organism::find($og['organism_id'])->name;
+																				$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;
+																				?>
+																			@endforeach
+																			of {{$organism_names ? $organism_names : '---'}}
+																		@endif
 																		{{ Measure::find($result->measure_id)->unit }}
 																	</td>
 																</tr>
@@ -175,9 +208,10 @@
 								</table>
 
 								<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
+								<?php $interpretationText = array("R" => "Resistant", "I" => "Intermediate", "S" => "Sensitive")?>
 								@foreach($tests as $test)
 									@if(count($test->susceptibility)>0)
-									<table class="table table-bordered ">
+									<table class="table table-bordered  rsusc">
 
 											<?php $i = 0 ?>
 											@foreach($test->organisms() as $organism)
@@ -194,7 +228,7 @@
 														</tr>
 														<tr>
 															<th width="50%">{{ Lang::choice('messages.drug',1) }}</th>
-															<th>{{ trans('messages.zone-size')}}</th>
+
 															<th>{{ trans('messages.interp')}}</th>
 														</tr>
 														@foreach(Susceptibility::drugs_search($test->id, $organism->id) as $drug)
@@ -204,8 +238,9 @@
 															@if($drugSusceptibility = Susceptibility::getDrugSusceptibility($test->id, $organism->id, $drug->id))
 																<tr>
 																	<td>{{ $drug->name }}</td>
-																	<td>{{ $drugSusceptibility->zone!=null?$drugSusceptibility->zone:'' }}</td>
-																	<td>{{ $drugSusceptibility->interpretation!=null?$drugSusceptibility->interpretation:'' }}</td>
+
+																	<td>{{ $drugSusceptibility->interpretation!=null?
+																		($drugSusceptibility->interpretation.'-'.$interpretationText[$drugSusceptibility->interpretation]) :'' }}</td>
 																</tr>
 															@else
 																<tr>
