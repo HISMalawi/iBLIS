@@ -80,6 +80,7 @@ class ReportController extends \BaseController {
 		//	Get tests collection
 		//$tests = $tests->orderBy('time_completed', 'ASC');
 		$tests = $tests->get(array('tests.*'));
+
 		//	Get patient details
 		$patient = Patient::find($id);
 		//	Check if tests are accredited
@@ -117,14 +118,14 @@ class ReportController extends \BaseController {
 				$fileName = "patientreport".$id."_".$date.".pdf";
 				$printer = Input::get("printer_name");
 
-				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 '$url'  $fileName");
+				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileName");
 				$process->run();
 
-				//$process = new Process("lp -d $printer $fileName");
-				//$process->run();
+				$process = new Process("lp -d $printer $fileName");
+				$process->run();
 
-				//$process = new Process("rm $fileName && rm patientreport*.pdf");
-				//$process->run();
+				$process = new Process("rm $fileName && rm patientreport*.pdf");
+				$process->run();
 			}else{
 				$view_url = "reports.patient.export";
 			}

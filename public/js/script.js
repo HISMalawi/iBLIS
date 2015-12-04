@@ -987,4 +987,4 @@ $(function(){
 
 	setTimeout(function(){
 		checkBarcode();
-	}, 500);
+	}, 1000);

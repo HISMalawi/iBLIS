@@ -150,16 +150,16 @@
 
                                     <div class="col-md-12">
                                         @if($test->isVerified())
-                                            <span class='label label-success'>
+                                            <span class='label'>
                                                 {{trans('messages.verified')}}</span>
                                         @else
                                             @if($test->specimen->isNotCollected())
                                                 @if(($test->isPaid()))
-                                                    <span class='label label-default panel-label'>
+                                                    <span class='label panel-label'>
                                                         {{trans('messages.specimen-not-collected-label')}}</span>
                                                 @endif
                                             @elseif($test->specimen->isReferred())
-                                                <span class='label label-primary panel-label'>
+                                                <span class='label panel-label'>
                                                         {{trans('messages.specimen-referred-label') }}
                                                     @if($test->specimen->referral->status == Referral::REFERRED_IN)
                                                         {{ trans("messages.in") }}
@@ -168,10 +168,10 @@
                                                     @endif
                                                     </span>
                                             @elseif($test->specimen->isAccepted())
-                                                <span class='label label-success panel-label'>
+                                                <span class='label panel-label'>
                                                         {{trans('messages.specimen-accepted-label')}}</span>
                                             @elseif($test->specimen->isRejected())
-                                                <span class='label label-danger panel-label'>
+                                                <span class='label panel-label'>
                                                         {{trans('messages.specimen-rejected-label')}}</span>
                                             @endif
                                         @endif
@@ -269,23 +269,23 @@
                                     <div class="col-md-12">
                                         @if($test->isNotReceived())
                                             @if(!$test->isPaid())
-                                                <span class='label label-default'>
+                                                <span class='label'>
                                                     {{trans('messages.not-paid')}}</span>
                                             @else
-                                            <span class='label label-default'>
+                                            <span class='label'>
                                                 {{trans('messages.not-received')}}</span>
                                             @endif
                                         @elseif($test->isPending())
-                                            <span class='label label-info'>
+                                            <span class='label'>
                                                 {{trans('messages.pending')}}</span>
                                         @elseif($test->isStarted())
-                                            <span class='label label-warning'>
+                                            <span class='label'>
                                                 {{trans('messages.started')}}</span>
                                         @elseif($test->isCompleted())
-                                            <span class='label label-primary'>
+                                            <span class='label'>
                                                 {{trans('messages.completed')}}</span>
                                         @elseif($test->isVerified())
-                                            <span class='label label-success'>
+                                            <span class='label'>
                                                 {{trans('messages.verified')}}</span>
                                         @endif
 
@@ -298,11 +298,11 @@
                                         @if(!$test->panel_id)
                                             @if($test->specimen->isNotCollected())
                                              @if(($test->isPaid()))
-                                                <span class='label label-default'>
+                                                <span class='label'>
                                                     {{trans('messages.specimen-not-collected-label')}}</span>
                                                 @endif
                                             @elseif($test->specimen->isReferred())
-                                                <span class='label label-primary'>
+                                                <span class='label'>
                                                     {{trans('messages.specimen-referred-label') }}
                                                     @if($test->specimen->referral->status == Referral::REFERRED_IN)
                                                         {{ trans("messages.in") }}
@@ -311,10 +311,10 @@
                                                     @endif
                                                 </span>
                                             @elseif($test->specimen->isAccepted())
-                                                <span class='label label-success'>
+                                                <span class='label'>
                                                     {{trans('messages.specimen-accepted-label')}}</span>
                                             @elseif($test->specimen->isRejected())
-                                                <span class='label label-danger'>
+                                                <span class='label'>
                                                     {{trans('messages.specimen-rejected-label')}}</span>
                                             @endif
                                         @endif
@@ -322,15 +322,17 @@
                                 </div></div>
                         </td>
                         <!-- ACTION BUTTONS -->
-                        <td class="test-actions">
+
+                            <td class="test-actions">
+                        @if (!$test->panel_id)
                             <a class="btn btn-sm btn-success"
                                 href="{{ URL::route('test.viewDetails', $test->id) }}"
-                                id="view-details-{{$test->id}}-link" 
+                                id="view-details-{{$test->id}}-link"
                                 title="{{trans('messages.view-details-title')}}">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 {{trans('messages.view-details')}}
                             </a>
-
+                        @endif
                         @if ($test->isNotReceived()) 
                             @if(Auth::user()->can('receive_external_test') && $test->isPaid())
                                 <a class="btn btn-sm btn-default receive-test" href="javascript:void(0)"
@@ -350,22 +352,10 @@
                                     {{trans('messages.accept-specimen')}}
                                 </a>
                             @endif
-                            @if(count($test->testType->specimenTypes) > 1 && Auth::user()->can('change_test_specimen') && !$test->panel_id )
-                                <!-- 
-                                    If this test can be done using more than 1 specimen type,
-                                    allow the user to change to any of the other eligible ones.
-                                -->
-                                <a class="btn btn-sm btn-danger change-specimen" href="#change-specimen-modal"
-                                    data-toggle="modal" data-url="{{ URL::route('test.changeSpecimenType') }}"
-                                    data-test-id="{{$test->id}}" data-target="#change-specimen-modal"
-                                    title="{{trans('messages.change-specimen-title')}}">
-                                    <span class="glyphicon glyphicon-transfer"></span>
-                                    {{trans('messages.change-specimen')}}
-                                </a>
-                            @endif
+
                         @endif
                         @if ($test->specimen->isAccepted() && !($test->isVerified()))
-                            @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()) && !$test->panel_id)
+                            @if(Auth::user()->can('reject_test_specimenm') && !($test->specimen->isReferred()) && !$test->panel_id)
                                 <a class="btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
                                     href="{{URL::route('test.reject', array($test->specimen_id))}}"
                                     title="{{trans('messages.reject-title')}}">

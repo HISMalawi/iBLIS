@@ -519,4 +519,15 @@ table.table.report-table-border > tbody > tr > td{
     cursor: pointer;
 }
 
+.label{
+    color: black;
+    font-size: 0.9em;
+}
+#patientReport td, #patientReport th{
+    padding: 6px;
+}
+
+.rspecimen td, .rtest td, .rsusc td{
+    font-weight: normal;
+}
 
