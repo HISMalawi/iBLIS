@@ -189,9 +189,8 @@
 				<tr>
 					<th>{{Lang::choice('messages.test-type', 1)}}</th>
 					<th>{{trans('messages.test-results')}}</th>
-					<th>{{trans('messages.test-remarks')}}</th>
+					<th>{{trans('messages.test-remarks')}}</th>					
 					<th>{{trans('messages.tested-by')}}</th>
-					<th>{{trans('messages.date-tested')}}</th>
 				</tr>
 				@forelse($tests as $test)
 						<tr>
@@ -218,12 +217,12 @@
 										@endif
 									@endforeach
 								@else
-									<table style="margin: 0px;padding:0px;" class="table-bordered table-condensed">
+									<table style="margin: 0px;padding:0px;width:100%" class="table-bordered table-condensed">
 										@foreach($test->testResults as $result)
 
 											@if(!empty($result->result))
 												<tr>
-													<td style="width: 50%">
+													<td style="width: 44%">
 														{{ Measure::find($result->measure_id)->name }}
 													</td>
 													<td>
@@ -246,8 +245,7 @@
 								@endif
 							</td>
 							<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
-							<td>{{ $test->testedBy->name or trans('messages.pending')}}</td>
-							<td>{{ $test->time_completed }}</td>
+							<td style="width: 20%;">{{ $test->testedBy->name}}<br /> On {{ $test->time_completed }}</td>
 
 						</tr>
 				@empty
