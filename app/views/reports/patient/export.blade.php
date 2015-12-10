@@ -207,7 +207,18 @@
 									</tbody>
 								</table>
 
-								<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
+								<?php  
+									$susc_available = false;
+									foreach($tests as $test){
+										if(count($test->susceptibility)>0){
+											$susc_available = true;
+										}
+									}
+								?>
+								@if($susc_available == true)
+									<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
+								@endif
+						
 								<?php $interpretationText = array("R" => "Resistant", "I" => "Intermediate", "S" => "Sensitive")?>
 								@foreach($tests as $test)
 									@if(count($test->susceptibility)>0)
