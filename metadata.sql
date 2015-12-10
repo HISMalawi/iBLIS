@@ -519,8 +519,8 @@ CREATE TABLE `measure_ranges` (
   `age_min` int(10) unsigned DEFAULT NULL,
   `age_max` int(10) unsigned DEFAULT NULL,
   `gender` tinyint(3) unsigned DEFAULT NULL,
-  `range_lower` decimal(7,3) DEFAULT NULL,
-  `range_upper` decimal(7,3) DEFAULT NULL,
+  `range_lower` decimal(11,3) DEFAULT NULL,
+  `range_upper` decimal(11,3) DEFAULT NULL,
   `alphanumeric` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `interpretation` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -664,4 +664,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-10 10:49:56
+-- Dump completed on 2015-12-10 11:42:12
