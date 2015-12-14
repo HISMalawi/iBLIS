@@ -69,8 +69,6 @@
                                     }}
                                     <span class='units'>
 
-                                        {{Measure::getRange($test->visit->patient, $measure->id)}}
-                                        {{$measure->unit}}
                                     </span>
                                 @elseif ( $measure->isAlphanumeric() || $measure->isAutocomplete() ) 
                                     <?php
@@ -100,7 +98,7 @@
                             </div>
                         @endforeach
                         <div class="form-group">
-                            {{ Form::label('interpretation', trans('messages.interpretation')) }}
+                            {{ Form::label('interpretation', trans('messages.remarks')) }}
                             {{ Form::textarea('interpretation', $test->interpretation, 
                                 array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
                         </div>
