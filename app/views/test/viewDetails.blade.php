@@ -262,7 +262,8 @@
 													<tr>
 														<th>{{ $test->testType->name }}</th>
 														<th>
-															@if($test->isCompleted() && Auth::user()->can('edit_test_results'))
+															@if(($test->isCompleted() && Auth::user()->can('edit_test_results')
+															|| Entrust::hasRole(Role::getAdminRole()->name)))
 																<a class="btn btn-sm btn-info pull-right" id="edit-{{$test->id}}-link"
 																   href="{{ URL::route('test.edit', array($test->id)) }}"
 																   title="{{trans('messages.edit-test-results')}}">
