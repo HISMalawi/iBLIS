@@ -105,11 +105,17 @@
 		                            {{ Form::label($fieldName, $measure->name) }}
 		                            <?php
 										$sense = '';
-										if($measure->name=="Sensitivity"||$measure->name=="sensitivity")
+										$datepicker = '';
+										if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
 											$sense = ' sense'.$test->id;
+										}
+										if($measure->name == "Expiry Date"){
+											$datepicker = ' datepicker';
+										}
 									?>
-		                            {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense))}}
+		                            {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
 								@endif
+								{{($measure->unit)}}
 		                    </div>
 		                @endforeach
 		                <div class="form-group">

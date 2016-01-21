@@ -153,6 +153,12 @@ Route::group(array("before" => "auth"), function()
             "uses" => "TestPanelController@delete"
         ));
 
+        Route::resource('specimenlifespan', 'SpecimenLifespanController');
+        Route::get("/specimenlifespan/{id}/delete", array(
+            "as"   => "specimenlifespan.delete",
+            "uses" => "SpecimenLifespanController@delete"
+        ));
+
         Route::resource('specimenrejection', 'SpecimenRejectionController');
         Route::any("/specimenrejection/{id}/delete", array(
             "as"   => "specimenrejection.delete",

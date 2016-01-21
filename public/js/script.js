@@ -596,6 +596,14 @@ $(function(){
 			changeYear: true,
 			maxDate: new Date()
 		});
+
+		//$(".datepicker").attr('readonly', 'readonly');
+		/* Datepicker */
+		$( '.datepicker').datepicker({
+			dateFormat: "yy-mm-dd",
+			changeMonth: true,
+			changeYear: true
+		});
 	}
 
 	function editUserProfile()

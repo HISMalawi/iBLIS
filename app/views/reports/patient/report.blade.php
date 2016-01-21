@@ -46,7 +46,7 @@
             </div>
             <div class="col-sm-3">
 				<div class="row">
-		            <div class="col-sm-4">
+		            <div class="col-sm-3">
 			            {{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'),
 			                    array('class' => 'btn btn-primary', 'id' => 'filter', 'type' => 'submit')) }}
 		            </div>
@@ -55,9 +55,16 @@
 				        {{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
 				        	'onclick' => "selectPrinter()")) }}
 				    </div>
+					<div class="col-ms-1">
+						<a class="btn btn-sm btn-primary pull-right"  href="#" onclick="window.history.back();return false;"
+						   alt="{{trans('messages.back')}}" title="{{trans('messages.back')}}">
+							<span class="glyphicon glyphicon-backward"></span></a>
+					</div>
 				    @endif
 			    </div>
 		    </div>
+
+
 	    </div>
 	    {{ Form::hidden('visit_id', $visit, array('id'=>'visit_id')) }}
 	{{ Form::close() }}
@@ -203,7 +210,6 @@
 											<p>
 												{{ $result->result }}
 												<?php $organism_names = ''?>
-												{{ $result->result }}
 												@if(count($test->susceptibility)>0 && $result->result == "Growth")
 													@foreach($test->organisms() AS $og)
 														<?php
