@@ -90,7 +90,7 @@
 							            </div>
 						            </div>
 									<div class="row">
-										@if(Auth::id() != $user->id && Entrust::hasRole(Role::getAdminRole()->name))
+										@if(Entrust::hasRole(Role::getAdminRole()->name))
 										<div class="form-group">
 											{{ Form::label('test_categories', trans('messages.select-lab-section')) }}
 											<div class="form-pane panel panel-default">
