@@ -162,6 +162,30 @@ class TestController extends \BaseController {
 					->with('specimen_types', $specimen_types);
 	}
 
+	public function append_test($testId = 0)
+	{
+		$test = Test::find($testId);
+		$tid = $test->specimen->specimen_type_id;
+		$testTypes = DB::table('test_types')
+			->join("testtype_specimentypes", "testtype_specimentypes.test_type_id", '=', "test_types.id")
+			->select("test_types.*")
+			->where('orderable_test', 1)
+			->where('testtype_specimentypes.specimen_type_id', $tid)
+			->where("test_category_id", '=', Session::get('location_id'))
+			->orderBy('name', 'asc')->get();
+
+		$patient = $test->visit->patient;
+		$specimen_type =  $test->specimen->specimen_type;
+
+		//Load Test Create View
+		return View::make('test.append')
+			->with('testtypes', $testTypes)
+			->with('test', $test)
+			->with('visittype', $test->visit)
+			->with('patient', $patient)
+			->with('specimentype',$specimen_type);
+	}
+
 	/**
 	 * Save a new Test.
 	 *

@@ -232,6 +232,10 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.reject",
         "uses" => "TestController@reject"
     ));
+    Route::get("/test/{id}/append_test", array(
+        "as"   => "test.append_test",
+        "uses" => "TestController@append_test"
+    ));
     Route::post("/test/rejectaction", array(
         "before" => "checkPerms:reject_test_specimen",
         "as"   => "test.rejectAction",

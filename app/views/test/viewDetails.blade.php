@@ -36,6 +36,18 @@
 								@endif
 							</div>
 						@endif
+
+						@if(Auth::user()->can('request_test'))
+							<div class="panel-btn">
+								<a class="btn btn-sm btn-info"
+								   href="{{URL::route('test.append_test', array($test->specimen_id))}}"
+								   data-toggle="modal" >
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									Add Test To Current Specimen
+								</a>
+							</div>
+						@endif
+
 					</div>
 					<div class="col-md-1">
 						<a class="btn btn-sm btn-primary pull-right" href="#" onclick="window.history.back();return false;"
