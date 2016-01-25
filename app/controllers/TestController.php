@@ -162,27 +162,40 @@ class TestController extends \BaseController {
 					->with('specimen_types', $specimen_types);
 	}
 
-	public function append_test($testId = 0)
+	public function append_test($sid = 0)
 	{
-		$test = Test::find($testId);
-		$tid = $test->specimen->specimen_type_id;
+
+		$specimen = Specimen::find($sid);
+
 		$testTypes = DB::table('test_types')
 			->join("testtype_specimentypes", "testtype_specimentypes.test_type_id", '=', "test_types.id")
 			->select("test_types.*")
 			->where('orderable_test', 1)
-			->where('testtype_specimentypes.specimen_type_id', $tid)
+			->where('testtype_specimentypes.specimen_type_id', $specimen->specimen_type->id)
 			->where("test_category_id", '=', Session::get('location_id'))
 			->orderBy('name', 'asc')->get();
 
-		$patient = $test->visit->patient;
-		$specimen_type =  $test->specimen->specimen_type;
+		$panels = DB::table('test_types')
+			->join("testtype_specimentypes", "testtype_specimentypes.test_type_id", '=', "test_types.id")
+			->join("panels", "panels.test_type_id", '=', "test_types.id")
+			->join("panel_types", "panel_types.id", "=", 'panels.panel_type_id')
+			->select("panel_types.*")
+			->where('orderable_test', 1)
+			->where('testtype_specimentypes.specimen_type_id', $specimen->specimen_type->id)
+			->where("test_category_id", '=', Session::get('location_id'))
+			->groupBy("panel_types.name")
+			->orderBy('name', 'asc')->get();
+
+		$visit = $specimen->test->visit;
+		$specimen_type =  $specimen->specimen_type;
 
 		//Load Test Create View
 		return View::make('test.append')
 			->with('testtypes', $testTypes)
-			->with('test', $test)
-			->with('visittype', $test->visit)
-			->with('patient', $patient)
+			->with('visittype', $visit)
+			->with("panels", $panels)
+			->with('specimen', $specimen)
+			->with('patient', $visit->patient)
 			->with('specimentype',$specimen_type);
 	}
 
@@ -191,6 +204,7 @@ class TestController extends \BaseController {
 	 *
 	 * @return Response
 	 */
+
 	public function saveNewTest()
 	{
 		//Create New Test
@@ -298,6 +312,123 @@ class TestController extends \BaseController {
 			
 			return Redirect::to($url)->with('message', 'messages.success-creating-test')
 					->with('activeTest', $activeTest);
+		}
+	}
+
+	#Append a New Test To an order
+	public function appendNewTest(){
+		//Create New Test
+		$rules = array(
+			'physician' => 'required',
+			'testtypes' => 'required',
+		);
+
+		$sid = Input::get("specimen_id");
+		$validator = Validator::make(Input::all(), $rules);
+		$specimen =Specimen::find($sid);
+
+		$visit = $specimen->test->visit;
+		$patient = $visit->patient;
+		$specimen_type =  $specimen->specimen_type;
+		$activeTest = [];
+		// process the login
+		if ($validator->fails()) {
+			$testTypes = DB::table('test_types')
+				->join("testtype_specimentypes", "testtype_specimentypes.test_type_id", '=', "test_types.id")
+				->select("test_types.*")
+				->where('orderable_test', 1)
+				->where('testtype_specimentypes.specimen_type_id', $specimen->specimen_type->id)
+				->where("test_category_id", '=', Session::get('location_id'))
+				->orderBy('name', 'asc')->get();
+
+			$panels = DB::table('test_types')
+				->join("testtype_specimentypes", "testtype_specimentypes.test_type_id", '=', "test_types.id")
+				->join("panels", "panels.test_type_id", '=', "test_types.id")
+				->join("panel_types", "panel_types.id", "=", 'panels.panel_type_id')
+				->select("panel_types.*")
+				->where('orderable_test', 1)
+				->where('testtype_specimentypes.specimen_type_id', $specimen->specimen_type->id)
+				->where("test_category_id", '=', Session::get('location_id'))
+				->groupBy("panel_types.name")
+				->orderBy('name', 'asc')->get();
+
+			//Load Test Create View
+			return View::make('test.append')
+				->with('testtypes', $testTypes)
+				->with('specimen', $specimen)
+				->with('visittype', $visit)
+				->with('panels', $panels)
+				->with('patient', $patient)
+				->with('specimentype',$specimen_type);
+			//return Redirect::route('test.append',
+			//	array(Input::get('patient_id')))->withInput()->withErrors($validator);
+		} else {
+
+			$testTypes = Input::get('testtypes');
+			if(is_array($testTypes) && count($testTypes) > 0){
+
+				// Get Specimen - specimen_type_id, accepted_by, referred_from, referred_to
+				foreach ($testTypes as $value) {
+					$testTypeID = (int)$value;
+					if ($testTypeID == 0){
+						$panelType = PanelType::where('name', '=', $value)->first()->id;
+
+						$panelTests = DB::select("SELECT test_type_id FROM panels
+											WHERE panel_type_id = $panelType"
+						);
+
+						if(count($panelTests) > 0) {
+
+							$panel = new TestPanel;
+							$panel->panel_type_id = $panelType;
+							$panel->save();
+
+							foreach ($panelTests AS $tType) {
+
+								$duplicateCheck = DB::select("SELECT * FROM tests
+											WHERE test_type_id = ".$tType->test_type_id
+									." AND specimen_id = ".$specimen->id);
+
+								if(count($duplicateCheck) == 0) {
+									$test = new Test;
+									$test->visit_id = $visit->id;
+									$test->test_type_id = $tType->test_type_id;
+									$test->specimen_id = $specimen->id;
+									$test->test_status_id = Test::PENDING;
+									$test->created_by = Auth::user()->id;
+									$test->panel_id = $panel->id;
+									$test->requested_by = Input::get('physician');
+									$test->save();
+
+									$activeTest[] = $test->id;
+								}
+							}
+						}
+
+					}else {
+
+						$duplicateCheck = DB::select("SELECT * FROM tests
+											WHERE test_type_id = $testTypeID AND specimen_id = ".$specimen->id);
+
+						if(count($duplicateCheck) == 0) {
+							$test = new Test;
+							$test->visit_id = $visit->id;
+							$test->test_type_id = $testTypeID;
+							$test->specimen_id = $specimen->id;
+							$test->test_status_id = Test::PENDING;
+							$test->created_by = Auth::user()->id;
+							$test->requested_by = Input::get('physician');
+							$test->save();
+
+							$activeTest[] = $test->id;
+						}
+					}
+				}
+			}
+			$url = Session::get('SOURCE_URL');
+
+			return Redirect::to($url)->with('message', 'messages.success-creating-test')
+				->with('activeTest', $activeTest);
 		}
 	}
 

@@ -33,7 +33,7 @@
 				</div>
 			@endif
 
-			{{ Form::open(array('route' => 'test.saveNewTest', 'id' => 'form-new-test')) }}
+			{{ Form::open(array('route' => 'test.appendNewTest', 'id' => 'form-new-test')) }}
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-md-12">
@@ -51,6 +51,8 @@
 							</div>
 							<div class="form-group">
 								{{ Form::hidden('patient_id', $patient->id) }}
+								{{ Form::hidden('specimen_id', $specimen->id) }}
+
 								{{ Form::label('visit_type', trans("messages.visit-type")) }}
 								{{ Form::label('visit_type', $visittype->visit_type) }}
 							</div>
@@ -61,14 +63,14 @@
 
 							<div class="form-group">
 								{{ Form::label('physician', trans("messages.physician")) }}
-								{{Form::text('physician', $test->requested_by)}}
+								{{Form::text('physician', $specimen->test->requested_by)}}
 							</div>
 
 							<div class="form-group">
 								{{ Form::label('specimen_type', trans("messages.specimen-type-title")) }}
 								{{ Form::label('specimen_type',$specimentype->name) }}
-							</div>
-							<div class="form-group">
+							</d>
+							<diviv class="form-group">
 								{{ Form::label('tests', trans("messages.select-tests")) }}
 								<div class="form-pane">
 
@@ -79,7 +81,8 @@
 											<th>{{ trans('messages.actions') }}</th>
 														
 										</tr>
-
+									</thead>
+										<tbody>
 										@foreach($testtypes as $key => $value)
 											<tr>
 												<td>{{ $value->name }}</td>
@@ -90,11 +93,19 @@
 
 											</tr>
 										@endforeach
+										@foreach($panels as $key => $value)
+											<tr>
+												<td>{{ $value->name }}</td>
+												<td><label  class="editor-active">
+														<input type="checkbox" name="testtypes[]" value="{{ $value->name}}" />
+													</label>
+												</td>
 
-									</thead>
-									<tbody>
+											</tr>
+										@endforeach
 
-									</tbody>
+
+										</tbody>
 						            </table>
 				
 								<div class="form-group actions-row">

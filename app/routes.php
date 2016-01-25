@@ -212,6 +212,11 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.saveNewTest",
         "uses" => "TestController@saveNewTest"
     ));
+    Route::post("/test/appendnewtest", array(
+        "before" => "checkPerms:request_test",
+        "as"   => "test.appendNewTest",
+        "uses" => "TestController@appendNewTest"
+    ));
      Route::post("/test/acceptspecimen", array(
         "before" => "checkPerms:accept_test_specimen",
         "as"   => "test.acceptSpecimen",
