@@ -613,7 +613,7 @@ CREATE TABLE `panel_types` (
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -622,7 +622,7 @@ CREATE TABLE `panel_types` (
 
 LOCK TABLES `panel_types` WRITE;
 /*!40000 ALTER TABLE `panel_types` DISABLE KEYS */;
-INSERT INTO `panel_types` VALUES (1,'CSF Analysis','2015-11-08 16:58:13','2015-11-08 16:58:13',NULL),(2,'Urinalysis','2015-12-10 09:13:56','2015-12-10 09:13:56',NULL),(3,'ABO Blood Grouping and Cross-match','2015-12-22 10:45:58','2015-12-22 12:54:14',NULL);
+INSERT INTO `panel_types` VALUES (1,'CSF Analysis','2015-11-08 16:58:13','2015-11-08 16:58:13',NULL),(2,'Urinalysis','2015-12-10 09:13:56','2015-12-10 09:13:56',NULL);
 /*!40000 ALTER TABLE `panel_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -642,7 +642,7 @@ CREATE TABLE `panels` (
   KEY `panels_test_type_id_foreign` (`test_type_id`),
   CONSTRAINT `panels_panel_type_id_foreign` FOREIGN KEY (`panel_type_id`) REFERENCES `panel_types` (`id`),
   CONSTRAINT `panels_test_type_id_foreign` FOREIGN KEY (`test_type_id`) REFERENCES `test_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -651,7 +651,7 @@ CREATE TABLE `panels` (
 
 LOCK TABLES `panels` WRITE;
 /*!40000 ALTER TABLE `panels` DISABLE KEYS */;
-INSERT INTO `panels` VALUES (1,1,5),(2,1,4),(3,1,7),(4,1,3),(5,1,6),(9,2,13),(10,2,11),(11,2,12),(15,3,29),(16,3,30),(17,3,31);
+INSERT INTO `panels` VALUES (1,1,5),(2,1,4),(3,1,7),(4,1,3),(5,1,6),(9,2,13),(10,2,11),(11,2,12);
 /*!40000 ALTER TABLE `panels` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -664,4 +664,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-21 14:21:20
+-- Dump completed on 2016-01-26 11:29:18
