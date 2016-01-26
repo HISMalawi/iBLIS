@@ -237,6 +237,14 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.reject",
         "uses" => "TestController@reject"
     ));
+    Route::get("/test/{id}/void", array(
+        "as"   => "test.void",
+        "uses" => "TestController@void"
+    ));
+    Route::get("/test/{id}/ignore", array(
+        "as"   => "test.ignore",
+        "uses" => "TestController@ignore"
+    ));
     Route::get("/test/{id}/append_test", array(
         "as"   => "test.append_test",
         "uses" => "TestController@append_test"
