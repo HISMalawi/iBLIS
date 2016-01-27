@@ -532,6 +532,10 @@ table.table.report-table-border > tbody > tr > td{
 }
 .opt-view{
     display: none;
+    margin: 1px !important;
+}
+.main-view{
+    margin: 1px !important;
 }
 
 .no-select {

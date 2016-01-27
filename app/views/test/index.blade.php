@@ -224,7 +224,7 @@
                                         @if ($test->isPending())
 
                                             @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()))
-                                                <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
+                                                <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     {{trans('messages.refer-sample')}}
                                                 </a>
@@ -260,7 +260,7 @@
                                            href="{{URL::route('test.ignore', array($test->specimen_id))}}"
                                            title="{{trans('messages.notdone-title')}}">
                                             <span class="glyphicon glyphicon-thumbs-down"></span>
-                                            {{trans('messages.ignore')}}
+                                            <span>{{trans('messages.notdone')}}</span>
                                         </a>
                                     @endif
 
@@ -419,7 +419,7 @@
                                     </a>
                                 @endif
                                 @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()) && !$test->panel_id)
-                                    <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
+                                    <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
                                         <span class="glyphicon glyphicon-edit"></span>
                                         {{trans('messages.refer-sample')}}
                                     </a>
@@ -453,6 +453,26 @@
                                 @endif
                             @endif
                         @endif
+
+                            @if(Auth::user()->can('void_test') && !($test->specimen->isReferred()))
+
+                                <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="void-{{$test->id}}-link"
+                                   href="{{URL::route('test.void', array($test->id))}}"
+                                   title="{{trans('messages.void-title')}}">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                    {{trans('messages.void')}}
+                                </a>
+                            @endif
+
+                            @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()))
+
+                                <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="ignore-{{$test->id}}-link"
+                                   href="{{URL::route('test.ignore', array($test->specimen_id))}}"
+                                   title="{{trans('messages.notdone-title')}}">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                    <span>{{trans('messages.notdone')}}</span>
+                                </a>
+                            @endif
 
                             @if (!$test->panel_id)
                                 <a class="main-view main-view-{{$test->id}} btn btn-sm btn-default" id="other-{{$test->id}}-link"

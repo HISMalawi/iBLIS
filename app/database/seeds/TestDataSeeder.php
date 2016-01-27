@@ -93,8 +93,8 @@ class TestDataSeeder extends DatabaseSeeder
                 array("id" => "2","name" => "pending","test_phase_id" => "1"),//Pre-Analytical
                 array("id" => "3","name" => "started","test_phase_id" => "2"),//Analytical
                 array("id" => "4","name" => "completed","test_phase_id" => "3"),//Post-Analytical
-                array("id" => "5","name" => "verified","test_phase_id" => "3")//Post-Analytical
-                array("id" => "6","name" => "voided","test_phase_id" => "2")//Analytical
+                array("id" => "5","name" => "verified","test_phase_id" => "3"),//Post-Analytical
+                array("id" => "6","name" => "voided","test_phase_id" => "2"),//Analytical
                 array("id" => "7","name" => "not-done","test_phase_id" => "2")//Analytical
 	        );
 	        foreach ($test_statuses as $test_status)
@@ -459,11 +459,7 @@ class TestDataSeeder extends DatabaseSeeder
                 array("name" => "receive_external_test", "display_name" => "Can receive test requests"),
                 array("name" => "request_test", "display_name" => "Can request new test"),
                 array("name" => "accept_test_specimen", "display_name" => "Can accept test specimen"),
-
                 array("name" => "reject_test_specimen", "display_name" => "Can reject test specimen"),
-                array("name" => "void_test", "display_name" => "Can void test"),
-                array("name" => "ignore_test", "display_name" => "Can claim test not done"),
-                
                 array("name" => "change_test_specimen", "display_name" => "Can change test specimen"),
                 array("name" => "start_test", "display_name" => "Can start tests"),
                 array("name" => "enter_test_results", "display_name" => "Can enter tests results"),
@@ -478,7 +474,9 @@ class TestDataSeeder extends DatabaseSeeder
                 array("name" => "view_reports", "display_name" => "Can view reports"),
                 array("name" => "manage_inventory", "display_name" => "Can manage inventory"),
                 array("name" => "request_topup", "display_name" => "Can request top-up"),
-                array("name" => "manage_qc", "display_name" => "Can manage Quality Control")
+                array("name" => "manage_qc", "display_name" => "Can manage Quality Control"),
+                array("name" => "void_test", "display_name" => "Can void test"),
+                array("name" => "ignore_test", "display_name" => "Can claim test not done")
             );
 
             foreach ($permissions as $permission) {
