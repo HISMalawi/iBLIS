@@ -976,6 +976,10 @@ $(function(){
 		$('#myModal').modal('show');
 	}
 
+	function toggleMainOpt(test_id){
+			jQuery('.opt-view-' + test_id).toggle();
+			jQuery('.main-view-' + test_id).toggle();
+	}
 	function checkBarcode(){
 		var node = document.getElementsByClassName('barcode')[0];
 		if(node){

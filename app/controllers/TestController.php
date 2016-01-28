@@ -567,6 +567,70 @@ class TestController extends \BaseController {
 		return $test->test_status_id;
 	}
 
+
+	/**
+	 * Void Test
+	 *
+	 * @param
+	 * @return
+	 */
+	public function void($tid)
+	{
+
+		$test = Test::find($tid);
+		$tests = Test::where('specimen_id', $test->specimen_id)->get();
+		foreach($tests AS $tst){
+			$tst->test_status_id = Test::VOIDED;
+			$tst->save();
+		}
+
+		$input = Session::get('TESTS_FILTER_INPUT');
+		Session::put('fromRedirect', 'true');
+
+		// Get page
+		$url = Session::get('SOURCE_URL');
+		$urlParts = explode('&', $url);
+		if(isset($urlParts['page'])){
+			$pageParts = explode('=', $urlParts['page']);
+			$input['page'] = $pageParts[1];
+		}
+		// redirect
+		return Redirect::action('TestController@index')
+			->with('activeTest', array($test->id))
+			->withInput($input);
+	}
+
+	/**
+	 * Ignores Test
+	 *
+	 * @param
+	 * @return
+	 */
+	public function ignore($tid)
+	{
+		$test = Test::find($tid);
+		$tests = Test::where('specimen_id', $test->specimen_id)->get();
+		foreach($tests AS $tst){
+			$tst->test_status_id = Test::NOT_DONE;
+			$tst->save();
+		}
+
+		$input = Session::get('TESTS_FILTER_INPUT');
+		Session::put('fromRedirect', 'true');
+
+		// Get page
+		$url = Session::get('SOURCE_URL');
+		$urlParts = explode('&', $url);
+		if(isset($urlParts['page'])){
+			$pageParts = explode('=', $urlParts['page']);
+			$input['page'] = $pageParts[1];
+		}
+		// redirect
+		return Redirect::action('TestController@index')
+			->with('activeTest', array($test->id))
+			->withInput($input);
+	}
+
 	/**
 	 * Display Result Entry page
 	 *

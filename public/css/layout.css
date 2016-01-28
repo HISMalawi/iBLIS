@@ -532,10 +532,10 @@ table.table.report-table-border > tbody > tr > td{
 }
 .opt-view{
     display: none;
-    margin: 1px !important;
+    padding: 3px !important;
 }
 .main-view{
-    margin: 1px !important;
+    padding: 3px !important;
 }
 
 .no-select {
@@ -548,3 +548,18 @@ table.table.report-table-border > tbody > tr > td{
                                   not supported by any browser */
 }
 
+.btn-expand{
+    padding: 3px !important;
+    width: 35px !important;
+}
+.accept-specimen{
+    padding: 3px !important;
+}
+.toggler{
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+}
+
+#test-actions{
+    padding: 0px !important;
+}

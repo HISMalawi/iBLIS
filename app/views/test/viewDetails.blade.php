@@ -96,7 +96,7 @@
 								<p class="view"><strong>{{trans('messages.verified-by')}}</strong>
 									{{$test->verifiedBy->name or trans('messages.verification-pending')}}</p>
 							@endif
-							@if((!$test->specimen->isRejected()) && ($test->isVerified()))
+							@if((!$test->isLocked()) && ($test->isVerified()))
 								<!-- Not Rejected and (Verified or Completed)-->
 								<p class="view-striped"><strong>{{trans('messages.turnaround-time')}}</strong>
 									{{$test->getFormattedTurnaroundTime()}}</p>
@@ -274,8 +274,8 @@
 													<tr>
 														<th>{{ $test->testType->name }}</th>
 														<th>
-															@if(($test->isCompleted() && Auth::user()->can('edit_test_results')
-															|| Entrust::hasRole(Role::getAdminRole()->name)))
+															@if((!($test->isLocked()) && $test->isCompleted() && (Auth::user()->can('edit_test_results')
+															|| Entrust::hasRole(Role::getAdminRole()->name))))
 																<a class="btn btn-sm btn-info pull-right" id="edit-{{$test->id}}-link"
 																   href="{{ URL::route('test.edit', array($test->id)) }}"
 																   title="{{trans('messages.edit-test-results')}}">

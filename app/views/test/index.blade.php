@@ -152,6 +152,12 @@
                                         @if($test->isVerified())
                                             <span class='label'>
                                                 {{trans('messages.verified')}}</span>
+                                        @elseif($test->isVoided())
+                                            <span class='label'>
+                                                Voided</span>
+                                        @elseif($test->isIgnored())
+                                            <span class='label'>
+                                                Not Done</span>
                                         @else
                                             @if($test->specimen->isNotCollected())
                                                 @if(($test->isPaid()))
@@ -182,10 +188,9 @@
                                 <!--Actions for test panel specimens  -->
                                 <td class="test-actions">
 
-                                    <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-default" id="other-{{$test->id}}-link"
+                                    <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
                                        href=""
-                                       onmousedown="jQuery('.opt-view-{{$test->id}}').toggle();
-                                               jQuery('.main-view-{{$test->id}}').toggle();"
+                                       onmousedown="toggleMainOpt({{$test->id}})"
                                        title="Other buttons">
                                         <<
                                     </a>
@@ -210,7 +215,7 @@
                                         @endif
                                     @endif
 
-                                    @if ($test->specimen->isAccepted() && !($test->isVerified()))
+                                    @if ($test->specimen->isAccepted() && !($test->isVerified()) && !($test->isLocked()))
                                         @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()))
 
                                             <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
@@ -233,7 +238,7 @@
 
                                     @endif
 
-                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) &&
+                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) && !($test->isLocked()) &&
                                      Auth::user()->can('verify_test_results')
                                         && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
                                         <a class="main-view main-view-{{$test->id}} btn btn-sm btn-success" id="verify-{{$test->id}}-link"
@@ -244,7 +249,7 @@
                                         </a>
                                     @endif
 
-                                    @if(Auth::user()->can('void_test') && !($test->specimen->isReferred()))
+                                    @if(Auth::user()->can('void_test') && !($test->specimen->isReferred()) && !($test->isLocked()))
 
                                         <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="void-{{$test->id}}-link"
                                            href="{{URL::route('test.void', array($test->id))}}"
@@ -254,7 +259,7 @@
                                         </a>
                                     @endif
 
-                                    @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()))
+                                    @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()) && !($test->isLocked()))
 
                                         <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="ignore-{{$test->id}}-link"
                                            href="{{URL::route('test.ignore', array($test->specimen_id))}}"
@@ -264,10 +269,9 @@
                                         </a>
                                     @endif
 
-                                    <a class="main-view main-view-{{$test->id}} btn btn-sm btn-default" id="other-{{$test->id}}-link"
+                                    <a class="main-view main-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
                                        href=""
-                                       onmousedown="jQuery('.opt-view-{{$test->id}}').toggle();
-                                               jQuery('.main-view-{{$test->id}}').toggle();"
+                                       onmousedown="toggleMainOpt({{$test->id}})"
                                        title="Other buttons">
                                         >>
                                     </a>
@@ -324,7 +328,6 @@
                                             <span class='label'>
                                                 {{trans('messages.verified')}}</span>
                                         @endif
-
                                     </div>
     
                                     </div>
@@ -363,10 +366,9 @@
 
                         @if (!$test->panel_id)
 
-                            <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-default" id="other-{{$test->id}}-link"
+                            <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
                                href=""
-                               onmousedown="jQuery('.opt-view-{{$test->id}}').toggle();
-                                       jQuery('.main-view-{{$test->id}}').toggle();"
+                               onmousedown="toggleMainOpt({{$test->id}})"
                                title="Other buttons">
                                 <<
                             </a>
@@ -388,9 +390,9 @@
                                     {{trans('messages.receive-test')}}
                                 </a>
                             @endif
-                        @elseif ($test->specimen->isNotCollected() && !$test->panel_id)
+                        @elseif ($test->specimen->isNotCollected() && !$test->panel_id && !($test->isLocked()))
                             @if(Auth::user()->can('accept_test_specimen'))
-                                <a class="btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
+                                <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
                                     data-test-id="{{$test->id}}" data-specimen-id="{{$test->specimen->id}}"
                                     title="{{trans('messages.accept-specimen-title')}}"
                                     data-url="{{ URL::route('test.acceptSpecimen') }}">
@@ -400,7 +402,7 @@
                             @endif
 
                         @endif
-                        @if ($test->specimen->isAccepted() && !($test->isVerified()))
+                        @if ($test->specimen->isAccepted() && !($test->isVerified()) && !($test->isLocked()))
                             @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()) && !$test->panel_id)
                                 <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
                                     href="{{URL::route('test.reject', array($test->specimen_id))}}"
@@ -454,7 +456,7 @@
                             @endif
                         @endif
 
-                            @if(Auth::user()->can('void_test') && !($test->specimen->isReferred()))
+                            @if(Auth::user()->can('void_test') && !($test->specimen->isReferred()) && !($test->isLocked())  && !$test->panel_id)
 
                                 <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="void-{{$test->id}}-link"
                                    href="{{URL::route('test.void', array($test->id))}}"
@@ -464,10 +466,10 @@
                                 </a>
                             @endif
 
-                            @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()))
+                            @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()) && !($test->isLocked()) && !$test->panel_id)
 
                                 <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="ignore-{{$test->id}}-link"
-                                   href="{{URL::route('test.ignore', array($test->specimen_id))}}"
+                                   href="{{URL::route('test.ignore', array($test->id))}}"
                                    title="{{trans('messages.notdone-title')}}">
                                     <span class="glyphicon glyphicon-thumbs-down"></span>
                                     <span>{{trans('messages.notdone')}}</span>
@@ -475,10 +477,9 @@
                             @endif
 
                             @if (!$test->panel_id)
-                                <a class="main-view main-view-{{$test->id}} btn btn-sm btn-default" id="other-{{$test->id}}-link"
+                                <a class="main-view main-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
                                    href=""
-                                   onmousedown="jQuery('.opt-view-{{$test->id}}').toggle();
-                                           jQuery('.main-view-{{$test->id}}').toggle();"
+                                   onmousedown="toggleMainOpt({{$test->id}})"
                                    title="Other buttons">
                                     >>
                                 </a>
