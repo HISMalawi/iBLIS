@@ -307,26 +307,34 @@
                                 <div class="row">
 
                                     <div class="col-md-12">
-                                        @if($test->isNotReceived())
-                                            @if(!$test->isPaid())
+                                        @if($test->isVoided())
+                                            <span class='label'>
+                                                    Voided</span>
+                                        @elseif($test->isIgnored())
+                                            <span class='label'>
+                                                Not Done</span>
+                                        @else
+                                            @if($test->isNotReceived())
+                                                @if(!$test->isPaid())
+                                                    <span class='label'>
+                                                        {{trans('messages.not-paid')}}</span>
+                                                @else
                                                 <span class='label'>
-                                                    {{trans('messages.not-paid')}}</span>
-                                            @else
-                                            <span class='label'>
-                                                {{trans('messages.not-received')}}</span>
+                                                    {{trans('messages.not-received')}}</span>
+                                                @endif
+                                            @elseif($test->isPending())
+                                                <span class='label'>
+                                                    {{trans('messages.pending')}}</span>
+                                            @elseif($test->isStarted())
+                                                <span class='label'>
+                                                    {{trans('messages.started')}}</span>
+                                            @elseif($test->isCompleted())
+                                                <span class='label'>
+                                                    {{trans('messages.completed')}}</span>
+                                            @elseif($test->isVerified())
+                                                <span class='label'>
+                                                    {{trans('messages.verified')}}</span>
                                             @endif
-                                        @elseif($test->isPending())
-                                            <span class='label'>
-                                                {{trans('messages.pending')}}</span>
-                                        @elseif($test->isStarted())
-                                            <span class='label'>
-                                                {{trans('messages.started')}}</span>
-                                        @elseif($test->isCompleted())
-                                            <span class='label'>
-                                                {{trans('messages.completed')}}</span>
-                                        @elseif($test->isVerified())
-                                            <span class='label'>
-                                                {{trans('messages.verified')}}</span>
                                         @endif
                                     </div>
     
@@ -334,7 +342,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <!-- Specimen statuses -->
-                                        @if(!$test->panel_id)
+                                        @if(!$test->panel_id && !$test->isLocked())
                                             @if($test->specimen->isNotCollected())
                                              @if(($test->isPaid()))
                                                 <span class='label'>

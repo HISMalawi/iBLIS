@@ -578,7 +578,12 @@ class TestController extends \BaseController {
 	{
 
 		$test = Test::find($tid);
-		$tests = Test::where('specimen_id', $test->specimen_id)->get();
+		if ($test->panel_id) {
+			$tests = Test::where('panel_id', $test->panel_id)->get();
+		} else{
+			$tests = Test::where('id', $test->id)->get();
+		}
+
 		foreach($tests AS $tst){
 			$tst->test_status_id = Test::VOIDED;
 			$tst->save();
@@ -609,7 +614,12 @@ class TestController extends \BaseController {
 	public function ignore($tid)
 	{
 		$test = Test::find($tid);
-		$tests = Test::where('specimen_id', $test->specimen_id)->get();
+		if ($test->panel_id) {
+			$tests = Test::where('panel_id', $test->panel_id)->get();
+		} else{
+			$tests = Test::where('id', $test->id)->get();
+		}
+
 		foreach($tests AS $tst){
 			$tst->test_status_id = Test::NOT_DONE;
 			$tst->save();
@@ -651,6 +661,93 @@ class TestController extends \BaseController {
 
 		return View::make('test.enterResults')->with('test', $test)
 			->with('all_drugs', $drugs);
+	}
+
+	/**
+	 * Print Pack Details
+	 *
+	 * @param
+	 * @return
+	 */
+	public function printPackDetails($testID)
+	{
+		$test = Test::find($testID);
+		$patient_name = $test->visit->patient->name;
+		$npid = $test->visit->patient->external_patient_number;
+		$accession_number = $test->specimen->accession_number;
+
+		try {
+			$sample_abo_test_id = Test::where('specimen_id', $test->specimen_id)
+				->where('test_type_id', TestType::where('name', 'ABO Blood Grouping')->get()->last()->id)
+				->get()->last()->id;
+
+			$sample_abo_group = TestResult::whereRaw('measure_id IN(' . implode(", ", Measure::where('name', 'Grouping')->lists('id')) . ') AND test_id = ' . $sample_abo_test_id)
+				->get()->first()->result;
+		}catch (Exception $e){
+			$sample_abo_group = "";
+		}
+
+		$pack_no = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Pack No.')->lists('id')).') AND test_id = '.$test->id)
+			->get()->first()->result;
+
+		$pack_abo_group = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Pack ABO Group')->lists('id')).') AND test_id = '.$test->id)
+			->get()->first()->result;
+
+		$product_type = TestResult::where('measure_id', Measure::where('name', 'Product Type')->get()->first()->id)
+			->where('test_id', $test->id)
+			->get()->first()->result;
+
+		$volume = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Volume')->lists('id')).') AND test_id = '.$test->id)
+			->get()->first()->result;
+
+		$method = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Cross-match Method')->lists('id')).') AND test_id = '.$test->id)
+			->get()->first()->result;
+
+		$expiry_date = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Expiry Date')->lists('id')).') AND test_id = '.$test->id)
+			->get()->first()->result;
+
+		$result =
+'
+N
+q801
+Q329,026
+ZT
+A53,19,0,1,1,2,N,"Cross-match for : '.$patient_name.' ('.$npid.')"
+LO25,110,760,2
+LO25,140,760,2
+LO25,170,760,2
+LO25,200,760,2
+LO25,230,760,2
+LO25,260,760,2
+LO25,290,760,2
+LO25,110,1,180
+LO785,110,1,180
+LO430,110,1,180
+A53,56,0,1,1,2,N,"Sample Accession Number :"
+A450,56,0,1,1,2,N,"Sample ABO Group :"
+A53,116,0,2,1,1,N,"Pack No."
+A53,146,0,2,1,1,N,"Pack ABO Group"
+A53,176,0,2,1,1,N,"Product Type"
+A53,206,0,2,1,1,N,"Volume"
+A53,236,0,2,1,1,N,"Cross-match Method"
+A53,266,0,2,1,1,N,"Expiry Date"
+A315,56,0,1,1,2,N,"'.$accession_number.'"
+A650,56,0,1,1,2,N,"'.$sample_abo_group.'"
+A455,120,0,2,1,1,N,"'.$pack_no.'"
+A455,148,0,2,1,1,N,"'.$pack_abo_group.'"
+A455,178,0,2,1,1,N,"'.$product_type.'"
+A455,208,0,2,1,1,N,"'.$volume.'mL"
+A455,238,0,2,1,1,N,"'.$method.'"
+A455,268,0,2,1,1,N,"'.$expiry_date.'"
+P2';
+		$filename = $test->id.'.lbl';
+
+		header("Content-Type: application/label; charset=utf-8");
+		header('Content-Disposition: inline; filename="'.$filename.'"');
+		header("Content-Length: " . strlen($result));
+		header("Stream", false);
+		echo $result;
+		exit;
 	}
 
 	/**

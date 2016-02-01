@@ -980,6 +980,11 @@ $(function(){
 			jQuery('.opt-view-' + test_id).toggle();
 			jQuery('.main-view-' + test_id).toggle();
 	}
+
+	function printPackDetails(tid){
+		window.location = "/test/" + tid + "/print_pack_details";
+	}
+
 	function checkBarcode(){
 		var node = document.getElementsByClassName('barcode')[0];
 		if(node){

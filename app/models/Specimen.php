@@ -158,6 +158,7 @@ class Specimen extends Eloquent
 			->join('test_panels', 'test_panels.id', '=', 'tests.panel_id')
 			->join('panel_types', 'panel_types.id', '=', 'test_panels.panel_type_id')
 			->where('specimens.id', $this->id)
+			->whereRaw(' tests.test_status_id NOT IN ('.Test::VOIDED.','.Test::NOT_DONE.')')
 			->whereNotNull('tests.panel_id')
 			->selectRaw('distinct panel_types.name')->get();
 
@@ -169,6 +170,7 @@ class Specimen extends Eloquent
 		$types = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')
 			->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
 			->where('specimens.id', $this->id)
+			->whereRaw(' tests.test_status_id NOT IN ('.Test::VOIDED.','.Test::NOT_DONE.')')
 			->whereNull('tests.panel_id')
 			->selectRaw('distinct test_types.name')->get();
 
@@ -183,6 +185,7 @@ class Specimen extends Eloquent
 			->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
 			->join('test_categories', 'test_categories.id', '=', 'test_types.test_category_id')
 			->where('specimens.id', $this->id)
+			->whereRaw(' tests.test_status_id NOT IN ('.Test::VOIDED.','.Test::NOT_DONE.')')
 			->selectRaw('distinct test_categories.name')->get();
 
 		$names = "";

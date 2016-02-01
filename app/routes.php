@@ -279,6 +279,12 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.edit",
         "uses" => "TestController@edit"
     ));
+
+    Route::get("/test/{test}/print_pack_details", array(
+        "as"   => "test.print_pack_details",
+        "uses" => "TestController@printPackDetails"
+    ));
+
      Route::post("/test/{test}/saveresults", array(
         "before" => "checkPerms:edit_test_results",
         "as"   => "test.saveResults",

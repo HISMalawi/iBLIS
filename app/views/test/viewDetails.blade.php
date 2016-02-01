@@ -274,6 +274,16 @@
 													<tr>
 														<th>{{ $test->testType->name }}</th>
 														<th>
+
+															@if($test->testType->name == 'Cross-match')
+																<a class="btn btn-sm btn-success pull-left" id="edit-{{$test->id}}-link"
+																   href="javascript:printPackDetails({{$test->id}});"
+																   title="{{trans('messages.edit-test-results')}}">
+																	<span class="glyphicon glyphicon-edit"></span>
+																	{{trans('messages.print')}}
+																</a>
+															@endif
+
 															@if((!($test->isLocked()) && $test->isCompleted() && (Auth::user()->can('edit_test_results')
 															|| Entrust::hasRole(Role::getAdminRole()->name))))
 																<a class="btn btn-sm btn-info pull-right" id="edit-{{$test->id}}-link"
