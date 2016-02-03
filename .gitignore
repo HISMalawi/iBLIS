@@ -15,3 +15,4 @@ app/config/remote.php
 public/i/users/*
 public/patientreport*
 public/data
+*.lbl

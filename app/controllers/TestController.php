@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\QueryException;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Contains test resources  
@@ -664,13 +666,14 @@ class TestController extends \BaseController {
 	}
 
 	/**
-	 * Print Pack Details
+	 * Print Pack Details: The printout is to be on Label Printers
 	 *
 	 * @param
 	 * @return
 	 */
 	public function printPackDetails($testID)
 	{
+
 		$test = Test::find($testID);
 		$patient_name = $test->visit->patient->name;
 		$npid = $test->visit->patient->external_patient_number;
@@ -705,6 +708,8 @@ class TestController extends \BaseController {
 
 		$expiry_date = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Expiry Date')->lists('id')).') AND test_id = '.$test->id)
 			->get()->first()->result;
+
+		//$fpi = fopen('/dev/usb/lp2', 'w');
 
 		$result =
 '
@@ -741,10 +746,13 @@ A455,238,0,2,1,1,N,"'.$method.'"
 A455,268,0,2,1,1,N,"'.$expiry_date.'"
 P2';
 		$filename = $test->id.'.lbl';
+		//fwrite($fpi, $result);
+		//fclose($fpi);
 
 		header("Content-Type: application/label; charset=utf-8");
 		header('Content-Disposition: inline; filename="'.$filename.'"');
 		header("Content-Length: " . strlen($result));
+		//header("location: /");
 		header("Stream", false);
 		echo $result;
 		exit;
@@ -810,6 +818,11 @@ P2';
 
 		if(count($test->susceptibility)>0){
 			//delete all susceptibility values if result has no culture worksheet
+		}
+
+		//Print pack details
+		if($test->testType->name == "Cross-match") {
+			//$this->printPackDetails($test->id, '/');
 		}
 		// redirect
 		return Redirect::action('TestController@index')
