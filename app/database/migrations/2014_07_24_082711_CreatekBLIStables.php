@@ -252,23 +252,27 @@ class CreatekBLIStables extends Migration {
 
 		Schema::create('specimens', function(Blueprint $table)
 		{
-			$table->increments('id')->unsigned();
-			$table->integer('specimen_type_id')->unsigned();
-            $table->string('accession_number');
-			$table->integer('specimen_status_id')->unsigned()->default(Specimen::NOT_COLLECTED);
-            $table->integer('accepted_by')->unsigned()->default(0);
-            $table->integer('rejected_by')->unsigned()->default(0);
-			$table->integer('rejection_reason_id')->unsigned()->nullable();
-            $table->string('reject_explained_to',100)->nullable();
-			$table->integer('referral_id')->unsigned()->nullable();
-			$table->timestamp('time_accepted')->nullable();
-			$table->timestamp('time_rejected')->nullable();
+						$table->increments('id')->unsigned();
+						$table->integer('specimen_type_id')->unsigned();
+						$table->string('accession_number');
+						$table->string('tracking_number')->nullable();;
+						$table->string('drawn_by')->nullable();
+						$table->string('drawn_by_id')->nullable();
+						$table->string('drawn_by_name')->nullable();
+						$table->integer('specimen_status_id')->unsigned()->default(Specimen::NOT_COLLECTED);
+						$table->integer('accepted_by')->unsigned()->default(0);
+						$table->integer('rejected_by')->unsigned()->default(0);
+						$table->integer('rejection_reason_id')->unsigned()->nullable();
+						$table->string('reject_explained_to',100)->nullable();
+						$table->integer('referral_id')->unsigned()->nullable();
+						$table->timestamp('time_accepted')->nullable();
+						$table->timestamp('time_rejected')->nullable();
 			
             $table->index('accepted_by');
             $table->index('rejected_by');
-			$table->foreign('specimen_type_id')->references('id')->on('specimen_types');
-			$table->foreign('specimen_status_id')->references('id')->on('specimen_statuses');
-			$table->foreign('rejection_reason_id')->references('id')->on('rejection_reasons');
+						$table->foreign('specimen_type_id')->references('id')->on('specimen_types');
+						$table->foreign('specimen_status_id')->references('id')->on('specimen_statuses');
+						$table->foreign('rejection_reason_id')->references('id')->on('rejection_reasons');
             $table->foreign('referral_id')->references('id')->on('referrals');
 		});
 
