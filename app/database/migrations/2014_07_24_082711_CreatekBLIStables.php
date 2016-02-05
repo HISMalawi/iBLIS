@@ -255,7 +255,7 @@ class CreatekBLIStables extends Migration {
 						$table->increments('id')->unsigned();
 						$table->integer('specimen_type_id')->unsigned();
 						$table->string('accession_number');
-						$table->string('tracking_number')->nullable();;
+						$table->string('tracking_number')->nullable();
 						$table->string('drawn_by')->nullable();
 						$table->string('drawn_by_id')->nullable();
 						$table->string('drawn_by_name')->nullable();
