@@ -118,7 +118,7 @@ class ReportController extends \BaseController {
 				$fileName = "patientreport".$id."_".$date.".pdf";
 				$printer = Input::get("printer_name");
 
-				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileNam");
+				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileName");
 				$process->run();
 
 				$process = new Process("lp -d $printer $fileName");
