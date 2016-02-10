@@ -284,7 +284,8 @@ class CreatekBLIStables extends Migration {
 			$table->integer('specimen_id')->unsigned()->default(0);
 			$table->string('interpretation',200)->default('');
 			$table->integer('test_status_id')->unsigned()->default(0);
-			$table->integer('created_by')->unsigned();
+            $table->string('priority',60);
+            $table->integer('created_by')->unsigned();
 			$table->integer('tested_by')->unsigned()->default(0);
 			$table->integer('verified_by')->unsigned()->default(0);
 			$table->string('requested_by',60);
