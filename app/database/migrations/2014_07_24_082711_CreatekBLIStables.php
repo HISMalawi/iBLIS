@@ -256,7 +256,7 @@ class CreatekBLIStables extends Migration {
 						$table->integer('specimen_type_id')->unsigned();
 						$table->string('accession_number');
 						$table->string('tracking_number')->nullable();
-						$table->string('drawn_by')->nullable();
+                        $table->string('priority',60)->default('Routine');
 						$table->string('drawn_by_id')->nullable();
 						$table->string('drawn_by_name')->nullable();
 						$table->integer('specimen_status_id')->unsigned()->default(Specimen::NOT_COLLECTED);
@@ -267,9 +267,8 @@ class CreatekBLIStables extends Migration {
 						$table->integer('referral_id')->unsigned()->nullable();
 						$table->timestamp('time_accepted')->nullable();
 						$table->timestamp('time_rejected')->nullable();
-			
-            $table->index('accepted_by');
-            $table->index('rejected_by');
+                        $table->index('accepted_by');
+                        $table->index('rejected_by');
 						$table->foreign('specimen_type_id')->references('id')->on('specimen_types');
 						$table->foreign('specimen_status_id')->references('id')->on('specimen_statuses');
 						$table->foreign('rejection_reason_id')->references('id')->on('rejection_reasons');
@@ -284,7 +283,6 @@ class CreatekBLIStables extends Migration {
 			$table->integer('specimen_id')->unsigned()->default(0);
 			$table->string('interpretation',200)->default('');
 			$table->integer('test_status_id')->unsigned()->default(0);
-            $table->string('priority',60);
             $table->integer('created_by')->unsigned();
 			$table->integer('tested_by')->unsigned()->default(0);
 			$table->integer('verified_by')->unsigned()->default(0);
