@@ -501,7 +501,7 @@ class TestController extends \BaseController {
 			$specimen->time_rejected = date('Y-m-d H:i:s');
 			$specimen->reject_explained_to = Input::get('reject_explained_to');
 			$specimen->save();
-			
+			Sender::send_data($specimen->test->visit->patient, $specimen);
 			$url = Session::get('SOURCE_URL');
 			
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
@@ -522,7 +522,7 @@ class TestController extends \BaseController {
 		$specimen->accepted_by = Auth::user()->id;
 		$specimen->time_accepted = date('Y-m-d H:i:s');
 		$specimen->save();
-
+		Sender::send_data($specimen->test->visit->patient, $specimen);
 		return $specimen->specimen_status_id;
 	}
 
@@ -565,6 +565,7 @@ class TestController extends \BaseController {
 		$test->test_status_id = Test::STARTED;
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
+		Sender::send_data($test->visit->patient, $test->specimen);
 		Session::set('activeTest', array($test->id));
 		return $test->test_status_id;
 	}
@@ -602,6 +603,7 @@ class TestController extends \BaseController {
 			$input['page'] = $pageParts[1];
 		}
 		// redirect
+		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen);
 		return Redirect::action('TestController@index')
 			->with('activeTest', array($test->id))
 			->withInput($input);
@@ -626,6 +628,8 @@ class TestController extends \BaseController {
 			$tst->test_status_id = Test::NOT_DONE;
 			$tst->save();
 		}
+
+		Sender::send_data($tests[0]->visit->patient, $test[0]->specimen);
 
 		$input = Session::get('TESTS_FILTER_INPUT');
 		Session::put('fromRedirect', 'true');
@@ -825,6 +829,9 @@ P2';
 			//$this->printPackDetails($test->id, '/');
 		}
 		// redirect
+
+		Sender::send_data($test->visit->patient, $test->specimen);
+
 		return Redirect::action('TestController@index')
 					->with('message', trans('messages.success-saving-results'))
 					->with('activeTest', array($test->id))
@@ -887,6 +894,8 @@ P2';
 			$testIds = Test::where('panel_id', $test->panel_id)->lists('id');
 
 		}
+
+		Sender::send_data($test->visit->patient, $test->specimen);
 
 		//Fire of entry verified event
 		foreach($testIds As $id) {
