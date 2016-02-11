@@ -493,7 +493,11 @@ class Test extends Eloquent
 			})
 			->orWhereHas('specimen', function($q) use ($searchString)
 			{
-			    $q->where('accession_number', '=', $searchString );//Search by specimen number
+			    $q->where('tracking_number', '=', $searchString );//Search by specimen number
+			})
+			->orWhereHas('specimen', function($q) use ($searchString)
+			{
+				$q->where('accession_number', '=', $searchString );//Search by specimen number
 			})
 			->orWhereHas('visit',  function($q) use ($searchString)
 			{

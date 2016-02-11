@@ -986,7 +986,7 @@ P2';
 		$test->save();
 
 		//Fire of entry verified event
-		Event::fire('test.verified', array($testID));
+		Event::fire('test.verified', array($test->id));
 
 		return View::make('test.viewDetails')->with('test', $test);
 	}
