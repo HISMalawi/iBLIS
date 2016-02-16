@@ -533,6 +533,8 @@ table.table.report-table-border > tbody > tr > td{
 .opt-view{
     display: none;
     padding: 3px !important;
+    margin-left: 2px !important;
+    margin-right: 2px !important;
 }
 .main-view{
     padding: 3px !important;
