@@ -994,7 +994,7 @@ $(function(){
 				node.form.submit();
 			}else{
 				if($(".force-open").size() == 0) {
-					node.focus();
+					//node.focus();
 				}
 				setTimeout(function(){
 					checkBarcode();

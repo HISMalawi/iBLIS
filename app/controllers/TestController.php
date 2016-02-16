@@ -631,7 +631,7 @@ class TestController extends \BaseController {
 			$tst->save();
 		}
 
-		Sender::send_data($tests[0]->visit->patient, $test[0]->specimen);
+		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen);
 
 		$input = Session::get('TESTS_FILTER_INPUT');
 		Session::put('fromRedirect', 'true');
