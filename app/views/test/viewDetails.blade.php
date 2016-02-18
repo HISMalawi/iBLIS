@@ -48,6 +48,15 @@
 							</div>
 						@endif
 
+						<div class="panel-btn">
+							<a class="btn btn-sm btn-success"
+							   href="{{URL::route('test.print_accession_number', array($test->specimen_id))}}"
+							   data-toggle="modal" >
+								<span class="glyphicon glyphicon-print"></span>
+								Print Accession Number
+							</a>
+						</div>
+
 					</div>
 					<div class="col-md-1">
 						<a class="btn btn-sm btn-primary pull-right" href="#" onclick="window.history.back();return false;"

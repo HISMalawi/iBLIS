@@ -201,6 +201,50 @@ class TestController extends \BaseController {
 			->with('specimentype',$specimen_type);
 	}
 
+	public function printAccessionNumber($sid){
+		$specimen = Specimen::find($sid);
+		$test_types = $specimen->testTypes();
+		$test = $specimen->test;
+		$visit = $test->visit;
+		$patient = $visit->patient;
+
+		$patient_name = $patient->name;
+		$patient_number = $patient->external_patient_number;
+		$tracking_number = $specimen->tracking_number;
+		$accession_number = $specimen->accession_number;
+		$dob = date('d-M-Y', strtotime($patient->dob));
+		$age = (int)$patient->getAge('YY');
+		$gender = $patient->gender == 0 ? 'M' : 'F';
+		$date_col = date('d-M-Y H:i', strtotime($specimen->test->time_created));
+		$col_by = User::find($specimen->accepted_by)->name;
+
+		$s = '
+N
+Q160,22
+q406
+R215,0
+ZT
+A6,6,0,2,1,1,N,"'.$patient_name.'"
+A6,29,0,2,1,1,N,"'.$patient_number.'    '.$dob.' '.$age.' '.$gender.'"
+B51,51,0,1A,2,2,76,N,"'.$tracking_number.'"
+A51,131,0,2,1,1,N,"'.$accession_number.' * '.$tracking_number.'"
+A6,150,0,2,1,1,N,"Col: '.$date_col.' '.$col_by.'"
+A6,172,0,2,1,1,N,"'.$test_types.'"
+P1';
+
+		$filename = $specimen->id.'.lbl';
+		//fwrite($fpi, $result);
+		//fclose($fpi);
+
+		header("Content-Type: application/label; charset=utf-8");
+		header('Content-Disposition: inline; filename="'.$filename.'"');
+		header("Content-Length: " . strlen($s));
+		//header("location: /");
+		header("Stream", false);
+		echo $s;
+		exit;
+	}
+
 	/**
 	 * Save a new Test.
 	 *

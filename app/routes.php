@@ -217,6 +217,10 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.appendNewTest",
         "uses" => "TestController@appendNewTest"
     ));
+    Route::get("/test/{id}/print_accession_number", array(
+        "as"   => "test.print_accession_number",
+        "uses" => "TestController@printAccessionNumber"
+    ));
      Route::post("/test/acceptspecimen", array(
         "before" => "checkPerms:accept_test_specimen",
         "as"   => "test.acceptSpecimen",
