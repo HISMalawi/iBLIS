@@ -220,8 +220,6 @@ class TestController extends \BaseController {
 
 		$s = '
 N
-Q160,22
-q406
 R215,0
 ZT
 A6,6,0,2,1,1,N,"'.$patient_name.'"
