@@ -41,6 +41,7 @@ class CreatekBLIStables extends Migration {
             $table->string('patient_number')->unique();
             $table->string('name', 100);
             $table->date('dob');
+            $table->tinyInteger('dob_estimated')->default(0);
             $table->tinyInteger('gender')->default(0);
             $table->string('email', 100)->nullable();
             $table->string('address', 150)->nullable();
