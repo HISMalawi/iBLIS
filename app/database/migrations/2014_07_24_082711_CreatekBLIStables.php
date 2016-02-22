@@ -312,7 +312,8 @@ class CreatekBLIStables extends Migration {
 			$table->integer('test_id')->unsigned();
 			$table->integer('measure_id')->unsigned();
 			$table->string('result',1000)->nullable();
-			$table->timestamp('time_entered')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->string('device_name', 100)->nullable();
+            $table->timestamp('time_entered')->default(DB::raw('CURRENT_TIMESTAMP'));
 			
             $table->foreign('test_id')->references('id')->on('tests');
             $table->foreign('measure_id')->references('id')->on('measures');
