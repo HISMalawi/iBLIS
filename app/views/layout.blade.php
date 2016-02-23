@@ -14,6 +14,7 @@
         <script type="text/javascript" src="{{ URL::asset('js/jquery.dataTables.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/dataTables.bootstrap.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/script.js') }} "></script>
+        <script type="text/javascript" src="{{ URL::asset('js/spin.js') }} "></script>
         <title>{{ Config::get('kblis.name') }} {{ Config::get('kblis.version') }}</title>
     </head>
     <body>
