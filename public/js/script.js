@@ -459,6 +459,13 @@ $(function(){
 		});
 	});
 
+/**
+ *
+ **/
+ 	function __$(id){
+		return document.getElementById(id);
+	}
+
 	/**
 	 *	Lab Configurations Functions
 	 */
