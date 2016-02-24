@@ -5,7 +5,7 @@ class Sender
      * Function for sending updated results to couch layer
      *
      */
-    public static function send_data($patient, $specimen)
+    public static function send_data($patient, $specimen, $tests=[])
     {
         $order = array(
             '_id' => $specimen->tracking_number,
@@ -13,7 +13,9 @@ class Sender
             'results' => array()
         );
 
-        $tests = Test::where('specimen_id', $specimen->id)->get();
+        if(sizeof($tests) == 0){
+            $tests = Test::where('specimen_id', $specimen->id)->get();
+        }
 
         foreach($tests AS $test){
 
