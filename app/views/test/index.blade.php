@@ -262,7 +262,7 @@
                                     @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()) && !($test->isLocked()))
 
                                         <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="ignore-{{$test->id}}-link"
-                                           href="{{URL::route('test.ignore', array($test->specimen_id))}}"
+                                           href="{{URL::route('test.ignore', array($test->id))}}"
                                            title="{{trans('messages.notdone-title')}}">
                                             <span class="glyphicon glyphicon-thumbs-down"></span>
                                             <span>{{trans('messages.notdone')}}</span>

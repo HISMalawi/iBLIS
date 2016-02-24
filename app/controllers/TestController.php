@@ -669,7 +669,7 @@ P1';
 		$test->test_status_id = Test::STARTED;
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
-		Sender::send_data($test->visit->patient, $test->specimen);
+		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 		Session::set('activeTest', array($test->id));
 		return $test->test_status_id;
 	}
@@ -707,7 +707,7 @@ P1';
 			$input['page'] = $pageParts[1];
 		}
 		// redirect
-		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen);
+		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
 		return Redirect::action('TestController@index')
 			->with('activeTest', array($test->id))
 			->withInput($input);
@@ -733,7 +733,7 @@ P1';
 			$tst->save();
 		}
 
-		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen);
+		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
 
 		$input = Session::get('TESTS_FILTER_INPUT');
 		Session::put('fromRedirect', 'true');
@@ -860,7 +860,7 @@ P2';
 		header("Content-Type: application/label; charset=utf-8");
 		header('Content-Disposition: inline; filename="'.$filename.'"');
 		header("Content-Length: " . strlen($result));
-		//header("location: /");
+		//header("location: /test/.$test->id/viewdetails");
 		header("Stream", false);
 		echo $result;
 		exit;
@@ -929,16 +929,18 @@ P2';
 		}
 
 		//Print pack details
+		$print = false;
 		if($test->testType->name == "Cross-match") {
-			//$this->printPackDetails($test->id, '/');
+			$print = true;
 		}
 		// redirect
 
-		Sender::send_data($test->visit->patient, $test->specimen);
+		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 
 		return Redirect::action('TestController@index')
 					->with('message', trans('messages.success-saving-results'))
 					->with('activeTest', array($test->id))
+					->withInput(Array($print))
 					->withInput($input);
 	}
 
