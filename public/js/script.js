@@ -997,6 +997,10 @@ $(function(){
 
 	function showSpinner(action, clickOnClose, shieldOn) {
 
+		if(window.location.href.match(/viewdetails/i)){
+			return;
+		}
+
 		if (!document.getElementById('spin')) {
 			var div = document.createElement("div");
 			div.id = "spin";
