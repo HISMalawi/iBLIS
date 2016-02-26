@@ -21,3 +21,4 @@ Event::listen('api.receivedLabRequest', function($labRequest)
     //We instruct the interfacer to handle the request
     Interfacer::retrieve($labRequest);
 });
+

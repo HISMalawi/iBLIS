@@ -153,6 +153,12 @@ Route::group(array("before" => "auth"), function()
             "uses" => "TestPanelController@delete"
         ));
 
+        Route::resource('specimenlifespan', 'SpecimenLifespanController');
+        Route::get("/specimenlifespan/{id}/delete", array(
+            "as"   => "specimenlifespan.delete",
+            "uses" => "SpecimenLifespanController@delete"
+        ));
+
         Route::resource('specimenrejection', 'SpecimenRejectionController');
         Route::any("/specimenrejection/{id}/delete", array(
             "as"   => "specimenrejection.delete",
@@ -206,6 +212,15 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.saveNewTest",
         "uses" => "TestController@saveNewTest"
     ));
+    Route::post("/test/appendnewtest", array(
+        "before" => "checkPerms:request_test",
+        "as"   => "test.appendNewTest",
+        "uses" => "TestController@appendNewTest"
+    ));
+    Route::get("/test/{id}/print_accession_number", array(
+        "as"   => "test.print_accession_number",
+        "uses" => "TestController@printAccessionNumber"
+    ));
      Route::post("/test/acceptspecimen", array(
         "before" => "checkPerms:accept_test_specimen",
         "as"   => "test.acceptSpecimen",
@@ -225,6 +240,18 @@ Route::group(array("before" => "auth"), function()
         "before" => "checkPerms:reject_test_specimen",
         "as"   => "test.reject",
         "uses" => "TestController@reject"
+    ));
+    Route::get("/test/{id}/void", array(
+        "as"   => "test.void",
+        "uses" => "TestController@void"
+    ));
+    Route::get("/test/{id}/ignore", array(
+        "as"   => "test.ignore",
+        "uses" => "TestController@ignore"
+    ));
+    Route::get("/test/{id}/append_test", array(
+        "as"   => "test.append_test",
+        "uses" => "TestController@append_test"
     ));
     Route::post("/test/rejectaction", array(
         "before" => "checkPerms:reject_test_specimen",
@@ -256,6 +283,12 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.edit",
         "uses" => "TestController@edit"
     ));
+
+    Route::get("/test/{test}/print_pack_details", array(
+        "as"   => "test.print_pack_details",
+        "uses" => "TestController@printPackDetails"
+    ));
+
      Route::post("/test/{test}/saveresults", array(
         "before" => "checkPerms:edit_test_results",
         "as"   => "test.saveResults",

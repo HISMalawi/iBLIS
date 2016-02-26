@@ -82,13 +82,13 @@
             <table class="table table-striped table-bordered table-hover table-condensed">
                 <thead>
                     <tr>
-                        <th class="col-md-2"> {{trans('messages.date-ordered')}}</th>
+                        <th class="col-md-2" style="width: 13.5% !important;"> {{trans('messages.date-ordered')}}</th>
                         <th class="col-md-1" >{{trans('messages.patient-number')}}</th>
                         <th class="col-md-2">{{trans('messages.patient-name')}}</th>
                         <th class="col-md-1">{{trans('messages.specimen-id')}}</th>
-                        <th class="col-md-2">{{ Lang::choice('messages.test',1) }}</th>
+                        <th class="col-md-2"  style="width: 15% !important;">{{ Lang::choice('messages.test',1) }}</th>
                         <th class="col-md-1">{{trans('messages.location')}}</th>
-                        <th class="col-md-1">{{trans('messages.test-status')}}</th>
+                        <th class="col-md-1" >{{trans('messages.test-status')}}</th>
                         <th class="col-md-4">{{trans('messages.actions')}}</th>
                     </tr>
                 </thead>
@@ -152,6 +152,12 @@
                                         @if($test->isVerified())
                                             <span class='label'>
                                                 {{trans('messages.verified')}}</span>
+                                        @elseif($test->isVoided())
+                                            <span class='label'>
+                                                Voided</span>
+                                        @elseif($test->isIgnored())
+                                            <span class='label'>
+                                                Not Done</span>
                                         @else
                                             @if($test->specimen->isNotCollected())
                                                 @if(($test->isPaid()))
@@ -182,7 +188,14 @@
                                 <!--Actions for test panel specimens  -->
                                 <td class="test-actions">
 
-                                    <a class="btn btn-sm btn-success"
+                                    <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
+                                       href=""
+                                       onmousedown="toggleMainOpt({{$test->id}})"
+                                       title="Other buttons">
+                                        <<
+                                    </a>
+
+                                    <a class="main-view main-view-{{$test->id}} btn btn-sm btn-success"
                                        href="{{ URL::route('test.viewDetails', $test->id) }}"
                                        id="view-details-{{$test->id}}-link"
                                        title="{{trans('messages.view-details-title')}}">
@@ -192,7 +205,7 @@
 
                                     @if ($test->specimen->isNotCollected())
                                         @if(Auth::user()->can('accept_test_specimen'))
-                                            <a class="btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
+                                            <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
                                                data-test-id="{{$test->id}}" data-specimen-id="{{$test->specimen->id}}"
                                                title="{{trans('messages.accept-specimen-title')}}"
                                                data-url="{{ URL::route('test.acceptSpecimen') }}">
@@ -202,10 +215,10 @@
                                         @endif
                                     @endif
 
-                                    @if ($test->specimen->isAccepted() && !($test->isVerified()))
+                                    @if ($test->specimen->isAccepted() && !($test->isVerified()) && !($test->isLocked()))
                                         @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()))
 
-                                            <a class="btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
+                                            <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
                                                href="{{URL::route('test.reject', array($test->specimen_id))}}"
                                                title="{{trans('messages.reject-title')}}">
                                                 <span class="glyphicon glyphicon-thumbs-down"></span>
@@ -216,7 +229,7 @@
                                         @if ($test->isPending())
 
                                             @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()))
-                                                <a class="btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
+                                                <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
                                                     <span class="glyphicon glyphicon-edit"></span>
                                                     {{trans('messages.refer-sample')}}
                                                 </a>
@@ -225,16 +238,43 @@
 
                                     @endif
 
-                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) &&
+                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) && !($test->isLocked()) &&
                                      Auth::user()->can('verify_test_results')
                                         && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
-                                        <a class="btn btn-sm btn-success" id="verify-{{$test->id}}-link"
+                                        <a class="main-view main-view-{{$test->id}} btn btn-sm btn-success" id="verify-{{$test->id}}-link"
                                            href="{{ URL::route('test.viewDetails', array($test->id)) }}"
                                            title="{{trans('messages.verify-title')}}">
                                             <span class="glyphicon glyphicon-thumbs-up"></span>
                                             {{trans('messages.verify')}}
                                         </a>
                                     @endif
+
+                                    @if(Auth::user()->can('void_test') && !($test->specimen->isReferred()) && !($test->isLocked()))
+
+                                        <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="void-{{$test->id}}-link"
+                                           href="{{URL::route('test.void', array($test->id))}}"
+                                           title="{{trans('messages.void-title')}}">
+                                            <span class="glyphicon glyphicon-thumbs-down"></span>
+                                            {{trans('messages.void')}}
+                                        </a>
+                                    @endif
+
+                                    @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()) && !($test->isLocked()))
+
+                                        <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="ignore-{{$test->id}}-link"
+                                           href="{{URL::route('test.ignore', array($test->id))}}"
+                                           title="{{trans('messages.notdone-title')}}">
+                                            <span class="glyphicon glyphicon-thumbs-down"></span>
+                                            <span>{{trans('messages.notdone')}}</span>
+                                        </a>
+                                    @endif
+
+                                    <a class="main-view main-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
+                                       href=""
+                                       onmousedown="toggleMainOpt({{$test->id}})"
+                                       title="Other buttons">
+                                        >>
+                                    </a>
 
                                     <a onclick="flipPanelRows({{$test->panel_id}})"
                                        class="btn-expand btn btn-sm btn-primary pull-right {{((int)$activePanel == (int)$test->panel_id) ? 'pre-select' : ''}}" href="#">
@@ -267,35 +307,42 @@
                                 <div class="row">
 
                                     <div class="col-md-12">
-                                        @if($test->isNotReceived())
-                                            @if(!$test->isPaid())
+                                        @if($test->isVoided())
+                                            <span class='label'>
+                                                    Voided</span>
+                                        @elseif($test->isIgnored())
+                                            <span class='label'>
+                                                Not Done</span>
+                                        @else
+                                            @if($test->isNotReceived())
+                                                @if(!$test->isPaid())
+                                                    <span class='label'>
+                                                        {{trans('messages.not-paid')}}</span>
+                                                @else
                                                 <span class='label'>
-                                                    {{trans('messages.not-paid')}}</span>
-                                            @else
-                                            <span class='label'>
-                                                {{trans('messages.not-received')}}</span>
+                                                    {{trans('messages.not-received')}}</span>
+                                                @endif
+                                            @elseif($test->isPending())
+                                                <span class='label'>
+                                                    {{trans('messages.pending')}}</span>
+                                            @elseif($test->isStarted())
+                                                <span class='label'>
+                                                    {{trans('messages.started')}}</span>
+                                            @elseif($test->isCompleted())
+                                                <span class='label'>
+                                                    {{trans('messages.completed')}}</span>
+                                            @elseif($test->isVerified())
+                                                <span class='label'>
+                                                    {{trans('messages.verified')}}</span>
                                             @endif
-                                        @elseif($test->isPending())
-                                            <span class='label'>
-                                                {{trans('messages.pending')}}</span>
-                                        @elseif($test->isStarted())
-                                            <span class='label'>
-                                                {{trans('messages.started')}}</span>
-                                        @elseif($test->isCompleted())
-                                            <span class='label'>
-                                                {{trans('messages.completed')}}</span>
-                                        @elseif($test->isVerified())
-                                            <span class='label'>
-                                                {{trans('messages.verified')}}</span>
                                         @endif
-
                                     </div>
     
                                     </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <!-- Specimen statuses -->
-                                        @if(!$test->panel_id)
+                                        @if(!$test->panel_id && !$test->isLocked())
                                             @if($test->specimen->isNotCollected())
                                              @if(($test->isPaid()))
                                                 <span class='label'>
@@ -324,8 +371,17 @@
                         <!-- ACTION BUTTONS -->
 
                             <td class="test-actions">
+
                         @if (!$test->panel_id)
-                            <a class="btn btn-sm btn-success"
+
+                            <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
+                               href=""
+                               onmousedown="toggleMainOpt({{$test->id}})"
+                               title="Other buttons">
+                                <<
+                            </a>
+
+                            <a class="main-view main-view-{{$test->id}} btn btn-sm btn-success"
                                 href="{{ URL::route('test.viewDetails', $test->id) }}"
                                 id="view-details-{{$test->id}}-link"
                                 title="{{trans('messages.view-details-title')}}">
@@ -342,9 +398,9 @@
                                     {{trans('messages.receive-test')}}
                                 </a>
                             @endif
-                        @elseif ($test->specimen->isNotCollected() && !$test->panel_id)
+                        @elseif ($test->specimen->isNotCollected() && !$test->panel_id && !($test->isLocked()))
                             @if(Auth::user()->can('accept_test_specimen'))
-                                <a class="btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
+                                <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
                                     data-test-id="{{$test->id}}" data-specimen-id="{{$test->specimen->id}}"
                                     title="{{trans('messages.accept-specimen-title')}}"
                                     data-url="{{ URL::route('test.acceptSpecimen') }}">
@@ -354,9 +410,9 @@
                             @endif
 
                         @endif
-                        @if ($test->specimen->isAccepted() && !($test->isVerified()))
-                            @if(Auth::user()->can('reject_test_specimenm') && !($test->specimen->isReferred()) && !$test->panel_id)
-                                <a class="btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
+                        @if ($test->specimen->isAccepted() && !($test->isVerified()) && !($test->isLocked()))
+                            @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()) && !$test->panel_id)
+                                <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
                                     href="{{URL::route('test.reject', array($test->specimen_id))}}"
                                     title="{{trans('messages.reject-title')}}">
                                     <span class="glyphicon glyphicon-thumbs-down"></span>
@@ -365,7 +421,7 @@
                             @endif
                             @if ($test->isPending())
                                 @if(Auth::user()->can('start_test'))
-                                    <a class="btn btn-sm btn-warning start-test" href="javascript:void(0)"
+                                    <a class="{{(!$test->panel_id) ? 'main-view main-view-'.$test->id : ''}} btn btn-sm btn-warning start-test" href="javascript:void(0)"
                                         data-test-id="{{$test->id}}" data-url="{{ URL::route('test.start') }}"
                                         title="{{trans('messages.start-test-title')}}">
                                         <span class="glyphicon glyphicon-play"></span>
@@ -373,14 +429,14 @@
                                     </a>
                                 @endif
                                 @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()) && !$test->panel_id)
-                                    <a class="btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
+                                    <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
                                         <span class="glyphicon glyphicon-edit"></span>
                                         {{trans('messages.refer-sample')}}
                                     </a>
                                 @endif
                             @elseif ($test->isStarted())
                                 @if(Auth::user()->can('enter_test_results'))
-                                    <a class="btn btn-sm btn-info" id="enter-results-{{$test->id}}-link"
+                                    <a class="{{(!$test->panel_id) ? 'main-view main-view-'.$test->id : ''}} btn btn-sm btn-info" id="enter-results-{{$test->id}}-link"
                                         href="{{ URL::route('test.enterResults', array($test->id)) }}"
                                         title="{{trans('messages.enter-results-title')}}">
                                         <span class="glyphicon glyphicon-pencil"></span>
@@ -389,7 +445,7 @@
                                 @endif
                             @elseif ($test->isCompleted())
                                 @if(Auth::user()->can('edit_test_results'))
-                                    <a class="btn btn-sm btn-info" id="edit-{{$test->id}}-link"
+                                    <a class="{{(!$test->panel_id) ? 'main-view main-view-'.$test->id : ''}} btn btn-sm btn-info" id="edit-{{$test->id}}-link"
                                         href="{{ URL::route('test.edit', array($test->id)) }}"
                                         title="{{trans('messages.edit-test-results')}}">
                                         <span class="glyphicon glyphicon-edit"></span>
@@ -398,7 +454,7 @@
                                 @endif
                                 @if(Auth::user()->can('verify_test_results') && (Auth::user()->id != $test->tested_by ||
                                 Entrust::hasRole(Role::getAdminRole()->name)) && !$test->panel_id)
-                                    <a class="btn btn-sm btn-success" id="verify-{{$test->id}}-link"
+                                    <a class="main-view main-view-{{$test->id}} btn btn-sm btn-success" id="verify-{{$test->id}}-link"
                                         href="{{ URL::route('test.viewDetails', array($test->id)) }}"
                                         title="{{trans('messages.verify-title')}}">
                                         <span class="glyphicon glyphicon-thumbs-up"></span>
@@ -407,6 +463,35 @@
                                 @endif
                             @endif
                         @endif
+
+                            @if(Auth::user()->can('void_test') && !($test->specimen->isReferred()) && !($test->isLocked())  && !$test->panel_id)
+
+                                <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="void-{{$test->id}}-link"
+                                   href="{{URL::route('test.void', array($test->id))}}"
+                                   title="{{trans('messages.void-title')}}">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                    {{trans('messages.void')}}
+                                </a>
+                            @endif
+
+                            @if(Auth::user()->can('ignore_test') && !($test->specimen->isReferred()) && !($test->isLocked()) && !$test->panel_id)
+
+                                <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="ignore-{{$test->id}}-link"
+                                   href="{{URL::route('test.ignore', array($test->id))}}"
+                                   title="{{trans('messages.notdone-title')}}">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                    <span>{{trans('messages.notdone')}}</span>
+                                </a>
+                            @endif
+
+                            @if (!$test->panel_id)
+                                <a class="main-view main-view-{{$test->id}} btn btn-sm btn-default toggler" id="other-{{$test->id}}-link"
+                                   href=""
+                                   onmousedown="toggleMainOpt({{$test->id}})"
+                                   title="Other buttons">
+                                    >>
+                                </a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

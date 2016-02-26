@@ -204,6 +204,13 @@ class SpecimenTypeController extends \BaseController {
 			}
 		}
 
+		$panelTests = DB::table('panels')
+						->join('panel_types', 'panel_types.id', '=', 'panels.panel_type_id')
+						->join('test_types', 'test_types.id', '=', 'panels.test_type_id')
+						->select('test_types.*')
+						->whereIn('panel_types.name', array_keys($testPanels))->lists('name', 'id');
+
+		$testTypes = array_diff($testTypes, $panelTests);
 		return json_encode(($testTypes + $testPanels));
 	}
 }

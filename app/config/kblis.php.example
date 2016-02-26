@@ -97,5 +97,14 @@ return array(
         |--------------------------------------------------------------------------
         |
         */
-	'A4_printers' => array('TestPrinter1', 'TestPrinter2', 'TestPrinter3', 'productdpt')
+	'A4_printers' => array('TestPrinter1', 'TestPrinter2', 'TestPrinter3', 'productdpt'),
+	'reception-server' => 'http://0.0.0.0:8002',
+
+		/*
+		|--------------------------------------------------------------------------
+		|       Couch server
+		|--------------------------------------------------------------------------
+		|
+		*/
+	'central-repo' => 'http://localhost:3014'
 );

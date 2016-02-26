@@ -36,6 +36,27 @@
 								@endif
 							</div>
 						@endif
+
+						@if(Auth::user()->can('request_test'))
+							<div class="panel-btn">
+								<a class="btn btn-sm btn-info"
+								   href="{{URL::route('test.append_test', array($test->specimen_id))}}"
+								   data-toggle="modal" >
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									Add Test To Current Specimen
+								</a>
+							</div>
+						@endif
+
+						<div class="panel-btn">
+							<a class="btn btn-sm btn-success"
+							   href="{{URL::route('test.print_accession_number', array($test->specimen_id))}}"
+							   data-toggle="modal" >
+								<span class="glyphicon glyphicon-print"></span>
+								Print Accession Number
+							</a>
+						</div>
+
 					</div>
 					<div class="col-md-1">
 						<a class="btn btn-sm btn-primary pull-right" href="#" onclick="window.history.back();return false;"
@@ -84,7 +105,7 @@
 								<p class="view"><strong>{{trans('messages.verified-by')}}</strong>
 									{{$test->verifiedBy->name or trans('messages.verification-pending')}}</p>
 							@endif
-							@if((!$test->specimen->isRejected()) && ($test->isVerified()))
+							@if((!$test->isLocked()) && ($test->isVerified()))
 								<!-- Not Rejected and (Verified or Completed)-->
 								<p class="view-striped"><strong>{{trans('messages.turnaround-time')}}</strong>
 									{{$test->getFormattedTurnaroundTime()}}</p>
@@ -134,6 +155,14 @@
 										</div>
 										<div class="col-md-8">
 											{{$test->specimen->specimenType->name or trans('messages.pending') }}
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p><strong>Tracking Number</strong></p>
+										</div>
+										<div class="col-md-8">
+											{{$test->specimen->tracking_number }}
 										</div>
 									</div>
 									<div class="row">
@@ -262,7 +291,18 @@
 													<tr>
 														<th>{{ $test->testType->name }}</th>
 														<th>
-															@if($test->isCompleted() && Auth::user()->can('edit_test_results'))
+
+															@if($test->testType->name == 'Cross-match')
+																<a class="btn btn-sm btn-success pull-left" id="edit-{{$test->id}}-link"
+																   href="javascript:printPackDetails({{$test->id}});"
+																   title="{{trans('messages.edit-test-results')}}">
+																	<span class="glyphicon glyphicon-edit"></span>
+																	{{trans('messages.print')}}
+																</a>
+															@endif
+
+															@if((!($test->isLocked()) && $test->isCompleted() && (Auth::user()->can('edit_test_results')
+															|| Entrust::hasRole(Role::getAdminRole()->name))))
 																<a class="btn btn-sm btn-info pull-right" id="edit-{{$test->id}}-link"
 																   href="{{ URL::route('test.edit', array($test->id)) }}"
 																   title="{{trans('messages.edit-test-results')}}">

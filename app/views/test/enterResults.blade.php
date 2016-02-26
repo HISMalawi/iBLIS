@@ -69,8 +69,6 @@
                                     }}
                                     <span class='units'>
 
-                                        {{Measure::getRange($test->visit->patient, $measure->id)}}
-                                        {{$measure->unit}}
                                     </span>
                                 @elseif ( $measure->isAlphanumeric() || $measure->isAutocomplete() ) 
                                     <?php
@@ -92,15 +90,24 @@
                                     {{ Form::label($fieldName, $measure->name) }}
                                     <?php
                                         $sense = '';
-                                        if($measure->name=="Sensitivity"||$measure->name=="sensitivity")
+                                        $datepicker = '';
+
+                                        if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
                                             $sense = ' sense'.$test->id;
+                                        }
+                                        if($measure->name == "Expiry Date"){
+                                            $datepicker = ' datepicker';
+                                        }
                                     ?>
-                                    {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense))}}
+                                    {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
                                 @endif
+                                    <span class="unit pull-right">
+										{{($measure->unit)}}
+									</span>
                             </div>
                         @endforeach
                         <div class="form-group">
-                            {{ Form::label('interpretation', trans('messages.interpretation')) }}
+                            {{ Form::label('interpretation', trans('messages.remarks')) }}
                             {{ Form::textarea('interpretation', $test->interpretation, 
                                 array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
                         </div>
@@ -315,6 +322,14 @@
                                         </div>
                                         <div class="col-md-8">
                                             {{$test->specimen->specimenType->name or trans('messages.pending') }}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p><strong>Tracking Number</strong></p>
+                                        </div>
+                                        <div class="col-md-8">
+                                            {{$test->specimen->tracking_number }}
                                         </div>
                                     </div>
                                     <div class="row">

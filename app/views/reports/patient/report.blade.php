@@ -46,7 +46,7 @@
             </div>
             <div class="col-sm-3">
 				<div class="row">
-		            <div class="col-sm-4">
+		            <div class="col-sm-3">
 			            {{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'),
 			                    array('class' => 'btn btn-primary', 'id' => 'filter', 'type' => 'submit')) }}
 		            </div>
@@ -55,9 +55,16 @@
 				        {{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
 				        	'onclick' => "selectPrinter()")) }}
 				    </div>
+					<div class="col-ms-1">
+						<a class="btn btn-sm btn-primary pull-right"  href="#" onclick="window.history.back();return false;"
+						   alt="{{trans('messages.back')}}" title="{{trans('messages.back')}}">
+							<span class="glyphicon glyphicon-backward"></span></a>
+					</div>
 				    @endif
 			    </div>
 		    </div>
+
+
 	    </div>
 	    {{ Form::hidden('visit_id', $visit, array('id'=>'visit_id')) }}
 	{{ Form::close() }}
@@ -189,9 +196,8 @@
 				<tr>
 					<th>{{Lang::choice('messages.test-type', 1)}}</th>
 					<th>{{trans('messages.test-results')}}</th>
-					<th>{{trans('messages.test-remarks')}}</th>
+					<th>{{trans('messages.test-remarks')}}</th>					
 					<th>{{trans('messages.tested-by')}}</th>
-					<th>{{trans('messages.date-tested')}}</th>
 				</tr>
 				@forelse($tests as $test)
 						<tr>
@@ -204,7 +210,6 @@
 											<p>
 												{{ $result->result }}
 												<?php $organism_names = ''?>
-												{{ $result->result }}
 												@if(count($test->susceptibility)>0 && $result->result == "Growth")
 													@foreach($test->organisms() AS $og)
 														<?php
@@ -218,12 +223,12 @@
 										@endif
 									@endforeach
 								@else
-									<table style="margin: 0px;padding:0px;" class="table-bordered table-condensed">
+									<table style="margin: 0px;padding:0px;width:100%" class="table-bordered table-condensed">
 										@foreach($test->testResults as $result)
 
 											@if(!empty($result->result))
 												<tr>
-													<td style="width: 50%">
+													<td style="width: 44%">
 														{{ Measure::find($result->measure_id)->name }}
 													</td>
 													<td>
@@ -246,8 +251,7 @@
 								@endif
 							</td>
 							<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
-							<td>{{ $test->testedBy->name or trans('messages.pending')}}</td>
-							<td>{{ $test->time_completed }}</td>
+							<td style="width: 20%;">{{ $test->testedBy->name}}<br /> On {{ $test->time_completed }}</td>
 
 						</tr>
 				@empty
@@ -257,7 +261,18 @@
 				@endforelse
 			</tbody>
 		</table>
-						<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
+					<?php  
+						$susc_available = false;
+						foreach($tests as $test){
+							if(count($test->susceptibility)>0){
+								$susc_available = true;
+							}
+						}
+					?>
+						@if($susc_available == true)
+							<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
+						@endif
+						
 						<?php $interpretationText = array("R" => "Resistant", "I" => "Intermediate", "S" => "Sensitive")?>
 						@foreach($tests as $test)
 							@if(count($test->susceptibility)>0)

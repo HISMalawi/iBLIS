@@ -19,6 +19,8 @@ class Test extends Eloquent
 	const STARTED = 3;
 	const COMPLETED = 4;
 	const VERIFIED = 5;
+	const VOIDED = 6;
+	const NOT_DONE = 7;
 
 	/**
 	 * Other constants
@@ -157,6 +159,22 @@ class Test extends Eloquent
 			return false;
 	}
 
+	public function isVoided()
+	{
+		if($this->test_status_id == Test::VOIDED)
+			return true;
+		else
+			return false;
+	}
+
+	public function isIgnored()
+	{
+		if($this->test_status_id == Test::NOT_DONE)
+			return true;
+		else
+			return false;
+	}
+
 	/**
 	 * Helper function: check if the Test status is COMPLETED
 	 *
@@ -193,6 +211,14 @@ class Test extends Eloquent
 		if($this->test_status_id == Test::VERIFIED)
 			return true;
 		else 
+			return false;
+	}
+
+	public function isLocked()
+	{
+		if($this->isVoided() || $this->specimen->isRejected() || $this->isIgnored())
+			return true;
+		else
 			return false;
 	}
     
@@ -467,7 +493,11 @@ class Test extends Eloquent
 			})
 			->orWhereHas('specimen', function($q) use ($searchString)
 			{
-			    $q->where('accession_number', '=', $searchString );//Search by specimen number
+			    $q->where('tracking_number', '=', $searchString );//Search by specimen number
+			})
+			->orWhereHas('specimen', function($q) use ($searchString)
+			{
+				$q->where('accession_number', '=', $searchString );//Search by specimen number
 			})
 			->orWhereHas('visit',  function($q) use ($searchString)
 			{

@@ -162,6 +162,12 @@
 					</li>
 					<li>
 						<div>
+							<a href="{{ URL::route("specimenlifespan.index")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{ Lang::choice('messages.specimen-lifespan', 2)}}</a>
+						</div>
+					</li>
+					<li>
+						<div>
 							<a href="{{ URL::route("testpanel.index")}}">
 								<span class="glyphicon glyphicon-tag"></span> {{ Lang::choice('messages.test-panels', 2)}}</a>
 						</div>

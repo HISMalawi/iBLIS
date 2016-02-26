@@ -530,4 +530,38 @@ table.table.report-table-border > tbody > tr > td{
 .rspecimen td, .rtest td, .rsusc td{
     font-weight: normal;
 }
+.opt-view{
+    display: none;
+    padding: 3px !important;
+    margin: 2px !important;
+}
+.main-view{
+    padding: 3px !important;
+    margin: 2px !important;
+}
 
+.no-select {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* IE/Edge */
+    user-select: none;           /* non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.btn-expand{
+    padding: 3px !important;
+    width: 35px !important;
+}
+.accept-specimen{
+    padding: 3px !important;
+}
+.toggler{
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+}
+
+#test-actions{
+    padding: 0px !important;
+}
