@@ -213,7 +213,7 @@
 				}
 
 				if (in_array("Sterile Fluid Analysis", explode(', ', $specimen->testTypes()))){
-					$predefined_order = Array("Cell Count", "Gram Stain", "Zn Stain", "Differential", "Culture & Sensitivity");
+					$predefined_order = Array("Cell Count", "Gram Stain", "ZN Stain", "Differential", "Culture & Sensitivity");
 				}
 
 				foreach($predefined_order AS $order){
@@ -223,7 +223,6 @@
 						}
 					}
 				}
-
 
 				$tests = array_unique(array_merge($sorted_tests, $tests));
 
