@@ -390,7 +390,7 @@ return array(
     'daily-reports' => 'Daily Reports',
     'date-checked'  =>  'Date Checked',
     'date-tested' => 'Date Tested',
-    'date-verified' => 'Date Verified',
+    'date-verified' => 'Date Authorised',
     'export-to-pdf' => 'Export to PDF',
     'export-to-word' => 'Export to Word',
     'hospital-number'   =>  'Hospital number',
@@ -479,7 +479,7 @@ return array(
     'user-statistics-summary-report-title' => 'User Summary Report (Period: [FROM] - [TO] [USER])',
     'user-statistics-tests-performed-report-title' => 'Tests Performed (Period: [FROM] - [TO] [USER])',
     'user-statistics-tests-register-report-title' => 'Tests Registered (Period: [FROM] - [TO] [USER])',
-    'verified-tests' => 'Tests Verified',
+    'verified-tests' => 'Tests Authorised',
 
      /* Inventory Reports*/ 
     'inventory-reports' => 'Inventory Reports',

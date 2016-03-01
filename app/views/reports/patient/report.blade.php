@@ -199,6 +199,35 @@
 					<th>{{trans('messages.test-remarks')}}</th>					
 					<th>{{trans('messages.tested-by')}}</th>
 				</tr>
+				<?php
+
+				$sorted_tests = Array();
+				$predefined_order = Array();
+
+				if (in_array("CSF Analysis", explode(', ', $specimen->testTypes()))){
+					$predefined_order = Array("Cell Count", "India Ink", "Gram Stain", "Differential", "Culture & Sensitivity");
+				}
+
+				if (in_array("Urinalysis", explode(', ', $specimen->testTypes()))){
+					$predefined_order = Array("Urine Macroscopy", "Urine Microscopy", "Urine Chemistries");
+				}
+
+				if (in_array("Sterile Fluid Analysis", explode(', ', $specimen->testTypes()))){
+					$predefined_order = Array("Cell Count", "Gram Stain", "ZN Stain", "Differential", "Culture & Sensitivity");
+				}
+
+				foreach($predefined_order AS $order){
+					foreach($tests AS $t){
+						if($order == $t->testType->name){
+							array_push($sorted_tests, $t);
+						}
+					}
+				}
+
+				$tests = array_unique(array_merge($sorted_tests, $tests));
+
+				?>
+
 				@forelse($tests as $test)
 						<tr>
 							<td>{{ $test->testType->name }}</td>

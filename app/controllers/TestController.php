@@ -220,15 +220,17 @@ class TestController extends \BaseController {
 
 		$s = '
 N
-R215,0
+R216,0
 ZT
+S2
 A6,6,0,2,1,1,N,"'.$patient_name.'"
 A6,29,0,2,1,1,N,"'.$patient_number.'    '.$dob.' '.$age.' '.$gender.'"
 B51,51,0,1A,2,2,76,N,"'.$tracking_number.'"
 A51,131,0,2,1,1,N,"'.$accession_number.' * '.$tracking_number.'"
 A6,150,0,2,1,1,N,"Col: '.$date_col.' '.$col_by.'"
 A6,172,0,2,1,1,N,"'.$test_types.'"
-P1';
+P1
+';
 
 		$filename = $specimen->id.'.lbl';
 		//fwrite($fpi, $result);
@@ -825,6 +827,7 @@ N
 q801
 Q329,026
 ZT
+S2
 A53,19,0,1,1,2,N,"Cross-match for : '.$patient_name.' ('.$npid.')"
 LO25,110,760,2
 LO25,140,760,2
@@ -852,7 +855,8 @@ A455,178,0,2,1,1,N,"'.$product_type.'"
 A455,208,0,2,1,1,N,"'.$volume.'mL"
 A455,238,0,2,1,1,N,"'.$method.'"
 A455,268,0,2,1,1,N,"'.$expiry_date.'"
-P2';
+P2
+';
 		$filename = $test->id.'.lbl';
 		//fwrite($fpi, $result);
 		//fclose($fpi);
