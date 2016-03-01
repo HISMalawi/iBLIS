@@ -487,8 +487,8 @@
                     <div class="row" style="padding: 0px;">
                         <div class="input-group pull-right" style="width: 250px;margin-top: -55px;margin-right: 45px;">
 
-                            <input onkeyup="searchOrganisms(this.value);" type="text" class="form-control" placeholder="Search for...">
-                                  <span class="input-group-btn">
+                            <input id="search-input" onkeyup="searchOrganisms(this.value);" type="text" class="form-control" placeholder="Search for..."/>
+                                  <span class="input-group-btn" onmousedown="searchOrganisms(__$('search-input').value)">
                                     <button class="btn btn-default btn-primary" type="button">Search</button>
                                   </span>
                         </div><!-- /input-group -->
