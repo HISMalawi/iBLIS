@@ -953,8 +953,8 @@ $(function(){
 
 	function searchOrganisms(text){
 
-		$("#organismsModel .checkbox").hide();
-		$("#organismsModel .checkbox:contains('" +text + "')").show();
+		jQuery("#organismsModel .checkbox").hide();
+		jQuery("#organismsModel .checkbox:Contains('" +text + "')").show();
 	}
 
 	function displayOrganisms(){
@@ -1102,6 +1102,12 @@ $(function(){
 		}
 
 	}
+
+	jQuery.expr[":"].Contains = jQuery.expr.createPseudo(function(arg) {
+		return function( elem ) {
+			return jQuery(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+		};
+	});
 
 	(function(open) {
 

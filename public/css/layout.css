@@ -495,6 +495,12 @@ table.table.report-table-border > tbody > tr > td{
     border-right: 1px dotted lightgray;
 }
 
+#organismsModel .modal-data{
+    height: 250px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 #organismsModel .modal-dialog{
     width: 75%;
 }
