@@ -272,7 +272,7 @@ $(function(){
 
 		var url = location.protocol+ "//"+location.host+ "/test/" + testID+ "/receive";
 		$.post(url, { id: testID}).done(function(){
-			window.location.reload()
+			window.location = window.location;
 		});
 
 		/*
@@ -305,7 +305,7 @@ $(function(){
 		var specID = $(this).data('specimen-id');
 		var url = $(this).data('url');
 		$.post(url, { id: specID}).done(function(){
-			window.location.reload()
+			window.location = window.location
 		});
 
 		/*
@@ -368,7 +368,7 @@ $(function(){
 		var testID = $(this).data('test-id');
 		var url = $(this).data('url');
 		$.post(url, { id: testID}).done(function(){
-			window.location.reload()
+			window.location = window.location
 		});
 
 		/*
