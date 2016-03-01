@@ -33,7 +33,7 @@
 								{{trans('messages.verify')}}
 							</a>
 							@endif
-							
+
 						</div>
 						@endif
 					</div>
