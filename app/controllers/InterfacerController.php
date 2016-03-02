@@ -184,15 +184,15 @@ class InterfacerController extends \BaseController
 
         $result = $_REQUEST["result"];
 
-        $remote_ip = $_SERVER["REMOTE_ADDR"];
+        $remote_ip = '';    // $_SERVER["REMOTE_ADDR"] . "/";
 
         if (!file_exists($base . "/data/$remote_ip")) {
             mkdir($base . "/data/$remote_ip", 0777, true);
         }
 
-        if (file_exists("$base/data/$remote_ip/$specimen_id.json")) {
+        if (file_exists("$base/data/$remote_ip$specimen_id.json")) {
 
-            $json = json_decode(file_get_contents("$base/data/$remote_ip/$specimen_id.json"), true);
+            $json = json_decode(file_get_contents("$base/data/$remote_ip$specimen_id.json"), true);
 
         }
 
@@ -210,7 +210,7 @@ class InterfacerController extends \BaseController
 
             }
 
-            file_put_contents("$base/data/$remote_ip/$specimen_id.json", json_encode($json, true));
+            file_put_contents("$base/data/$remote_ip$specimen_id.json", json_encode($json, true));
 
             return "1";
 
