@@ -179,6 +179,11 @@ class InterfacerController extends \BaseController
         }
 
         $specimen_id = $this::trimZeros($_REQUEST["specimen_id"]);
+        $code = "/^".Config::get('kblis.facility-code')."/";
+
+        if (!preg_match($code, $specimen_id)){
+            $specimen_id = Config::get('kblis.facility-code').$specimen_id;
+        }
 
         $measure_id = $_REQUEST["measure_id"];
 
