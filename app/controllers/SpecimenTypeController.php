@@ -211,6 +211,13 @@ class SpecimenTypeController extends \BaseController {
 						->whereIn('panel_types.name', array_keys($testPanels))->lists('name', 'id');
 
 		$testTypes = array_diff($testTypes, $panelTests);
+
+		if($specimenType->name == "CSF"){
+			$testPanels = array_diff($testPanels, array("Sterile Fluid Analysis"));
+		}else{
+			$testPanels = array_diff($testPanels, array("CSF Analysis"));
+		}
+
 		return json_encode(($testTypes + $testPanels));
 	}
 }
