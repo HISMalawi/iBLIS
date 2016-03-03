@@ -88,7 +88,7 @@ class Test extends Eloquent
 	 */
 	public function testResults()
 	{
-		return $this->hasMany('TestResult');
+		return $this->hasMany('TestResult')->orderBy('test_results.id');
 	}
 
 	/**
