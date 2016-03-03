@@ -215,6 +215,15 @@ class InterfacerController extends \BaseController
 
             }
 
+            $instrument = '';
+            if($_SERVER["REMOTE_ADDR"]) {
+                $instrument = DB::table('instruments')->where('ip', $_SERVER["REMOTE_ADDR"])->first();
+            }
+
+            if($instrument){
+                $json['machine_name'] = $instrument->name;
+            }
+
             file_put_contents("$base/data/$remote_ip$specimen_id.json", json_encode($json, true));
 
             return "1";

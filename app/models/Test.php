@@ -691,7 +691,7 @@ class Test extends Eloquent
 			->whereNotNull('device_name')
 			->select('device_name')->distinct()->pluck('device_name');
 
-		return null;
+		return $devices;
 	}
 	/**
 	 * External dump relationship

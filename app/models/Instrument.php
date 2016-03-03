@@ -184,10 +184,6 @@ class Instrument extends Eloquent
 		// Change measure names to measure_ids in the returned array
 		$resultWithIDs = array();
 
-		if(count($result) > 0){
-			$resultWithIDs['machine_name'] = $this->name;
-		}
-
 		foreach ($result as $measureId => $value) {
 
 			$measureFound = $testType->measures->filter(
@@ -202,6 +198,10 @@ class Instrument extends Eloquent
 			}
 		}
 
+		if(!isset($resultWithIDs['machine_name'])){
+			//Works only for tests that use a single machine and have no ip address assigned on driver
+			$resultWithIDs['machine_name'] = $this->name;
+		}
 		// Send back a json result
 		return json_encode($resultWithIDs);
 	}

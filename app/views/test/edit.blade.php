@@ -18,7 +18,8 @@
                             <a class="btn btn-sm btn-info fetch-test-data" href="javascript:void(0)"
                                 title="{{trans('messages.fetch-test-data-title')}}"
                                 data-test-type-id="{{$test->testType->id}}"
-                                data-url="{{URL::route('instrument.getResult')}}"
+								data-accession-number="{{$test->getSpecimenId()}}"
+								data-url="{{URL::route('instrument.getResult')}}"
                                 data-instrument-count="{{$test->testType->instruments->count()}}">
                                 <span class="glyphicon glyphicon-plus-sign"></span>
                                 {{trans('messages.fetch-test-data')}}
