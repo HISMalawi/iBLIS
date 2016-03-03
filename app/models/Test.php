@@ -684,6 +684,15 @@ class Test extends Eloquent
 
 		return $drg_sus;
 	}
+
+	public function resultDevices(){
+		$devices = TestResult::where('test_id', $this->id)
+			->where('device_name', '<>', '')
+			->whereNotNull('device_name')
+			->select('device_name')->distinct()->pluck('device_name');
+
+		return null;
+	}
 	/**
 	 * External dump relationship
 	 */

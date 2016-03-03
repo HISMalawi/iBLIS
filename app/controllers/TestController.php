@@ -907,10 +907,15 @@ P2
 			$test->time_completed = date('Y-m-d H:i:s');
 		}
 		$test->save();
-		
+		$machine_name = Input::get('machine_name');
 		foreach ($test->testType->measures as $measure) {
 			$testResult = TestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
 			$testResult->result = Input::get('m_'.$measure->id);
+
+			if($machine_name) {
+				$testResult->device_name = $testResult->result ? $machine_name : '';
+			}
+
 			$testResult->save();
 		}
 

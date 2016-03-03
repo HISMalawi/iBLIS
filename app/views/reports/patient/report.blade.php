@@ -238,6 +238,7 @@
 										@if($result->result)
 											<p>
 												{{ $result->result }}
+
 												<?php $organism_names = ''?>
 												@if(count($test->susceptibility)>0 && $result->result == "Growth")
 													@foreach($test->organisms() AS $og)
@@ -248,6 +249,13 @@
 													of {{$organism_names ? $organism_names : '---'}}
 												@endif
 												{{ Measure::find($result->measure_id)->unit }}
+												<?php
+												$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
+												?>
+
+												@if($measureRng && $test->testType->instruments->count() > 0)
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
+												@endif
 											</p>
 										@endif
 									@endforeach
@@ -272,6 +280,15 @@
 															 of {{$organism_names ? $organism_names : '---'}}
 														@endif
 														{{ Measure::find($result->measure_id)->unit }}
+
+															<?php
+
+																$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
+															?>
+
+															@if($measureRng && $test->testType->instruments->count() > 0)
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
+															@endif
 													</td>
 												</tr>
 											@endif
@@ -280,7 +297,14 @@
 								@endif
 							</td>
 							<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
-							<td style="width: 20%;">{{ $test->testedBy->name}}<br /> On {{ $test->time_completed }}</td>
+							<td style="width: 20%;">{{ $test->testedBy->name}}<br />
+								On {{ $test->time_completed }}
+								@if($test->resultDevices())
+								<br /><br />
+
+								<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+								@endif
+							</td>
 
 						</tr>
 				@empty

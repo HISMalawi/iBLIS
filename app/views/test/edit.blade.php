@@ -56,6 +56,11 @@
                 <div class="row">
                     <div class="col-md-6">
 					{{ Form::open(array('route' => array('test.saveResults', $test->id), 'method' => 'POST')) }}
+
+						@if($test->testType->instruments->count() > 0)
+							{{ Form::hidden('machine_name', '', array('id' => 'machine_name')) }}
+						@endif
+
 						@foreach($test->testType->measures as $measure)
 							<div class="form-group">
 								<?php

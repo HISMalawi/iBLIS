@@ -184,6 +184,10 @@ class Instrument extends Eloquent
 		// Change measure names to measure_ids in the returned array
 		$resultWithIDs = array();
 
+		if(count($result) > 0){
+			$resultWithIDs['machine_name'] = $this->name;
+		}
+
 		foreach ($result as $measureId => $value) {
 
 			$measureFound = $testType->measures->filter(
