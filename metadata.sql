@@ -401,7 +401,7 @@ CREATE TABLE `organisms` (
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `organisms_name_unique` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -410,7 +410,7 @@ CREATE TABLE `organisms` (
 
 LOCK TABLES `organisms` WRITE;
 /*!40000 ALTER TABLE `organisms` DISABLE KEYS */;
-INSERT INTO `organisms` VALUES (1,'Haemophilus influenza',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(2,'Staphylococci',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(3,'Streptococcus pneumoniae',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(4,'Pseudomonas aeruginosa',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(5,'Neisseria meningitides',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(6,'Enterococci','',NULL,'2015-11-23 13:02:18','2015-11-23 13:02:18'),(7,'ß-hemolytic streptococci','',NULL,'2015-11-23 13:05:35','2015-11-23 13:05:35'),(8,'S.pneumoniae','',NULL,'2015-11-23 13:07:22','2015-11-23 13:07:22'),(9,'S. aureus','',NULL,'2015-11-23 13:09:52','2015-11-23 13:09:52'),(10,'Salmonellae','',NULL,'2015-11-23 13:10:13','2015-11-23 13:10:13'),(11,'Pseudomonas','',NULL,'2015-11-23 13:13:44','2015-11-23 13:13:44'),(12,'Enterobacteriaceae','',NULL,'2015-11-23 13:16:29','2015-11-23 13:16:29'),(13,'Other non-fastidious growth bacteria','',NULL,'2015-11-23 13:22:58','2015-11-23 13:22:58');
+INSERT INTO `organisms` VALUES (1,'Haemophilus influenza',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(2,'Staphylococci',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(3,'Streptococcus pneumoniae',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(4,'Pseudomonas aeruginosa',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(5,'Neisseria meningitides',NULL,NULL,'2015-11-03 11:05:20','2015-11-03 11:05:20'),(6,'Enterococci','',NULL,'2015-11-23 13:02:18','2015-11-23 13:02:18'),(7,'ß-hemolytic streptococci','',NULL,'2015-11-23 13:05:35','2015-11-23 13:05:35'),(8,'S.pneumoniae','',NULL,'2015-11-23 13:07:22','2015-11-23 13:07:22'),(9,'S. aureus','',NULL,'2015-11-23 13:09:52','2015-11-23 13:09:52'),(10,'Salmonellae','',NULL,'2015-11-23 13:10:13','2015-11-23 13:10:13'),(11,'Pseudomonas','',NULL,'2015-11-23 13:13:44','2015-11-23 13:13:44'),(12,'Enterobacteriaceae','',NULL,'2015-11-23 13:16:29','2015-11-23 13:16:29'),(13,'Other non-fastidious growth bacteria','',NULL,'2015-11-23 13:22:58','2015-11-23 13:22:58'),(14,'Aeromonas hydrophila','',NULL,'2016-03-04 11:16:17','2016-03-04 11:16:17'),(15,'Aeromonas species','',NULL,'2016-03-04 11:16:56','2016-03-04 11:16:56'),(16,'Bacillus cereus','',NULL,'2016-03-04 11:17:37','2016-03-04 11:17:37'),(17,'Bacillus coagulans','',NULL,'2016-03-04 11:18:07','2016-03-04 11:18:07'),(18,'Bacillus species','',NULL,'2016-03-04 11:18:26','2016-03-04 11:18:26');
 /*!40000 ALTER TABLE `organisms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -664,4 +664,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-03 16:50:14
+-- Dump completed on 2016-03-04 15:14:27
