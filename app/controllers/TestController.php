@@ -218,19 +218,39 @@ class TestController extends \BaseController {
 		$date_col = date('d-M-Y H:i', strtotime($specimen->test->time_created));
 		$col_by = User::find($specimen->accepted_by)->name;
 
-		$s = '
+		if ($specimen->priority != 'Stat') {
+			$s = '
 N
 R216,0
 ZT
 S2
-A6,6,0,2,1,1,N,"'.$patient_name.'"
-A6,29,0,2,1,1,N,"'.$patient_number.'    '.$dob.' '.$age.' '.$gender.'"
-B51,51,0,1A,2,2,76,N,"'.$tracking_number.'"
-A51,131,0,2,1,1,N,"'.$accession_number.' * '.$tracking_number.'"
-A6,150,0,2,1,1,N,"Col: '.$date_col.' '.$col_by.'"
-A6,172,0,2,1,1,N,"'.$test_types.'"
+A6,6,0,2,1,1,N,"' . $patient_name . '"
+A6,29,0,2,1,1,N,"' . $patient_number . '    ' . $dob . ' ' . $age . ' ' . $gender . '"
+B51,51,0,1A,2,2,76,N,"' . $tracking_number . '"
+A51,131,0,2,1,1,N,"' . $accession_number . ' * ' . $tracking_number . '"
+A6,150,0,2,1,1,N,"Col: ' . $date_col . ' ' . $col_by . '"
+A6,172,0,2,1,1,N,"' . $test_types . '"
 P1
 ';
+		}else{
+			$s = '
+
+N
+R216, 0
+ZT
+S2
+A41,6,0,2,1,1,N,"' . $patient_name . '"
+A41,29,0,2,1,1,N,"' . $patient_number . '    ' . $dob . ' ' . $age . ' ' . $gender . '"
+B57,51,0,1A,2,2,76,N,"' . $tracking_number . '"
+A57,131,0,2,1,1,N,"' . $accession_number . ' * ' . $tracking_number . '"
+A41,150,0,2,1,1,N,"Col: ' . $date_col . ' ' . $col_by . '"
+A41,172,0,2,1,1,N,"' . $test_types . '"
+A24,6,1,2,1,1,R,"      STAT      "
+P1
+';
+		}
+
+
 
 		$filename = $specimen->id.'.lbl';
 		//fwrite($fpi, $result);
