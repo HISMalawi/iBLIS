@@ -179,6 +179,33 @@ class Specimen extends Eloquent
 		}
 		return $tnames;
 	}
+	public function testTypesShortNamed(){
+
+		$types = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')
+			->join('test_panels', 'test_panels.id', '=', 'tests.panel_id')
+			->join('panel_types', 'panel_types.id', '=', 'test_panels.panel_type_id')
+			->where('specimens.id', $this->id)
+			->whereRaw(' tests.test_status_id NOT IN ('.Test::VOIDED.','.Test::NOT_DONE.')')
+			->whereNotNull('tests.panel_id')
+			->selectRaw('distinct COALESCE(panel_types.short_name, panel_types.name) As short_name')->get();
+
+		$tnames = "";
+		foreach($types AS $type){
+			$tnames = !$tnames ? $type->short_name : ($tnames.', '.$type->short_name);
+		}
+
+		$types = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')
+			->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+			->where('specimens.id', $this->id)
+			->whereRaw(' tests.test_status_id NOT IN ('.Test::VOIDED.','.Test::NOT_DONE.')')
+			->whereNull('tests.panel_id')
+			->selectRaw('distinct COALESCE(test_types.short_name, test_types.name) AS short_name')->get();
+
+		foreach($types AS $type){
+			$tnames = !$tnames ? $type->short_name : ($tnames.', '.$type->short_name);
+		}
+		return $tnames;
+	}
 
 	public function labSections(){
 		$sections = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')

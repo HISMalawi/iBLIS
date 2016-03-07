@@ -488,7 +488,7 @@ return array(
     'monthly-stock-level-report-title' => 'Monthly Stock Levels (Period: [FROM] - [TO])',
     'quarterly-stock-level-report-title' => 'Quarterly Stock Levels (Period: [FROM] - [TO] )',
     
- 
+    'short-name' => 'Short Name',
 
     /** 
      *   Configurations

@@ -57,6 +57,17 @@
 							</a>
 						</div>
 
+						@if($test->testType->instruments->count() > 0)
+							<div class="panel-btn">
+								<a class="btn btn-sm btn-default"
+								   href="{{URL::route('test.machineid', array($test->id))}}"
+								   data-toggle="modal" >
+									<span class="glyphicon glyphicon-print"></span>
+									Print Machine Number
+								</a>
+							</div>
+						@endif
+
 					</div>
 					<div class="col-md-1">
 						<a class="btn btn-sm btn-primary pull-right" href="#" onclick="window.history.back();return false;"

@@ -367,8 +367,14 @@ $(function(){
 
 		var testID = $(this).data('test-id');
 		var url = $(this).data('url');
-		$.post(url, { id: testID}).done(function(){
-			window.location.reload()
+		$.post(url, { id: testID}).done(function(response){
+
+			if (response >= 0){
+				window.location.reload();
+				//window.location = window.location + (window.location.href.match(/\?/) ? "&" : '?') + "machine_test_id=" + testID;
+			}else{
+				window.location.reload();
+			}
 		});
 
 		/*
@@ -682,6 +688,11 @@ $(function(){
    		});
 
 		$('.pre-select:first').click();
+
+		if(window.location.href.match("machine_test_id")){
+			var test_id = window.location.href.match(/\d+$/)[0];
+			//window.location.href = '/test/machineid?id='+test_id+"&session_check=true";
+		}
 	});
 
 	//Make sure all input fields are entered before submission
@@ -997,7 +1008,8 @@ $(function(){
 
 	function showSpinner(action, clickOnClose, shieldOn) {
 
-		if(window.location.href.match(/viewdetails/i)){
+		if(window.location.href.match(/viewdetails/i) || window.location.href.match(/machine\_test\_id\=\d+$/)){
+			hideSpinner();
 			return;
 		}
 

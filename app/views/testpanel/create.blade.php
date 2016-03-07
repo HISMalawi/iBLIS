@@ -27,6 +27,11 @@
 				{{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
 			</div>
 
+		<div class="form-group">
+			{{ Form::label('short_name', Lang::choice('messages.short-name',1)) }}
+			{{ Form::text('short_name', Input::old('short_name'), array('class' => 'form-control')) }}
+		</div>
+
 			<div class="form-group">
 				{{ Form::label('test_types', trans('messages.select-test-types')) }}
 				<div class="form-pane panel panel-default">

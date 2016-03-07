@@ -123,13 +123,12 @@ class CreatekBLIStables extends Migration {
         {
             $table->increments('id')->unsigned();
             $table->string('name', 100);
+            $table->string('short_name', 100)->nullable();
             $table->string('description', 100)->nullable();
             $table->integer('test_category_id')->unsigned();
             $table->string('targetTAT', 50)->nullable();
             $table->string('prevalence_threshold', 50)->nullable();
-            
             $table->foreign('test_category_id')->references('id')->on('test_categories');
-
             $table->softDeletes();
             $table->timestamps();
         });
@@ -137,6 +136,7 @@ class CreatekBLIStables extends Migration {
         Schema::create('panel_types', function ($table) {
             $table->increments('id')->unsigned();
             $table->string('name');
+            $table->string('short_name')->nullable();;
             $table->timestamps();
             $table->softDeletes();
         });

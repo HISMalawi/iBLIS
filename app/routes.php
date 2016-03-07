@@ -273,6 +273,10 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.start",
         "uses" => "TestController@start"
     ));
+    Route::get("/test/{id}/machineid", array(
+        "as"   => "test.machineid",
+        "uses" => "TestController@printMachineId"
+    ));
      Route::get("/test/{test}/enterresults", array(
         "before" => "checkPerms:enter_test_results",
         "as"   => "test.enterResults",

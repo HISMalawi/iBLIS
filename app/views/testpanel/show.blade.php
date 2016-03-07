@@ -21,6 +21,8 @@
 		<div class="panel-body">
 			<div class="display-details">
 				<h3 class="view"><strong>{{ Lang::choice('messages.name',1) }}</strong>{{ $testpanel->name }} </h3>
+				<p class="view-striped"><strong>{{trans('messages.short-name')}}</strong>
+					{{$testpanel->short_name}}</p>
 				<p class="view-striped"><strong>{{trans('messages.test-type')}}</strong>
 					{{ implode(", ", $testtypes->lists('name')) }}</p>
 

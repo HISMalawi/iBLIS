@@ -57,6 +57,7 @@ class TestPanelController extends \BaseController {
 			// store 
 			$paneltype = new PanelType;
 			$paneltype->name = trim(Input::get('name'));
+			$paneltype->short_name = trim(Input::get('short_name'));
 			$paneltype->save();
 			try {
 				$paneltype->save();
@@ -140,6 +141,7 @@ class TestPanelController extends \BaseController {
 			// Update
 			$testpanel = PanelType::find($id);
 			$testpanel->name = trim(Input::get('name'));
+			$testpanel->short_name = trim(Input::get('short_name'));
 
 			try{
 				$testpanel->save();

@@ -203,7 +203,7 @@ class TestController extends \BaseController {
 
 	public function printAccessionNumber($sid){
 		$specimen = Specimen::find($sid);
-		$test_types = $specimen->testTypes();
+		$test_types = $specimen->testTypesShortNamed();
 		$test = $specimen->test;
 		$visit = $test->visit;
 		$patient = $visit->patient;
@@ -691,11 +691,51 @@ P1
 		$test->test_status_id = Test::STARTED;
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
+
 		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 		Session::set('activeTest', array($test->id));
-		return $test->test_status_id;
+
+		return $test->testType->instruments->count();
 	}
 
+
+	/**
+	 * Print Machine Id
+	 *
+	 * @param
+	 * @return
+	 */
+
+	public function printMachineId($id){
+
+		if(!$id){
+			$id = Input::get('id');
+		}
+		$test = Test::find($id);
+		$specimen = $test->specimen;
+		$patient = $test->visit->patient;
+		$machine_id = preg_replace('/\D+/', '', $specimen->accession_number);
+		$s = '
+N
+R216,0
+ZT
+S2
+A51,20,0,2,1,1,N,"' . $patient->name . '"
+B51,51,0,1A,2,2,76,N,"' . $machine_id . '"
+A51,131,0,2,1,1,N,"' . $machine_id . '"
+P1
+';
+
+		$filename = $specimen->id.'.lbl';
+		header("Content-Type: application/label; charset=utf-8");
+		header('Content-Disposition: inline; filename="'.$filename.'"');
+		header("Content-Length: " . strlen($s));
+		//header("location: /");
+		header("Stream", true);
+		echo $s;
+		exit;
+
+	}
 
 	/**
 	 * Void Test
@@ -859,8 +899,8 @@ LO25,290,760,2
 LO25,110,1,180
 LO785,110,1,180
 LO430,110,1,180
-A53,56,0,1,1,2,N,"Sample Accession Number :"
-A450,56,0,1,1,2,N,"Sample ABO Group :"
+A53,56,0,1,1,2,N,"Sample Accession Number:"
+A450,56,0,1,1,2,N," Sample ABO Group:"
 A53,116,0,2,1,1,N,"Pack No."
 A53,146,0,2,1,1,N,"Pack ABO Group"
 A53,176,0,2,1,1,N,"Product Type"
