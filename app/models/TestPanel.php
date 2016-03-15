@@ -9,4 +9,9 @@ class TestPanel extends Eloquent
 	 */
 	protected $table = 'test_panels';
 
+	public function panelType()
+
+	{
+		return $this->belongsTo('PanelType', 'panel_type_id', 'id');
+	}
 }

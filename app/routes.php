@@ -193,6 +193,10 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.index",
         "uses" => "TestController@index"
     ));
+    Route::any("/test/remoteorder", array(
+        "as"   => "test.remoteorder",
+        "uses" => "TestController@remotePreview"
+    ));
     Route::post("/test/resultinterpretation", array(
     "as"   => "test.resultinterpretation",
     "uses" => "TestController@getResultInterpretation"

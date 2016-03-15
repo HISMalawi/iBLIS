@@ -35,6 +35,23 @@ class TestController extends \BaseController {
 		$dateFrom = isset($input['date_from'])?$input['date_from']:'';
 		$dateTo = isset($input['date_to'])?$input['date_to']:'';
 
+
+		/*
+			Search from remote if order is available
+			Only if we have tracking number ( searchString available
+		*/
+
+		if ($searchString){
+
+			$remoteResults = Sender::search_from_remote($searchString);
+			if(!empty($remoteResults) && isset($remoteResults->_id)) {
+				// Load the view and pass it the tests
+				return View::make('test.remoteorder')
+					->with('test', $remoteResults)
+					->with('searchString', $searchString);
+			}
+		}
+
 		// Search Conditions
 		$location = TestCategory::where("id", '=', Session::get('location_id'))->first();
 
@@ -324,8 +341,8 @@ P1
 			}
 
 			$json = Array( 'return_path' => "",
-				'district' => 'Lilongwe',
-				'health_facility_name'=> Config::get('kblis.organisation'),
+				'district' => Config::get('kblis.district'),
+				'health_facility_name'=> Config::get('kblis.organization'),
 				'first_name' => $first_name,
 				'last_name' => $last_name,
 				'middle_name' => $middle_name,
@@ -334,16 +351,16 @@ P1
 				'national_patient_id' => $patient->external_patient_number,
 				'phone_number' => $patient->phone_number,
 				'reason_for_test' => '',
-				'sample_collector_last_name' => '',
-				'sample_collector_first_name' => '',
+				'sample_collector_last_name' => (isset(explode(' ', Input::get('physician'))[1]) ? explode(' ', Input::get('physician'))[1] : ''),
+				'sample_collector_first_name' => explode(' ', Input::get('physician'))[0],
 				'sample_collector_phone_number' => '',
 				'sample_collector_id' => '',
 				'sample_order_location' => Input::get('ward'),
 				'sample_type' => SpecimenType::find(Input::get('specimen_type'))->name,
 				'date_sample_drawn' => date('Y-m-d'),
 				'tests' => $testTypeNames,
-				'sample_priority' => Input::get('priority'),
-				'target_lab' => Config::get('kblis.organisation'),
+				'sample_priority' => (Input::get('priority') ? Input::get('priority') : 'Routine'),
+				'target_lab' => Config::get('kblis.organization'),
 				'tracking_number'  => "",
 				'art_start_date'  => "",
 				'date_dispatched'  => "",

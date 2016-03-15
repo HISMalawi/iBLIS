@@ -2,6 +2,41 @@
 class Sender
 {
     /**
+     * funtion for querying orders from central data repo
+     * By Kenneth Kapundi
+     */
+    public static function search_from_remote($trackingNumber){
+
+        $ch = curl_init( Config::get('kblis.central-repo')."/query_results/".$trackingNumber);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($ch));
+        return $result;
+    }
+
+    /*
+     *
+     */
+    public static function get_name($order){
+        $rawNames = $order->test_types;
+        $panels = array();
+        $to_negate = array();
+
+        foreach($rawNames AS $name){
+            $panel = PanelType::where('name', $name)->first();
+            if($panel) {
+                array_push($panels, $name);
+                $to_negate = array_merge($to_negate, DB::table('panels')
+                    ->join('test_types', 'test_types.id', '=', 'panels.test_type_id')
+                    ->where('panel_type_id', $panel->id)
+                    ->select('name')
+                    ->lists('name'));
+            }
+        }
+
+        return array_unique(array_diff(array_merge($panels, $rawNames), $to_negate));
+    }
+    /**
      * Function for sending updated results to couch layer
      *
      */

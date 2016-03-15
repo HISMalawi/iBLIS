@@ -223,6 +223,18 @@ class TestDataSeeder extends DatabaseSeeder
             // ================= ++++++++++++++++++++++++++++++++++ ======= */    
         }
 
+        //Extra organisms from file
+        $file = fopen(public_path()."/organisms.csv", "r");
+        if ($file){
+            while (($line = fgets($file)) !== false) {
+                $organism = DB::table('organisms')->where('name', trim($line))->first();
+                if (!$organism){
+                    DB::table('organisms')->insert(array("name" => trim($line)));
+                }
+            }
+            fclose($file);
+        } else {}
+
         $measures = Measure::find(1);
         if ($measures) {
             # code...

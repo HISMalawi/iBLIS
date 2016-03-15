@@ -35,6 +35,11 @@ class Test extends Eloquent
 		return $this->belongsTo('Visit');
 	}
 
+	public function panel()
+	{
+		return $this->belongsTo('TestPanel', 'panel_id', 'id');
+	}
+
 	/**
 	 * Test Type relationship
 	 */
@@ -490,6 +495,13 @@ class Test extends Eloquent
 			->orWhereHas('testType', function($q) use ($searchString)
 			{
 			    $q->where('name', 'like', '%' . $searchString . '%');//Search by test type
+			})
+			->orWhereHas('panel', function($q) use ($searchString)
+			{
+				$q->whereHas('panelType', function($q) use ($searchString)
+				{
+					$q->where('name', 'like', '%' . $searchString . '%');
+				});
 			})
 			->orWhereHas('specimen', function($q) use ($searchString)
 			{
