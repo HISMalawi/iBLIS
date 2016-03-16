@@ -665,5 +665,6 @@
     </div> <!-- /. referral-button -->
     <?php
         Session::forget('activeTest');
+        Session::forget('search_string');
     ?>
 @stop

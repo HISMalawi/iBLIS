@@ -281,6 +281,12 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.machineid",
         "uses" => "TestController@printMachineId"
     ));
+
+    Route::get("/test/{id}/mergeorupdate", array(
+        "as"   => "test.mergeorupdate",
+        "uses" => "TestController@mergeRemoteResults"
+    ));
+
      Route::get("/test/{test}/enterresults", array(
         "before" => "checkPerms:enter_test_results",
         "as"   => "test.enterResults",

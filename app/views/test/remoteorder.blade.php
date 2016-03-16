@@ -16,8 +16,9 @@
 						<span class="glyphicon glyphicon-cog"></span>{{trans('messages.test-details')}}
 
 						@if(Auth::user()->can('request_test'))
-							<div class="panel-btn">
+							<div class="panel-btn pull-right">
 								<a class="btn btn-sm btn-success"
+								   href="{{URL::route('test.mergeorupdate', array($test->_id))}}"
 								   data-toggle="modal" >
 									<span class="glyphicon glyphicon-next"></span>
 									Proceed
@@ -86,7 +87,7 @@
 										<div class="col-md-3">
 											<p><strong> Date of Birth </strong></p></div>
 										<div class="col-md-9">
-											{{$test->patient->date_of_birth}}
+											{{date_format(date_create($test->patient->date_of_birth), "d-M-Y")}}
 										</div>
 									</div>
 									<div class="row">
@@ -128,7 +129,7 @@
 										<div class="col-md-8">
 											<?php
 												try{
-													$acc_num = Specimen::where('accession_number', $test->_id)->first()->accession_number;
+													$acc_num = Specimen::where('tracking_number', $test->_id)->first()->accession_number;
 												}catch(Exception $e){$acc_num = '';}
 											?>
 											{{$acc_num}}
@@ -139,7 +140,7 @@
 											<p><strong>{{trans('messages.specimen-status')}}</strong></p>
 										</div>
 										<div class="col-md-8">
-											{{trans('messages.'.$test->status) }}
+											{{$test->status }}
 										</div>
 									</div>
 
@@ -153,4 +154,61 @@
 
 		</div> <!-- ./ panel-body -->
 	</div> <!-- ./ panel -->
+
+	<div class="panel panel-info">  <!-- Test Results -->
+		<div class="panel-heading">
+			<h3 class="panel-title">{{trans("messages.test-results")}}</h3>
+		</div>
+		<div class="panel-body">
+			<div class="container-fluid">
+
+				@foreach($test->results as $testName => $results)
+
+					@if(count(PanelType::where('name', $testName)->first()) > 0)
+						<?php
+							continue;
+						?>
+					@endif
+
+					<div class="col-md-6">
+						<table class="table table-bordered">
+							<tbody>
+							<tr>
+								<th>{{ $testName }}</th>
+								<th>
+									&nbsp;
+								</th>
+							</tr>
+							<tr>
+								<th width="50%">{{ Lang::choice('messages.measure-type',1) }}</th>
+								<th>{{ trans('messages.result-name')}}</th>
+							</tr>
+
+								@foreach($results as $timestamp => $measures)
+
+									@if(isset($measures->results))
+										@foreach($measures->results as $resultName => $resultVal)
+											<tr>
+												<td>{{ $resultName }}</td>
+												<td> {{$resultVal}} </td>
+											</tr>
+										@endforeach
+									@endif
+
+									@if(isset($measures->remarks) && $measures->remarks)
+										<tr>
+											<td>{{ trans('messages.test-remarks').'/'.trans('messages.interpretation') }}</td>
+											<td>{{$measures->remarks}}</td>
+										</tr>
+									@endif
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+
+				@endforeach
+			</div>
+		</div> <!-- ./ panel-body -->
+	</div>  <!-- ./ panel -->
+
 @stop

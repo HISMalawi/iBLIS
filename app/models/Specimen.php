@@ -224,4 +224,32 @@ class Specimen extends Eloquent
 		return $names;
 	}
 
+	public static function assignAccessionNumber(){
+		# Generate the next accession number for specimen registration
+		Mutex::create();
+		$max_acc_num = null;
+		$return_value = null;
+		$sentinel = 99999999;
+
+		$code = Config::get('kblis.facility-code');
+
+		$record = DB::select("SELECT * FROM specimens  WHERE accession_number IS NOT NULL ORDER BY id DESC LIMIT 1");
+
+		if(COUNT($record) > 0){
+			$max_acc_num = (int)substr($record[0]->accession_number, -8);
+			if ($max_acc_num < $sentinel){
+				$max_acc_num += 1;
+			}else{
+				$max_acc_num = 1;
+			}
+		}else{
+			$max_acc_num = 1;
+		}
+
+		$max_acc_num = str_pad($max_acc_num, 8, '0', STR_PAD_LEFT);
+		$year = date('y');
+		$return_value = $code.$year.$max_acc_num;
+		return $return_value;
+	}
+
 }

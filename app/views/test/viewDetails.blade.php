@@ -268,10 +268,10 @@
 								</div>
 							</div>
 						</div>
-
 					</div>
 				</div>
-			</div> <!-- ./ container-fluid -->
+			</div>
+			<!-- ./ container-fluid -->
 			<!-- ./ panel -->
 			<div class="panel panel-info">  <!-- Test Results -->
 				<div class="panel-heading">

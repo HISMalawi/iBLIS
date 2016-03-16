@@ -17,7 +17,7 @@ class Sender
     /*
      *
      */
-    public static function get_name($order){
+    public static function get_name($order, $panels_only = false){
         $rawNames = $order->test_types;
         $panels = array();
         $to_negate = array();
@@ -33,8 +33,11 @@ class Sender
                     ->lists('name'));
             }
         }
-
-        return array_unique(array_diff(array_merge($panels, $rawNames), $to_negate));
+        if($panels_only){
+            return $panels;
+        }else {
+            return array_unique(array_diff(array_merge($panels, $rawNames), $to_negate));
+        }
     }
     /**
      * Function for sending updated results to couch layer
@@ -71,7 +74,11 @@ class Sender
             $r = array();
             foreach ($test->testResults AS $result){
                 $measure = Measure::find($result->measure_id);
-                $r[$measure->name] = $result->result." ".$measure->unit;
+                if($result->result) {
+                    $r[$measure->name] = $result->result . " " . $measure->unit;
+                }else{
+                    $r[$measure->name] = $result->result;
+                }
             }
             $h['results'] = $r;
             $order['results'][$test_name] = $h;
@@ -92,5 +99,112 @@ class Sender
 
         curl_exec($ch);
 
+    }
+
+    public static function merge_or_create($tracking_number){
+        $order = Sender::search_from_remote($tracking_number);
+        $specimen = Specimen::where('tracking_number', $order->_id)->first();
+        $patient = Patient::where('external_patient_number', $order->patient->national_patient_id)->first();
+
+        if(!$patient){
+            $patient = new Patient;
+            $patient->external_patient_number = $order->patient->national_patient_id;
+            $patient->name = $order->patient->first_name.' '.$order->patient->middle_name.' '.$order->patient->last_name;
+            $patient->dob = date_create($order->patient->date_of_birth);
+            $patient->gender = preg_match("/m/i", $order->patient->gender) ? 0 : 1;
+            $patient->phone_number = $order->patient->phone_number;
+            $patient->patient_number = DB::table('patients')->max('id')+1;
+            $patient->save();
+        }
+
+        if(!$specimen){
+            $specimen = new Specimen;
+            $specimen->specimen_type_id = SpecimenType::where('name', $order->sample_type)->first()->id;
+            $specimen->accession_number = Specimen::assignAccessionNumber();
+            $specimen->tracking_number = $order->_id;
+            $specimen->drawn_by_name = $order->who_order_test->first_name.' '.$order->who_order_test->last_name;
+            $specimen->drawn_by_id = $order->who_order_test->id_number;
+        }
+
+        $specimen->specimen_status_id = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
+        $specimen->accepted_by = Auth::user()->id;
+        $specimen->time_accepted = $order->date_received ? $order->date_received : time();
+        $specimen->save();
+
+        $panels_available = Sender::get_name($order, true);
+        $testPanel = new TestPanel;
+        $panel = array();
+        $panel_type = null;
+
+        if(count($panels_available) > 0){
+            $panel_type = PanelType::where('name', $panels_available[0])->first();
+            $panel = Panel::where('panel_type_id', $panel_type->id)->lists('test_type_id');
+            $testPanel->panel_type_id = $panel_type->id;
+        }
+
+        foreach($order->test_types AS $name) {
+            $type = TestType::where('name', $name)->first();
+            if (!$type) continue;
+
+            $test = Test::where('specimen_id', $specimen->id)->where('test_type_id', $type->id)->first();
+            if (!$test) {
+                $test = new Test;
+                $test->test_type_id = $type->id;
+                $test->specimen_id = $specimen->id;
+                $test->test_status_id = 2;
+                $test->created_by = Auth::user()->id;
+                $test->requested_by = $specimen->drawn_by_name;
+
+                if ($panel_type && in_array($test->test_type_id, $panel)) {
+                    $testPanel->save();
+                    $test->panel_id = $testPanel->id;
+                }
+            }
+
+            $visit = $test->visit;
+            if (!$visit) {
+                $visit = new Visit;
+            }
+            $visit->patient_id = $patient->id;
+            if (!$visit->visit_type) {
+                $visit->visit_type = VisitType::where('name', 'Referral')->first()->id;
+            }
+            $visit->ward_or_location = $order->order_location;
+            $visit->save();
+
+            $test->visit_id = $visit->id;
+            $test->save();
+
+            if (isset($order->results->$name)) {
+                foreach ($order->results->$name as $timestamp => $results) {
+                    if ($results->results) {
+                        foreach ($results->results AS $measureName => $resultVal) {
+                            $measure = Measure::where('name', $measureName)->first();
+
+                            $result = TestResult::where('measure_id', $measure->id)->where('test_id', $test->id)->first();
+                            if (!$result) {
+                                $result = new TestResult;
+                                $result->measure_id = $measure->id;
+                                $result->test_id = $test->id;
+                            }
+
+                            $result->result = $resultVal;
+                            $result->save();
+
+                            $test->interpretation = $results->remarks;
+                            $test->test_status_id = TestStatus::where('name', 'completed')->first()->id;
+                            $test->time_started = $results->datetime_started;
+                            $test->time_completed = $results->datetime_completed;
+                            if (!$test->tesed_by) {
+                                $test->tested_by = User::first()->id;
+                            }
+                            $test->save();
+                        }
+                    }
+                }
+            }
+        }
+
+        return $specimen;
     }
 }

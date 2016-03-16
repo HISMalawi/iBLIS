@@ -40,8 +40,13 @@ class TestController extends \BaseController {
 			Search from remote if order is available
 			Only if we have tracking number ( searchString available
 		*/
+		$search_remote = true;
+		if(Session::has('search_string')){
+			$searchString = Session::get('search_string');
+			$search_remote = false;
+		}
 
-		if ($searchString){
+		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
 
 			$remoteResults = Sender::search_from_remote($searchString);
 			if(!empty($remoteResults) && isset($remoteResults->_id)) {
@@ -112,6 +117,9 @@ class TestController extends \BaseController {
 			$testIds = array_merge($missingPanelTests->lists('id'), $testIds);
 		}
 
+		if(count($tests) == 0 && Session::has('search_string')){
+			Session::set('message', 'Test does not belong to current lab section');
+		}
 		// Load the view and pass it the tests
 		return View::make('test.index')
 					->with('testSet', $tests)
@@ -388,7 +396,7 @@ P1
 				$specimen->specimen_type_id = Input::get('specimen_type');
 				$specimen->accepted_by = Auth::user()->id;
 				$specimen->tracking_number = $response->tracking_number;
-				$specimen->accession_number = self::assignAccessionNumber();
+				$specimen->accession_number = Specimen::assignAccessionNumber();
 				$specimen->save();
 
 				foreach ($testTypes as $value) {
@@ -573,34 +581,6 @@ P1
 			return Redirect::to($url)->with('message', 'messages.success-creating-test')
 				->with('activeTest', $activeTest);
 		}
-	}
-
-	public function assignAccessionNumber(){
-		# Generate the next accession number for specimen registration
-
-		$max_acc_num = null;
-		$return_value = null;
-		$sentinel = 99999999;
-
-		$code = Config::get('kblis.facility-code');
-
-		$record = DB::select("SELECT * FROM specimens  WHERE accession_number IS NOT NULL ORDER BY id DESC LIMIT 1");
-
-		if(COUNT($record) > 0){
-			$max_acc_num = (int)substr($record[0]->accession_number, -8);
-			if ($max_acc_num < $sentinel){
-				$max_acc_num += 1;
-			}else{
-				$max_acc_num = 1;
-			}
-		}else{
-			$max_acc_num = 1;
-		}
-
-		$max_acc_num = str_pad($max_acc_num, 8, '0', STR_PAD_LEFT);
-		$year = date('y');
-		$return_value = $code.$year.$max_acc_num;
-		return $return_value;
 	}
 
 	/**
@@ -945,6 +925,15 @@ P2
 		header("Stream", false);
 		echo $result;
 		exit;
+	}
+
+	public function mergeRemoteResults($tracking_number){
+		$specimen = Sender::merge_or_create($tracking_number);
+		Session::set('search_string', $specimen->tracking_number);
+		return Redirect::action('TestController@index')
+			->with('message', 'Successfuly merged remote results')
+			->with('activeTest', array($specimen->test->id));
+
 	}
 
 	/**
