@@ -226,7 +226,7 @@ class Specimen extends Eloquent
 
 	public static function assignAccessionNumber(){
 		# Generate the next accession number for specimen registration
-		Mutex::create();
+
 		$max_acc_num = null;
 		$return_value = null;
 		$sentinel = 99999999;
