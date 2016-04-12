@@ -35,6 +35,7 @@ class SusceptibilityController extends \BaseController {
 		$user_id = Auth::user()->id;
 		$test = Input::get('test');
 		$organism = Input::get('organism');
+		//dd($organism);
 		$drug = Input::get('drug');
 		$zone = Input::get('zone');
 		$interpretation = Input::get('interpretation');
@@ -89,8 +90,13 @@ class SusceptibilityController extends \BaseController {
 						$drugSusceptibility = Susceptibility::find($sensitivity->id);
 					} else {
 
+
 						$organismObj = Organism::find($organism[0]);
-						$organismObj->setDrugs(array('0' => $new_drugs[$i]), false);
+						try {
+							$organismObj->setDrugs(array('0' => $new_drugs[$i]), false);
+						}catch(Exception $e){
+							var_dump($organism);
+						}
 						$drugSusceptibility = new Susceptibility;
 					}
 					$drugSusceptibility->user_id = $user_id;

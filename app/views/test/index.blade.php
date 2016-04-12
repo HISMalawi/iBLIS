@@ -215,7 +215,7 @@
                                         @endif
                                     @endif
 
-                                    @if ($test->specimen->isAccepted() && !($test->isVerified()) && !($test->isLocked()))
+                                    @if (!($test->isVerified()) && !($test->isLocked()))
                                         @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()))
 
                                             <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
@@ -410,7 +410,7 @@
                             @endif
 
                         @endif
-                        @if ($test->specimen->isAccepted() && !($test->isVerified()) && !($test->isLocked()))
+                        @if (!($test->isVerified()) && !($test->isLocked()))
                             @if(Auth::user()->can('reject_test_specimen') && !($test->specimen->isReferred()) && !$test->panel_id)
                                 <a class="opt-view opt-view-{{$test->id}} btn btn-sm btn-danger" id="reject-{{$test->id}}-link"
                                     href="{{URL::route('test.reject', array($test->specimen_id))}}"
