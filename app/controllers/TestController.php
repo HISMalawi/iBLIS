@@ -857,25 +857,33 @@ P1
 			$sample_abo_group = "";
 		}
 
-		$pack_no = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Pack No.')->lists('id')).') AND test_id = '.$test->id)
-			->get()->first()->result;
+		try {
+			$pack_no = TestResult::whereRaw('measure_id IN(' . implode(", ", Measure::where('name', 'Pack No.')->lists('id')) . ') AND test_id = ' . $test->id)
+				->get()->first()->result;
 
-		$pack_abo_group = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Pack ABO Group')->lists('id')).') AND test_id = '.$test->id)
-			->get()->first()->result;
+			$pack_abo_group = TestResult::whereRaw('measure_id IN(' . implode(", ", Measure::where('name', 'Pack ABO Group')->lists('id')) . ') AND test_id = ' . $test->id)
+				->get()->first()->result;
 
-		$product_type = TestResult::where('measure_id', Measure::where('name', 'Product Type')->get()->first()->id)
-			->where('test_id', $test->id)
-			->get()->first()->result;
+			$product_type = TestResult::where('measure_id', Measure::where('name', 'Product Type')->get()->first()->id)
+				->where('test_id', $test->id)
+				->get()->first()->result;
 
-		$volume = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Volume')->lists('id')).') AND test_id = '.$test->id)
-			->get()->first()->result;
+			$volume = TestResult::whereRaw('measure_id IN(' . implode(", ", Measure::where('name', 'Volume')->lists('id')) . ') AND test_id = ' . $test->id)
+				->get()->first()->result;
 
-		$method = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Cross-match Method')->lists('id')).') AND test_id = '.$test->id)
-			->get()->first()->result;
+			$method = TestResult::whereRaw('measure_id IN(' . implode(", ", Measure::where('name', 'Cross-match Method')->lists('id')) . ') AND test_id = ' . $test->id)
+				->get()->first()->result;
 
-		$expiry_date = TestResult::whereRaw('measure_id IN('.implode(", ", Measure::where('name', 'Expiry Date')->lists('id')).') AND test_id = '.$test->id)
-			->get()->first()->result;
-
+			$expiry_date = TestResult::whereRaw('measure_id IN(' . implode(", ", Measure::where('name', 'Expiry Date')->lists('id')) . ') AND test_id = ' . $test->id)
+				->get()->first()->result;
+		}catch (Exception $e){
+			$pack_no = '-';
+			$pack_abo_group = '-';
+			$product_type = '-';
+			$volume = '-';
+			$method = '-';
+			$expiry_date = '-';
+		}
 		//$fpi = fopen('/dev/usb/lp2', 'w');
 
 		$result =

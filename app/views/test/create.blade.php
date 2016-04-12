@@ -53,12 +53,12 @@
 								{{ Form::hidden('patient_id', $patient->id) }}
 								{{ Form::label('visit_type', trans("messages.visit-type")) }}
 								{{ Form::select('visit_type', [' ' => '--- Select visit type ---'] + $visittypes, null,
-									 array('class' => 'form-control', 'onchange' => 'loadWards(this.value)')) }}
+									 array('id' => 'visit_type', 'class' => 'form-control', 'onchange' => 'loadWards(this.value)')) }}
 							</div>
 							<div class="form-group">
 								{{ Form::label('ward', trans("messages.ward")) }}
 								{{ Form::select('ward', [], null,
-									 array('class' => 'form-control')) }}
+									 array('class' => 'form-control', 'onmousedown' => 'loadWards(document.getElementById("visit_type").value)')) }}
 							</div>
 
 							<div class="form-group">
@@ -69,7 +69,8 @@
 							<div class="form-group">
 								{{ Form::label('specimen_type', trans("messages.specimen-type-title")) }}
 								{{ Form::select('specimen_type', ([' ' => '--- Select specimen type ---'] + $specimen_types), null,
-									 array('class' => 'form-control',
+									 array('id' => 'specimen_type',
+									 'class' => 'form-control',
 									 'onchange' => 'loadTestTypes(this.value)')) }}
 							</div>
 							<div class="form-group">
@@ -100,4 +101,11 @@
 			{{ Form::close() }}
 		</div>
 	</div>
+	<script>
+		setTimeout(function() {
+			loadWards(document.getElementById("visit_type").value);
+			loadTestTypes(document.getElementById('specimen_type').value);
+		}, 30
+		)
+	</script>
 @stop	

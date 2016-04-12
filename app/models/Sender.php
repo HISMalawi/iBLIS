@@ -195,7 +195,7 @@ class Sender
                             $test->test_status_id = TestStatus::where('name', 'completed')->first()->id;
                             $test->time_started = $results->datetime_started;
                             $test->time_completed = $results->datetime_completed;
-                            if (!$test->tesed_by) {
+                            if (!$test->tested_by) {
                                 $test->tested_by = User::first()->id;
                             }
                             $test->save();

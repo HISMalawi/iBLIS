@@ -882,7 +882,6 @@ $(function(){
 
 	/*Get valid wards/locations to populate select tag on test ordering page*/
 	function loadWards($visit_type){
-
 		$.getJSON('/visittype/getWards', { visittype: $visit_type},
 			function(data){
 
@@ -891,7 +890,6 @@ $(function(){
 				option.setAttribute('value', ' ');
 				option.innerHTML = "--- Select ward/location ---";
 				$("#ward").append(option);
-
 				for (var i = 0; i < data.length; i++){
 
 					if (data[i]['name'].match(/facilities/i)){

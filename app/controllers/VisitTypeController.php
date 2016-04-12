@@ -46,7 +46,7 @@ class VisitTypeController extends \BaseController {
 		$visit_type = Input::get('visittype');
 
 		try{
-			$wards = DB::select("select name from wards where id IN
+			$wards = DB::select("SELECT 'Other' AS name UNION  select name from wards where id IN
 							(SELECT ward_id FROM visittype_wards WHERE visit_type_id = $visit_type)");
 
 		}catch(QueryException $e){
