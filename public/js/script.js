@@ -758,6 +758,8 @@ $(function(){
 	function saveDrugSusceptibility(tid, oid){
 
 		var dataString = $("#drugSusceptibilityForm_"+oid).serialize();
+		dataString = dataString + "&organism=" + oid;
+
 		$.ajax({
 			type: 'POST',
 			url:  '/susceptibility/saveSusceptibility',
@@ -890,6 +892,7 @@ $(function(){
 				option.setAttribute('value', ' ');
 				option.innerHTML = "--- Select ward/location ---";
 				$("#ward").append(option);
+
 				for (var i = 0; i < data.length; i++){
 
 					if (data[i]['name'].match(/facilities/i)){

@@ -232,6 +232,7 @@
                                             <th>{{ trans('messages.interp')}}</th>
                                         </tr>
                                     </thead>
+                                    {{ Form::hidden('organismId', $value->id, array('id' => 'organism_global[]', 'name' => 'organismId')) }}
                                     <tbody id="enteredResults_<?php echo $value->id; ?>">
                                         @foreach($value->drugs as $drug)
                                         <?php

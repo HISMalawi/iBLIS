@@ -35,7 +35,6 @@ class SusceptibilityController extends \BaseController {
 		$user_id = Auth::user()->id;
 		$test = Input::get('test');
 		$organism = Input::get('organism');
-		//dd($organism);
 		$drug = Input::get('drug');
 		$zone = Input::get('zone');
 		$interpretation = Input::get('interpretation');
@@ -54,12 +53,12 @@ class SusceptibilityController extends \BaseController {
 		}
 
 		for($i=0; $i<count($test); $i++){
-			$sensitivity = Susceptibility::getDrugSusceptibility($test[$i], $organism[$i], $drug[$i]);
+			$sensitivity = Susceptibility::getDrugSusceptibility(Input::get('testId'), Input::get('organismId'), $drug[$i]);
 			if(count($sensitivity)>0){
 				$drugSusceptibility = Susceptibility::find($sensitivity->id);
 				$drugSusceptibility->user_id = $user_id;
-				$drugSusceptibility->test_id = $test[$i];
-				$drugSusceptibility->organism_id = $organism[$i];
+				$drugSusceptibility->test_id = Input::get('testId');
+				$drugSusceptibility->organism_id = Input::get('organismId');
 				$drugSusceptibility->drug_id = $drug[$i];
 				$drugSusceptibility->zone = $zone[$i];
 				$drugSusceptibility->interpretation = $interpretation[$i];
@@ -67,8 +66,8 @@ class SusceptibilityController extends \BaseController {
 			}else{
 				$drugSusceptibility = new Susceptibility;
 				$drugSusceptibility->user_id = $user_id;
-				$drugSusceptibility->test_id = $test[$i];
-				$drugSusceptibility->organism_id = $organism[$i];
+				$drugSusceptibility->test_id = Input::get('testId');
+				$drugSusceptibility->organism_id = Input::get('organismId');
 				$drugSusceptibility->drug_id = $drug[$i];
 				$drugSusceptibility->zone = $zone[$i];
 				$drugSusceptibility->interpretation = $interpretation[$i];
@@ -82,26 +81,21 @@ class SusceptibilityController extends \BaseController {
 		$new_drugs = Input::get('new_drug');
 		$new_zones = Input::get('new_zone');
 		$new_interp = Input::get('new_interp');
-
 		for ($i=0; $i<count($new_drugs); $i++){
 				if(!empty($new_interp[$i]) && !empty($new_drugs[$i])) {
-					$sensitivity = Susceptibility::getDrugSusceptibility($test[0], $organism[0], $drug);
+
+					$sensitivity = Susceptibility::getDrugSusceptibility(Input::get('testId'), Input::get('organismId'), $drug);
 					if (count($sensitivity) > 0) {
 						$drugSusceptibility = Susceptibility::find($sensitivity->id);
 					} else {
 
-
-						$organismObj = Organism::find($organism[0]);
-						try {
-							$organismObj->setDrugs(array('0' => $new_drugs[$i]), false);
-						}catch(Exception $e){
-							var_dump($organism);
-						}
+						$organismObj = Organism::find(Input::get('organismId'));
+						$organismObj->setDrugs(array('0' => $new_drugs[$i]), false);
 						$drugSusceptibility = new Susceptibility;
 					}
 					$drugSusceptibility->user_id = $user_id;
-					$drugSusceptibility->test_id = $test[0];
-					$drugSusceptibility->organism_id = $organism[0];
+					$drugSusceptibility->test_id =  Input::get('testId');
+					$drugSusceptibility->organism_id = Input::get('organismId');
 					$drugSusceptibility->drug_id = $new_drugs[$i];
 					$drugSusceptibility->zone = $new_zones[$i];
 					$drugSusceptibility->interpretation = $new_interp[$i];

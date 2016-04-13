@@ -248,6 +248,8 @@
 											<th>{{ trans('messages.interp')}}</th>
 										</tr>
 									</thead>
+									{{ Form::hidden('organismId', $value->id, array('id' => 'organism_global[]', 'name' => 'organismId')) }}
+									{{ Form::hidden('testId', $test->id, array('id' => 'test_global[]', 'name' => 'testId')) }}
 									<tbody id="enteredResults_<?php echo $value->id; ?>">
 										@foreach($value->drugs as $drug)
 										{{ Form::hidden('test[]', $test->id, array('id' => 'test[]', 'name' => 'test[]')) }}

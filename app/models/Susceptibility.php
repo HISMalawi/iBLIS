@@ -36,6 +36,7 @@ class Susceptibility extends Eloquent
     *
     */
     public static function getDrugSusceptibility($test_id, $organism_id, $drug_id){
+
     	$susceptibility = Susceptibility::where('test_id', $test_id)
     									->where('organism_id', $organism_id)
     									->where('drug_id', $drug_id)
