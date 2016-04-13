@@ -419,7 +419,7 @@
                                     {{trans('messages.reject')}}
                                 </a>
                             @endif
-                            @if ($test->isPending())
+                            @if ($test->specimen->isAccepted() && $test->isPending())
                                 @if(Auth::user()->can('start_test'))
                                     <a class="{{(!$test->panel_id) ? 'main-view main-view-'.$test->id : ''}} btn btn-sm btn-warning start-test" href="javascript:void(0)"
                                         data-test-id="{{$test->id}}" data-url="{{ URL::route('test.start') }}"
