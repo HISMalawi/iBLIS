@@ -689,10 +689,6 @@ $(function(){
 
 		$('.pre-select:first').click();
 
-		if(window.location.href.match("machine_test_id")){
-			var test_id = window.location.href.match(/\d+$/)[0];
-			//window.location.href = '/test/machineid?id='+test_id+"&session_check=true";
-		}
 	});
 
 	//Make sure all input fields are entered before submission
@@ -1009,7 +1005,7 @@ $(function(){
 
 	function showSpinner(action, clickOnClose, shieldOn) {
 
-		if(window.location.href.match(/viewdetails/i) || window.location.href.match(/machine\_test\_id\=\d+$/)){
+		if(window.location.href.match(/viewdetails|checkResult/i) || window.location.href.match(/machine\_test\_id\=\d+$/)){
 			hideSpinner();
 			return;
 		}
@@ -1125,8 +1121,11 @@ $(function(){
 	(function(open) {
 
 		XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-
-			setTimeout(function(){showSpinner(null, false, false)}, 10);
+			if (!url.match(/checkresult/i)) {
+				setTimeout(function () {
+					showSpinner(null, false, false)
+				}, 10);
+			}
 
 			this.addEventListener("load", function() {
 				hideSpinner();
@@ -1147,6 +1146,9 @@ $(function(){
 
 		hideSpinner();
 
+		if(window.location.href.match(/test\/\d+\/enterresults|test\/\d+\/edit/i)){
+			checkMachineOutput();
+		}
 	});
 
 	function checkBarcode(){
@@ -1170,3 +1172,21 @@ $(function(){
 	setTimeout(function(){
 		checkBarcode();
 	}, 1000);
+
+	function checkMachineOutput(){
+		var button = __$('fetch-link');
+		var accessionNumber = button.getAttribute('data-accession-number');
+		if(accessionNumber){
+			$.get("/instrument/checkresult?accession_number="+accessionNumber).done(function(result){
+
+					if(result.match(/true/i)) {
+						button.className = "btn btn-sm btn-success fetch-test-data";
+						//__$('machine-status').innerHTML = 'Machine results available';
+					}else{
+						button.className = "btn btn-sm btn-default fetch-test-data";
+						//__$('machine-status').innerHTML = 'Waiting for machine results....';
+					}
+			});
+		}
+		setTimeout("checkMachineOutput()",300);
+	}

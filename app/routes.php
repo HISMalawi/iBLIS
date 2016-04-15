@@ -115,6 +115,10 @@ Route::group(array("before" => "auth"), function()
         "as"   => "instrument.getResult",
         "uses" => "InstrumentController@getTestResult"
     ));
+    Route::get("/instrument/checkresult", array(
+        "as"   => "instrument.checkResult",
+        "uses" => "InstrumentController@checkResult"
+    ));
     Route::group(array("before" => "checkPerms:manage_test_catalog"), function()
     {
         Route::resource('specimentype', 'SpecimenTypeController');

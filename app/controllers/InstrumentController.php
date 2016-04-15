@@ -211,4 +211,18 @@ class InstrumentController extends \BaseController {
 
 		return Redirect::route($route)->with('message', $message);
 	}
+
+	public function checkResult(){
+
+		$specimen_id = Input::get('accession_number');
+		$base = realpath(".");
+		$DUMP_URL = "$base/data/$specimen_id.json";
+
+		$file_avail = file_exists($DUMP_URL);
+		if ($file_avail == FALSE){
+			return 'false';
+		}else{
+			return 'true';
+		}
+	}
 }
