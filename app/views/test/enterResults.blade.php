@@ -26,6 +26,16 @@
                                 {{trans('messages.fetch-test-data')}}
                             </a>
                         </div>
+
+                        <div class="panel-btn">
+                            <a class="btn btn-sm btn-default"
+                               href="{{URL::route('test.machineid', array($test->id))}}"
+                               data-toggle="modal" >
+                                <span class="glyphicon glyphicon-print"></span>
+                                Print Machine Number
+                            </a>
+                        </div>
+
                         @endif
                     </div>
                     <div class="col-md-1">
