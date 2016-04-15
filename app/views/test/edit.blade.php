@@ -15,7 +15,8 @@
 						<span class="glyphicon glyphicon-filter"></span>{{ trans('messages.edit') }}
                         @if($test->testType->instruments->count() > 0)
                         <div class="panel-btn">
-                            <a class="btn btn-sm btn-info fetch-test-data" href="javascript:void(0)"
+                            <a id="fetch-link"
+								class="btn btn-sm btn-defaul fetch-test-data" href="javascript:void(0)"
                                 title="{{trans('messages.fetch-test-data-title')}}"
                                 data-test-type-id="{{$test->testType->id}}"
 								data-accession-number="{{$test->getSpecimenId()}}"
