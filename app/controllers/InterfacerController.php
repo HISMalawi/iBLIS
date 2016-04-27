@@ -178,11 +178,23 @@ class InterfacerController extends \BaseController
             mkdir($base . "/data", 0777, true);
         }
 
-        $specimen_id = $this::trimZeros($_REQUEST["specimen_id"]);
+        $specimen_id = $this::trim($_REQUEST["specimen_id"]);
         $code = "/^".Config::get('kblis.facility-code')."/";
 
-        if (!preg_match($code, $specimen_id)){
+        if (preg_match("/^\d+$/", $specimen_id)){
             $specimen_id = Config::get('kblis.facility-code').$specimen_id;
+        }else if(preg_match($code, $specimen_id)){
+            //The specimen_id is already an accession number; no modifications required
+        }else{
+            //This must be a tracking number, get associated accession number
+            try {
+                $s_id = DB::table("specimens")->where("tracking_number", $specimen_id)->first()->accession_number;
+                if($s_id){
+                    $specimen_id = $s_id;
+                }
+            }catch (Exception $e){
+                //Fetching will fail
+            }
         }
 
         $measure_id = $_REQUEST["measure_id"];

@@ -35,9 +35,9 @@ class MindrayBC5800Machine extends \KBLIS\Instrumentation\AbstractInstrumentor
 
         $base = realpath(".");
 
-        $remote_ip = $this->ip;
+        $remote_ip = ''; //$this->ip . '/';
 
-        $DUMP_URL = "$base/data/$remote_ip/$specimen_id.json";
+        $DUMP_URL = "$base/data/$remote_ip$specimen_id.json";
 
         $RESULTS_STRING = file_get_contents($DUMP_URL);
         if ($RESULTS_STRING === FALSE){
