@@ -190,7 +190,7 @@ class InterfacerController extends \BaseController
             if (!preg_match("/^X/", $specimen_id)){
                 $specimen_id = "X".$specimen_id;
             }
-            
+
             try {
                 $s_id = DB::table("specimens")->where("tracking_number", $specimen_id)->first()->accession_number;
                 if($s_id){
@@ -199,6 +199,10 @@ class InterfacerController extends \BaseController
             }catch (Exception $e){
                 //Fetching will fail
             }
+        }
+
+        if (preg_match("/INVALID/", $specimen_id)){
+            return "-1";
         }
 
         $measure_id = $_REQUEST["measure_id"];
