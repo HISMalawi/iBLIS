@@ -178,7 +178,7 @@ class InterfacerController extends \BaseController
             mkdir($base . "/data", 0777, true);
         }
 
-        $specimen_id = $this::trim($_REQUEST["specimen_id"]);
+        $specimen_id = trim($_REQUEST["specimen_id"]);
         $code = "/^".Config::get('kblis.facility-code')."/";
 
         if (preg_match("/^\d+$/", $specimen_id)){
