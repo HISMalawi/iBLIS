@@ -225,9 +225,9 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.appendNewTest",
         "uses" => "TestController@appendNewTest"
     ));
-    Route::get("/test/{id}/print_accession_number", array(
-        "as"   => "test.print_accession_number",
-        "uses" => "TestController@printAccessionNumber"
+    Route::get("/test/{id}/print_tracking_number", array(
+        "as"   => "test.print_tracking_number",
+        "uses" => "TestController@printTrackingNumber"
     ));
      Route::post("/test/acceptspecimen", array(
         "before" => "checkPerms:accept_test_specimen",

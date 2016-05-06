@@ -226,7 +226,73 @@ class TestController extends \BaseController {
 			->with('specimentype',$specimen_type);
 	}
 
-	public function printAccessionNumber($sid){
+	public function printMachineId($sid){
+		$specimen = Specimen::find($sid);
+		$test_types = $specimen->testTypesShortNamed();
+		$test = $specimen->test;
+		$visit = $test->visit;
+		$patient = $visit->patient;
+
+		$patient_name = $patient->name;
+		$patient_number = $patient->external_patient_number;
+		$tracking_number = $specimen->tracking_number;
+		$accession_number = $specimen->accession_number;
+		$facility_code = Config::get('kblis.facility-code');
+		$barcode_number = preg_replace("/^" . $facility_code . "/", "", $accession_number);
+		$dob = date('d-M-Y', strtotime($patient->dob));
+		$age = (int)$patient->getAge('YY');
+		$gender = $patient->gender == 0 ? 'M' : 'F';
+		$date_col = date('d-M-Y H:i', strtotime($specimen->test->time_created));
+		$col_by = User::find($specimen->accepted_by)->name;
+
+		if ($specimen->priority != 'Stat') {
+			$s = '
+N
+R216,0
+ZT
+S2
+A6,6,0,2,1,1,N,"' . $patient_name . '"
+A6,29,0,2,1,1,N,"' . $patient_number . '    ' . $dob . ' ' . $age . ' ' . $gender . '"
+B51,51,0,1A,2,2,76,N,"' . $barcode_number . '"
+A51,131,0,2,1,1,N,"' . $accession_number . ' * ' . $barcode_number . '"
+A6,150,0,2,1,1,N,"Col: ' . $date_col . ' ' . $col_by . '"
+A6,172,0,2,1,1,N,"' . $test_types . '"
+P1
+';
+		}else{
+			$s = '
+
+N
+R216, 0
+ZT
+S2
+A41,6,0,2,1,1,N,"' . $patient_name . '"
+A41,29,0,2,1,1,N,"' . $patient_number . '    ' . $dob . ' ' . $age . ' ' . $gender . '"
+B57,51,0,1A,2,2,76,N,"' . $barcode_number . '"
+A57,131,0,2,1,1,N,"' . $accession_number . ' * ' . $barcode_number . '"
+A41,150,0,2,1,1,N,"Col: ' . $date_col . ' ' . $col_by . '"
+A41,172,0,2,1,1,N,"' . $test_types . '"
+A24,6,1,2,1,1,R,"      STAT      "
+P1
+';
+		}
+
+
+
+		$filename = $specimen->id.'.lbl';
+		//fwrite($fpi, $result);
+		//fclose($fpi);
+
+		header("Content-Type: application/label; charset=utf-8");
+		header('Content-Disposition: inline; filename="'.$filename.'"');
+		header("Content-Length: " . strlen($s));
+		//header("location: /");
+		header("Stream", false);
+		echo $s;
+		exit;
+	}
+
+	public function printTrackingNumber($sid){
 		$specimen = Specimen::find($sid);
 		$test_types = $specimen->testTypesShortNamed();
 		$test = $specimen->test;
@@ -695,44 +761,6 @@ P1
 		return $test->testType->instruments->count();
 	}
 
-
-	/**
-	 * Print Machine Id
-	 *
-	 * @param
-	 * @return
-	 */
-
-	public function printMachineId($id){
-
-		if(!$id){
-			$id = Input::get('id');
-		}
-		$test = Test::find($id);
-		$specimen = $test->specimen;
-		$patient = $test->visit->patient;
-		$machine_id = preg_replace('/\D+/', '', $specimen->accession_number);
-		$s = '
-N
-R216,0
-ZT
-S2
-A51,20,0,2,1,1,N,"' . $patient->name . '"
-B51,51,0,1A,2,2,76,N,"' . $machine_id . '"
-A51,131,0,2,1,1,N,"' . $machine_id . '"
-P1
-';
-
-		$filename = $specimen->id.'.lbl';
-		header("Content-Type: application/label; charset=utf-8");
-		header('Content-Disposition: inline; filename="'.$filename.'"');
-		header("Content-Length: " . strlen($s));
-		//header("location: /");
-		header("Stream", true);
-		echo $s;
-		exit;
-
-	}
 
 	/**
 	 * Void Test

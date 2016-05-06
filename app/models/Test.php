@@ -472,8 +472,14 @@ class Test extends Eloquent
 	public static function search($searchString = '', $testStatusId = 0, $dateFrom = NULL, $dateTo = NULL, $location_id=NULL)
 	{
 
+		$numerical_specimen = '-------------';
+		$facility_code = Config::get('kblis.facility-code');
+		if (!preg_match("/".$facility_code."/", $searchString) && preg_match("/^\d+$/", $searchString)){
+			$numerical_specimen = $facility_code.$searchString;
+		}
+
 		$tests = Test::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
-			->where(function($q) use ($searchString){
+			->where(function($q) use ($searchString, $numerical_specimen){
 
 			$q->whereHas('visit', function($q) use ($searchString)
 			{
@@ -510,6 +516,10 @@ class Test extends Eloquent
 			->orWhereHas('specimen', function($q) use ($searchString)
 			{
 				$q->where('accession_number', '=', $searchString );//Search by accession number
+			})
+			->orWhereHas('specimen', function($q) use ($numerical_specimen)
+			{
+				$q->where('accession_number', '=', $numerical_specimen );//Search by acc num from numerical checks
 			})
 			->orWhereHas('visit',  function($q) use ($searchString)
 			{
