@@ -205,6 +205,11 @@
 												@else
 													<table style="margin: 0px;width: 100%;" class="table table-bordered">
 														@foreach($test->testResults as $result)
+																@if(Measure::find($result->measure_id)->name == "HIV Status")
+																	<?php
+																		continue;
+																	?>
+																@endif
 
 																<tr>
 																	<td style="width: 44%">
