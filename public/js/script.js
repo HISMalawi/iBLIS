@@ -1181,9 +1181,12 @@ $(function(){
 
 					if(result.match(/true/i)) {
 						button.className = "btn btn-sm btn-success fetch-test-data";
+						button.removeAttribute('disabled');
+						
 						//__$('machine-status').innerHTML = 'Machine results available';
 					}else{
 						button.className = "btn btn-sm btn-default fetch-test-data";
+						button.setAttribute('disabled', true);
 						//__$('machine-status').innerHTML = 'Waiting for machine results....';
 					}
 			});
