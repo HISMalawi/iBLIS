@@ -7,6 +7,13 @@
 		  <li class="active">{{trans('messages.edit-patient')}}</li>
 		</ol>
 	</div>
+
+	<?php
+		$name = $patient->name;
+		$parts = explode(" ", $name);
+		$lastname = array_pop($parts);
+		$firstname = implode(" ", $parts);
+	?>
 	<div class="panel panel-primary">
 		<div class="panel-heading ">
 			<span class="glyphicon glyphicon-edit"></span>
@@ -32,11 +39,11 @@
 				</div>
 				<div class="form-group">
 					{{ Form::label('first_name', trans('messages.first-name')) }}
-					{{ Form::text('first_name', Input::old('name'), array('class' => 'form-control')) }}
+					{{ Form::text('first_name', $firstname, array('class' => 'form-control')) }}
 				</div>
 				<div class="form-group">
 					{{ Form::label('last_name', trans('messages.last-name')) }}
-					{{ Form::text('last_name', Input::old('name'), array('class' => 'form-control')) }}
+					{{ Form::text('last_name', $lastname, array('class' => 'form-control')) }}
 				</div>
 				<div class="form-group">
 					{{ Form::label('dob', trans('messages.date-of-birth')) }}

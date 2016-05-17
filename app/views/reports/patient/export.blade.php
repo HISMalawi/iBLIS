@@ -206,35 +206,36 @@
 													<table style="margin: 0px;width: 100%;" class="table table-bordered">
 														@foreach($test->testResults as $result)
 
-															@if(!empty($result->result))
 																<tr>
 																	<td style="width: 44%">
 																		{{ Measure::find($result->measure_id)->name }}
 																	</td>
 																	<td>
-																		{{ $result->result }}
-																		<?php $organism_names = ''?>
-																		@if(count($test->susceptibility)>0 && $result->result == "Growth")
-																			@foreach($test->organisms() AS $og)
-																				<?php
-																				$organism_name = Organism::find($og['organism_id'])->name;
-																				$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;
-																				?>
-																			@endforeach
-																			of {{$organism_names ? $organism_names : '---'}}
-																		@endif
-																		{{ Measure::find($result->measure_id)->unit }}
-																		<?php
-																		$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
-																		?>
+																		@if(!empty($result->result))
 
-																		@if($measureRng && $test->testType->instruments->count() > 0)
-																			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
+																			{{ $result->result }}
+																			<?php $organism_names = ''?>
+																			@if(count($test->susceptibility)>0 && $result->result == "Growth")
+																				@foreach($test->organisms() AS $og)
+																					<?php
+																					$organism_name = Organism::find($og['organism_id'])->name;
+																					$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;
+																					?>
+																				@endforeach
+																				of {{$organism_names ? $organism_names : '---'}}
+																			@endif
+																			{{ Measure::find($result->measure_id)->unit }}
+																			<?php
+																			$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
+																			?>
+
+																			@if($measureRng && $test->testType->instruments->count() > 0)
+																				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
+																			@endif
 																		@endif
 
 																	</td>
 																</tr>
-															@endif
 														@endforeach
 													</table>
 												@endif

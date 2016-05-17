@@ -263,12 +263,12 @@
 									<table style="margin: 0px;padding:0px;width:100%" class="table-bordered table-condensed">
 										@foreach($test->testResults as $result)
 
-											@if(!empty($result->result))
 												<tr>
 													<td style="width: 44%">
 														{{ Measure::find($result->measure_id)->name }}
 													</td>
 													<td>
+														@if(!empty($result->result))
 														<?php $organism_names = ''?>
 														{{ $result->result }}
 														@if(count($test->susceptibility)>0 && $result->result == "Growth")
@@ -289,9 +289,10 @@
 															@if($measureRng && $test->testType->instruments->count() > 0)
 																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
 															@endif
+														@endif
+
 													</td>
 												</tr>
-											@endif
 										@endforeach
 									</table>
 								@endif
