@@ -950,7 +950,7 @@ A455,238,0,2,1,1,N,"'.$method.'"
 A455,268,0,2,1,1,N,"'.$expiry_date.'"
 P2
 ';
-		$filename = $test->id.'.lbl';
+		$filename = $test->id.'.lbs';
 		//fwrite($fpi, $result);
 		//fclose($fpi);
 
