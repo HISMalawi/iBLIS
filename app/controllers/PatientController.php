@@ -48,7 +48,6 @@ class PatientController extends \BaseController {
 	{
 		//
 		$rules = array(
-			'patient_number' => 'required|unique:patients,patient_number',
 			'first_name' => 'required',
 			'last_name' => 'required',
 			'gender' => 'required',
@@ -62,7 +61,6 @@ class PatientController extends \BaseController {
 		} else {
 			// store
 			$patient = new Patient;
-			$patient->patient_number = Input::get('patient_number');
 			$patient->external_patient_number = Input::get('external_patient_number');
 			$first_name = Input::get('first_name');
 			$last_name = Input::get('last_name');
@@ -73,6 +71,7 @@ class PatientController extends \BaseController {
 			$patient->address = Input::get('address');
 			$patient->phone_number = Input::get('phone_number');
 			$patient->created_by = Auth::user()->id;
+			$patient->patient_number = DB::table('patients')->max('id')+1;			;
 
 			try{
 				$patient->save();

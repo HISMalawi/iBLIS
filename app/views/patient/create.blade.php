@@ -22,11 +22,7 @@
 			@endif
 
 			{{ Form::open(array('url' => 'patient', 'id' => 'form-create-patient')) }}
-				<div class="form-group">
-					{{ Form::label('patient_number', trans('messages.patient-number')) }}
-					{{ Form::text('patient_number', $lastInsertId,
-						array('class' => 'form-control')) }}
-				</div>
+
 				<div class="form-group">
 					{{ Form::label('external_patient_number', trans('messages.external-patient-number')) }}
 					{{ Form::text('external_patient_number', Input::old('external_patient_number'), array('class' => 'form-control')) }}
