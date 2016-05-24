@@ -128,10 +128,14 @@
 
 				?>
 				<div class="panel panel-success">
-					<div class="panel-heading ">
-						<span class="glyphicon glyphicon-tint"></span>
-						<span><strong>{{Lang::choice('messages.specimen-id', 1)}}</strong>&nbsp;:&nbsp;  <strong> {{ $specimen->accession_number }}					</div>
-					<div class="panel-body">
+						<div class="panel-heading ">
+							<span class="glyphicon glyphicon-tint"></span>
+							<span><strong>{{Lang::choice('messages.specimen-id', 1)}}</strong>&nbsp;:&nbsp;  <strong> {{ $specimen->accession_number }}</strong></span>
+
+							<span class="pull-right"><strong>Requested By </strong>&nbsp;:&nbsp;  <strong> {{ $test->requested_by }}
+									({{$test->visit->ward_or_location or trans('messages.unknown') }})</strong></span>
+						</div>
+				<div class="panel-body">
 
 			<table class="table table-bordered rspecimen">
 				<tbody>
