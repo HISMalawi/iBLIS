@@ -384,7 +384,7 @@ return array(
      *   Reports
      */
     'aggregate-reports' => 'Aggregate Reports',
-    'collected-by'  =>  'Collected By',
+    'collected-by'  =>  'Received By',
     'counts' => 'Counts',
     'daily-log' => 'Daily Log',
     'daily-reports' => 'Daily Reports',
