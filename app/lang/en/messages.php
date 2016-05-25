@@ -289,7 +289,7 @@ return array(
     'all' => 'All',
     'create-new-test' => 'Create New Test',
     'completed' => 'Test Completed',
-    'date-ordered' => 'Date Ordered',
+    'date-ordered' => 'Date Registered',
     'fetch-test-data' => 'Fetch',
     'fetch-test-data-title' => 'Fetch Test data from associated equipment.',
     'first-select-patient' => 'First select a patient below',
