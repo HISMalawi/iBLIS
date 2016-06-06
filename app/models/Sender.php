@@ -67,8 +67,9 @@ class Sender
 
             $h['who_updated'] = array();
             $who = Auth::user();
-            $h['who_updated']['first_name'] = explode(' ', $who->name)[0];
-            $h['who_updated']['last_name'] = explode(' ', $who->name)[1];
+            $name = explode(' ', $who->name);
+            $h['who_updated']['first_name'] = isset($name[0]) ? $name[0]  : '';
+            $h['who_updated']['last_name'] = isset($name[1]) ? $name[1]  : '';
             $h['who_updated']['ID_number'] = $who->id;
 
             $r = array();
