@@ -413,6 +413,7 @@ return array(
     'total-visits'  =>  'Total Visits',
     'summary'   =>  'Summary',
     'daily-visits' =>  'Daily visits',
+    'departments-summary-report' => 'Lab Statistics',
     'pending-only'  =>  'Pending Tests Only',
     'all-tests' =>  'All Tests',
     'date-rejected' =>  'Date Rejected',
