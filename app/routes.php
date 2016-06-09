@@ -440,12 +440,12 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@stockLevel"
         ));
 
-        Route::get("/departments_summary_report", array(
+        Route::match(['get', 'post'], "/departments_summary_report", array(
             "as"   => "reports.departments_summary",
             "uses" => "ReportController@departments_summary"
         ));
 
-        Route::get("/departmentreport", array(
+        Route::match(['get', 'post'], "/departmentreport", array(
             "as"   => "reports.department",
             "uses" => "ReportController@department_report"
         ));

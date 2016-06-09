@@ -3235,8 +3235,8 @@ class ReportController extends \BaseController {
 
 	public function departments_summary()
 	{
-		$start_date = Input::get('start');
-		$end_date = Input::get('end');
+		$start_date = strip_tags(Input::get('start', date('Y-m-d')));
+		$end_date = strip_tags(Input::get('end', date('Y-m-d')));
 
 		$start    = (new DateTime($start_date))->modify('first day of this month');
 		$end      = (new DateTime($end_date))->modify('first day of next month');
@@ -3284,9 +3284,9 @@ class ReportController extends \BaseController {
 		$default_lab_section = TestCategory::select('id')->orderBy('name')->first();
 		$default_lab_section_id = $default_lab_section->id;
 
-		$lab_section_id = Input::get('lab_section', $default_lab_section_id);
+		$lab_section_id = strip_tags(Input::get('lab_section', $default_lab_section_id));
 
-		$year = Input::get('year', $default_year);
+		$year = strip_tags(Input::get('year', $default_year));
 		$start_date = $year.'-01-01';
 		$end_date = $year.'-12-31';
 

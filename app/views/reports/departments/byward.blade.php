@@ -37,7 +37,7 @@
 	<div class='container-fluid'>
 		<div class='row'>
 			<div class='col-lg-12'>
-				{{ Form::open(array('route' => array('reports.department'), 'class' => 'form-inline', 'role' => 'form', 'method' => 'GET', 'style' => 'display:inline')) }}
+				{{ Form::open(array('route' => array('reports.department'), 'class' => 'form-inline', 'role' => 'form', 'method' => 'POST', 'style' => 'display:inline')) }}
 					<div class='row'>
 						<div class="col-sm-3">
 					    	<div class="row">
