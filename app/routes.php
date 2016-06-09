@@ -440,12 +440,7 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@stockLevel"
         ));
 
-        Route::get("/departmentalreport", array(
-            "as"   => "reports.departments_summary",
-            "uses" => "ReportController@departments_summary"
-        ));
-
-        Route::get("/departmentsreport", array(
+        Route::get("/departments_summary_report", array(
             "as"   => "reports.departments_summary",
             "uses" => "ReportController@departments_summary"
         ));
@@ -454,6 +449,7 @@ Route::group(array("before" => "auth"), function()
             "as"   => "reports.department",
             "uses" => "ReportController@department_report"
         ));
+
     });
     Route::group(array("before" => "checkPerms:manage_qc"), function()
     {

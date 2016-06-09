@@ -2,8 +2,9 @@
 @section("content")
 	<div>
 		<ol class="breadcrumb">
-		  <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
-		  <li class="active">{{ Lang::choice('',2) }}</li>
+			<li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
+		 	<li><a href="{{ URL::route('reports.patient.index') }}">{{ Lang::choice('messages.report', 2) }}</a></li>
+		  	<li class="active">{{trans('messages.departments-summary-report')}}</li>
 		</ol>
 	</div>
 
@@ -53,7 +54,7 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading ">
 			<span class="glyphicon glyphicon-u"></span>
-			Departmental Reports
+			{{ trans('messages.laboratory-statistics')}}
 		</div>
 		<div class="panel-body">
 			<table class="table table-striped table-hover table-condensed">

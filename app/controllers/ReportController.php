@@ -3238,35 +3238,28 @@ class ReportController extends \BaseController {
 		$start_date = Input::get('start');
 		$end_date = Input::get('end');
 
-		//$months= array();
 		$start    = (new DateTime($start_date))->modify('first day of this month');
 		$end      = (new DateTime($end_date))->modify('first day of next month');
 		$interval = DateInterval::createFromDateString('1 month');
 		$period   = new DatePeriod($start, $interval, $end);
-
-
-
 
 		$data = array();
 		$categories = TestCategory::orderBy('name', 'asc')->get();
 		foreach ($categories as $category) 
 		{
 			$category_name = $category->name;
-			$data[$category_name] = '';
 			$test_category_id = $category->id;
 
 			foreach ($category->testTypes as $test_type) 
 			{
 				$test_type_name = $test_type->name;
-				$types_array[$test_type_name] = '';
 				$test_type_id = $test_type->id;
-	      		$data[$category_name][$test_type_name] = '';
 	            foreach ($period as $dt) 
 	            {
 	            	$number = 0;
     				$month_name = $dt->format('M');
     				$dt = $dt->format('Y-m');
-    				$query = "SELECT count(*) as tests_per_month FROM tests join test_types on tests.test_type_id = test_types.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$dt' GROUP BY test_types.id;";
+    				$query = "SELECT count(*) as tests_per_month FROM tests join test_types on tests.test_type_id = test_types.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$dt' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY test_types.id;";
     				
     				$test_per_month = DB::select(DB::raw($query)); 
     				if(count($test_per_month) > 0)
@@ -3291,27 +3284,28 @@ class ReportController extends \BaseController {
 		$default_lab_section = TestCategory::select('id')->orderBy('name')->first();
 		$default_lab_section_id = $default_lab_section->id;
 
-		$lab_section_id = Input::get('lab_section_id', $default_lab_section_id);
+		$lab_section_id = Input::get('lab_section', $default_lab_section_id);
+
 		$year = Input::get('year', $default_year);
 		$start_date = $year.'-01-01';
 		$end_date = $year.'-12-31';
-		
 
 		$start    = (new DateTime($start_date))->modify('first day of this month');
 		$end      = (new DateTime($end_date))->modify('first day of next month');
 		$interval = DateInterval::createFromDateString('1 month');
 		$period   = new DatePeriod($start, $interval, $end);
-
 		
 		$data = array();
 		$category = TestCategory::find($lab_section_id);
+		$test_category_id = $category->id;
 
 		$category_names = array();
-		$categories = TestCategory::orderBy('name');
+		$categories = TestCategory::orderBy('name')->get();
 		foreach($categories as $cat)
 		{
-			array_push($category_names, $cat->name);
+			$category_names[$cat->id] = $cat->name;
 		}
+
 		$years = array();
 		$test_years = DB::select(DB::raw("SELECT DISTINCT(YEAR(tests.time_created)) as year FROM tests"));
 		foreach ($test_years as $test_year) 
@@ -3319,54 +3313,68 @@ class ReportController extends \BaseController {
 			$years[$test_year->year] = $test_year->year;
 		}
 
+		$wards = array();
+		$distinct_wards = DB::select(DB::raw("SELECT DISTINCT(ward_or_location) as ward, visits.visit_type as visit_type FROM visits join tests	ON visits.id = tests.visit_id join test_types on test_types.id = tests.test_type_id WHERE test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m-%d') BETWEEN '$start_date' AND '$end_date';"));
+		//$distinct_wards = DB::select(DB::raw("SELECT name FROM wards;"));
 
+		foreach ($distinct_wards as $ward) 
+		{
+			//$location = $ward->name;
+			$location = $ward->ward;
+			$visit_type = $ward->visit_type;
+			 if($visit_type == 'Referral')
+			 {
+			 	$location = 'Referral';
+			 }
 
+			array_push($wards, $location);
+		}
 
 		foreach ($period as $dt) 
         {
             $month_name = $dt->format('M');
-            $data[$month_name] = '';
+            $year_month = $dt->format('Y-m');
 
 			$test_types = $category->testTypes;
+			
 			foreach ($test_types as $test_type) 
 			{
 				$test_type_name = $test_type->name;
 				$test_type_id = $test_type->id;
-	      		$data[$month_name][$test_type_name] = '';
 	            
-            	$number = 0;
-            	$ward = '';
-            	$wards = array();
-
-            	
-            	$dt = $dt->format('Y-m');
-            	//echo $dt;
-            	//exit;
-					$query = "SELECT count(*) as number_per_ward, visits.ward_or_location as ward FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$lab_section_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$dt' GROUP BY visits.ward_or_location;";
-					
+            	foreach($wards as $ward)
+            	{
+            		$number = 0;
+            		if($ward != 'Referral')
+            		{
+						$query = "SELECT count(*) as number_per_ward, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.ward_or_location = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY ward;";
+					}
+					else
+					{
+						$query = "SELECT count(*) as number_per_ward, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.visit_type = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";	
+					}
 					$test_per_ward = DB::select(DB::raw($query)); 
-					echo $query;
-					exit;
 					
-					$number = $test_per_ward->number_per_ward;
-					$ward = $test_per_ward->ward;
-						//echo $ward.'<br>';
-						//exit;
-						array_push($wards, $ward);
-					
+
+					if(count($test_per_ward) > 0)
+					{
+						$number = $test_per_ward[0]->number_per_ward;
+	            	}
+
 	            	$data[$month_name][$test_type_name][$ward] = $number;
-				}
-				//print_r($wards);
-				//exit;
-            }
-        
-        /*return View::make('reports.departments.byward')
+        		}
+
+			}
+			
+		}
+
+        return View::make('reports.departments.byward')
         	->with('data', $data)
         	->with('years', $years)
         	->with('category', $category)
         	->with('category_names', $category_names)
         	->with('period', $period)
         	->with('wards', $wards)
-        	->withInput(Input::all());*/
+        	->withInput(Input::all());
 	}
 }

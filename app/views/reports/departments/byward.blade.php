@@ -1,9 +1,36 @@
 @extends("layout")
 @section("content")
+	<style>
+		.table> tbody > tr > td:first-child
+		{
+		    position: absolute;
+		    display: inline-block;
+		    background-color: #F2F2F2;
+		    /*height:100%;*/
+		    width: 150px!important;
+
+		}
+				.table>thead:first-child>tr:first-child>td:first-child
+		{
+		    position: absolute;
+		    display: inline-block;
+		    background-color:#F2F2F2;
+		    /*height:100%;*/
+		    width: 150px!important;
+		}
+		
+		.table> tbody > tr > td:nth-child(2)
+		{
+		    padding-left:50px !important;
+
+		}
+
+	</style>
 	<div>
 		<ol class="breadcrumb">
 		  <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
-		  <li class="active">{{ Lang::choice('',2) }}</li>
+		  <li><a href="{{ URL::route('reports.patient.index') }}">{{ Lang::choice('messages.report', 2) }}</a></li>
+		  <li class="active">{{trans('messages.departmental-report')}}</li>
 		</ol>
 	</div>
 
@@ -12,7 +39,7 @@
 			<div class='col-lg-12'>
 				{{ Form::open(array('route' => array('reports.department'), 'class' => 'form-inline', 'role' => 'form', 'method' => 'GET', 'style' => 'display:inline')) }}
 					<div class='row'>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 					    	<div class="row">
 								<div class="col-sm-2">
 								    {{ Form::label('year', 'Year') }}
@@ -25,15 +52,15 @@
 						</div>
 						<div class="col-sm-4">
 					    	<div class="row">
-								<div class="col-sm-2">
+								<div class="col-sm-4">
 								    {{ Form::label('lab_section', 'Lab Section') }}
 								</div>
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 								    {{ Form::select('lab_section', $category_names, isset($input['lab_section'])?$input['lab_section']:$category->name, array('class' => 'form-control')) }}
 						        </div>
 							</div>
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-2">
 						  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 				                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 				        </div>
@@ -52,47 +79,46 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading ">
 			<span class="glyphicon glyphicon-u"></span>
-			Departmental Reports
+			{{trans('messages.department-report')}}
 		</div>
+		<?php $wards = array_unique($wards);?>
 		<div class="panel-body">
-			<table class="table table-striped table-hover table-condensed">
-				<tbody>
-						@if(strtoupper($category->name) != 'LAB RECEPTION')
-							<tr>
-								<td align='center'>{{$category->name}}</td>
-							</tr>
-							<tr>
-								<td>TESTS</td>
-								
-								@foreach($wards as $ward)
-									<td>
-										{{$ward}}
-									</td>
-								@endforeach
-								<td align='center'><b>Total</b></td>
-							</tr>
-							@foreach($period as $month)
+			<div class="table-responsive" style="width: 100%; overflow: auto;">
+				@if(count($wards))
+				<table class="table table-striped table-hover table-condensed table-sm">
+					<thead>
+						<tr>
+							<td><b>TESTS</b></td><td align='center' colspan="{{count($wards)}}"><b>WARDS</b></td>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($period as $dt)
 								<tr>
-									<td>{{$month->format('M')}}</td>
+									<td ><b>{{$dt->format('F')}}</b></td>
+									@foreach($wards as $ward)
+										<?php $ward = str_replace(' ', '', $ward);?>
+										<td align='center'><b>{{$ward}}</b></td>
+									@endforeach
+									<td align='center'><b>TOTAL</b></td>
 								</tr>
-								@foreach($category->testTypes as $test_type)
+							@foreach($category->testTypes as $test_type)
 								<tr>
 									<td>{{$test_type->name}}</td>
 									<?php $total = 0;?>
-									
-										@foreach($wards as $ward)
-											<td align='center'>
-												{{$data[$test_type->name][$month->format('M')][$ward]}}
-												<?php $total += [$test_type->name][$month->format('M')][$ward];?>
-											</td>
-										@endforeach
+									@foreach($wards as $ward)
+										<td align='center'>{{$data[$dt->format('M')][$test_type->name][$ward]}}</td>
+										<?php $total +=$data[$dt->format('M')][$test_type->name][$ward];?>
 									@endforeach
-									<td align='center'>{{$total}}</td>
+									<td align='center'><b>{{$total}}</b></td>
 								</tr>
-								@endforeach
-						@endif
-				</tbody>
-			</table>
+							@endforeach
+						@endforeach	
+					</tbody>
+				</table>
+				@else
+					<p align='center'>There are no tests in this Lab Section to display.</p>
+				@endif
+			</div>
 			<?php //echo $patients->links(); 
 			Session::put('SOURCE_URL', URL::full());?>
 		</div>
