@@ -23,7 +23,8 @@
 		case 'organism':
 			$active[4] = "active"; break;
 		case 'patientreport':
-		case 'departmentalreport': 
+		case 'departments_summary_report':
+		case 'departmentreport': 
 		case 'dailylog': 
 		case 'prevalence':
 		case 'surveillance':
@@ -218,6 +219,12 @@
 						<div><a href="{{ URL::route('reports.departments_summary')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.departments-summary-report')}}</a>
+						</div>
+					</li>
+					<li>
+						<div><a href="{{ URL::route('reports.department')}}">
+							<span class="glyphicon glyphicon-tag"></span>
+							{{trans('messages.departmental-report')}}</a>
 						</div>
 					</li>
 					<li>
