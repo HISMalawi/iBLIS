@@ -25,6 +25,7 @@
 		case 'patientreport':
 		case 'departments_summary_report':
 		case 'departmentreport': 
+		case 'tbreport': 
 		case 'dailylog': 
 		case 'prevalence':
 		case 'surveillance':
@@ -225,6 +226,12 @@
 						<div><a href="{{ URL::route('reports.department')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.departmental-report')}}</a>
+						</div>
+					</li>
+					<li>
+						<div><a href="{{ URL::route('reports.tb')}}">
+							<span class="glyphicon glyphicon-tag"></span>
+							{{trans('messages.tb-report')}}</a>
 						</div>
 					</li>
 					<li>

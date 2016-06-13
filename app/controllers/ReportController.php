@@ -3314,7 +3314,9 @@ class ReportController extends \BaseController {
 		}
 
 		$wards = array();
-		$distinct_wards = DB::select(DB::raw("SELECT DISTINCT(ward_or_location) as ward, visits.visit_type as visit_type FROM visits join tests	ON visits.id = tests.visit_id join test_types on test_types.id = tests.test_type_id WHERE test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m-%d') BETWEEN '$start_date' AND '$end_date';"));
+		$query_wards = "SELECT DISTINCT(ward_or_location) as ward, visits.visit_type as visit_type FROM visits join tests	ON visits.id = tests.visit_id join test_types on test_types.id = tests.test_type_id WHERE test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m-%d') BETWEEN '$start_date' AND '$end_date' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";
+		$distinct_wards = DB::select(DB::raw($query_wards));
+	
 		//$distinct_wards = DB::select(DB::raw("SELECT name FROM wards;"));
 
 		foreach ($distinct_wards as $ward) 
@@ -3332,6 +3334,8 @@ class ReportController extends \BaseController {
 
 		foreach ($period as $dt) 
         {
+        	//get the average turn around time
+        	
             $month_name = $dt->format('M');
             $year_month = $dt->format('Y-m');
 
@@ -3375,6 +3379,84 @@ class ReportController extends \BaseController {
         	->with('category_names', $category_names)
         	->with('period', $period)
         	->with('wards', $wards)
+        	->withInput(Input::all());
+	}
+
+	public function tb_report()
+	{
+		//get months
+		$default_year = date('Y');
+		$year = Input::get('year', $default_year);
+		$start_date = $year.'-01-01';
+		$end_date = $year.'-12-31';
+
+		$start    = (new DateTime($start_date))->modify('first day of this month');
+		$end      = (new DateTime($end_date))->modify('first day of next month');
+		$interval = DateInterval::createFromDateString('1 month');
+		$period   = new DatePeriod($start, $interval, $end);
+
+		//get years for select field in view
+		$years = array();
+		$test_years = DB::select(DB::raw("SELECT DISTINCT(YEAR(tests.time_created)) as year FROM tests join test_types on tests.test_type_id = test_types.id WHERE tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests')"));
+		foreach ($test_years as $test_year) 
+		{
+			$years[$test_year->year] = $test_year->year;
+		}
+
+		$count_micro_positives = array();
+		$count_micro_negatives = array();
+
+		$count_genex_positives = array();
+		$count_genex_negatives = array();
+
+		//count for each month
+		foreach($period as $dt)
+		{
+			$date = $dt->format('Y-m');
+			$month_name = $dt->format('F');
+			//count those with positive result in microscopy
+			$query = "SELECT count(*) as count FROM tests JOIN test_results ON tests.id = test_results.test_id JOIN measure_ranges  ON test_results.result = measure_ranges.alphanumeric WHERE measure_ranges.measure_id = (SELECT id FROM measures WHERE name = 'Smear microscopy result') AND tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests') AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$date' AND measure_ranges.interpretation = 'positive';";
+			
+				$positives = DB::select(DB::raw($query));
+				if(count($positives))
+				{
+					$count_micro_positives[$month_name] = $positives[0]->count;
+				}
+
+			//count those with negative result in microscopy
+			$query = "SELECT count(*) as count FROM tests JOIN test_results ON tests.id = test_results.test_id JOIN measure_ranges  ON test_results.result = measure_ranges.alphanumeric WHERE measure_ranges.measure_id = (SELECT id FROM measures WHERE name = 'Smear microscopy result') AND tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests') AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$date' AND measure_ranges.interpretation <> 'positive';";
+			$negatives = DB::select(DB::raw($query)); 
+			if(count($negatives))
+			{
+				$count_micro_negatives[$month_name] = $negatives[0]->count;
+			}
+
+			//count those with positives in gexpt
+			$query = "SELECT count(*) as count FROM tests JOIN test_results ON tests.id = test_results.test_id JOIN measure_ranges  ON test_results.result = measure_ranges.alphanumeric WHERE measure_ranges.measure_id = (SELECT id FROM measures WHERE name = 'Indication for GeneXpert Test') AND tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests') AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$date' AND measure_ranges.interpretation = 'positive';";
+				$positives_genex = DB::select(DB::raw($query)); 
+				if(count($positives_genex))
+				{
+					$count_genex_positives[$month_name] = $positives_genex[0]->count;
+				}
+				
+
+
+			//count those with negatives in gexpt
+			$query = "SELECT count(*) as count FROM tests JOIN test_results ON tests.id = test_results.test_id JOIN measure_ranges  ON test_results.result = measure_ranges.alphanumeric WHERE measure_ranges.measure_id = (SELECT id FROM measures WHERE name = 'Indication for GeneXpert Test') AND tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests') AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$date' AND measure_ranges.interpretation <> 'positive';";
+				$negatives_genex = DB::select(DB::raw($query)); 
+				if(count($negatives_genex))
+				{
+					$count_genex_negatives[$month_name] = $negatives_genex[0]->count;
+				}
+		}
+
+		return View::make('reports.tb.index')
+        	->with('years', $years)
+        	->with('microscopy_positives', $count_micro_positives)
+        	->with('microscopy_negatives', $count_micro_negatives)
+        	->with('genex_positives', $count_genex_positives)
+			->with('genex_negatives', $count_genex_negatives)
+        	->with('period', $period)
         	->withInput(Input::all());
 	}
 }

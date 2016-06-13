@@ -446,6 +446,7 @@ return array(
     'surveillance'    =>  'Surveillance',
     'request-origin'    =>  'Request origin',
     'laboratory'    =>  'Laboratory',
+    'tb-report' => 'TB Tests',
     'laboratory-statistics' => 'Laboratory Statistics',
     'tested'    =>  'Tested',
     'less-five'    =>  '< 5 Years',

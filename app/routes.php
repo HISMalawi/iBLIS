@@ -450,6 +450,11 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@department_report"
         ));
 
+        Route::match(['get', 'post'], "/tbreport", array(
+            "as"   => "reports.tb",
+            "uses" => "ReportController@tb_report"
+        ));
+
     });
     Route::group(array("before" => "checkPerms:manage_qc"), function()
     {

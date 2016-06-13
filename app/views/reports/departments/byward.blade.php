@@ -6,7 +6,7 @@
 		    position: absolute;
 		    display: inline-block;
 		    background-color: #F2F2F2;
-		    /*height:100%;*/
+		    height:100%;
 		    width: 150px!important;
 
 		}
@@ -15,13 +15,18 @@
 		    position: absolute;
 		    display: inline-block;
 		    background-color:#F2F2F2;
-		    /*height:100%;*/
+		    height:100%;
 		    width: 150px!important;
 		}
 		
 		.table> tbody > tr > td:nth-child(2)
 		{
-		    padding-left:50px !important;
+		    padding-left:80px !important;
+
+		}
+		.table> thead > tr > td:nth-child(2)
+		{
+		    padding-left:80px !important;
 
 		}
 
