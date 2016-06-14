@@ -52,11 +52,16 @@
 	@endif
 
 	<div class="panel panel-primary">
+		
 		<div class="panel-heading ">
 			<span class="glyphicon glyphicon-u"></span>
 			{{ trans('messages.laboratory-statistics')}}
 		</div>
 		<div class="panel-body">
+			@include("reportHeader")
+			<?php $from = isset($input['start'])?$input['start']:date('Y-m-d'); ?>
+			<?php $to = isset($input['end'])?$input['end']:date('Y-m-d'); ?>
+			<b>{{trans('messages.from').' '.$from.' '.trans('messages.to').' '.$to}}</b>
 			<table class="table table-striped table-hover table-condensed">
 				<tbody>
 					@foreach($categories as $category)

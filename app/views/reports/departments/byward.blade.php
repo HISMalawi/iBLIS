@@ -4,9 +4,9 @@
 		.table> tbody > tr > td:first-child
 		{
 		    position: absolute;
-		    display: inline-block;
+		    display: block;
 		    background-color: #F2F2F2;
-		    height:100%;
+		    /*height:100%;*/
 		    width: 150px!important;
 
 		}
@@ -15,18 +15,18 @@
 		    position: absolute;
 		    display: inline-block;
 		    background-color:#F2F2F2;
-		    height:100%;
+		    /*height:100%;8*/
 		    width: 150px!important;
 		}
 		
 		.table> tbody > tr > td:nth-child(2)
 		{
-		    padding-left:80px !important;
+		    padding-left:150px !important;
 
 		}
 		.table> thead > tr > td:nth-child(2)
 		{
-		    padding-left:80px !important;
+		    padding-left:150px !important;
 
 		}
 
@@ -88,7 +88,10 @@
 		</div>
 		<?php $wards = array_unique($wards);?>
 		<div class="panel-body">
-			<div class="table-responsive" style="width: 100%; overflow: auto;">
+			@include("reportHeader")
+			<b>{{'As of'.' '.date('d-m-Y')}}</b>
+			<hr>
+			<div class="table-responsive" style="width: 100%; overflow-x: scroll;">
 				@if(count($wards))
 				<table class="table table-striped table-hover table-condensed table-sm">
 					<thead>
@@ -105,23 +108,25 @@
 										<td align='center'><b>{{$ward}}</b></td>
 									@endforeach
 									<td align='center'><b>TOTAL</b></td>
+									<td><b>TAT</b></td>
 								</tr>
 							@foreach($category->testTypes as $test_type)
 								<tr>
 									<td>{{$test_type->name}}</td>
 									<?php $total = 0;?>
 									@foreach($wards as $ward)
-										<td align='center'>{{$data[$dt->format('M')][$test_type->name][$ward]}}</td>
-										<?php $total +=$data[$dt->format('M')][$test_type->name][$ward];?>
+										<td align='center'>{{$data[$test_type->name][$dt->format('M')][$ward]}}</td>
+										<?php $total +=$data[$test_type->name][$dt->format('M')][$ward];?>
 									@endforeach
 									<td align='center'><b>{{$total}}</b></td>
+									<td>{{$tat[$test_type->name][$dt->format('M')]}}</td>
 								</tr>
 							@endforeach
 						@endforeach	
 					</tbody>
 				</table>
 				@else
-					<p align='center'>There are no tests in this Lab Section to display.</p>
+					<p align='center'>There are no tests in the {{$category->name}} Lab Section to display.</p>
 				@endif
 			</div>
 			<?php //echo $patients->links(); 

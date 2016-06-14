@@ -3332,46 +3332,60 @@ class ReportController extends \BaseController {
 			array_push($wards, $location);
 		}
 
-		foreach ($period as $dt) 
-        {
-        	//get the average turn around time
-        	
-            $month_name = $dt->format('M');
-            $year_month = $dt->format('Y-m');
 
-			$test_types = $category->testTypes;
-			
-			foreach ($test_types as $test_type) 
-			{
-				$test_type_name = $test_type->name;
-				$test_type_id = $test_type->id;
-	            
+		$test_types = $category->testTypes;
+		$tat = array();
+		foreach ($test_types as $test_type) 
+		{
+			$test_type_name = $test_type->name;
+			$test_type_id = $test_type->id;
+			$test_ids = array();
+            
+			foreach ($period as $dt) 
+        	{
+        	
+            	$month_name = $dt->format('M');
+            	$year_month = $dt->format('Y-m');
+            	
+            	$turnaroundTime = 0;
+            	$number_of_tests = 0;
+
             	foreach($wards as $ward)
             	{
-            		$number = 0;
             		if($ward != 'Referral')
             		{
-						$query = "SELECT count(*) as number_per_ward, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.ward_or_location = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY ward;";
+						$query = "SELECT tests.id as test_id, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.ward_or_location = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";
 					}
 					else
 					{
-						$query = "SELECT count(*) as number_per_ward, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.visit_type = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";	
+						$query = "SELECT tests.id as test_id, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.visit_type = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";	
 					}
 					$test_per_ward = DB::select(DB::raw($query)); 
 					
-
-					if(count($test_per_ward) > 0)
+					$count = count($test_per_ward);
+					$number_of_tests += $count;
+					if($count)
 					{
-						$number = $test_per_ward[0]->number_per_ward;
-	            	}
+						
+						for($i=0; $i<$count; $i++)
+						{
+							$test = Test::find($test_per_ward[$i]->test_id);
+							$turnaroundTime += $test->getTurnaroundTime(); 
+						}
+					}
 
-	            	$data[$month_name][$test_type_name][$ward] = $number;
+	            	$data[$test_type_name][$month_name][$ward] = $count;
         		}
 
+        		if($number_of_tests != 0)
+        		{
+        			$turnaroundTime = $turnaroundTime/$number_of_tests;
+        		}
+        		$temp_test = new Test;
+        		$interval = $temp_test->getShortFormatTurnaroundTime($turnaroundTime);
+        		$tat[$test_type_name][$month_name] = $interval;
 			}
-			
 		}
-
         return View::make('reports.departments.byward')
         	->with('data', $data)
         	->with('years', $years)
@@ -3379,6 +3393,7 @@ class ReportController extends \BaseController {
         	->with('category_names', $category_names)
         	->with('period', $period)
         	->with('wards', $wards)
+        	->with('tat', $tat)
         	->withInput(Input::all());
 	}
 

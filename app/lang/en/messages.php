@@ -562,6 +562,16 @@ return array(
     'minute' => 'Minute|Minutes',
     'second' => 'Second|Seconds',
   
+  /** 
+     *   short Dates
+     */
+    'short-year' => 'yr|yrs',
+    'short-week' => 'wk|wks',
+    'short-day' => 'd|d',
+    'short-hour' => 'hr|hrs',
+    'short-minute' => 'min|mins',
+    'short-second' => 'sec|secs',
+  
     /** 
      *   Inventory
      */
