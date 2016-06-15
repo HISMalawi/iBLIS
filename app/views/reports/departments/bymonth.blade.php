@@ -59,8 +59,8 @@
 		</div>
 		<div class="panel-body">
 			@include("reportHeader")
-			<?php $from = isset($input['start'])?$input['start']:date('Y-m-d'); ?>
-			<?php $to = isset($input['end'])?$input['end']:date('Y-m-d'); ?>
+			<?php $from = isset($input['start'])?$input['start']:date('d-m-Y'); ?>
+			<?php $to = isset($input['end'])?$input['end']:date('d-m-Y'); ?>
 			<b>{{trans('messages.from').' '.$from.' '.trans('messages.to').' '.$to}}</b>
 			<table class="table table-striped table-hover table-condensed">
 				<tbody>

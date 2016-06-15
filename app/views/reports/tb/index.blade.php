@@ -48,6 +48,8 @@
 			{{trans('messages.tb-report')}}
 		</div>
 		<div class="panel-body">
+			@include("reportHeader")
+			<b>{{'As of'.' '.date('d-m-Y')}}</b>
 			<div class="table-responsive" style="width: 100%; overflow: auto;">
 				@if(count($years))
 				<table class="table table-striped table-hover table-condensed table-sm">
