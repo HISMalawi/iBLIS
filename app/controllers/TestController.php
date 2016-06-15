@@ -602,11 +602,21 @@ P1
 
 							foreach ($panelTests AS $tType) {
 
-								$duplicateCheck = DB::select("SELECT * FROM tests
+								$countduplicates;
+								$testype_name = TestType::find($testTypeID)->name;
+								if($testype_name == 'Cross-match')
+								{
+									$countduplicates = 0;
+								}
+								else
+								{
+									$duplicateCheck = DB::select("SELECT * FROM tests
 											WHERE test_type_id = ".$tType->test_type_id
 									." AND specimen_id = ".$specimen->id);
+									$countduplicates = count($duplicateCheck);
+								}
 
-								if(count($duplicateCheck) == 0) {
+								if($countduplicates == 0) {
 									$test = new Test;
 									$test->visit_id = $visit->id;
 									$test->test_type_id = $tType->test_type_id;
@@ -624,10 +634,20 @@ P1
 
 					}else {
 
-						$duplicateCheck = DB::select("SELECT * FROM tests
+						$countduplicates;
+						$testype_name = TestType::find($testTypeID)->name;
+						if($testype_name == 'Cross-match')
+						{
+							$countduplicates = 0;
+						}
+						else
+						{
+							$duplicateCheck = DB::select("SELECT * FROM tests
 											WHERE test_type_id = $testTypeID AND specimen_id = ".$specimen->id);
+							$countduplicates = count($duplicateCheck);
+						}
 
-						if(count($duplicateCheck) == 0) {
+						if($countduplicates == 0) {
 							$test = new Test;
 							$test->visit_id = $visit->id;
 							$test->test_type_id = $testTypeID;
