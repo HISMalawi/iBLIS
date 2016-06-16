@@ -1139,8 +1139,8 @@ P3
 			Event::fire('test.verified', array($id));
 		}
 
-		//return View::make('test.viewDetails')->with('test', $test)->with('hideVerifyButton', true);
-		return Redirect::route('test.index');
+		return View::make('test.viewDetails')->with('test', $test)->with('hideVerifyButton', true);
+		//return Redirect::route('test.index');
 	}
 
 	/**
