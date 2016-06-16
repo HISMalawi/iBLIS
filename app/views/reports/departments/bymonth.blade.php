@@ -54,7 +54,7 @@
 	<div class="panel panel-primary">
 		
 		<div class="panel-heading ">
-			<span class="glyphicon glyphicon-u"></span>
+			<span class="glyphicon glyphicon-user"></span>
 			{{ trans('messages.laboratory-statistics')}}
 		</div>
 		<div class="panel-body">
