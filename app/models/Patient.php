@@ -37,7 +37,7 @@ class Patient extends Eloquent
 	 * @param optional Timestamp - age as at this date
 	 * @return String x years y months
 	 */
-	public function getAge($format = "YYMM", $at = NULL)
+	public function getAge($format = "YY/MM", $at = NULL)
 	{
 		if(!$at)$at = new DateTime('now');
 
@@ -48,19 +48,29 @@ class Patient extends Eloquent
 
 		switch ($format) {
 			case 'Y':
-				$age = $interval->y;break;
+				//$age = $interval->y;break;
 			case 'YY':
-				$age = $interval->y ." years ";break;
+				//$age = $interval->y ." years ";break;
 			case 'YY/MM':
-				if((int)$interval->y >= 5) {
+				if((int)$interval->y >= 1) {
 					$age = $interval->y . " years ";
 				}else{
-					$age = $interval->m ." months";
+					if((int)$interval->m > 0)
+					{
+						$age = $interval->m ." months ";
+						$age .= $interval->d ." days";
+					}
+					else
+					{
+						$age = $interval->d ." days";
+					}
 				}
 				break;
 			default:
-				$age = ($interval->y > 0)?$interval->y ." years ":"";
+				$age = ($interval->y > 0)?$interval->y .trans('messages.year'):"";
 				$age .= ($interval->m > 0)?$interval->m ." months":"";
+				//$age .= ($interval->m > 0)?$interval->d ." days":"";
+			
 				break;
 		}
 

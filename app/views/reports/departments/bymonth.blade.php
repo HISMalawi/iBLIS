@@ -54,14 +54,17 @@
 	<div class="panel panel-primary">
 		
 		<div class="panel-heading ">
-			<span class="glyphicon glyphicon-u"></span>
+			<span class="glyphicon glyphicon-user"></span>
 			{{ trans('messages.laboratory-statistics')}}
 		</div>
 		<div class="panel-body">
 			@include("reportHeader")
 			<?php $from = isset($input['start'])?$input['start']:date('d-m-Y'); ?>
-			<?php $to = isset($input['end'])?$input['end']:date('d-m-Y'); ?>
-			<b>{{trans('messages.from').' '.$from.' '.trans('messages.to').' '.$to}}</b>
+			<?php $to = isset($input['end'])?$input['end']:date('d-m-Y');
+				$to = new Datetime($to);
+				$from = new Datetime($from);
+				 ?>
+			<b>{{trans('messages.from').' '.$from->format('F, Y').' '.trans('messages.to').' '.$to->format('F, Y')}}</b>
 			<table class="table table-striped table-hover table-condensed">
 				<tbody>
 					@foreach($categories as $category)
@@ -84,8 +87,8 @@
 									<?php $total = 0;?>
 									@foreach($period as $month)
 										<td align='center'>
-											{{$data[$category->name][$test_type->name][$month->format('M')]}}
-											<?php $total += $data[$category->name][$test_type->name][$month->format('M')];?>
+											{{$data[$category->name][$test_type->name][$month->format('Y-m')]}}
+											<?php $total += $data[$category->name][$test_type->name][$month->format('Y-m')];?>
 										</td>
 									@endforeach
 									<td align='center'>{{$total}}</td>
