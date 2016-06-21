@@ -3618,6 +3618,8 @@ class ReportController extends \BaseController {
 								{
 									$critical_values[$measure->name][$ward]['high'] = 0;
 									$critical_values[$measure->name][$ward]['low'] = 0;
+									array_push($wards, $ward);
+									array_push($critical_measures, $measure->name);
 								}
 							}
 						}

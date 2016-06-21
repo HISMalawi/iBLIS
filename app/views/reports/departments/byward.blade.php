@@ -139,6 +139,7 @@
 				<!--table for critical values-->
 				@if(count($critical_wards))
 				<?php $critical_wards = array_unique($critical_wards)?>
+				<?php $critical_measures = array_unique($critical_measures)?>
 				<table class="table table-striped table-hover table-condensed table-sm">
 					<thead>
 						<tr>
