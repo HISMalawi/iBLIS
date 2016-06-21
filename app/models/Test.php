@@ -324,7 +324,7 @@ class Test extends Eloquent
 		if($tat_d > 0) $ftat .= $tat_d." ".Lang::choice('messages.short-day',$tat_d)." ";
 		if($tat_h > 0) $ftat .= $tat_h." ".Lang::choice('messages.short-hour',$tat_h)." ";
 		if($tat_m > 0) $ftat .= $tat_m." ".Lang::choice('messages.short-minute',$tat_m)." ";
-		//if($tat_s > 0) $ftat .= $tat_s." ".Lang::choice('messages.short-second',$tat_s);
+		if($tat_s > 0 && $tat_m < 1) $ftat .= $tat_s." ".Lang::choice('messages.short-second',$tat_s);
 
 		return $ftat;
 	}

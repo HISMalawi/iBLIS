@@ -9,6 +9,7 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+Route::get('/critical/{id}', array('uses' => 'ReportController@critical_values'));
 /* Routes accessible before logging in */
 Route::group(array("before" => "guest"), function()
 {

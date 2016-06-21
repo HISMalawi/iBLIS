@@ -570,7 +570,7 @@ return array(
     'short-day' => 'd|d',
     'short-hour' => 'hr|hrs',
     'short-minute' => 'min|mins',
-    'short-second' => 'sec|secs',
+    'short-second' => 'sec|sec',
   
     /** 
      *   Inventory

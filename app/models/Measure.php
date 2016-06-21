@@ -36,6 +36,14 @@ class Measure extends Eloquent
 	}
 
 	/**
+	 * Measure Range relationship
+	 */
+	public function testResults()
+	{
+	  return $this->hasMany('TestResult');
+	}
+
+	/**
 	 * Measure Type relationship
 	 */
 	public function measureType()
