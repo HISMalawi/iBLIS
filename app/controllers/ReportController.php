@@ -3286,22 +3286,22 @@ class ReportController extends \BaseController {
 
 		$lab_section_id = Input::get('lab_section', $default_lab_section_id);
 
+		$year = Input::get('year', $default_year);
+		$start_date = $year.'-01-01';
+		$end_date = $year.'-12-31';
+
 		//get rejected specimens
-		$rejected_with_wards = $this->rejected_specimens($lab_section_id);
+		$rejected_with_wards = $this->rejected_specimens($lab_section_id, $year);
 		$rejected_specimens = $rejected_with_wards['rejected'];
 		$rejected_wards = $rejected_with_wards['wards'];
 		$rejection_reasons = $rejected_with_wards['reasons'];
 
 		//get critical values
-		$critical_with_wards = $this->critical_values($lab_section_id);
+		$critical_with_wards = $this->critical_values($lab_section_id, $year);
 		$critical_values = $critical_with_wards['critical_values'];
 		$critical_measures = $critical_with_wards['critical_measures'];
 		$critical_wards = $critical_with_wards['wards'];
 
-
-		$year = Input::get('year', $default_year);
-		$start_date = $year.'-01-01';
-		$end_date = $year.'-12-31';
 
 		$start    = (new DateTime($start_date))->modify('first day of this month');
 		$end      = (new DateTime($end_date))->modify('first day of next month');
@@ -3494,131 +3494,134 @@ class ReportController extends \BaseController {
         	->withInput(Input::all());
 	}
 
-	public function rejected_specimens($category_id)
+	public function rejected_specimens($category_id, $year)
 	{
 		$rejected_counts = array();
 		$wards = array();
 		$checked = array();
 		$reasons = array();
-		$category = TestCategory::find($category_id);
-		if($category)
+		
+		//get all rejected specimen of a category
+		$query = "SELECT specimens.* FROM specimens join tests on specimens.id = tests.specimen_id join test_types on tests.test_type_id = test_types.id join test_categories on test_types.test_category_id = test_categories.id where test_categories.id = '$category_id' and specimens.time_rejected is not null and YEAR(tests.time_created) = '$year';";
+
+		$rejected_specimens = DB::select(DB::raw($query));
+		foreach ($rejected_specimens as $rejected_specimen) 
 		{
-			$test_types = $category->testTypes;
-			foreach($test_types as $test_type)
-			{
-				$tests = $test_type->tests;
-				
-				foreach($tests as $test)
-				{
-					$specimen_id = $test->specimen_id;
+         	$test = Specimen::find($rejected_specimen->id)->test;
+         	$ward = $test->visit->ward_or_location;
+     		$reason_name = RejectionReason::find($rejected_specimen->rejection_reason_id)->reason;
 
-					$rejects = DB::table('specimens')->select('id', 'rejection_reason_id')->whereRaw("time_rejected IS NOT NULL AND id = $specimen_id")->get();
-					
-					if(count($rejects))
-					{
-		                foreach($rejects as $reject)
-		                {
-		                 	$ward = $test->visit->ward_or_location;
-	                 		$reason_name = RejectionReason::find($reject->rejection_reason_id)->reason;
-
-	                 		if(!in_array($reject->id, $checked))
-	                 		{
-		                 		if(!isset($rejected_counts[$reason_name][$ward]))
-		                 		{
-		                 			$rejected_counts[$reason_name][$ward] = 1;
-		                 			array_push($wards, $ward);
-		                 			array_push($reasons, $reason_name);
-		                 		}
-		                 		else
-		                 		{
-		                 			$rejected_counts[$reason_name][$ward] += 1;
-		                 			array_push($wards, $ward);
-		                 			array_push($reasons, $reason_name);
-		                 		}
-	                 		}
-	                 		array_push($checked, $reject->id);
-	             		}
-             		}
-             	}
-			}
+     		if(!in_array($rejected_specimen->id, $checked))
+     		{
+         		if(!isset($rejected_counts[$reason_name][$ward]))
+         		{
+         			$rejected_counts[$reason_name][$ward] = 1;
+         			array_push($wards, $ward);
+         			array_push($reasons, $reason_name);
+         		}
+         		else
+         		{
+         			$rejected_counts[$reason_name][$ward] += 1;
+         			array_push($wards, $ward);
+         			array_push($reasons, $reason_name);
+         		}
+     		}
+     		array_push($checked, $rejected_specimen->id);
 		}
+		$wards = array_unique($wards);
+		$reasons = array_unique($reasons);
 		return ['rejected' => $rejected_counts, 'wards' => $wards, 'reasons' => $reasons];
 	}
 
-	public function critical_values($category_id)
+
+	public function critical_values($category_id, $year)
 	{
 		$critical_values = array();
 		$critical_measures = array();
-		$wards = array();
-		$category = TestCategory::find($category_id);
-		if($category)
+		$critical_wards = array();
+		//$category = TestCategory::find($category_id);
+
+
+		//get all test results of a category
+		$query = "SELECT test_results.* FROM test_results join tests on test_results.test_id = tests.id join test_types on tests.test_type_id = test_types.id join test_categories on test_types.test_category_id = test_categories.id where test_categories.id = '$category_id' and YEAR(tests.time_created) = '$year';";
+
+		$results = DB::select(DB::raw($query));
+
+		foreach($results as $result)
 		{
-			$test_types = $category->testTypes;
-			foreach($test_types as $test_type)
+			$measure_id = $result->measure_id;
+			
+			$measure = Measure::find($measure_id);
+			if($measure->isNumeric())
 			{
-				$tests = $test_type->tests;
-				foreach($tests as $test)
+				$test = Test::find($result->test_id);
+				if($test)
 				{
-					$patient = $test->visit->patient;
+					$test_result = $result->result;
 					$ward = $test->visit->ward_or_location;
-					$measures = $test_type->measures;
-					foreach($measures as $measure)
+					$patient = $test->visit->patient;
+
+
+					$range_string = $measure->getRange($patient, $measure->id);
+					$position = strpos($range_string, '-');
+					$lower_limit = substr($range_string, 1, ($position - 2));
+					$upper_limit = substr($range_string, ($position + 2));
+					$upper_limit = substr($upper_limit, 0, strlen($upper_limit) - 1);
+
+					list($numeric, $alpha) = sscanf($test_result, "%[0-9]%[A-Za-z]");
+					if(is_numeric($numeric))
 					{
-						if($measure->isNumeric())
+						if($numeric < $lower_limit)
 						{
-							$range_string = $measure->getRange($patient, $measure->id);
-							$position = strpos($range_string, '-');
-							$lower_limit = substr($range_string, 1, ($position - 2));
-							$upper_limit = substr($range_string, ($position + 2));
-							$upper_limit = substr($upper_limit, 0, strlen($upper_limit) - 1);
-
-							//echo $test->id;
-							//echo $test->test_type->name;
-
-							$result = TestResult::where('test_id', '=', $test->id)->where('measure_id', '=', $measure->id)->first();
-							if($result)
+							if(isset($critical_values[$measure->name][$ward]['low']))
 							{
-								if($result->result < $lower_limit)
-								{
-									if(isset($critical_values[$measure->name][$ward]['low']))
-									{
-										$critical_values[$measure->name][$ward]['low'] += 1;
-										$critical_values[$measure->name][$ward]['high'] = 0;
-										array_push($wards, $ward);
-										array_push($critical_measures, $measure->name);
-									}
-									else
-									{
-										$critical_values[$measure->name][$ward]['low'] = 1;
-										$critical_values[$measure->name][$ward]['high'] = 0;
-										array_push($wards, $ward);
-
-										array_push($critical_measures, $measure->name);
-									}
-								}
-								elseif($result->result > $upper_limit)
-								{
-									if(isset($critical_values[$measure->name][$ward]['high']))
-									{
-										$critical_values[$measure->name][$ward]['high'] += 1;
-										$critical_values[$measure->name][$ward]['low'] = 0;
-										array_push($wards, $ward);
-										array_push($critical_measures, $measure->name);
-									}
-									else
-									{
-										$critical_values[$measure->name][$ward]['high'] = 1;
-										$critical_values[$measure->name][$ward]['low'] = 0;
-
-										array_push($wards, $ward);
-										array_push($critical_measures, $measure->name);
-									}
-								}
-								else
+								$critical_values[$measure->name][$ward]['low'] += 1;
+								if(!isset($critical_values[$measure->name][$ward]['high']))
 								{
 									$critical_values[$measure->name][$ward]['high'] = 0;
+								}
+							}
+							else
+							{
+								$critical_values[$measure->name][$ward]['low'] = 1;
+								if(!isset($critical_values[$measure->name][$ward]['high']))
+								{
+									$critical_values[$measure->name][$ward]['high'] = 0;
+								}
+								if(!in_array($ward, $critical_wards))
+								{
+									array_push($critical_wards, $ward);
+								}
+								if(!in_array($measure->name, $critical_measures))
+								{
+									array_push($critical_measures, $measure->name);
+								}
+							}
+						}
+						elseif($numeric > $upper_limit)
+						{
+							if(isset($critical_values[$measure->name][$ward]['high']))
+							{
+								$critical_values[$measure->name][$ward]['high'] += 1;
+								if(!isset($critical_values[$measure->name][$ward]['low']))
+								{
 									$critical_values[$measure->name][$ward]['low'] = 0;
-									array_push($wards, $ward);
+								}
+								
+							}
+							else
+							{
+								$critical_values[$measure->name][$ward]['high'] = 1;
+								if(!isset($critical_values[$measure->name][$ward]['low']))
+								{
+									$critical_values[$measure->name][$ward]['low'] = 0;
+								}
+								if(!in_array($ward, $critical_wards))
+								{
+									array_push($critical_wards, $ward);
+								}
+								if(!in_array($measure->name, $critical_measures))
+								{
 									array_push($critical_measures, $measure->name);
 								}
 							}
@@ -3626,7 +3629,8 @@ class ReportController extends \BaseController {
 					}
 				}
 			}
+
 		}
-		return ['critical_values' => $critical_values, 'critical_measures' => $critical_measures, 'wards' =>$wards];
+		return ['critical_values' => $critical_values, 'critical_measures' => $critical_measures, 'wards' =>$critical_wards];	
 	}
 }

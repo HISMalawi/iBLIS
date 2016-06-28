@@ -8,7 +8,8 @@
 		    background-color: #F2F2F2;
 		    /*height:100%;*/
 		    width: 170px!important;
-		    overflow: hidden;
+		    border: 0px!important;
+		
 
 		}
 				.datatable>thead:first-child>tr:first-child>td:first-child
@@ -18,22 +19,32 @@
 		    background-color:#F2F2F2;
 		    /*height:100%;8*/
 		    width: 170px!important;
-		    overflow: hidden;
+		
+		}
+
+		.datatable>thead>tr:last-child>td:last-child
+		{
+		    width: 170px!important;
+		}
+		.datatable>tbody>tr:last-child>td:last-child
+		{
+		    width: 170px!important;
 		}
 		
 		.datatable> tbody > tr > td:nth-child(2)
 		{
 		    padding-left:170px !important;
-		    overflow: hidden;
+
 
 		}
 		.datatable> thead > tr > td:nth-child(2)
 		{
 		    padding-left:170px !important;
-		    overflow: hidden;
+
 
 		}
 
+		
 	</style>
 	<div>
 		<ol class="breadcrumb">
@@ -97,7 +108,7 @@
 			<hr>
 			<div class="table-responsive" style="width: 100%; overflow-x: scroll;">
 				@if(count($wards))
-				<table class="datatable table table-striped table-hover table-condensed table-sm">
+				<table class="datatable table table-striped table-hover table-condensed">
 					<thead>
 						<tr>
 							<td><b>TESTS</b></td><td align='center' colspan="{{count($wards)}}"><b>WARDS</b></td>
@@ -112,11 +123,11 @@
 										<td align='center'><b>{{$ward}}</b></td>
 									@endforeach
 									<td align='center'><b>TOTAL</b></td>
-									<td><b>Ave. TAT</b></td>
+									<td><b>AvgTurnAroundTime</b></td>
 								</tr>
 							@foreach($category->testTypes as $test_type)
 								<tr>
-									<td style="word-wrap: break-word">{{$test_type->name}}</td>
+									<td>{{$test_type->name}}</td>
 									<?php $total = 0;?>
 									@foreach($wards as $ward)
 										<td align='center'>{{$data[$test_type->name][$dt->format('M')][$ward]}}</td>
@@ -129,68 +140,74 @@
 						@endforeach	
 					</tbody>
 				</table>
-
-				
+			
+			
 
 				@else
 					<p align='center'>There are no tests in the {{$category->name}} Lab Section to display.</p>
 				@endif
+			</div>
+			<br>
+				
+			<!--table for critical values-->
+			@if(count($critical_wards))
+				<p align='center'><b>CRITICAL VALUES</b></p>
+				<div class="table-responsive" style="width: 100%; overflow-x: scroll;">
+					
+					<table class="datatable table table-striped table-hover table-condensed table-sm">
+						
+							<tr>
+								<td>&nbsp;</td>
+								@foreach($critical_wards as $critical_ward)
+									<td align='center'><b>{{$critical_ward}}</b></td>
+								@endforeach
+								<td align='center'><b>TOTAL</b></td>
+							</tr>
+						</thead>
+						<tbody>
+						
+							@foreach($critical_measures as $critical_measure)
 
-				<!--table for critical values-->
-				@if(count($critical_wards))
-				<?php $critical_wards = array_unique($critical_wards)?>
-				<?php $critical_measures = array_unique($critical_measures)?>
-				<table class="table table-striped table-hover table-condensed table-sm">
-					<thead>
-						<tr>
-							<td align='center' colspan="{{count($critical_wards)+2}}"><b>CRITICAL VALUES</b></td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							@foreach($critical_wards as $critical_ward)
-								<td align='center'><b>{{$critical_ward}}</b></td>
+								<tr>
+									<td>
+										<b>{{$critical_measure}}</b>
+									</td>
+									<td colspan="{{count($critical_wards)+1}}">&nbsp;</td>
+								</tr>
+								<tr>
+									<td>- High</td>
+									<?php 
+										$total_high = 0;
+										$total_low = 0;
+									?>
+									@foreach($critical_wards as $critical_ward)
+										<td align='center'>{{isset($critical_values[$critical_measure][$critical_ward]['high'])?$critical_values[$critical_measure][$critical_ward]['high']:0}}</td>
+										<?php if(isset($critical_values[$critical_measure][$critical_ward]['high'])){ $total_high += $critical_values[$critical_measure][$critical_ward]['high'];}?>
+									@endforeach
+									<td align='center'><b>{{$total_high}}</b></td>
+								</tr>
+								<tr>
+									<td>- Low</td>
+									@foreach($critical_wards as $critical_ward)
+										<td align='center'>{{isset($critical_values[$critical_measure][$critical_ward]['low'])?$critical_values[$critical_measure][$critical_ward]['low']:0}}</td>
+										<?php if(isset($critical_values[$critical_measure][$critical_ward]['low'])){ $total_low += $critical_values[$critical_measure][$critical_ward]['low'];}?>
+									@endforeach
+									<td align='center'><b>{{$total_low}}</b></td>
+								</tr>
 							@endforeach
-							<td align='center'><b>TOTAL</b></td>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach($critical_measures as $critical_measure)
-							<tr>
-								<td  colspan="{{count($critical_wards)+2}}"><b>{{$critical_measure}}</b></td>
-							</tr>
-							<tr>
-								<td>- High</td>
-								<?php 
-									$total_high = 0;
-									$total_low = 0;
-								?>
-								@foreach($critical_wards as $critical_ward)
-									<td align='center'>{{$critical_values[$critical_measure][$critical_ward]['high']}}</td>
-									<?php $total_high += $critical_values[$critical_measure][$critical_ward]['high'];?>
-								@endforeach
-								<td align='center'><b>{{$total_high}}</b></td>
-							</tr>
-							<tr>
-								<td>- Low</td>
-								@foreach($critical_wards as $critical_ward)
-									<td align='center'>{{$critical_values[$critical_measure][$critical_ward]['low']}}</td>
-									<?php $total_low += $critical_values[$critical_measure][$critical_ward]['low'];?>
-								@endforeach
-								<td align='center'><b>{{$total_low}}</b></td>
-							</tr>
-						@endforeach
-					</tbody>	
-				</table>
-				@endif
-				<!--end table for critical values-->
-
-				<!--table for rejected samples-->
-				@if(count($rejected_wards))
+						</tbody>	
+					</table>
+				</div>
+			@endif
+			<!--end table for critical values-->
+			
+			<br>
+			<!--table for rejected samples-->
+			@if(count($rejected_wards))
+				<p align='center'><b>REJECTED SAMPLES</b></p>
+				<div class="table-responsive" style="width: 100%; overflow-x: scroll;">	
 					<table class="table table-striped table-hover table-condensed table-sm">
 						<thead>
-							<tr>
-								<td align='center' colspan='{{count($rejected_wards)+2}}'><b>REJECTED SAMPLES</b></td>
-							</tr>
 							<tr>
 								<td>&nbsp;</td>
 								@foreach($rejected_wards as $rejected_ward)
@@ -200,22 +217,24 @@
 							</tr>
 						</thead>
 						<tbody>
-							<?php $total = 0;?>
+							
 							@foreach($rejection_reasons as $rejection_reason)
+							<?php $total = 0;?>
 								<tr>
 									<td><b>{{$rejection_reason}}</b></td>
 									@foreach($rejected_wards as $rejected_ward)
-										<td align='center'>{{$rejected_specimens[$rejection_reason][$rejected_ward]}}</td>
-										<?php $total += $rejected_specimens[$rejection_reason][$rejected_ward]; ?>
+										<td align='center'>{{isset($rejected_specimens[$rejection_reason][$rejected_ward])?$rejected_specimens[$rejection_reason][$rejected_ward]:0}}</td>
+										<?php if(isset($rejected_specimens[$rejection_reason][$rejected_ward])){$total += $rejected_specimens[$rejection_reason][$rejected_ward];} ?>
 									@endforeach
 									<td align='center'><b>{{$total}}</b></td>
 								</tr>
 							@endforeach
 						</tbody>
 					</table>
-				@endif
+				</div>
+			@endif
 				<!--end of table for rejected samples-->
-			</div>
+
 			<?php //echo $patients->links(); 
 			Session::put('SOURCE_URL', URL::full());?>
 		</div>
