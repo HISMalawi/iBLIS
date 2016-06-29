@@ -261,6 +261,8 @@
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
 												@endif
 											</p>
+										@else
+											Not done
 										@endif
 									@endforeach
 								@else
@@ -283,16 +285,16 @@
 													</td>
 													<td>
 														@if(!empty($result->result))
-														<?php $organism_names = ''?>
-														{{ $result->result }}
-														@if(count($test->susceptibility)>0 && $result->result == "Growth")
-															@foreach($test->organisms() AS $og)
-																<?php
-																	$organism_name = Organism::find($og['organism_id'])->name;
-																	$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;																?>
-															@endforeach
-															 of {{$organism_names ? $organism_names : '---'}}
-														@endif
+															<?php $organism_names = ''?>
+															{{ $result->result }}
+															@if(count($test->susceptibility)>0 && $result->result == "Growth")
+																@foreach($test->organisms() AS $og)
+																	<?php
+																		$organism_name = Organism::find($og['organism_id'])->name;
+																		$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;																?>
+																@endforeach
+															 	of {{$organism_names ? $organism_names : '---'}}
+															@endif
 														{{ Measure::find($result->measure_id)->unit }}
 
 															<?php
@@ -300,9 +302,9 @@
 																$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
 															?>
 
-															@if($measureRng && $test->testType->instruments->count() > 0)
+															@if($measureRng)
 																<td>
-																	<i><b>{{$measureRng}}</b></i>
+																	{{$measureRng}}
 																</td>
 															@else
 																<td>
@@ -312,7 +314,7 @@
 															@endif
 														@else
 															Not done
-															<td><i><b>{{Measure::find($result->measure_id)->getRange($test->visit->patient, $result->measure_id)}}</b></i></td>
+															<td>{{!empty(Measure::find($result->measure_id)->getRange($test->visit->patient, $result->measure_id))?Measure::find($result->measure_id)->getRange($test->visit->patient, $result->measure_id) : 'No Range'}}</td>
 														@endif
 
 													</td>
