@@ -9,6 +9,11 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+ Route::post('/print/{id}', array(
+        "as" => "print",
+        "uses" => "ReportController@printPatientReport"
+    ));
+
 /* Routes accessible before logging in */
 Route::group(array("before" => "guest"), function()
 {

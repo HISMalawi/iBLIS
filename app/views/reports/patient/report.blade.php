@@ -444,7 +444,7 @@
         </span>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
-					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn" onclick="unsetValue();" data-dismiss="modal">Cancel</button>
 				</div>
 			</div>
 		</div>

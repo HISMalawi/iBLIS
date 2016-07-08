@@ -12,7 +12,7 @@
 	<div class='container-fluid'>
 		<div class='row'>
 			<div class='col-lg-12'>
-				{{ Form::open(array('route' => array('reports.tb'), 'class' => 'form-inline', 'role' => 'form', 'method' => 'POST', 'style' => 'display:inline')) }}
+				{{ Form::open(array('route' => array('reports.tb'), 'class' => 'form-inline', 'role' => 'form', 'id' => 'form-patientreport-filter', 'method' => 'POST', 'style' => 'display:inline')) }}
 					<div class='row'>
 						<div class="col-sm-3">
 					    	<div class="row">
@@ -23,14 +23,23 @@
 								    {{ Form::select('year', $years, isset($input['year'])?$input['year']:date('Y'), 
 							                array('class' => 'form-control')) }}
 						        </div>
+						        
 							</div>
 						</div>
-						
-						<div class="col-sm-2">
-						  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
-				                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
-				        </div>
+						<div class="col-sm-5">
+							<div class="row">
+								<div class="col-sm-2">
+								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
+						                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
+						        </div>
+						        <div class="col-sm-1">
+						       		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success', 'onclick' => "selectPrinter();")) }}
+						    	</div>
+						    </div>
+						</div>
 					</div>
+					{{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+
 				{{ Form::close() }}
 			</div>
 		</div>
@@ -124,4 +133,38 @@
 			Session::put('SOURCE_URL', URL::full());?>
 		</div>
 	</div>
+<!--PRINT SELECT PRINTER POPUP BEGIN -->
+<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel" style="text-align: left;">
+					Select Printer
+				</h4>
+			</div>
+			<div class="modal-body">
+        <span style="text-align:center;">
+          <table align="center" id="printers">
+			   @foreach($available_printers AS $printer)
+			  <tr onmousedown="updateValue(this)" value="{{$printer}}">
+				  <td><input type="radio" class="printer_radio_button" value="{{$printer}}" name="printer_name"/></td>
+				  <td style="text-align: left; padding-left:50px;">{{$printer}}</td>
+			  </tr>
+			  @endforeach
+		  </table>
+        </span>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
+					<button type="button" class="btn" onclick="unsetValue();" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--SELECT PRINTER POPUP END -->
+
 @stop
+

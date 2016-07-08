@@ -23,10 +23,23 @@ class ReportController extends \BaseController {
 		return View::make('reports.patient.index')->with('patients', $patients)->withInput(Input::all());
 	}
 
-	public function printReport($id, $visit){
+	/*public function printReport($id, $visit){
 
 		dd($id);
+	}*/
+
+	public function printPatientReport($id, $visit = null)
+	{
+		//get the html
+		$html = $this->viewPatientReport($id, $visit = null)->render();
+		echo $html;
+
+		 return Redirect::back()->withInput();
+
+		
 	}
+
+
 	/**
 	 * Display data after applying the filters on the report uses patient ID
 	 *
@@ -112,23 +125,28 @@ class ReportController extends \BaseController {
 
 		$view_url = "reports.patient.report";
 
-		if(Input::has('pdf')){
-			if(!Input::has('page')){
-				$url = Request::url()."?pdf=true&page=true";
-				$fileName = "patientreport".$id."_".$date.".pdf";
-				$printer = Input::get("printer_name");
+		if(!empty(Input::get('printer_name')))
+		{
 
-				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileName");
-				$process->run();
+			$fileName = "/var/www/html/patientreport".$id."_".$date.".pdf";
+			$printer = Input::get("printer_name");
 
-				$process = new Process("lp -d $printer $fileName");
-				$process->run();
+			$myhtml = View::make('reports.patient.export')
+		    ->with('patient', $patient)
+			->with('tests', $tests)
+			->with('data', $data)
+			->with('pending', $pending)
+			->with('error', $error)
+			->with('visit', $visitId)
+			->with('accredited', $accredited)
+			->with('verified', $verified)->render();
 
-				$process = new Process("rm $fileName && rm patientreport*.pdf");
-				$process->run();
-			}else{
-				$view_url = "reports.patient.export";
-			}
+			$tempfile = fopen("/var/www/html/temp.html", "w");
+			fwrite($tempfile, $myhtml);
+			fclose($tempfile);
+
+			$this->printReport($fileName, $printer);
+			
 		}
 
 		return View::make($view_url)
@@ -140,10 +158,96 @@ class ReportController extends \BaseController {
 			->with('visit', $visitId)
 			->with('accredited', $accredited)
 			->with('verified', $verified)
-			->with('available_printers', Config::get('kblis.A4_printers'))
+			->with('available_printers', $this->getPrinters())
 			->withInput(Input::all());
 	}
 	//	End patient report functions
+
+	/**
+	*	Function to return an array of printers from cups command line commands
+	*/
+	public function getPrinters()
+	{
+			exec('lpq', $printers);
+			array_pop($printers);
+			$count = count($printers);
+
+			for($i=0; $i<$count; $i++)
+			{
+				$printer = $printers[$i];
+
+				$printers[$i] = explode(' ',trim($printer))[0];
+			}
+
+			return $printers;
+	}
+
+	/**
+	*	Function to print report
+	*/
+	public function printReport($fileName, $printer, $layout=null)
+	{
+		try 
+		{
+			$process = '';
+			if($layout != null)
+			{
+				$process = new Process("xvfb-run -a wkhtmltopdf -O landscape /var/www/html/temp.html $fileName");
+			}
+			else
+			{
+				$process = new Process("xvfb-run -a wkhtmltopdf /var/www/html/temp.html $fileName");	
+			}
+			$process->run();
+
+
+			$message = 'Could not send file for printing';
+			if(file_exists($fileName))
+			{
+				if($layout != null)
+				{
+					system("lp -d -o landscape -o fit-to-page $printer $fileName");
+				}
+				else
+				{
+					system("lp -d $printer $fileName");
+				}
+	    		sleep(6);
+			
+				//unlink($fileName);
+				$message = 'Report printed successfully';
+				return true;
+			}
+
+
+		} 
+		catch (Exception $e) 
+		{
+			$message = 'Could not send file for printing';
+			if(file_exists($fileName))
+			{
+				if($layout != null)
+				{
+					system("lp -d -o landscape -o fit-to-page $printer $fileName");
+				}
+				else
+				{
+					system("lp -d $printer $fileName");
+				}
+	    		sleep(6);
+			
+				//unlink($fileName);
+				$message = 'Report printed successfully';
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
+		}
+		return false;
+	}
 
 	/**
 	*	Function to return test types of a particular test category to fill test types dropdown
@@ -3270,10 +3374,33 @@ class ReportController extends \BaseController {
 				}
             }
         }
+        if(!empty(Input::get('printer_name')))
+		{
+
+			$url = Request::url();
+			$date = date("d-m-Y");
+
+			$fileName = "/var/www/html/labstats_".$date.".pdf";
+			$printer = Input::get("printer_name");
+
+			$myhtml = View::make('reports.departments.exportbymonth')
+				        	->with('data', $data)
+        					->with('categories', $categories)
+        					->with('period', $period)
+        					->render();
+
+			$tempfile = fopen("/var/www/html/temp.html", "w");
+			fwrite($tempfile, $myhtml);
+			fclose($tempfile);
+			
+			$this->printReport($fileName, $printer);
+			unlink('/var/www/html/temp.html');
+		}
         return View::make('reports.departments.bymonth')
         	->with('data', $data)
         	->with('categories', $categories)
         	->with('period', $period)
+        	->with('available_printers', $this->getPrinters())
         	->withInput(Input::all());
 	}
 
@@ -3285,6 +3412,9 @@ class ReportController extends \BaseController {
 		$default_lab_section_id = $default_lab_section->id;
 
 		$lab_section_id = Input::get('lab_section', $default_lab_section_id);
+		$lab_section_name = TestCategory::find($lab_section_id)->name;
+		
+
 
 		$year = Input::get('year', $default_year);
 		$start_date = $year.'-01-01';
@@ -3399,6 +3529,46 @@ class ReportController extends \BaseController {
         		$tat[$test_type_name][$month_name] = $interval;
 			}
 		}
+
+		 if(!empty(Input::get('printer_name')))
+		{
+
+			$url = Request::url();
+			$date = date("d-m-Y");
+
+			$fileName = "/var/www/html/depreport_".$date.".pdf";
+			$printer = Input::get("printer_name");
+
+			$myhtml = View::make('reports.departments.exportbyward')
+				        	->with('data', $data)
+        					->with('years', $years)
+				        	->with('category', $category)
+				        	->with('category_names', $category_names)
+				        	->with('period', $period)
+				        	->with('wards', $wards)
+				        	->with('tat', $tat)
+				        	->with('rejected_specimens', $rejected_specimens)
+				        	->with('rejected_wards', $rejected_wards)
+				        	->with('rejection_reasons', $rejection_reasons)
+				        	->with('critical_wards', $critical_wards)
+				        	->with('critical_measures', $critical_measures)
+				        	->with('critical_values', $critical_values)
+				        	->with('lab_section_name', $lab_section_name)
+				        	->render();
+
+			$layout = null;
+			if(count($wards) > 15 || count($rejected_wards) > 15 || count($critical_wards) > 15)
+			{
+				$layout = 'landscape';
+			}
+
+			$tempfile = fopen("/var/www/html/temp.html", "w");
+			fwrite($tempfile, $myhtml);
+			fclose($tempfile);
+			
+			$this->printReport($fileName, $printer, $layout);
+			//unlink('/var/www/html/temp.html');
+		}
         return View::make('reports.departments.byward')
         	->with('data', $data)
         	->with('years', $years)
@@ -3412,6 +3582,7 @@ class ReportController extends \BaseController {
         	->with('rejection_reasons', $rejection_reasons)
         	->with('critical_wards', $critical_wards)
         	->with('critical_measures', $critical_measures)
+        	->with('available_printers', $this->getPrinters())
         	->with('critical_values', $critical_values)
         	->withInput(Input::all());
 	}
@@ -3484,12 +3655,39 @@ class ReportController extends \BaseController {
 				}
 		}
 
+		if(!empty(Input::get('printer_name')))
+		{
+
+			$url = Request::url();
+
+			$fileName = "/var/www/html/tbreport_".$date.".pdf";
+			$printer = Input::get("printer_name");
+
+			$myhtml = View::make('reports.tb.export')
+				        	->with('years', $years)
+				        	->with('microscopy_positives', $count_micro_positives)
+				        	->with('microscopy_negatives', $count_micro_negatives)
+				        	->with('genex_positives', $count_genex_positives)
+							->with('genex_negatives', $count_genex_negatives)
+				        	->with('period', $period)
+				        	->render();
+			//echo $myhtml;
+			$tempfile = fopen("/var/www/html/temp.html", "w");
+			fwrite($tempfile, $myhtml);
+			fclose($tempfile);
+			
+			$this->printReport($fileName, $printer);
+
+			unlink('/var/www/html/temp.html');
+		}
+
 		return View::make('reports.tb.index')
         	->with('years', $years)
         	->with('microscopy_positives', $count_micro_positives)
         	->with('microscopy_negatives', $count_micro_negatives)
         	->with('genex_positives', $count_genex_positives)
 			->with('genex_negatives', $count_genex_negatives)
+			->with('available_printers', $this->getPrinters())
         	->with('period', $period)
         	->withInput(Input::all());
 	}
