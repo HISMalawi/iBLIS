@@ -26,6 +26,7 @@
 		case 'departments_summary_report':
 		case 'departmentreport': 
 		case 'tbreport': 
+		case 'rejected' :
 		case 'dailylog': 
 		case 'prevalence':
 		case 'surveillance':
@@ -235,6 +236,12 @@
 						</div>
 					</li>
 					<li>
+						<div><a href="{{ URL::route('rejected.sample')}}">
+							<span class="glyphicon glyphicon-tag"></span>
+							{{trans('messages.rejections-report')}}</a>
+						</div>
+					</li>
+					<!--li>
 						<div><a href="{{ URL::route('reports.aggregate.prevalence')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.prevalence-rates')}}</a>
@@ -245,19 +252,19 @@
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.surveillance')}}</a>
 						</div>
-					</li>
+					</li-->
 					<li>
 						<div><a href="{{ URL::route('reports.aggregate.counts')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.counts')}}</a>
 						</div>
 					</li>
-					<li>
+					<!--li>
 						<div><a href="{{ URL::route('reports.aggregate.tat')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.turnaround-time')}}</a>
 						</div>
-					</li>
+					</li-->
 					<li>
 						<div><a href="{{ URL::route('reports.aggregate.infection')}}">
 							<span class="glyphicon glyphicon-tag"></span>
@@ -271,12 +278,12 @@
 						</div>
 					</li>
 					
-					<li>
+					<!--li>
 						<div><a href="{{ URL::route('reports.qualityControl')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{Lang::choice('messages.quality-control', 2)}}</a>
 						</div>
-					</li>
+					</li-->
 				</ul>
 				<div class="sub-menu-title">{{trans('messages.inventory-reports')}}</div>
 				<ul class="sub-menu-items">
