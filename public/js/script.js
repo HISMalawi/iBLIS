@@ -976,19 +976,13 @@ $(function(){
 	}
 
 	function submitPrintForm(){
+		document.getElementById("word").value = "true";
 		document.getElementById('form-patientreport-filter').submit();
-		$('#myModal').modal('hide');
-		return false;
 	}
 
 	function updateValue(obj){
 		obj.getElementsByTagName('input')[0].checked = true
 		document.getElementById("printer_name").value = obj.getAttribute('value');
-	}
-
-	function unsetValue()
-	{
-		document.getElementById("printer_name").value = '';
 	}
 
 	function selectPrinter(){
