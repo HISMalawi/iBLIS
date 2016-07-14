@@ -358,47 +358,49 @@
 							@if(count($test->susceptibility)>0)
 							<table class="table table-condensed rsusc" >
 
-								<?php $i = 0 ?>
-								@foreach($test->organisms() as $organism)
-									<?php
+
+									<?php $i = 0 ?>
+									@foreach($test->organisms() as $organism)
+										<?php
 										$organism = Organism::find($organism->organism_id);
-									?>
-									{{($i % 2 == 0) ? ('<tr class="row">') : ""}}
-									<td>
-										<table class="table table-bordered" >
-											<tbody>
-											<tr>
-												<th colspan="3">{{ $organism->name }}</th>
-											</tr>
-											<tr>
-												<th width="50%">{{ Lang::choice('messages.drug',1) }}</th>
-												<th>{{ trans('messages.zone-size')}}</th>
-												<th>{{ trans('messages.interp')}}</th>
-											</tr>
-											@foreach(Susceptibility::drugs_search($test->id, $organism->id) as $drug)
-												<?php
-												$drug = Drug::find($drug->drug_id);
-												?>
-												@if($drugSusceptibility = Susceptibility::getDrugSusceptibility($test->id, $organism->id, $drug->id))
-													<tr>
-														<td>{{ $drug->name }}</td>
-														<td>{{ $drugSusceptibility->zone!=null?$drugSusceptibility->zone:'' }}</td>
-														<td>{{ $drugSusceptibility->interpretation!=null?
-																	($drugSusceptibility->interpretation.' - '.$interpretationText[$drugSusceptibility->interpretation]) :'' }}</td>														</tr>
-												@else
-													<tr>
-														<td>{{ $drug->name }}</td>
-														<td></td>
-														<td></td>
-													</tr>
-												@endif
-											@endforeach
-											</tbody>
-										</table>
-									</td>
-									{{($i % 2 == 1) ? ('</tr>') : ""}}
-									<?php $i = $i + 1 ?>
-								@endforeach
+
+										?>
+										{{($i % 2 == 0) ? ('<tr class="row">') : ""}}
+										<td>
+											<table class="table table-bordered" >
+												<tbody>
+												<tr>
+													<th colspan="3">{{ $organism->name }}</th>
+												</tr>
+												<tr>
+													<th width="50%">{{ Lang::choice('messages.drug',1) }}</th>
+													<th>{{ trans('messages.zone-size')}}</th>
+													<th>{{ trans('messages.interp')}}</th>
+												</tr>
+												@foreach(Susceptibility::drugs_search($test->id, $organism->id) as $drug)
+													<?php
+													$drug = Drug::find($drug->drug_id);
+													?>
+													@if($drugSusceptibility = Susceptibility::getDrugSusceptibility($test->id, $organism->id, $drug->id))
+														<tr>
+															<td>{{ $drug->name }}</td>
+															<td>{{ $drugSusceptibility->zone!=null?$drugSusceptibility->zone:'' }}</td>
+															<td>{{ $drugSusceptibility->interpretation!=null?
+																		($drugSusceptibility->interpretation.' - '.$interpretationText[$drugSusceptibility->interpretation]) :'' }}</td>														</tr>
+													@else
+														<tr>
+															<td>{{ $drug->name }}</td>
+															<td></td>
+															<td></td>
+														</tr>
+													@endif
+												@endforeach
+												</tbody>
+											</table>
+										</td>
+										{{($i % 2 == 1) ? ('</tr>') : ""}}
+										<?php $i = $i + 1 ?>
+									@endforeach
 
 							</table>
 							@endif

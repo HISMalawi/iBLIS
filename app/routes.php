@@ -9,7 +9,10 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-
+ Route::post('/print/{id}', array(
+        "as" => "print",
+        "uses" => "ReportController@printPatientReport"
+    ));
 
 /* Routes accessible before logging in */
 Route::group(array("before" => "guest"), function()
@@ -452,19 +455,9 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@department_report"
         ));
 
-        Route::match(['get', 'post'], "/rejected", array(
-            "as"   => "rejected.sample",
-            "uses" => "ReportController@rejected_specimens"
-        ));
-
         Route::match(['get', 'post'], "/tbreport", array(
             "as"   => "reports.tb",
             "uses" => "ReportController@tb_report"
-        ));
-
-         Route::match(['get', 'post'], "/department_excel", array(
-            "as"   => "reports.depexcel",
-            "uses" => "ReportController@depexcel"
         ));
 
     });
