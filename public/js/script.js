@@ -978,6 +978,7 @@ $(function(){
 	function submitPrintForm(){
 		document.getElementById("word").value = "true";
 		document.getElementById('form-patientreport-filter').submit();
+		$('#myModal').modal('hide');
 	}
 
 	function updateValue(obj){

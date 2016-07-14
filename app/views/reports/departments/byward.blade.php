@@ -202,38 +202,7 @@
 			<!--end table for critical values-->
 			
 			<br>
-			<!--table for rejected samples-->
-			@if(count($rejected_wards))
-				<p align='center'><b>REJECTED SAMPLES</b></p>
-				<div class="table-responsive" style="width: 100%; overflow-x: scroll;">	
-					<table class="table table-striped table-hover table-condensed table-sm">
-						<thead>
-							<tr>
-								<td>&nbsp;</td>
-								@foreach($rejected_wards as $rejected_ward)
-									<td align='center'><b>{{$rejected_ward}}</b></td>
-								@endforeach
-								<td align='center'><b>TOTAL</b></td>
-							</tr>
-						</thead>
-						<tbody>
-							
-							@foreach($rejection_reasons as $rejection_reason)
-							<?php $total = 0;?>
-								<tr>
-									<td><b>{{$rejection_reason}}</b></td>
-									@foreach($rejected_wards as $rejected_ward)
-										<td align='center'>{{isset($rejected_specimens[$rejection_reason][$rejected_ward])?$rejected_specimens[$rejection_reason][$rejected_ward]:0}}</td>
-										<?php if(isset($rejected_specimens[$rejection_reason][$rejected_ward])){$total += $rejected_specimens[$rejection_reason][$rejected_ward];} ?>
-									@endforeach
-									<td align='center'><b>{{$total}}</b></td>
-								</tr>
-							@endforeach
-						</tbody>
-					</table>
-				</div>
-			@endif
-				<!--end of table for rejected samples-->
+			
 
 			<?php //echo $patients->links(); 
 			Session::put('SOURCE_URL', URL::full());?>

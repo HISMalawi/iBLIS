@@ -3235,8 +3235,9 @@ class ReportController extends \BaseController {
 
 	public function departments_summary()
 	{
-		$start_date = Input::get('start', date('Y-m-d'));
-		$end_date = Input::get('end', date('Y-m-d'));
+		$date = date('Y-m-d');
+		$start_date = Input::get('start', $date);
+		$end_date = Input::get('end', $date);
 
 		$start    = (new DateTime($start_date))->modify('first day of this month');
 		$end      = (new DateTime($end_date))->modify('first day of next month');
@@ -3270,10 +3271,33 @@ class ReportController extends \BaseController {
 				}
             }
         }
+        if(Input::has('pdf'))
+        {
+			$url = Request::url()."?pdf=true&page=true";
+
+			//echo $url;
+			//exit;
+			$fileName = "labstatreport_".$date.".pdf";
+			$printer = Input::get("printer_name");
+
+			//echo "xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileName";
+			//exit;
+
+			$process = new Process("xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileName");
+			$process->run();
+
+			$process = new Process("lp -d $printer $fileName");
+			$process->run();
+
+			$process = new Process("rm $fileName && rm labstatreport*.pdf");
+			$process->run();
+		}
+
         return View::make('reports.departments.bymonth')
         	->with('data', $data)
         	->with('categories', $categories)
         	->with('period', $period)
+        	->with('available_printers', Config::get('kblis.A4_printers'))
         	->withInput(Input::all());
 	}
 
@@ -3413,6 +3437,7 @@ class ReportController extends \BaseController {
         	->with('critical_wards', $critical_wards)
         	->with('critical_measures', $critical_measures)
         	->with('critical_values', $critical_values)
+        	->with('available_printers', Config::get('kblis.A4_printers'))
         	->withInput(Input::all());
 	}
 
