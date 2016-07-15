@@ -11,7 +11,7 @@
 	<div class='container-fluid'>
 		<div class='row'>
 			<div class='col-lg-12'>
-				{{ Form::open(array('route' => array('reports.departments_summary'), 'class' => 'form-inline', 'role' => 'form', 'id' => 'form-patientreport-filter', 'method' => 'POST', 'style' => 'display:inline')) }}
+				{{ Form::open(array('route' => array('reports.departments_summary'), 'class' => 'form-inline', 'role' => 'form', 'id' => 'form-patientreport-filter', 'method' => 'POST', 'onclick' => 'unsetPrinterValue();', 'style' => 'display:inline')) }}
 					<div class='row'>
 						<div class="col-sm-3">
 					    	<div class="row">
@@ -74,7 +74,7 @@
 				$to = new Datetime($to);
 				$from = new Datetime($from);
 				 ?>
-			<b>{{trans('messages.from').' '.$from->format('F, Y').' '.trans('messages.to').' '.$to->format('F, Y')}}</b>
+			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
 			<table class="table table-striped table-hover table-condensed">
 				<tbody>
 					@foreach($categories as $category)
@@ -137,7 +137,7 @@
 	        </span>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
-						<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn" data-dismiss="modal" onclick="unsetPrinterValue();">Cancel</button>
 					</div>
 				</div>
 			</div>

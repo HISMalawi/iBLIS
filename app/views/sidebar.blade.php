@@ -235,6 +235,12 @@
 						</div>
 					</li>
 					<li>
+						<div><a href="{{ URL::route('rejected.sample')}}">
+							<span class="glyphicon glyphicon-tag"></span>
+							{{trans('messages.rejections-report')}}</a>
+						</div>
+					</li>
+					<!--li>
 						<div><a href="{{ URL::route('reports.aggregate.prevalence')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.prevalence-rates')}}</a>
@@ -257,7 +263,7 @@
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.turnaround-time')}}</a>
 						</div>
-					</li>
+					</li-->
 					<li>
 						<div><a href="{{ URL::route('reports.aggregate.infection')}}">
 							<span class="glyphicon glyphicon-tag"></span>

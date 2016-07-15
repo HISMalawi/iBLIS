@@ -992,6 +992,11 @@ $(function(){
 		$('#myModal').modal('show');
 	}
 
+	function unsetPrinterValue()
+	{
+		document.getElementById("printer_name").value = '';
+	}
+
 	function toggleMainOpt(test_id){
 			jQuery('.opt-view-' + test_id).toggle();
 			jQuery('.main-view-' + test_id).toggle();

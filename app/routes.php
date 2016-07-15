@@ -9,6 +9,9 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+
+
+
 /* Routes accessible before logging in */
 Route::group(array("before" => "guest"), function()
 {
@@ -66,6 +69,21 @@ Route::group(array("before", "print"), function()
     Route::any("/print/{id}/{visit}", array(
         "as" => "reports.patient.print",
         "uses" => "ReportController@printReport"
+    ));
+
+    Route::any("/departments_summary_report", array(
+        "as"   => "reports.departments_summary",
+        "uses" => "ReportController@departments_summary"
+    ));
+
+    Route::match(['get', 'post'], "/departmentreport", array(
+        "as"   => "reports.department",
+        "uses" => "ReportController@department_report"
+    ));
+
+    Route::match(['get', 'post'], "/rejected", array(
+        "as"   => "rejected.sample",
+        "uses" => "ReportController@rejected_specimens"
     ));
 });
 /* Routes accessible AFTER logging in */
@@ -440,20 +458,25 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@stockLevel"
         ));
 
-        Route::match(['get', 'post'], "/departments_summary_report", array(
+       /* Route::match(['get', 'post'], "/departments_summary_report", array(
             "as"   => "reports.departments_summary",
             "uses" => "ReportController@departments_summary"
-        ));
+        ));*/
 
-        Route::match(['get', 'post'], "/departmentreport", array(
+       /* Route::match(['get', 'post'], "/departmentreport", array(
             "as"   => "reports.department",
             "uses" => "ReportController@department_report"
-        ));
+        ));*/
 
         Route::match(['get', 'post'], "/tbreport", array(
             "as"   => "reports.tb",
             "uses" => "ReportController@tb_report"
         ));
+
+       /*  Route::match(['get', 'post'], "/rejected", array(
+            "as"   => "rejected.sample",
+            "uses" => "ReportController@rejected_specimens"
+        ));*/
 
     });
     Route::group(array("before" => "checkPerms:manage_qc"), function()
