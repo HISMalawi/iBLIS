@@ -25,7 +25,8 @@
 		case 'patientreport':
 		case 'departments_summary_report':
 		case 'departmentreport': 
-		case 'tbreport': 
+		case 'tbreport':
+		case 'rejected': 
 		case 'dailylog': 
 		case 'prevalence':
 		case 'surveillance':

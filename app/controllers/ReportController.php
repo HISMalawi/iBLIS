@@ -3262,7 +3262,10 @@ class ReportController extends \BaseController {
 		$select_categories = TestCategory::orderBy('name')->get();
 		foreach($select_categories as $cat)
 		{
-			$category_names[$cat->id] = $cat->name;
+			if(strtoupper($cat->name) != 'LAB RECEPTION')
+			{
+				$category_names[$cat->id] = $cat->name;
+			}
 		}
 
 		$data = array();
@@ -3353,25 +3356,18 @@ class ReportController extends \BaseController {
 
 	public function department_report()
 	{
-		$date = date('Y-m-d');
-		$default_year = date('Y');
+		
+
 		$default_lab_section = TestCategory::select('id')->orderBy('name')->first();
 		$default_lab_section_id = $default_lab_section->id;
-
 		$lab_section_id = Input::get('lab_section', $default_lab_section_id);
 
-		$year = Input::get('year', $default_year);
-		$start_date = $year.'-01-01';
-		$end_date = $year.'-12-31';
-
-		/*get rejected specimens
-		$rejected_with_wards = $this->rejected_specimens($lab_section_id, $year);
-		$rejected_specimens = $rejected_with_wards['rejected'];
-		$rejected_wards = $rejected_with_wards['wards'];
-		$rejection_reasons = $rejected_with_wards['reasons'];*/
+		$date = date('Y-m-d');
+		$start_date = Input::get('start', $date);
+		$end_date = Input::get('end', $date);
 
 		//get critical values
-		$critical_with_wards = $this->critical_values($lab_section_id, $year);
+		$critical_with_wards = $this->critical_values($lab_section_id, $start_date, $end_date);
 		$critical_values = $critical_with_wards['critical_values'];
 		$critical_measures = $critical_with_wards['critical_measures'];
 		$critical_wards = $critical_with_wards['wards'];
@@ -3393,15 +3389,8 @@ class ReportController extends \BaseController {
 			$category_names[$cat->id] = $cat->name;
 		}
 
-		$years = array();
-		$test_years = DB::select(DB::raw("SELECT DISTINCT(YEAR(tests.time_created)) as year FROM tests"));
-		foreach ($test_years as $test_year) 
-		{
-			$years[$test_year->year] = $test_year->year;
-		}
-
 		$wards = array();
-		$query_wards = "SELECT DISTINCT(ward_or_location) as ward, visits.visit_type as visit_type FROM visits join tests	ON visits.id = tests.visit_id join test_types on test_types.id = tests.test_type_id WHERE test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m-%d') BETWEEN '$start_date' AND '$end_date' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";
+		$query_wards = "SELECT DISTINCT(ward_or_location) as ward, visits.visit_type as visit_type FROM visits join tests	ON visits.id = tests.visit_id join test_types on test_types.id = tests.test_type_id WHERE test_types.test_category_id = '$test_category_id' AND tests.time_created BETWEEN '$start_date' AND '$end_date' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";
 		$distinct_wards = DB::select(DB::raw($query_wards));
 	
 		//$distinct_wards = DB::select(DB::raw("SELECT name FROM wards;"));
@@ -3421,56 +3410,56 @@ class ReportController extends \BaseController {
 
 
 		$test_types = $category->testTypes;
-		$tat = array();
 		foreach ($test_types as $test_type) 
 		{
 			$test_type_name = $test_type->name;
 			$test_type_id = $test_type->id;
 			$test_ids = array();
             
+            $count = 1;
+			$ranges = count(iterator_to_array($period, false));
 			foreach ($period as $dt) 
         	{
         	
             	$month_name = $dt->format('M');
-            	$year_month = $dt->format('Y-m');
-            	
-            	$turnaroundTime = 0;
+            	$first_date = ($count == 1)?$start_date:$dt->format('Y-m-d');
+				$last_date = ($count == $ranges)?$end_date:$a_date = date("Y-m-t", strtotime($dt->format('Y-m-d')));
+
             	$number_of_tests = 0;
 
             	foreach($wards as $ward)
             	{
             		if($ward != 'Referral')
             		{
-						$query = "SELECT tests.id as test_id, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.ward_or_location = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";
+						$query = "SELECT tests.id as test_id, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND tests.time_created BETWEEN '$first_date' AND '$last_date' AND visits.ward_or_location = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";
 					}
 					else
 					{
-						$query = "SELECT tests.id as test_id, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$year_month' AND visits.visit_type = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";	
+						$query = "SELECT tests.id as test_id, visits.ward_or_location as ward, visits.visit_type as visit_type FROM tests join test_types on tests.test_type_id = test_types.id join visits on tests.visit_id = visits.id WHERE tests.test_type_id = '$test_type_id' AND test_types.test_category_id = '$test_category_id' AND tests.time_created BETWEEN '$first_date' AND '$last_date' AND visits.visit_type = '$ward' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified');";	
 					}
 					$test_per_ward = DB::select(DB::raw($query)); 
 					
 					$count = count($test_per_ward);
-					$number_of_tests += $count;
+					/*$number_of_tests += $count;
 					if($count)
 					{
 						
 						for($i=0; $i<$count; $i++)
 						{
-							$test = Test::find($test_per_ward[$i]->test_id);
-							$turnaroundTime += $test->getTurnaroundTime(); 
+							$test = Test::find($test_per_ward[$i]->test_id); 
 						}
-					}
+					}*/
 
 	            	$data[$test_type_name][$month_name][$ward] = $count;
         		}
 
-        		if($number_of_tests != 0)
+        		/*if($number_of_tests != 0)
         		{
         			$turnaroundTime = $turnaroundTime/$number_of_tests;
         		}
         		$temp_test = new Test;
         		$interval = $temp_test->getShortFormatTurnaroundTime($turnaroundTime);
-        		$tat[$test_type_name][$month_name] = $interval;
+        		$tat[$test_type_name][$month_name] = $interval;*/
 			}
 		}
 
@@ -3503,7 +3492,6 @@ class ReportController extends \BaseController {
 
         return View::make($view_url)
         	->with('data', $data)
-        	->with('years', $years)
         	->with('category', $category)
         	->with('category_names', $category_names)
         	->with('period', $period)
@@ -3748,7 +3736,7 @@ class ReportController extends \BaseController {
 	}
 
 
-	public function critical_values($category_id, $year)
+	public function critical_values($category_id, $start_date, $end_date)
 	{
 		$critical_values = array();
 		$critical_measures = array();
@@ -3757,7 +3745,7 @@ class ReportController extends \BaseController {
 
 
 		//get all test results of a category
-		$query = "SELECT test_results.* FROM test_results join tests on test_results.test_id = tests.id join test_types on tests.test_type_id = test_types.id join test_categories on test_types.test_category_id = test_categories.id where test_categories.id = '$category_id' and YEAR(tests.time_created) = '$year';";
+		$query = "SELECT test_results.* FROM test_results JOIN tests ON test_results.test_id = tests.id JOIN test_types ON tests.test_type_id = test_types.id JOIN test_categories ON test_types.test_category_id = test_categories.id WHERE test_categories.id = '$category_id' AND tests.time_created BETWEEN '$start_date' AND '$end_date';";
 
 		$results = DB::select(DB::raw($query));
 

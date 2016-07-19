@@ -26,28 +26,28 @@
 						</div>
 						<div class="col-sm-3">
 					    	<div class="row">
-								<div class="col-sm-2">
+								<div class="col-sm-1">
 								    {{ Form::label('end', trans('messages.to')) }}
 								</div>
-								<div class="col-sm-2">
+								<div class="col-sm-1">
 								    {{ Form::text('end', isset($input['end'])?$input['end']:date('Y-m-d'), 
 							                array('class' => 'form-control standard-datepicker')) }}
 						        </div>
 							</div>
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 					    	<div class="row">
 								<div class="col-sm-4">
-								    {{ Form::label('lab_section', 'Lab Section') }}
+								    {{ Form::label('lab_section', 'Section') }}
 								</div>
 								<div class="col-sm-3">
 								    {{ Form::select('lab_section', $category_names, isset($input['lab_section'])?$input['lab_section']:$category->name, array('class' => 'form-control')) }}
 						        </div>
 							</div>
 						</div>
-						<div class="col-sm-offset-1 col-sm-5">
+						<div class="col-sm-3">
 							<div class="row">
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 						  			{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 				                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 				                </div>

@@ -60,29 +60,40 @@
 				{{ Form::open(array('route' => array('reports.department'), 'class' => 'form-inline', 'role' => 'form', 'method' => 'POST', 'id' => 'form-patientreport-filter', 'style' => 'display:inline')) }}
 					<div class='row'>
 						<div class="col-sm-3">
-					    	<div class="row">
+							<div class="row">
 								<div class="col-sm-2">
-								    {{ Form::label('year', 'Year') }}
+								    {{ Form::label('start', trans('messages.from')) }}
 								</div>
 								<div class="col-sm-2">
-								    {{ Form::select('year', $years, isset($input['year'])?$input['year']:date('Y'), 
-							                array('class' => 'form-control')) }}
+								    {{ Form::text('start', isset($input['start'])?$input['start']:date('Y-m-d'), 
+							                array('class' => 'form-control standard-datepicker')) }}
 						        </div>
 							</div>
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 					    	<div class="row">
-								<div class="col-sm-4">
-								    {{ Form::label('lab_section', 'Lab Section') }}
+								<div class="col-sm-1">
+								    {{ Form::label('end', trans('messages.to')) }}
+								</div>
+								<div class="col-sm-1">
+								    {{ Form::text('end', isset($input['end'])?$input['end']:date('Y-m-d'), 
+							                array('class' => 'form-control standard-datepicker')) }}
+						        </div>
+							</div>
+						</div>
+						<div class="col-sm-3">
+					    	<div class="row">
+								<div class="col-sm-2">
+								    {{ Form::label('lab_section', 'Section') }}
 								</div>
 								<div class="col-sm-3">
 								    {{ Form::select('lab_section', $category_names, isset($input['lab_section'])?$input['lab_section']:$category->name, array('class' => 'form-control')) }}
 						        </div>
 							</div>
 						</div>
-						<div class="col-sm-5">
+						<div class="col-sm-3">
 					    	<div class="row">
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 						                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 						        </div>
