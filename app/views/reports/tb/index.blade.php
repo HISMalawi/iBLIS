@@ -14,19 +14,29 @@
 			<div class='col-lg-12'>
 				{{ Form::open(array('route' => array('reports.tb'), 'class' => 'form-inline', 'role' => 'form', 'id' => 'form-patientreport-filter', 'method' => 'POST', 'style' => 'display:inline')) }}
 					<div class='row'>
-						<div class="col-sm-3">
+						<div class="col-sm-4">
 					    	<div class="row">
 								<div class="col-sm-2">
-								    {{ Form::label('year', 'Year') }}
+								    {{ Form::label('start', trans('messages.from')) }}
 								</div>
 								<div class="col-sm-2">
-								    {{ Form::select('year', $years, isset($input['year'])?$input['year']:date('Y'), 
-							                array('class' => 'form-control')) }}
+								    {{ Form::text('start', isset($input['start'])?$input['start']:date('Y-m-d'), 
+							                array('class' => 'form-control standard-datepicker')) }}
 						        </div>
-						        
 							</div>
 						</div>
-						<div class="col-sm-5">
+						<div class="col-sm-4">
+					    	<div class="row">
+								<div class="col-sm-2">
+								    {{ Form::label('end', trans('messages.to')) }}
+								</div>
+								<div class="col-sm-2">
+								    {{ Form::text('end', isset($input['end'])?$input['end']:date('Y-m-d'), 
+							                array('class' => 'form-control standard-datepicker')) }}
+						        </div>
+							</div>
+						</div>
+						<div class="col-sm-4">
 							<div class="row">
 								<div class="col-sm-2">
 								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
@@ -60,94 +70,93 @@
 			@include("reportHeader")
 			<b>{{'As of'.' '.date('d-m-Y')}}</b>
 			<div class="table-responsive" style="width: 100%; overflow: auto;">
-				@if(count($years))
 
+			<?php
+				$count = 1;
+				foreach($period as $dt)
+				{
+					$count ++;
+				} 
+			?>
+
+			@if(count($result_names))
 				<table class="table table-striped table-hover table-condensed table-sm">
-					<thead>
-						<tr>
-							<td colspan="13" align='center'><b>TB MICROSCOPY</b></td>
-						</tr>
-						<tr>
-							<td><b>RESULT</b></td>
-							@foreach($period as $dt)
-								<td align='center'><b>{{$dt->format('F')}}</b></td>
-							@endforeach
-						</tr>
-					</thead>
 					<tbody>
-						<?php
-							$total = array(0);
-						?>
-						@foreach($micro_results as $micro_result)
+						@foreach($measures as $measure)
+				
 							<tr>
-								<td><b>{{$micro_result}}</b></td>
-								@foreach($period as $month)
-									<td align='center'>{{isset($microscopy_data[$month->format('F')][$micro_result])?$microscopy_data[$month->format('F')][$micro_result]: 0}}</td>
-									<?php
-										if(isset($total[$month->format('F')]))
-										{
-											$total[$month->format('F')] += isset($microscopy_data[$month->format('F')][$micro_result])?$microscopy_data[$month->format('F')][$micro_result]:0;
-										}
-										else
-										{
-											$total[$month->format('F')] = isset($microscopy_data[$month->format('F')][$micro_result])?$microscopy_data[$month->format('F')][$micro_result]:0;
-										}
-										
-									?>
+								<td colspan="{{$count}}" align='center'><b>{{strtoupper($measure->name)}}</b></td>
+							</tr>
+							<tr>
+								<td><b>RESULT</b></td>
+								@foreach($period as $dt)
+									<td align='center'><b>{{$dt->format('F')}}</b></td>
 								@endforeach
 							</tr>
-						@endforeach
-						<tr>
-							<td><b>TOTAL EXAMINED</b></td>
-							@foreach($period as $month)
-								<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
-							@endforeach
-						</tr>
 						
-						<tr>
-							<td colspan='13'>&nbsp;</td>	
-						</tr>
-						<tr>
-							<td colspan="13" align='center'><b>INDICATION FOR GENEXPERT TEST</b></td>
-						</tr>
 						
-						<tr>
-							<td><b>RESULT</b></td>
-							@foreach($period as $dt)
-								<td align='center'><b>{{$dt->format('F')}}</b></td>
+							<?php
+								$total = array(0);
+							?>
+
+							@foreach($result_names as $result_name)
+								@if(in_array($result_name, $measure_results[$measure->name]))
+								<tr>
+									<td><b>{{$result_name}}</b></td>
+									@foreach($period as $month)
+										<td align='center'>{{isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]: 0}}</td>
+										<?php
+											if(isset($total[$month->format('F')]))
+											{
+												$total[$month->format('F')] += isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+											}
+											else
+											{
+												$total[$month->format('F')] = isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+											}
+											
+										?>
+									@endforeach
+								</tr>
+								@endif
 							@endforeach
-						</tr>
-						<?php $total = array(0); ?>
-						@foreach($genex_results as $genex_result)
 							<tr>
-								<td><b>{{$genex_result}}</b></td>
+								<td><b>TOTAL EXAMINED</b></td>
 								@foreach($period as $month)
-									<td align='center'>{{isset($genex_data[$month->format('F')][$genex_result])?$genex_data[$month->format('F')][$genex_result]: 0}}</td>
-									<?php
-										if(isset($total[$month->format('F')]))
-										{
-											$total[$month->format('F')] += isset($genex_data[$month->format('F')][$genex_result])?$genex_data[$month->format('F')][$genex_result]:0;
-										}
-										else
-										{
-											$total[$month->format('F')] = isset($genex_data[$month->format('F')][$genex_result])?$genex_data[$month->format('F')][$genex_result]:0;
-										}
-										
-									?>
+									<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
 								@endforeach
 							</tr>
+							@if($measure->name == 'Smear microscopy result')
+
+							<tr>
+								<td><b>PICKUP RATE</b></td>
+								@foreach($period as $month)
+									<?php
+										//echo $total[$month->format('F')];
+									$positives = 0;
+									if(isset($data[$measure->name][$month->format('F')]['Negative']))
+									{
+										$positives =  $total[$month->format('F')] - $data[$measure->name][$month->format('F')]['Negative'];
+									}
+									else
+									{
+										$positives =  $total[$month->format('F')] - 0;
+									}
+										
+										$percentage = ceil(($positives/$total[$month->format('F')]) * 100);
+										
+									
+									?>
+									<td align='center'><b>{{$percentage}}</b></td>
+								@endforeach
+							</tr>
+							@endif
 						@endforeach
-						<tr>
-							<td><b>TOTAL EXAMINED</b></td>
-							@foreach($period as $month)
-								<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
-							@endforeach
-						</tr>
-						
 					</tbody>
 				</table>
+				
 				@else
-					<p align='center'>There are no tb results to display</p>
+					<p align='center'>There are no tb results to display for the period selected</p>
 				@endif
 			</div>
 			<?php //echo $patients->links(); 

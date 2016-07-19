@@ -3240,29 +3240,65 @@ class ReportController extends \BaseController {
 		$date = date('Y-m-d');
 		$start_date = Input::get('start', $date);
 		$end_date = Input::get('end', $date);
+		$lab_section_id = Input::get('lab_section', 'All');
 
 		$start    = (new DateTime($start_date))->modify('first day of this month');
 		$end      = (new DateTime($end_date))->modify('first day of next month');
 		$interval = DateInterval::createFromDateString('1 month');
 		$period   = new DatePeriod($start, $interval, $end);
 
+		$category_names = array();
+		$category_names['All'] = 'All';
+		$categories;
+		if($lab_section_id == 'All')
+		{
+			$categories = TestCategory::orderBy('name')->get();
+		}
+		else
+		{
+			$categories = TestCategory::find($lab_section_id);
+		}
+	
+		$select_categories = TestCategory::orderBy('name')->get();
+		foreach($select_categories as $cat)
+		{
+			$category_names[$cat->id] = $cat->name;
+		}
+
 		$data = array();
-		$categories = TestCategory::orderBy('name', 'asc')->get();
 		foreach ($categories as $category) 
 		{
-			$category_name = $category->name;
-			$test_category_id = $category->id;
+			$category_name;
+			$test_category_id;
+			if(count($categories) == 1)
+			{
+				$category_name = $categories->name;
+				$test_category_id = $categories->id;
+				$category = $categories;
+			}
+			else
+			{
+				$category_name = $category->name;
+				$test_category_id = $category->id;
+			}	
 
 			foreach ($category->testTypes as $test_type) 
 			{
 				$test_type_name = $test_type->name;
 				$test_type_id = $test_type->id;
+
+				$count = 1;
+				$ranges = count(iterator_to_array($period, false));
+				
 	            foreach ($period as $dt) 
 	            {
 	            	$number = 0;
     				$month_name = $dt->format('M');
+    				$first_date = ($count == 1)?$start_date:$dt->format('Y-m-d');
+					$last_date = ($count == $ranges)?$end_date:$a_date = date("Y-m-t", strtotime($dt->format('Y-m-d')));
+
     				$dt = $dt->format('Y-m');
-    				$query = "SELECT count(*) as tests_per_month FROM tests join test_types on tests.test_type_id = test_types.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$test_category_id' AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$dt' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY test_types.id;";
+    				$query = "SELECT count(*) as tests_per_month FROM tests join test_types on tests.test_type_id = test_types.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$test_category_id' AND tests.time_created BETWEEN '$first_date' AND '$last_date' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY test_types.id;";
     				
     				$test_per_month = DB::select(DB::raw($query)); 
     				if(count($test_per_month) > 0)
@@ -3270,6 +3306,8 @@ class ReportController extends \BaseController {
     					$number = $test_per_month[0]->tests_per_month;
     				}
 	            	$data[$category_name][$test_type_name][$dt] = $number;
+
+	            	$count++;
 				}
             }
         }
@@ -3304,6 +3342,8 @@ class ReportController extends \BaseController {
         return View::make($view_url)
         	->with('data', $data)
         	->with('categories', $categories)
+        	->with('category', $category)
+        	->with('category_names', $category_names)
         	->with('period', $period)
         	->with('available_printers', Config::get('kblis.A4_printers'))
         	->withInput(Input::except('pdf', 'printer_name'));
@@ -3477,87 +3517,64 @@ class ReportController extends \BaseController {
 
 	public function tb_report()
 	{
-		//get months
-		$default_year = date('Y');
-		$year = Input::get('year', $default_year);
-		$start_date = $year.'-01-01';
-		$end_date = $year.'-12-31';
+		$date = date('Y-m-d');
+	
+		$start_date = Input::get('start', $date);
+		$end_date = Input::get('end', $date);
 
 		$start    = (new DateTime($start_date))->modify('first day of this month');
 		$end      = (new DateTime($end_date))->modify('first day of next month');
 		$interval = DateInterval::createFromDateString('1 month');
 		$period   = new DatePeriod($start, $interval, $end);
 
-		//get years for select field in view
-		$years = array();
-		$test_years = DB::select(DB::raw("SELECT DISTINCT(YEAR(tests.time_created)) as year FROM tests join test_types on tests.test_type_id = test_types.id WHERE tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests')"));
-		foreach ($test_years as $test_year) 
+		$data = array();
+		$result_names = array();
+
+		$test_type = TestType::where('name', '=', 'TB Tests')->first();
+		$measures = $test_type->measures;
+
+		$results_per_measure = array();
+
+		foreach($measures as $measure)
 		{
-			$years[$test_year->year] = $test_year->year;
+			$measure_name = $measure->name;
+			$measure_results = array();
+			//count for each month
+
+			$count = 1;
+			$ranges = count(iterator_to_array($period, false));
+
+			foreach($period as $dt)
+			{
+				$month_name = $dt->format('F');
+
+				$first_date = ($count === 1)?$start_date:$dt->format('Y-m-d');
+				$last_date = ($count == $ranges)?$end_date:$a_date = date("Y-m-t", strtotime($dt->format('Y-m-d')));
+
+				$query = "SELECT count(*) as count, test_results.result as result_name FROM tests JOIN test_results ON tests.id = test_results.test_id JOIN measures  ON test_results.measure_id = measures.id WHERE tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests') AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND tests.time_created BETWEEN '$first_date' AND '$last_date' AND measures.name = '$measure_name' GROUP BY result;";
+
+				$results = DB::select(DB::raw($query));
+				foreach($results as $result)
+				{
+			
+					$data[$measure_name][$month_name][$result->result_name] = $result->count;	
+					
+					if(!in_array($result->result_name, $result_names))
+					{
+						array_push($result_names, $result->result_name);
+					}
+
+					if(!in_array($result->result_name, $measure_results))
+					{
+						array_push($measure_results, $result->result_name);
+					}
+				}
+
+				$count++;
+			}
+			$results_per_measure[$measure_name] = $measure_results;
+
 		}
-
-		$micro_data = array();
-		$micro_results = array();
-
-		$genex_data = array();
-		$genex_results = array();
-
-		//count for each month
-		foreach($period as $dt)
-		{
-			$date = $dt->format('Y-m');
-			$month_name = $dt->format('F');
-			//count those in microscopy
-			$query = "SELECT count(*) as count, test_results.result as result FROM tests JOIN test_results ON tests.id = test_results.test_id JOIN measure_ranges  ON test_results.result = measure_ranges.alphanumeric WHERE measure_ranges.measure_id = (SELECT id FROM measures WHERE name = 'Smear microscopy result') AND tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests') AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$date' GROUP BY result;";
-
-			
-			$micros = DB::select(DB::raw($query));
-			
-			foreach($micros as $micro)
-			{
-				if(isset($micro_data[$micro->result]))
-				{
-					$micro_data[$month_name][$micro->result] += $micro->count;
-				}
-				else
-				{
-					$micro_data[$month_name][$micro->result] = $micro->count;	
-				}
-				if(!in_array($micro->result, $micro_results))
-				{
-					array_push($micro_results, $micro->result);
-				}
-			}
-
-			if(array_search('Negative', $micro_results))
-			{
-				$key = array_search('Negative', $micro_results);
-				$item = $micro_results[$key];
-				unset($micro_results[$key]);
-				array_push($micro_results, $item);
-			}
-			
-			//count those in gexpt
-			$query = "SELECT count(*) as count, test_results.result as result FROM tests JOIN test_results ON tests.id = test_results.test_id JOIN measure_ranges  ON test_results.result = measure_ranges.alphanumeric WHERE measure_ranges.measure_id = (SELECT id FROM measures WHERE name = 'Indication for GeneXpert Test') AND tests.test_type_id = (SELECT id FROM test_types WHERE name = 'TB Tests') AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND DATE_FORMAT(tests.time_created, '%Y-%m') = '$date' GROUP BY result;";
-
-			$genexes = DB::select(DB::raw($query)); 
-				
-			foreach($genexes as $genex)
-			{
-				if(isset($genex_data[$month_name][$genex->result]))
-				{
-					$genex_data[$month_name][$genex->result] += $genex->count;
-				}
-				else
-				{
-					$genex_data[$month_name][$genex->result] = $genex->count;
-				}
-				if(!in_array($genex->result, $genex_results))
-				{
-					array_push($genex_results, $genex->result);
-				}
-			}
-		}		
 
 
 		if(!empty(Input::get('printer_name')))
@@ -3587,18 +3604,19 @@ class ReportController extends \BaseController {
 			unlink('/var/www/html/temp.html');
 		}
 
+
+
 		return View::make('reports.tb.index')
-        	->with('years', $years)
-        	->with('micro_results', $micro_results)
-        	->with('microscopy_data', $micro_data)
-        	->with('genex_results', $genex_results)
-        	->with('genex_data', $genex_data)
+        	->with('data', $data)
+        	->with('measures', $measures)
+        	->with('measure_results', $results_per_measure)
+        	->with('result_names', $result_names)
 			->with('available_printers', Config::get('kblis.A4_printers'))
         	->with('period', $period)
         	->withInput(Input::all());
 	}
 
-public function rejected_specimens()
+	public function rejected_specimens()
 	{
 		$date = date('Y-m-d');
 		$default_year = date('Y');
@@ -3714,9 +3732,8 @@ public function rejected_specimens()
 				$view_url = "reports.rejected.export";
 			}
 		}
-echo count($wards);
-//exit;
-$view_url = "reports.rejected.export";
+
+
 		return View::make($view_url)
 			->with( 'rejected_specimens', $rejected_counts)
 			->with('rejected_wards', $wards)
@@ -3830,4 +3847,95 @@ $view_url = "reports.rejected.export";
 		}
 		return ['critical_values' => $critical_values, 'critical_measures' => $critical_measures, 'wards' =>$critical_wards];	
 	}
+
+	public function export()
+	{
+	    Excel::create('Rejected', function($excel)
+	    {
+	      $excel->sheet('Rejected', function($sheet) 
+	      {
+	        $default_year = date('Y');
+		//$default_lab_section = TestCategory::select('id')->orderBy('name')->first();
+		//$default_test_type_id = TestType::select('id')->orderBy('name')->first();
+		$default_test_type_id = TestType::select('id')->orderBy('name')->first()->id;
+		$default_lab_section_id = TestCategory::select('id')->orderBy('name')->first()->id;
+
+		$test_type_id = Input::get('test_type', $default_test_type_id);
+		$category_id = Input::get('lab_section', $default_lab_section_id);
+
+		$lab_section_name = TestCategory::find($category_id)->name;
+		$test_type_name = TestType::find($category_id)->name;
+		
+		
+
+
+		$year = Input::get('year', $default_year);
+		$start_date = $year.'-01-01';
+		$end_date = $year.'-12-31';
+
+		$startdate = Input::get('start', date('Y-m-d'));
+		$enddate = Input::get('end', date('Y-m-d'));
+
+		$sections = TestCategory::orderBy('name')->get();
+		$categories  = array();
+		foreach($sections as $cat)
+		{
+			$categories[$cat->id] = $cat->name;
+		}
+	
+		$test_type_objs = TestType::orderBy('name')->get();
+		$test_type_names = array();
+		foreach($test_type_objs as $test_type_obj)
+		{
+			$test_type_names[$test_type_obj->id] = $test_type_obj->name;
+		}
+
+		$rejected_counts = array();
+		$wards = array();
+		$test_types = array();
+		$checked = array();
+		$reasons = array();
+		
+		//get all rejected specimen of a category
+		$query = "SELECT specimens.* FROM specimens JOIN tests ON specimens.id = tests.specimen_id JOIN test_types ON tests.test_type_id = test_types.id JOIN test_categories ON test_types.test_category_id = test_categories.id WHERE test_categories.id = '$category_id' AND specimens.time_rejected IS NOT NULL AND tests.time_created	BETWEEN '$startdate' AND '$enddate';";
+
+		$rejected_specimens = DB::select(DB::raw($query));
+		foreach ($rejected_specimens as $rejected_specimen) 
+		{
+  
+         	$test = Specimen::find($rejected_specimen->id)->test;
+         	$test_type_name = $test->testType->name;
+         	$ward = $test->visit->ward_or_location;
+
+
+       		$reason_name = RejectionReason::find($rejected_specimen->rejection_reason_id)->reason;
+
+     		if(!in_array($rejected_specimen->id, $checked))
+     		{
+         		if(!isset($rejected_counts[$reason_name][$ward][$test_type_name]))
+         		{
+         			$rejected_counts[$reason_name][$ward][$test_type_name] = 1;
+         			array_push($wards, $ward);
+         			array_push($reasons, $reason_name);
+         			array_push($test_types, $test_type_name);
+         		}
+         		else
+         		{
+         			$rejected_counts[$reason_name][$ward][$test_type_name] += 1;
+         			array_push($wards, $ward);
+         			array_push($reasons, $reason_name);
+         			array_push($test_types, $test_type_name);
+         		}
+     		}
+     		array_push($checked, $rejected_specimen->id);
+		}
+		$wards = array_unique($wards);
+
+		$reasons = array_unique($reasons);
+		$test_types = array_unique($test_types);
+	        $sheet->loadView('reports.rejected.export', ['rejected_specimens' => $rejected_counts, 'rejected_wards' => $wards, 'rejection_reasons'=> $reasons, 'test_types' => $test_types, 'categories' => $categories, 'category' => $lab_section_name, 'test_type_names' => $test_type_names, 'test_type_name' => $test_type_name]);
+	      });
+	    })->download('xls');
+  	}
+
 }

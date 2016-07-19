@@ -35,6 +35,16 @@
 						        </div>
 							</div>
 						</div>
+						<div class="col-sm-4">
+					    	<div class="row">
+								<div class="col-sm-4">
+								    {{ Form::label('lab_section', 'Lab Section') }}
+								</div>
+								<div class="col-sm-3">
+								    {{ Form::select('lab_section', $category_names, isset($input['lab_section'])?$input['lab_section']:$category->name, array('class' => 'form-control')) }}
+						        </div>
+							</div>
+						</div>
 						<div class="col-sm-offset-1 col-sm-5">
 							<div class="row">
 								<div class="col-sm-2">
@@ -77,35 +87,52 @@
 			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
 			<table class="table table-striped table-hover table-condensed">
 				<tbody>
-					@foreach($categories as $category)
-						@if(strtoupper($category->name) != 'LAB RECEPTION')
-							<tr>
-								<th>TESTS</th>
-								<?php $count = 2;?>
-								@foreach($period as $dt)
-									<td align='center'><b>{{$dt->format('M')}}</b></td>
-									<?php $count++; ?>
-								@endforeach
-								<td align='center'><b>Total</b></td>
-							</tr>
-							<tr>
-								<td colspan="{{$count}}"><b>{{$category->name}}</b></td>
-							</tr>
-							@foreach($category->testTypes as $test_type)
+				<?php// print_r($categories);?>
+
+						@foreach($categories as $cat)
+							<?php
+								if(count($categories) == 1)
+								{
+									$category_name = $categories->name;
+									$test_category_id = $categories->id;
+									$cat = $categories;
+								}
+							?>
+							@if(strtoupper($cat->name) != 'LAB RECEPTION')
 								<tr>
-									<td>{{$test_type->name}}</td>
-									<?php $total = 0;?>
-									@foreach($period as $month)
-										<td align='center'>
-											{{$data[$category->name][$test_type->name][$month->format('Y-m')]}}
-											<?php $total += $data[$category->name][$test_type->name][$month->format('Y-m')];?>
-										</td>
+									<th>TESTS</th>
+									<?php $count = 2;?>
+									@foreach($period as $dt)
+										<td align='center'><b>{{$dt->format('M')}}</b></td>
+										<?php $count++; ?>
 									@endforeach
-									<td align='center'>{{$total}}</td>
+									<td align='center'><b>Total</b></td>
 								</tr>
-							@endforeach
-						@endif
-					@endforeach
+								<tr>
+									<td colspan="{{$count}}"><b>{{$cat->name}}</b></td>
+								</tr>
+								@foreach($cat->testTypes as $test_type)
+									<tr>
+										<td>{{$test_type->name}}</td>
+										<?php $total = 0;?>
+										@foreach($period as $month)
+											<td align='center'>
+												{{$data[$cat->name][$test_type->name][$month->format('Y-m')]}}
+												<?php $total += $data[$cat->name][$test_type->name][$month->format('Y-m')];?>
+											</td>
+										@endforeach
+										<td align='center'>{{$total}}</td>
+									</tr>
+								@endforeach
+							@endif
+							<?php
+								if(count($categories) == 1)
+								{
+									break;
+								}
+							?>
+						@endforeach
+					
 				</tbody>
 			</table>
 			<?php //echo $patients->links(); 
