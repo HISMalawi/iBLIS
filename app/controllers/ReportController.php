@@ -3366,6 +3366,22 @@ class ReportController extends \BaseController {
 		$start_date = Input::get('start', $date);
 		$end_date = Input::get('end', $date);
 
+
+		$product_wards = array();
+		$product_ranges = array();
+		$product_age_ranges = array();
+		$product_data = array();
+
+		//get blood products
+		if($lab_section_id == TestCategory::getTestCatIdByName('Blood Bank'))
+		{
+			$blood_products = $this->getBloodProductTypes($start_date, $end_date);
+			$product_wards = $blood_products['wards'];
+			$product_ranges = $blood_products['ranges'];
+			$product_age_ranges = $blood_products['age_ranges'];
+			$product_data = $blood_products['data'];
+		}
+
 		//get critical values
 		$critical_with_wards = $this->critical_values($lab_section_id, $start_date, $end_date);
 		$critical_values = $critical_with_wards['critical_values'];
@@ -3440,28 +3456,12 @@ class ReportController extends \BaseController {
 					$test_per_ward = DB::select(DB::raw($query)); 
 					
 					$count = count($test_per_ward);
-					/*$number_of_tests += $count;
-					if($count)
-					{
-						
-						for($i=0; $i<$count; $i++)
-						{
-							$test = Test::find($test_per_ward[$i]->test_id); 
-						}
-					}*/
-
 	            	$data[$test_type_name][$month_name][$ward] = $count;
         		}
-
-        		/*if($number_of_tests != 0)
-        		{
-        			$turnaroundTime = $turnaroundTime/$number_of_tests;
-        		}
-        		$temp_test = new Test;
-        		$interval = $temp_test->getShortFormatTurnaroundTime($turnaroundTime);
-        		$tat[$test_type_name][$month_name] = $interval;*/
 			}
 		}
+
+
 
 		$view_url = "reports.departments.byward";
 
@@ -3496,6 +3496,10 @@ class ReportController extends \BaseController {
         	->with('category_names', $category_names)
         	->with('period', $period)
         	->with('wards', $wards)
+        	->with('product_wards', $product_wards)
+        	->with('product_ranges', $product_ranges)
+        	->with('product_age_ranges', $product_age_ranges)
+        	->with('product_data', $product_data)
         	->with('critical_wards', $critical_wards)
         	->with('critical_measures', $critical_measures)
         	->with('critical_values', $critical_values)
@@ -3924,6 +3928,68 @@ class ReportController extends \BaseController {
 	        $sheet->loadView('reports.rejected.export', ['rejected_specimens' => $rejected_counts, 'rejected_wards' => $wards, 'rejection_reasons'=> $reasons, 'test_types' => $test_types, 'categories' => $categories, 'category' => $lab_section_name, 'test_type_names' => $test_type_names, 'test_type_name' => $test_type_name]);
 	      });
 	    })->download('xls');
+  	}
+
+  	public function getBloodProductTypes($start_date, $end_date)
+  	{
+  		$date = date('Y-m-d');
+  		$data = array();
+  		$cross_match_test = TestType::find(TestType::getTestTypeIdByTestName('Cross-Match'));
+  		$measure = Measure::find(Measure::getMeasureIdByName('Product Type'));
+  		$ranges = $measure->measureRanges;
+  		$wards =array();
+  		$ageRanges = array('0-5'=>'Under 5 years', 
+	 					'6-14'=>'5 years and over but under 14 years', 
+	 					'15-120'=>'14 years and above');
+  		foreach($ranges as $range)
+  		{
+  			$result = $range->alphanumeric;
+  			//echo $result;
+  			//count results for each range
+  			foreach($ageRanges as $key => $value)
+  			{
+  				$limits = explode('-', $key);
+  				$lower = $limits[0];
+  				$upper = $limits[1];
+
+	  			$query = "SELECT test_results.result AS result, patients.gender as gender, visits.ward_or_location as ward FROM test_results JOIN tests ON test_results.test_id = tests.id JOIN visits ON tests.visit_id = visits.id JOIN patients ON visits.patient_id = patients.id WHERE tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND tests.time_created BETWEEN '$start_date' AND '$end_date' AND test_results.result = '$result' AND YEAR('$date') - YEAR(patients.dob) BETWEEN '$lower' AND '$upper';";
+
+	  			//echo $query;
+
+	  			$range_results = DB::select(DB::raw($query));
+
+	  			foreach($range_results as $range_result)
+	  			{
+	  				$ward = $range_result->ward;
+	  				if(!in_array($ward, $wards))
+	  				{
+	  					array_push($wards, $ward);
+	  				}
+	  				$gender = $range_result->gender;
+	  				if($gender)
+	  				{
+	  					$gender = 'FEMALE';
+	  				}
+	  				else
+	  				{
+	  					$gender = 'MALE';
+	  				}
+
+	  				if(isset($data[$result][$ward][$gender][$key]))
+	  				{
+	  					$data[$result][$ward][$gender][$key] += 1;
+	  				}
+	  				else
+	  				{
+	  					$data[$result][$ward][$gender][$key] = 1;
+	  				}
+	  			}
+  			}
+  	
+  		}
+
+  		return array('data' => $data, 'wards' => $wards, 'ranges' => $ranges, 'age_ranges' => $ageRanges);
+
   	}
 
 }

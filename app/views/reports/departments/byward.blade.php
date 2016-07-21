@@ -167,6 +167,67 @@
 				@endif
 			</div>
 			<br>
+
+			<!--table for blood products-->
+			<?php $count_product_wards = count($product_wards);?>
+			@if($count_product_wards)
+				<p align='center'><b>BLOOD PRODUCT ISSUED</b></p>
+				<div class="table-responsive" style="overflow-x: scroll;">
+					
+					<table class="table table-bordered table-hover table-condensed table-sm">
+						<thead>
+							<tr>
+								<th>Blood Product</th>
+								<th>&nbsp;</th>
+								<th colspan="{{$count_product_wards}}">Wards</th>
+							</tr>
+						</thead>
+						<tbody>
+						
+							@foreach($product_ranges as $range)
+								<tr>
+									<td style="width:200px!important;">{{$range->alphanumeric}}</td>
+									<td>&nbsp;</td>
+									@foreach($product_wards as $product_ward)
+										<td colspan='3' valign='bottom' align='center'>{{$product_ward}}</td>	
+									@endforeach
+								</tr>
+						
+								<tr>
+									<td style="width:200px!important;">&nbsp;</td>
+									<td>Age-Ranges</td>
+									@foreach($product_wards as $product_ward)
+										@foreach($product_age_ranges as $age_rage => $title)
+											<td>{{$age_rage}}</td>
+										@endforeach	
+									@endforeach
+								</tr>
+								<tr>
+									<td style="width:200px!important;">&nbsp;</td>
+									<td>Female</td>
+									@foreach($product_wards as $product_ward)
+										@foreach($product_age_ranges as $age_rage => $title)
+											<td>{{isset($product_data[$range->alphanumeric][$product_ward]['FEMALE'][$age_rage])?$product_data[$range->alphanumeric][$product_ward]['FEMALE'][$age_rage]:0}}</td>
+										@endforeach	
+									@endforeach
+								</tr>
+								<tr>
+									<td style="width:200px!important;">&nbsp;</td>
+									<td>Male</td>
+									@foreach($product_wards as $product_ward)
+										@foreach($product_age_ranges as $age_rage => $title)
+											<td>{{isset($product_data[$range->alphanumeric][$product_ward]['MALE'][$age_rage])?$product_data[$range->alphanumeric][$product_ward]['MALE'][$age_rage]:0}}</td>
+										@endforeach	
+									@endforeach
+								</tr>
+								
+							@endforeach
+						</tbody>	
+					</table>
+				</div>
+			@endif
+			<!--end table for blood products-->
+
 				
 			<!--table for critical values-->
 			@if(count($critical_wards))
