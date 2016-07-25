@@ -4026,7 +4026,7 @@ class ReportController extends \BaseController {
   							->get();
   			$targetTAT = $test_type->targetTAT;
   			$targetTAT = $test_type->formatTime($targetTAT, $time_format);
-  			$targetTAT = round($targetTAT[0]);
+  			$targetTAT = round($targetTAT[0], 3);
 
 
   			foreach($tests as $test)
@@ -4043,7 +4043,7 @@ class ReportController extends \BaseController {
   			}
   			$avgtat .= 'hrs';
   			$avgtat = $test_type->formatTime($avgtat, $time_format);
-  			$avgtat = round($avgtat[0], 2);
+  			$avgtat = round($avgtat[0], 3);
   			
   			$data[$test_type->name] = array('tat' => $avgtat, 'target' => $targetTAT);	
   			
