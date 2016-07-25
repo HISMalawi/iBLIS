@@ -309,7 +309,7 @@ class Test extends Eloquent
 		return $ftat;
 	}
 
-	public function getShortFormatTurnaroundTime($tat)
+	static function getShortFormatTurnaroundTime($tat)
 	{
 	
 		$ftat = "";
@@ -743,4 +743,6 @@ class Test extends Eloquent
 	public function external(){
 		return ExternalDump::where('lab_no', '=', $this->external_id)->get()->first();
 	}
+
+	
 }

@@ -27,6 +27,7 @@
 		case 'departmentreport': 
 		case 'tbreport':
 		case 'rejected': 
+		case 'turnaround':
 		case 'dailylog': 
 		case 'prevalence':
 		case 'surveillance':
@@ -239,6 +240,12 @@
 						<div><a href="{{ URL::route('rejected.sample')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{trans('messages.rejections-report')}}</a>
+						</div>
+					</li>
+					<li>
+						<div><a href="{{ URL::route('turnaround.report')}}">
+							<span class="glyphicon glyphicon-tag"></span>
+							{{trans('messages.turnaround-report')}}</a>
 						</div>
 					</li>
 					<!--li>

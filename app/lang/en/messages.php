@@ -453,6 +453,7 @@ return array(
     'greater-five'    =>  '≥ 5 Years',
     'laboratory-report' => 'LABORATORY REPORT',
     'rejections-report' => 'Rejected Samples',
+    'turnaround-report' => 'Turn Around Time',
 
     /* Infection Report*/
     'age-ranges'    =>  'Age Ranges',

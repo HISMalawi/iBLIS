@@ -3356,7 +3356,6 @@ class ReportController extends \BaseController {
 
 	public function department_report()
 	{
-		
 
 		$default_lab_section = TestCategory::select('id')->orderBy('name')->first();
 		$default_lab_section_id = $default_lab_section->id;
@@ -3990,6 +3989,77 @@ class ReportController extends \BaseController {
 
   		return array('data' => $data, 'wards' => $wards, 'ranges' => $ranges, 'age_ranges' => $ageRanges);
 
+  	}
+
+
+  	public function getTat()
+  	{
+  		$data = array();
+  		//parameters
+  		$test_category_id = Input::get('lab_section', TestCategory::orderBy('name')->first()->id);
+  		$start_date = Input::get('start', date('Y-m-d'));
+  		$end_date = Input::get('end', date('Y-m-d'));
+  		$time_format = Input::get('time_format', 'hours');
+
+  		$category = TestCategory::find($test_category_id);
+  		$categories = TestCategory::orderBy('name')->get();
+  		$category_name = array();
+  		$test_types = TestCategory::find($test_category_id)->testTypes;
+  		$test_type_list = TestCategory::find($test_category_id)->testTypes->lists('name');
+  		$time_formats = ['minutes' => 'minutes', 'hours' => 'hours', 'days' => 'days', 'weeks' =>'weeks'];
+
+
+
+  		foreach($categories as $cat)
+  		{
+  			$category_names[$cat->id] = $cat->name;
+  		}
+
+  		foreach($test_types as $test_type)
+  		{
+  			$tat = 0;
+  			$count = 0;
+  			$avgtat = 0;
+  			$tests = Test::where('test_type_id', '=', $test_type->id)
+  							->where('test_status_id', '=', Test::VERIFIED)
+  							->whereBetween('time_created', array($start_date, $end_date))
+  							->get();
+  			$targetTAT = $test_type->targetTAT;
+  			$targetTAT = $test_type->formatTime($targetTAT, $time_format);
+  			$targetTAT = round($targetTAT[0]);
+
+
+  			foreach($tests as $test)
+  			{
+  				$turnaroundtime = $test->getTurnaroundTime();
+  				$tat += $turnaroundtime;
+  				$count++;
+  			}
+
+  			if($count != 0)
+  			{
+  				$avgtat = ceil($tat/$count);
+  				$avgtat = ceil($avgtat/(60*60));
+  			}
+  			$avgtat .= 'hrs';
+  			$avgtat = $test_type->formatTime($avgtat, $time_format);
+  			$avgtat = round($avgtat[0], 2);
+  			
+  			$data[$test_type->name] = array('tat' => $avgtat, 'target' => $targetTAT);	
+  			
+  			 
+  		}
+
+  		return View::make('reports.departments.turnaroundtime')
+			->with('data', $data)
+			->with('test_type_list', $test_type_list)
+			->with('categories', $categories)
+			->with('category', $category)
+			->with('time_formats', $time_formats)
+			->with('category_names', $category_names)
+			->withInput(Input::all())
+			->with('available_printers', Config::get('kblis.A4_printers'));
+		
   	}
 
 }

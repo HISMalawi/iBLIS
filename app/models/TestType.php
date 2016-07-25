@@ -435,4 +435,125 @@ class TestType extends Eloquent
 		}
 		return count($tests);
 	}
+
+	public function formatTime($string, $format)
+	{
+		$length = strlen($string);
+		$number = '';
+		$unit = '';
+		for($i=0; $i < $length; $i++)
+		{
+			if(is_numeric($string{$i}))
+			{
+				$number .= $string{$i};
+			}
+			else
+			{
+				$unit .= $string{$i};
+			}
+		}
+
+		$unit = str_replace(' ', '', $unit);
+
+
+		switch ($format) {
+			case 'minutes':
+				if(preg_match('/^min.*/i', $unit))
+				{
+					$number = intval($number);
+				}
+				elseif(preg_match('/^h.*/i', $unit))
+				{
+					$number = intval($number) * 60;
+				}
+				elseif(preg_match('/^d.*/i', $unit))
+				{
+					$number = intval($number) * 24 * 60;
+				}
+				elseif(preg_match('/^w.*/i', $unit))
+				{
+					$number = intval($number) * 7 * 24 * 60;
+				}
+				elseif(preg_match('/^m.*/i', $unit))
+				{
+					$number = intval($number) * 28 * 24 * 60;
+				}
+				break;
+
+			case 'hours':
+				if(preg_match('/^min.*/i', $unit))
+				{
+					$number = intval($number)/60;
+				}
+				elseif(preg_match('/^h.*/i', $unit))
+				{
+					$number = intval($number);
+				}
+				elseif(preg_match('/^d.*/i', $unit))
+				{
+					$number = intval($number) * 24;
+				}
+				elseif(preg_match('/^w.*/i', $unit))
+				{
+					$number = intval($number) * 7 * 24;
+				}
+				elseif(preg_match('/^m.*/i', $unit))
+				{
+					$number = intval($number) * 28 * 24;
+				}
+				break;
+
+			case 'days':
+				if(preg_match('/^min.*/i', $unit))
+				{
+					$number = intval($number)/(60*24);
+				}
+				elseif(preg_match('/^h.*/i', $unit))
+				{
+					$number = intval($number)/24;
+				}
+				elseif(preg_match('/^d.*/i', $unit))
+				{
+					$number = intval($number);
+				}
+				elseif(preg_match('/^w.*/i', $unit))
+				{
+					$number = intval($number)/7;
+				}
+				elseif(preg_match('/^m.*/i', $unit))
+				{
+					$number = intval($number)*28;
+				}
+				break;
+
+				case 'weeks':
+				if(preg_match('/^min.*/i', $unit))
+				{
+					$number = intval($number)/(60*24*7);
+				}
+				elseif(preg_match('/^h.*/i', $unit))
+				{
+					$number = intval($number)/(24*7);
+				}
+				elseif(preg_match('/^d.*/i', $unit))
+				{
+					$number = intval($number)/7;
+				}
+				elseif(preg_match('/^w.*/i', $unit))
+				{
+					$number = intval($number);
+				}
+				elseif(preg_match('/^m.*/i', $unit))
+				{
+					$number = intval($number)/4;
+				}
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+
+		return array($number, $format);
+	}
 }

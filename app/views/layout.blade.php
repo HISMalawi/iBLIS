@@ -15,6 +15,8 @@
         <script type="text/javascript" src="{{ URL::asset('js/dataTables.bootstrap.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/script.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('js/spin.js') }} "></script>
+        <script type="text/javascript" src="{{ URL::asset('highcharts/highcharts.js') }} "></script>
+        <script type="text/javascript" src="{{ URL::asset('highcharts/exporting.js') }} "></script>
         <title>{{ Config::get('kblis.name') }} {{ Config::get('kblis.version') }}</title>
     </head>
     <body>

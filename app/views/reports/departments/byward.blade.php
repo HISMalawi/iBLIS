@@ -171,7 +171,7 @@
 			<!--table for blood products-->
 			<?php $count_product_wards = count($product_wards);?>
 			@if($count_product_wards)
-				<p align='center'><b>BLOOD PRODUCT ISSUED</b></p>
+				<p align='center'><b>BLOOD PRODUCTS ISSUED</b></p>
 				<div class="table-responsive" style="overflow-x: scroll;">
 					
 					<table class="table table-bordered table-hover table-condensed table-sm">

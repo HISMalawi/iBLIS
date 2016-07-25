@@ -473,6 +473,11 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@tb_report"
         ));
 
+         Route::match(['get', 'post'], "/turnaroundtime", array(
+            "as"   => "turnaround.report",
+            "uses" => "ReportController@getTat"
+        ));
+
        /*  Route::match(['get', 'post'], "/rejected", array(
             "as"   => "rejected.sample",
             "uses" => "ReportController@rejected_specimens"
