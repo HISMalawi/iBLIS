@@ -460,76 +460,76 @@ class TestType extends Eloquent
 			case 'minutes':
 				if(preg_match('/^min.*/i', $unit))
 				{
-					$number = intval($number);
+					$number = (float)($number);
 				}
 				elseif(preg_match('/^h.*/i', $unit))
 				{
-					$number = intval($number) * 60;
+					$number = (float)($number) * 60;
 				}
 				elseif(preg_match('/^d.*/i', $unit))
 				{
-					$number = intval($number) * 24 * 60;
+					$number = (float)($number) * 24 * 60;
 				}
 				elseif(preg_match('/^w.*/i', $unit))
 				{
-					$number = intval($number) * 7 * 24 * 60;
+					$number = (float)($number) * 7 * 24 * 60;
 				}
 				elseif(preg_match('/^m.*/i', $unit))
 				{
-					$number = intval($number) * 28 * 24 * 60;
+					$number = (float)($number) * 28 * 24 * 60;
 				}
 				break;
 
 			case 'hours':
 				if(preg_match('/^min.*/i', $unit))
 				{
-					$number = intval($number)/60;
+					$number = (float)($number)/60;
 				}
 				elseif(preg_match('/^h.*/i', $unit))
 				{
-					$number = intval($number);
+					$number = (float)($number);
 				}
 				elseif(preg_match('/^d.*/i', $unit))
 				{
-					$number = intval($number) * 24;
+					$number = (float)($number) * 24;
 				}
 				elseif(preg_match('/^w.*/i', $unit))
 				{
-					$number = intval($number) * 7 * 24;
+					$number = (float)($number) * 7 * 24;
 				}
 				elseif(preg_match('/^m.*/i', $unit))
 				{
-					$number = intval($number) * 28 * 24;
+					$number = (float)($number) * 28 * 24;
 				}
 				break;
 
 			case 'days':
 				if(preg_match('/^min.*/i', $unit))
 				{
-					$number = intval($number)/(60*24);
+					$number = (float)($number)/(60*24);
 				}
 				elseif(preg_match('/^h.*/i', $unit))
 				{
-					$number = intval($number)/24;
+					$number = (float)($number)/24;
 				}
 				elseif(preg_match('/^d.*/i', $unit))
 				{
-					$number = intval($number);
+					$number = (float)($number);
 				}
 				elseif(preg_match('/^w.*/i', $unit))
 				{
-					$number = intval($number)/7;
+					$number = (float)($number)/7;
 				}
 				elseif(preg_match('/^m.*/i', $unit))
 				{
-					$number = intval($number)*28;
+					$number = (float)($number)*28;
 				}
 				break;
 
 				case 'weeks':
 				if(preg_match('/^min.*/i', $unit))
 				{
-					$number = intval($number)/(60*24*7);
+					$number = (float)($number)/(60*24*7);
 				}
 				elseif(preg_match('/^h.*/i', $unit))
 				{
@@ -538,15 +538,15 @@ class TestType extends Eloquent
 				}
 				elseif(preg_match('/^d.*/i', $unit))
 				{
-					$number = intval($number)/7;
+					$number = (float)($number)/7;
 				}
 				elseif(preg_match('/^w.*/i', $unit))
 				{
-					$number = intval($number);
+					$number = (float)($number);
 				}
 				elseif(preg_match('/^m.*/i', $unit))
 				{
-					$number = intval($number)/4;
+					$number = (float)($number)/4;
 				}
 				break;
 			
