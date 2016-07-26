@@ -4026,7 +4026,7 @@ class ReportController extends \BaseController {
   							->get();
   			$targetTAT = $test_type->targetTAT;
   			$targetTAT = $test_type->formatTime($targetTAT, $time_format);
-  			$targetTAT = round($targetTAT[0], 3);
+  			$targetTAT = number_format($targetTAT[0], 3, '.', '');
 
 
   			foreach($tests as $test)
@@ -4038,18 +4038,21 @@ class ReportController extends \BaseController {
 
   			if($count != 0)
   			{
+
   				$avgtat = ceil($tat/$count);
   				$avgtat = ceil($avgtat/(60*60));
   			}
-  			$avgtat .= 'hrs';
+  			$avgtat .= ' hrs';
   			$avgtat = $test_type->formatTime($avgtat, $time_format);
-  			$avgtat = round($avgtat[0], 3);
-  			
+  			//echo $avgtat[0]."<br>";
+
+  			$avgtat = number_format($avgtat[0], 3, '.', '');
+
   			$data[$test_type->name] = array('tat' => $avgtat, 'target' => $targetTAT);	
   			
   			 
   		}
-
+  		//echo round(0.07142857142857142, 3);
   		return View::make('reports.departments.turnaroundtime')
 			->with('data', $data)
 			->with('test_type_list', $test_type_list)

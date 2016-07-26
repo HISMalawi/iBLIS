@@ -533,7 +533,8 @@ class TestType extends Eloquent
 				}
 				elseif(preg_match('/^h.*/i', $unit))
 				{
-					$number = intval($number)/(24*7);
+					$number = (float)($number)/(24*7);
+
 				}
 				elseif(preg_match('/^d.*/i', $unit))
 				{
