@@ -4026,8 +4026,14 @@ class ReportController extends \BaseController {
   							->get();
   			$targetTAT = $test_type->targetTAT;
   			$targetTAT = $test_type->formatTime($targetTAT, $time_format);
+			if(is_numeric($targetTAT[0]))
+			{
   			$targetTAT = number_format($targetTAT[0], 3, '.', '');
-
+			}
+			else
+			{
+			$targetTAT = 0;
+			}
 
   			foreach($tests as $test)
   			{
@@ -4044,7 +4050,8 @@ class ReportController extends \BaseController {
   			}
   			$avgtat .= ' hrs';
   			$avgtat = $test_type->formatTime($avgtat, $time_format);
-  			//echo $avgtat[0]."<br>";
+  		//	echo "this is the average ".$avgtat[0]."<br>";
+			
 
   			$avgtat = number_format($avgtat[0], 3, '.', '');
 
@@ -4052,6 +4059,7 @@ class ReportController extends \BaseController {
   			
   			 
   		}
+
   		//echo round(0.07142857142857142, 3);
   		return View::make('reports.departments.turnaroundtime')
 			->with('data', $data)
