@@ -3432,14 +3432,16 @@ class ReportController extends \BaseController {
 			$test_type_id = $test_type->id;
 			$test_ids = array();
             
-            $count = 1;
+            $counter = 1;
 			$ranges = count(iterator_to_array($period, false));
 			foreach ($period as $dt) 
         	{
         	
             	$month_name = $dt->format('M');
-            	$first_date = ($count == 1)?$start_date:$dt->format('Y-m-d');
-				$last_date = ($count == $ranges)?$end_date:$a_date = date("Y-m-t", strtotime($dt->format('Y-m-d')));
+            	$first_date = ($counter == 1)?$start_date:$dt->format('Y-m-d');
+				$last_date = ($counter == $ranges)?$end_date: date("Y-m-t", strtotime($dt->format('Y-m-d')));
+
+			
 
             	$number_of_tests = 0;
 
@@ -3457,8 +3459,11 @@ class ReportController extends \BaseController {
 					
 					$count = count($test_per_ward);
 	            	$data[$test_type_name][$month_name][$ward] = $count;
+	            	
         		}
+        		$counter++;
 			}
+		
 		}
 
 
@@ -3838,10 +3843,8 @@ class ReportController extends \BaseController {
 
 				$default_test_type_id = TestType::select('id')->orderBy('name')->first()->id;
 				$default_lab_section_id = TestCategory::select('id')->orderBy('name')->first()->id;
-
 				$test_type_id = Input::get('test_type', $default_test_type_id);
 				$category_id = Input::get('lab_section', $default_lab_section_id);
-
 				$lab_section_name = TestCategory::find($category_id)->name;
 				$test_type_name = TestType::find($category_id)->name;
 				
