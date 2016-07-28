@@ -125,8 +125,14 @@
 		<?php $wards = array_unique($wards);?>
 		<div class="panel-body">
 			@include("reportHeader")
-			<b>{{'As of'.' '.date('d-m-Y')}}</b>
-			<hr>
+			<?php 
+				$from = isset($input['start'])?$input['start']:date('d-m-Y');
+			 	$to = isset($input['end'])?$input['end']:date('d-m-Y');
+				$to = new Datetime($to);
+				$from = new Datetime($from);
+			?>
+			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
+			
 			<div class="table-responsive" style="width: 100%; overflow-x: scroll;">
 				@if(count($wards))
 				<table class="datatable table table-striped table-hover table-condensed">
@@ -163,7 +169,7 @@
 			
 
 				@else
-					<p align='center'>There are no tests in the {{$category->name}} Lab Section to display.</p>
+					<p align='center'>There are no tests in the {{$category->name}} Lab Section for the period selected to display.</p>
 				@endif
 			</div>
 			<br>

@@ -300,7 +300,7 @@
 														<th>{{ $test->testType->name }}</th>
 														<th>
 
-															@if($test->testType->name == 'Cross-match')
+															@if($test->testType->name == 'Cross-match' && $test->isVerified())
 																<a class="btn btn-sm btn-success pull-left" id="edit-{{$test->id}}-link"
 																   href="javascript:printPackDetails({{$test->id}});"
 																   title="{{trans('messages.edit-test-results')}}">

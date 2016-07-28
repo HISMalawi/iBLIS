@@ -3342,6 +3342,7 @@ class ReportController extends \BaseController {
 
 		}
 
+
         return View::make($view_url)
         	->with('data', $data)
         	->with('categories', $categories)
@@ -3567,37 +3568,35 @@ class ReportController extends \BaseController {
 
 		}
 
+		$view_url = "reports.tb.index";
 
-		if(!empty(Input::get('printer_name')))
-		{
+		if(Input::has('pdf'))
+        {
+        	if(!Input::has('page'))
+        	{
+				$url = Request::url()."?pdf=true&page=true&year=$year&lab_section=$lab_section_id";
 
-			$url = Request::url();
-
-			$fileName = "/var/www/html/tbreport_".$date.".pdf";
-			$printer = Input::get("printer_name");
-
-			$myhtml = View::make('reports.tb.export')
-        	->with('years', $years)
-        	->with('micro_results', $micro_results)
-        	->with('microscopy_data', $micro_data)
-        	->with('genex_results', $genex_results)
-        	->with('genex_data', $genex_data)
-        	->with('period', $period)
-        	->withInput(Input::all())
-        	->render();
+				$fileName = "tbreport_".$date.".pdf";
+				$printer = Input::get("printer_name");
 
 
-			$tempfile = fopen("/var/www/html/temp.html", "w");
-			fwrite($tempfile, $myhtml);
-			fclose($tempfile);
-			
-			$this->printReport($fileName, $printer);
-			unlink('/var/www/html/temp.html');
+				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileName");
+				$process->run();
+
+				$process = new Process("lp -d $printer $fileName");
+				$process->run();
+
+				$process = new Process("rm $fileName && rm tbreport*.pdf");
+				$process->run();
+			}
+			else
+			{
+				$view_url = "reports.tb.export";
+			}
 		}
+		
 
-
-
-		return View::make('reports.tb.index')
+		return View::make($view_url)
         	->with('data', $data)
         	->with('measures', $measures)
         	->with('measure_results', $results_per_measure)
@@ -3610,9 +3609,6 @@ class ReportController extends \BaseController {
 	public function rejected_specimens()
 	{
 		$date = date('Y-m-d');
-		$default_year = date('Y');
-		//$default_lab_section = TestCategory::select('id')->orderBy('name')->first();
-		//$default_test_type_id = TestType::select('id')->orderBy('name')->first();
 		$default_test_type_id = TestType::select('id')->orderBy('name')->first()->id;
 		$default_lab_section_id = TestCategory::select('id')->orderBy('name')->first()->id;
 
@@ -3622,12 +3618,6 @@ class ReportController extends \BaseController {
 		$lab_section_name = TestCategory::find($category_id)->name;
 		$test_type_name = TestType::find($test_type_id)->name;
 		
-		
-
-
-		$year = Input::get('year', $default_year);
-		$start_date = $year.'-01-01';
-		$end_date = $year.'-12-31';
 
 		$startdate = Input::get('start', date('Y-m-d'));
 		$enddate = Input::get('end', date('Y-m-d'));
@@ -3744,8 +3734,6 @@ class ReportController extends \BaseController {
 		$critical_values = array();
 		$critical_measures = array();
 		$critical_wards = array();
-		//$category = TestCategory::find($category_id);
-
 
 		//get all test results of a category
 		$query = "SELECT test_results.* FROM test_results JOIN tests ON test_results.test_id = tests.id JOIN test_types ON tests.test_type_id = test_types.id JOIN test_categories ON test_types.test_category_id = test_categories.id WHERE test_categories.id = '$category_id' AND tests.time_created BETWEEN '$start_date' AND '$end_date';";
@@ -3839,92 +3827,85 @@ class ReportController extends \BaseController {
 		return ['critical_values' => $critical_values, 'critical_measures' => $critical_measures, 'wards' =>$critical_wards];	
 	}
 
+	//export('martin')
+
 	public function export()
 	{
 	    Excel::create('Rejected', function($excel)
 	    {
-	      $excel->sheet('Rejected', function($sheet) 
-	      {
-	        $default_year = date('Y');
-		//$default_lab_section = TestCategory::select('id')->orderBy('name')->first();
-		//$default_test_type_id = TestType::select('id')->orderBy('name')->first();
-		$default_test_type_id = TestType::select('id')->orderBy('name')->first()->id;
-		$default_lab_section_id = TestCategory::select('id')->orderBy('name')->first()->id;
+	     	$excel->sheet('Rejected', function($sheet) 
+	      	{
 
-		$test_type_id = Input::get('test_type', $default_test_type_id);
-		$category_id = Input::get('lab_section', $default_lab_section_id);
+				$default_test_type_id = TestType::select('id')->orderBy('name')->first()->id;
+				$default_lab_section_id = TestCategory::select('id')->orderBy('name')->first()->id;
 
-		$lab_section_name = TestCategory::find($category_id)->name;
-		$test_type_name = TestType::find($category_id)->name;
-		
-		
+				$test_type_id = Input::get('test_type', $default_test_type_id);
+				$category_id = Input::get('lab_section', $default_lab_section_id);
 
+				$lab_section_name = TestCategory::find($category_id)->name;
+				$test_type_name = TestType::find($category_id)->name;
+				
+				$startdate = Input::get('start', date('Y-m-d'));
+				$enddate = Input::get('end', date('Y-m-d'));
 
-		$year = Input::get('year', $default_year);
-		$start_date = $year.'-01-01';
-		$end_date = $year.'-12-31';
+				$sections = TestCategory::orderBy('name')->get();
+				$categories  = array();
+				foreach($sections as $cat)
+				{
+					$categories[$cat->id] = $cat->name;
+				}
+			
+				$test_type_objs = TestType::orderBy('name')->get();
+				$test_type_names = array();
+				foreach($test_type_objs as $test_type_obj)
+				{
+					$test_type_names[$test_type_obj->id] = $test_type_obj->name;
+				}
 
-		$startdate = Input::get('start', date('Y-m-d'));
-		$enddate = Input::get('end', date('Y-m-d'));
+				$rejected_counts = array();
+				$wards = array();
+				$test_types = array();
+				$checked = array();
+				$reasons = array();
+				
+				//get all rejected specimen of a category
+				$query = "SELECT specimens.* FROM specimens JOIN tests ON specimens.id = tests.specimen_id JOIN test_types ON tests.test_type_id = test_types.id JOIN test_categories ON test_types.test_category_id = test_categories.id WHERE test_categories.id = '$category_id' AND specimens.time_rejected IS NOT NULL AND tests.time_created	BETWEEN '$startdate' AND '$enddate';";
 
-		$sections = TestCategory::orderBy('name')->get();
-		$categories  = array();
-		foreach($sections as $cat)
-		{
-			$categories[$cat->id] = $cat->name;
-		}
-	
-		$test_type_objs = TestType::orderBy('name')->get();
-		$test_type_names = array();
-		foreach($test_type_objs as $test_type_obj)
-		{
-			$test_type_names[$test_type_obj->id] = $test_type_obj->name;
-		}
-
-		$rejected_counts = array();
-		$wards = array();
-		$test_types = array();
-		$checked = array();
-		$reasons = array();
-		
-		//get all rejected specimen of a category
-		$query = "SELECT specimens.* FROM specimens JOIN tests ON specimens.id = tests.specimen_id JOIN test_types ON tests.test_type_id = test_types.id JOIN test_categories ON test_types.test_category_id = test_categories.id WHERE test_categories.id = '$category_id' AND specimens.time_rejected IS NOT NULL AND tests.time_created	BETWEEN '$startdate' AND '$enddate';";
-
-		$rejected_specimens = DB::select(DB::raw($query));
-		foreach ($rejected_specimens as $rejected_specimen) 
-		{
-  
-         	$test = Specimen::find($rejected_specimen->id)->test;
-         	$test_type_name = $test->testType->name;
-         	$ward = $test->visit->ward_or_location;
+				$rejected_specimens = DB::select(DB::raw($query));
+				foreach ($rejected_specimens as $rejected_specimen) 
+				{
+		  
+		         	$test = Specimen::find($rejected_specimen->id)->test;
+		         	$test_type_name = $test->testType->name;
+		         	$ward = $test->visit->ward_or_location;
 
 
-       		$reason_name = RejectionReason::find($rejected_specimen->rejection_reason_id)->reason;
+		       		$reason_name = RejectionReason::find($rejected_specimen->rejection_reason_id)->reason;
 
-     		if(!in_array($rejected_specimen->id, $checked))
-     		{
-         		if(!isset($rejected_counts[$reason_name][$ward][$test_type_name]))
-         		{
-         			$rejected_counts[$reason_name][$ward][$test_type_name] = 1;
-         			array_push($wards, $ward);
-         			array_push($reasons, $reason_name);
-         			array_push($test_types, $test_type_name);
-         		}
-         		else
-         		{
-         			$rejected_counts[$reason_name][$ward][$test_type_name] += 1;
-         			array_push($wards, $ward);
-         			array_push($reasons, $reason_name);
-         			array_push($test_types, $test_type_name);
-         		}
-     		}
-     		array_push($checked, $rejected_specimen->id);
-		}
-		$wards = array_unique($wards);
+		     		if(!in_array($rejected_specimen->id, $checked))
+		     		{
+		         		if(!isset($rejected_counts[$reason_name][$ward][$test_type_name]))
+		         		{
+		         			$rejected_counts[$reason_name][$ward][$test_type_name] = 1;
+		         			array_push($wards, $ward);
+		         			array_push($reasons, $reason_name);
+		         			array_push($test_types, $test_type_name);
+		         		}
+		         		else
+		         		{
+		         			$rejected_counts[$reason_name][$ward][$test_type_name] += 1;
+		         			array_push($wards, $ward);
+		         			array_push($reasons, $reason_name);
+		         			array_push($test_types, $test_type_name);
+		         		}
+		     		}
+		     		array_push($checked, $rejected_specimen->id);
+				}
+				$wards = array_unique($wards);
 
-		$reasons = array_unique($reasons);
-		$test_types = array_unique($test_types);
-	        $sheet->loadView('reports.rejected.export', ['rejected_specimens' => $rejected_counts, 'rejected_wards' => $wards, 'rejection_reasons'=> $reasons, 'test_types' => $test_types, 'categories' => $categories, 'category' => $lab_section_name, 'test_type_names' => $test_type_names, 'test_type_name' => $test_type_name]);
+				$reasons = array_unique($reasons);
+				$test_types = array_unique($test_types);
+			        $sheet->loadView('reports.rejected.export', ['rejected_specimens' => $rejected_counts, 'rejected_wards' => $wards, 'rejection_reasons'=> $reasons, 'test_types' => $test_types, 'categories' => $categories, 'category' => $lab_section_name, 'test_type_names' => $test_type_names, 'test_type_name' => $test_type_name]);
 	      });
 	    })->download('xls');
   	}
@@ -3943,8 +3924,6 @@ class ReportController extends \BaseController {
   		foreach($ranges as $range)
   		{
   			$result = $range->alphanumeric;
-  			//echo $result;
-  			//count results for each range
   			foreach($ageRanges as $key => $value)
   			{
   				$limits = explode('-', $key);
@@ -3953,7 +3932,6 @@ class ReportController extends \BaseController {
 
 	  			$query = "SELECT test_results.result AS result, patients.gender as gender, visits.ward_or_location as ward FROM test_results JOIN tests ON test_results.test_id = tests.id JOIN visits ON tests.visit_id = visits.id JOIN patients ON visits.patient_id = patients.id WHERE tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') AND tests.time_created BETWEEN '$start_date' AND '$end_date' AND test_results.result = '$result' AND YEAR('$date') - YEAR(patients.dob) BETWEEN '$lower' AND '$upper';";
 
-	  			//echo $query;
 
 	  			$range_results = DB::select(DB::raw($query));
 
@@ -4050,7 +4028,7 @@ class ReportController extends \BaseController {
   			}
   			$avgtat .= ' hrs';
   			$avgtat = $test_type->formatTime($avgtat, $time_format);
-  		//	echo "this is the average ".$avgtat[0]."<br>";
+
 			
 
   			$avgtat = number_format($avgtat[0], 3, '.', '');
@@ -4059,9 +4037,35 @@ class ReportController extends \BaseController {
   			
   			 
   		}
+		
+		$view_url = "reports.departments.turnaroundtime";
 
-  		//echo round(0.07142857142857142, 3);
-  		return View::make('reports.departments.turnaroundtime')
+		if(Input::has('pdf'))
+        {
+        	if(!Input::has('page'))
+        	{
+				$url = Request::url()."?pdf=true&page=true";
+
+				$fileName = "turnaroundtime_".$date.".pdf";
+				$printer = Input::get("printer_name");
+
+
+				$process = new Process("xvfb-run -a wkhtmltopdf -s A4 -B 0mm -T 2mm -L 2mm -R 2mm  '$url'  $fileName");
+				$process->run();
+
+				$process = new Process("lp -d $printer $fileName");
+				$process->run();
+
+				$process = new Process("rm $fileName && rm turnaroundtime*.pdf");
+				$process->run();
+			}
+			else
+			{
+				$view_url = "reports.departments.exportturnaround";
+			}
+		}
+
+  		return View::make($view_url)
 			->with('data', $data)
 			->with('test_type_list', $test_type_list)
 			->with('categories', $categories)

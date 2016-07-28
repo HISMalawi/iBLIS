@@ -5,7 +5,7 @@
 		<ol class="breadcrumb">
 		  <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
 		  <li><a href="{{ URL::route('reports.patient.index') }}">{{ Lang::choice('messages.report', 2) }}</a></li>
-		  <li class="active">{{trans('messages.departmental-report')}}</li>
+		  <li class="active">{{trans('messages.tb-report')}}</li>
 		</ol>
 	</div>
 
@@ -68,7 +68,13 @@
 		</div>
 		<div class="panel-body">
 			@include("reportHeader")
-			<b>{{'As of'.' '.date('d-m-Y')}}</b>
+			<?php 
+				$from = isset($input['start'])?$input['start']:date('d-m-Y');
+			 	$to = isset($input['end'])?$input['end']:date('d-m-Y');
+				$to = new Datetime($to);
+				$from = new Datetime($from);
+			?>
+			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
 			<div class="table-responsive" style="width: 100%; overflow: auto;">
 
 			<?php
@@ -101,23 +107,25 @@
 
 							@foreach($result_names as $result_name)
 								@if(in_array($result_name, $measure_results[$measure->name]))
-								<tr>
-									<td><b>{{$result_name}}</b></td>
-									@foreach($period as $month)
-										<td align='center'>{{isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]: 0}}</td>
-										<?php
-											if(isset($total[$month->format('F')]))
-											{
-												$total[$month->format('F')] += isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
-											}
-											else
-											{
-												$total[$month->format('F')] = isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
-											}
-											
-										?>
-									@endforeach
-								</tr>
+									<tr>
+										<td><b>{{$result_name}}</b></td>
+										@foreach($period as $month)
+											<td align='center'>
+												{{isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]: 0}}
+											</td>
+											<?php
+												if(isset($total[$month->format('F')]))
+												{
+													$total[$month->format('F')] += isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+												}
+												else
+												{
+													$total[$month->format('F')] = isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+												}
+												
+											?>
+										@endforeach
+									</tr>
 								@endif
 							@endforeach
 							<tr>
@@ -126,37 +134,37 @@
 									<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
 								@endforeach
 							</tr>
-							@if($measure->name == 'Smear microscopy result')
 
-							<tr>
-								<td><b>PICKUP RATE</b></td>
-								@foreach($period as $month)
-									<?php
-										//echo $total[$month->format('F')];
-									$positives = 0;
-									if(isset($data[$measure->name][$month->format('F')]['Negative']))
-									{
-										$positives =  $total[$month->format('F')] - $data[$measure->name][$month->format('F')]['Negative'];
-									}
-									else
-									{
-										$positives =  $total[$month->format('F')] - 0;
-									}
+							@if($measure->name == 'Smear microscopy result')
+								<tr>
+									<td><b>PICKUP RATE</b></td>
+									@foreach($period as $month)
+										<?php
+											//echo $total[$month->format('F')];
+										$positives = 0;
+										if(isset($data[$measure->name][$month->format('F')]['Negative']))
+										{
+											$positives =  $total[$month->format('F')] - $data[$measure->name][$month->format('F')]['Negative'];
+										}
+										else
+										{
+											$positives =  $total[$month->format('F')] - 0;
+										}
+											
+											$percentage = ceil(($positives/$total[$month->format('F')]) * 100);
+											
 										
-										$percentage = ceil(($positives/$total[$month->format('F')]) * 100);
-										
-									
-									?>
-									<td align='center'><b>{{$percentage}}</b></td>
-								@endforeach
-							</tr>
+										?>
+										<td align='center'><b>{{$percentage}}</b></td>
+									@endforeach
+								</tr>
 							@endif
 						@endforeach
 					</tbody>
 				</table>
 				
 				@else
-					<p align='center'>There are no tb results to display for the period selected</p>
+					<p align='center'>There are no tb results to display for the period selected.</p>
 				@endif
 			</div>
 			<?php //echo $patients->links(); 

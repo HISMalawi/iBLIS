@@ -4,7 +4,7 @@
 		<ol class="breadcrumb">
 			<li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
 		 	<li><a href="{{ URL::route('reports.patient.index') }}">{{ Lang::choice('messages.report', 2) }}</a></li>
-		  	<li class="active">{{trans('messages.departments-summary-report')}}</li>
+		  	<li class="active">{{trans('messages.turnaround-report')}}</li>
 		</ol>
 	</div>
 

@@ -27,7 +27,7 @@
 		case 'departmentreport': 
 		case 'tbreport':
 		case 'rejected': 
-		case 'turnaround':
+		case 'turnaroundtime':
 		case 'dailylog': 
 		case 'prevalence':
 		case 'surveillance':

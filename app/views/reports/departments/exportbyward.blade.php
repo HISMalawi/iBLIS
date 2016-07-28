@@ -25,7 +25,13 @@
 		<?php $wards = array_unique($wards);?>
 		<div>
 			@include("reportHeader")
-			<b>{{'As of'.' '.date('d-m-Y')}}</b>
+			<?php 
+				$from = isset($input['start'])?$input['start']:date('d-m-Y');
+			 	$to = isset($input['end'])?$input['end']:date('d-m-Y');
+				$to = new Datetime($to);
+				$from = new Datetime($from);
+			?>
+			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
 
 			
 				@if(count($wards))

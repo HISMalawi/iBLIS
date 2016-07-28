@@ -50,7 +50,7 @@
 		<ol class="breadcrumb">
 		  <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
 		  <li><a href="{{ URL::route('reports.patient.index') }}">{{ Lang::choice('messages.report', 2) }}</a></li>
-		  <li class="active">{{trans('messages.departmental-report')}}</li>
+		  <li class="active">{{trans('messages.rejections-report')}}</li>
 		</ol>
 	</div>
 
@@ -81,16 +81,7 @@
 						        </div>
 							</div>
 						</div>
-						<!--div class="col-sm-4">
-					    	<div class="row">
-								<div class="col-sm-2">
-								    {{ Form::label('test_type', 'Test') }}
-								</div>
-								<div class="col-sm-2">
-								     {{Form::select('test_type', $test_type_names, isset($input['test_type'])?$input['test_type']:$test_type_name, array('class' => 'form-control')) }}
-						        </div>
-							</div>
-						</div-->
+
 						<div class="col-sm-4">
 					    	<div class="row">
 								<div class="col-sm-2">
@@ -101,9 +92,12 @@
 						        </div>
 							</div>
 						</div>
-						<div class="col-sm-5">
+						
+					</div class="row">
+						<div class="col-lg-12">
+							<div class="col-sm-offset-9 col-sm-4">
 					    	<div class="row">
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 						                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 						        </div>
@@ -116,6 +110,9 @@
 						        </div>
 							</div>
 						</div>
+						</div>
+					<div>
+						
 					</div>
 					{{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
 					{{ Form::hidden('pdf', '', array('id' => 'word')) }}
