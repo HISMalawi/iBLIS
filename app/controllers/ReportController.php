@@ -132,7 +132,6 @@ class ReportController extends \BaseController {
 				$view_url = "reports.patient.export";
 			}
 		}
-
 		return View::make($view_url)
 			->with('patient', $patient)
 			->with('tests', $tests)

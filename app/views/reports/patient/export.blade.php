@@ -208,6 +208,9 @@
 													@endforeach
 												@else
 													<table style="margin: 0px;width: 100%;" class="table table-bordered">
+														<tr>
+															<td><b>Measure</b></td><td><b>Result</b></td><td><b>Range</b></td>
+														</tr>
 														@foreach($test->testResults as $result)
 																@if(Measure::find($result->measure_id)->name == "HIV Status")
 																	<?php
@@ -241,6 +244,24 @@
 																			@if($measureRng && $test->testType->instruments->count() > 0)
 																				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
 																			@endif
+
+																			<?php
+																				$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
+																			?>
+
+																			@if($measureRng)
+																				<td>
+																					{{$measureRng}}
+																				</td>
+																			@else
+																				<td>
+																					No range
+																				</td>
+																			
+																			@endif
+																		@else
+																			Not done
+																			<td>{{!empty(Measure::find($result->measure_id)->getRange($test->visit->patient, $result->measure_id))?Measure::find($result->measure_id)->getRange($test->visit->patient, $result->measure_id) : 'No Range'}}</td>
 																		@endif
 
 																	</td>

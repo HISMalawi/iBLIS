@@ -267,9 +267,9 @@
 									@endforeach
 								@else
 									<table style="margin: 0px;padding:0px;width:100%" class="table-bordered table-condensed">
-									<tr>
-													<td><b>Measure</b></td><td><b>Result</b></td><td><b>Range</b></td>
-												</tr>
+										<tr>
+											<td><b>Measure</b></td><td><b>Result</b></td><td><b>Range</b></td>
+										</tr>
 										@foreach($test->testResults as $result)
 
 											@if(Measure::find($result->measure_id)->name == "HIV Status")
@@ -295,7 +295,7 @@
 																@endforeach
 															 	of {{$organism_names ? $organism_names : '---'}}
 															@endif
-														{{ Measure::find($result->measure_id)->unit }}
+															{{ Measure::find($result->measure_id)->unit }}
 
 															<?php
 
