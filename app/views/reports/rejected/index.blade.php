@@ -1,51 +1,6 @@
 @extends("layout")
 @section("content")
-	<style>
-		.datatable> tbody > tr > td:first-child
-		{
-		    position: absolute;
-		    display: block;
-		    background-color: #F2F2F2;
-		    /*height:100%;*/
-		    width: 170px!important;
-		    border: 0px!important;
-		
-
-		}
-				.datatable>thead:first-child>tr:first-child>td:first-child
-		{
-		    position: absolute;
-		    display: inline-block;
-		    background-color:#F2F2F2;
-		    /*height:100%;8*/
-		    width: 170px!important;
-		
-		}
-
-		.datatable>thead>tr:last-child>td:last-child
-		{
-		    width: 170px!important;
-		}
-		.datatable>tbody>tr:last-child>td:last-child
-		{
-		    width: 170px!important;
-		}
-		
-		.datatable> tbody > tr > td:nth-child(2)
-		{
-		    padding-left:170px !important;
-
-
-		}
-		.datatable> thead > tr > td:nth-child(2)
-		{
-		    padding-left:170px !important;
-
-
-		}
-
-		
-	</style>
+	
 	<div>
 		<ol class="breadcrumb">
 		  <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
@@ -58,66 +13,63 @@
 		<div class='row'>
 			<div class='col-lg-12'>
 				{{ Form::open(array('route' => array('rejected.sample'), 'class' => 'form-inline', 'role' => 'form', 'id' => 'form-patientreport-filter', 'method' => 'POST', 'style' => 'display:inline')) }}
-					<div class='row'>
-						<div class="col-sm-4">
-					    	<div class="row">
-								<div class="col-sm-2">
-								    {{ Form::label('start', trans('messages.from')) }}
-								</div>
-								<div class="col-sm-2">
-								    {{ Form::text('start', isset($input['start'])?$input['start']:date('Y-m-d'), 
-							                array('class' => 'form-control standard-datepicker')) }}
-						        </div>
+				<div class='row'>
+					<div class="col-sm-4">
+				    	<div class="row">
+							<div class="col-sm-2">
+							    {{ Form::label('start', trans('messages.from')) }}
 							</div>
+							<div class="col-sm-2">
+							    {{ Form::text('start', isset($input['start'])?$input['start']:date('Y-m-d'), 
+						                array('class' => 'form-control standard-datepicker')) }}
+					        </div>
 						</div>
-						<div class="col-sm-4">
-					    	<div class="row">
-								<div class="col-sm-2">
-								    {{ Form::label('end', trans('messages.to')) }}
-								</div>
-								<div class="col-sm-2">
-								    {{ Form::text('end', isset($input['end'])?$input['end']:date('Y-m-d'), 
-							                array('class' => 'form-control standard-datepicker')) }}
-						        </div>
-							</div>
-						</div>
-
-						<div class="col-sm-4">
-					    	<div class="row">
-								<div class="col-sm-2">
-								    {{ Form::label('lab_section', 'Section') }}
-								</div>
-								<div class="col-sm-2">
-								     {{Form::select('lab_section', $categories, isset($input['lab_section'])?$input['lab_section']:$category, array('class' => 'form-control')) }}
-						        </div>
-							</div>
-						</div>
-						
-					</div class="row">
-						<div class="col-lg-12">
-							<div class="col-sm-offset-9 col-sm-4">
-					    	<div class="row">
-								<div class="col-sm-3">
-								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
-						                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
-						        </div>
-						        <div class="col-sm-2">
-								       		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success', 'onclick' => "selectPrinter();")) }}
-								</div>
-								<div class="col-sm-2">
-								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> Download Excel", 
-						                array('class' => 'btn btn-info', 'id' => 'filter', 'name' => 'excel', 'value' => 'excel', 'type' => 'submit')) }}
-						        </div>
-							</div>
-						</div>
-						</div>
-					<div>
-						
 					</div>
-					{{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
-					{{ Form::hidden('pdf', '', array('id' => 'word')) }}
-				{{ Form::close() }}
+					<div class="col-sm-4">
+				    	<div class="row">
+							<div class="col-sm-2">
+							    {{ Form::label('end', trans('messages.to')) }}
+							</div>
+							<div class="col-sm-2">
+							    {{ Form::text('end', isset($input['end'])?$input['end']:date('Y-m-d'), 
+						                array('class' => 'form-control standard-datepicker')) }}
+					        </div>
+						</div>
+					</div>
+
+					<div class="col-sm-4">
+				    	<div class="row">
+							<div class="col-sm-2">
+							    {{ Form::label('lab_section', 'Section') }}
+							</div>
+							<div class="col-sm-2">
+							     {{Form::select('lab_section', $categories, isset($input['lab_section'])?$input['lab_section']:$category, array('class' => 'form-control')) }}
+					        </div>
+						</div>
+					</div>
+				</div>
 			</div>
+		</div>
+
+		<div class='row'>
+			<div class='col-lg-12'>	
+				<div class="row">
+					<div class="col-sm-offset-9 col-sm-3">
+				    	<div class="row">
+							<div class="col-sm-3">
+							  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
+					                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
+					        </div>
+					        <div class="col-sm-2">
+							       		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success', 'onclick' => "selectPrinter();")) }}
+							</div>
+						</div>
+					</div>	
+				</div>	
+			</div>
+			{{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+			{{ Form::hidden('pdf', '', array('id' => 'word')) }}
+			{{ Form::close() }}
 		</div>
 	</div>
 
@@ -146,7 +98,6 @@
 			<!--table for rejected samples-->
 			@if(count($rejected_wards))
 				<p align='center'><b>REJECTED SAMPLES</b></p>
-				<div class="table-responsive" style="width: 100%; overflow-x: scroll;">	
 					<table class="table table-striped table-hover table-condensed table-sm">
 						
 						<tbody>
@@ -181,7 +132,6 @@
 							@endforeach
 						</tbody>
 					</table>
-				</div>
 			
 				<!--end of table for rejected samples-->
 			@else

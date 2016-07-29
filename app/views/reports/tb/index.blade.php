@@ -36,15 +36,21 @@
 						        </div>
 							</div>
 						</div>
-						<div class="col-sm-4">
+						<div class="pull-right col-sm-3">
 							<div class="row">
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 						                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 						        </div>
-						        <div class="col-sm-1">
-						       		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success', 'onclick' => "selectPrinter();")) }}
-						    	</div>
+						        @if(count($result_names))
+							        <div class="col-sm-2">
+							       		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success', 'onclick' => "selectPrinter();")) }}
+							    	</div>
+							    	 <div class="col-sm-3">
+								  		{{ Form::button('Export', array('class' => 'btn btn-info',
+					        				'id' => "btnExport")) }}
+						            </div>
+					            @endif
 						    </div>
 						</div>
 					</div>
@@ -86,82 +92,87 @@
 			?>
 
 			@if(count($result_names))
-				<table class="table table-striped table-hover table-condensed table-sm">
-					<tbody>
-						@foreach($measures as $measure)
-				
-							<tr>
-								<td colspan="{{$count}}" align='center'><b>{{strtoupper($measure->name)}}</b></td>
-							</tr>
-							<tr>
-								<td><b>RESULT</b></td>
-								@foreach($period as $dt)
-									<td align='center'><b>{{$dt->format('F')}}</b></td>
-								@endforeach
-							</tr>
-						
-						
-							<?php
-								$total = array(0);
-							?>
+				<div id='dvData'>
+					<table class="table table-striped table-hover table-condensed table-sm">
+						<tbody>
+							@foreach($measures as $measure)
+					
+								<tr>
+									<td colspan="{{$count}}" align='center'><b>{{strtoupper($measure->name)}}</b></td>
+								</tr>
+								<tr>
+									<td><b>RESULT</b></td>
+									@foreach($period as $dt)
+										<td align='center'><b>{{$dt->format('F')}}</b></td>
+									@endforeach
+								</tr>
+							
+							
+								<?php
+									$total = array(0);
+								?>
 
-							@foreach($result_names as $result_name)
-								@if(in_array($result_name, $measure_results[$measure->name]))
+								@foreach($result_names as $result_name)
+									@if(in_array($result_name, $measure_results[$measure->name]))
+										<tr>
+											<td><b>{{$result_name}}</b></td>
+											@foreach($period as $month)
+												<td align='center'>
+													{{isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]: 0}}
+												</td>
+												<?php
+													if(isset($total[$month->format('F')]))
+													{
+														$total[$month->format('F')] += isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+													}
+													else
+													{
+														$total[$month->format('F')] = isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+													}
+													
+												?>
+											@endforeach
+										</tr>
+									@endif
+								@endforeach
+								<tr>
+									<td><b>TOTAL EXAMINED</b></td>
+									@foreach($period as $month)
+										<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
+									@endforeach
+								</tr>
+
+								@if($measure->name == 'Smear microscopy result')
 									<tr>
-										<td><b>{{$result_name}}</b></td>
+										<td><b>PICKUP RATE</b></td>
 										@foreach($period as $month)
-											<td align='center'>
-												{{isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]: 0}}
-											</td>
 											<?php
-												if(isset($total[$month->format('F')]))
+												//echo $total[$month->format('F')];
+											$positives = 0;
+											if(isset($data[$measure->name][$month->format('F')]['Negative']))
+											{
+												$positives =  $total[$month->format('F')] - $data[$measure->name][$month->format('F')]['Negative'];
+											}
+											
+												if($total[$month->format('F')])
 												{
-													$total[$month->format('F')] += isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+													$percentage = ceil(($positives/$total[$month->format('F')]) * 100);
 												}
 												else
 												{
-													$total[$month->format('F')] = isset($data[$measure->name][$month->format('F')][$result_name])?$data[$measure->name][$month->format('F')][$result_name]:0;
+													$percentage = 0;
 												}
 												
+											
 											?>
+											<td align='center'><b>{{$percentage}}%</b></td>
 										@endforeach
 									</tr>
 								@endif
 							@endforeach
-							<tr>
-								<td><b>TOTAL EXAMINED</b></td>
-								@foreach($period as $month)
-									<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
-								@endforeach
-							</tr>
-
-							@if($measure->name == 'Smear microscopy result')
-								<tr>
-									<td><b>PICKUP RATE</b></td>
-									@foreach($period as $month)
-										<?php
-											//echo $total[$month->format('F')];
-										$positives = 0;
-										if(isset($data[$measure->name][$month->format('F')]['Negative']))
-										{
-											$positives =  $total[$month->format('F')] - $data[$measure->name][$month->format('F')]['Negative'];
-										}
-										else
-										{
-											$positives =  $total[$month->format('F')] - 0;
-										}
-											
-											$percentage = ceil(($positives/$total[$month->format('F')]) * 100);
-											
-										
-										?>
-										<td align='center'><b>{{$percentage}}</b></td>
-									@endforeach
-								</tr>
-							@endif
-						@endforeach
-					</tbody>
-				</table>
+						</tbody>
+					</table>
+				</div>
 				
 				@else
 					<p align='center'>There are no tb results to display for the period selected.</p>
@@ -203,5 +214,13 @@
 	</div>
 </div>
 <!--SELECT PRINTER POPUP END -->
+
+<script type="text/javascript">
+
+	$("#btnExport").click(function(e) {
+    window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
+    e.preventDefault();
+})
+</script>
 
 @stop

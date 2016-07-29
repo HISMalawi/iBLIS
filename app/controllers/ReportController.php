@@ -3685,11 +3685,6 @@ class ReportController extends \BaseController {
 		$test_types = array_unique($test_types);
 
 
-		if(Input::get('excel'))
-		{
-	
-			return $this->export();
-		}
 
 		$view_url = "reports.rejected.index";
 
@@ -3831,86 +3826,10 @@ class ReportController extends \BaseController {
 		return ['critical_values' => $critical_values, 'critical_measures' => $critical_measures, 'wards' =>$critical_wards];	
 	}
 
-	//export('martin')
+	
 
-	public function export()
-	{
-	    Excel::create('Rejected', function($excel)
-	    {
-	     	$excel->sheet('Rejected', function($sheet) 
-	      	{
-
-				$default_test_type_id = TestType::select('id')->orderBy('name')->first()->id;
-				$default_lab_section_id = TestCategory::select('id')->orderBy('name')->first()->id;
-				$test_type_id = Input::get('test_type', $default_test_type_id);
-				$category_id = Input::get('lab_section', $default_lab_section_id);
-				$lab_section_name = TestCategory::find($category_id)->name;
-				$test_type_name = TestType::find($category_id)->name;
-				
-				$startdate = Input::get('start', date('Y-m-d'));
-				$enddate = Input::get('end', date('Y-m-d'));
-
-				$sections = TestCategory::orderBy('name')->get();
-				$categories  = array();
-				foreach($sections as $cat)
-				{
-					$categories[$cat->id] = $cat->name;
-				}
-			
-				$test_type_objs = TestType::orderBy('name')->get();
-				$test_type_names = array();
-				foreach($test_type_objs as $test_type_obj)
-				{
-					$test_type_names[$test_type_obj->id] = $test_type_obj->name;
-				}
-
-				$rejected_counts = array();
-				$wards = array();
-				$test_types = array();
-				$checked = array();
-				$reasons = array();
-				
-				//get all rejected specimen of a category
-				$query = "SELECT specimens.* FROM specimens JOIN tests ON specimens.id = tests.specimen_id JOIN test_types ON tests.test_type_id = test_types.id JOIN test_categories ON test_types.test_category_id = test_categories.id WHERE test_categories.id = '$category_id' AND specimens.time_rejected IS NOT NULL AND tests.time_created	BETWEEN '$startdate' AND '$enddate';";
-
-				$rejected_specimens = DB::select(DB::raw($query));
-				foreach ($rejected_specimens as $rejected_specimen) 
-				{
-		  
-		         	$test = Specimen::find($rejected_specimen->id)->test;
-		         	$test_type_name = $test->testType->name;
-		         	$ward = $test->visit->ward_or_location;
-
-
-		       		$reason_name = RejectionReason::find($rejected_specimen->rejection_reason_id)->reason;
-
-		     		if(!in_array($rejected_specimen->id, $checked))
-		     		{
-		         		if(!isset($rejected_counts[$reason_name][$ward][$test_type_name]))
-		         		{
-		         			$rejected_counts[$reason_name][$ward][$test_type_name] = 1;
-		         			array_push($wards, $ward);
-		         			array_push($reasons, $reason_name);
-		         			array_push($test_types, $test_type_name);
-		         		}
-		         		else
-		         		{
-		         			$rejected_counts[$reason_name][$ward][$test_type_name] += 1;
-		         			array_push($wards, $ward);
-		         			array_push($reasons, $reason_name);
-		         			array_push($test_types, $test_type_name);
-		         		}
-		     		}
-		     		array_push($checked, $rejected_specimen->id);
-				}
-				$wards = array_unique($wards);
-
-				$reasons = array_unique($reasons);
-				$test_types = array_unique($test_types);
-			        $sheet->loadView('reports.rejected.export', ['rejected_specimens' => $rejected_counts, 'rejected_wards' => $wards, 'rejection_reasons'=> $reasons, 'test_types' => $test_types, 'categories' => $categories, 'category' => $lab_section_name, 'test_type_names' => $test_type_names, 'test_type_name' => $test_type_name]);
-	      });
-	    })->download('xls');
-  	}
+	 
+  	
 
   	public function getBloodProductTypes($start_date, $end_date)
   	{

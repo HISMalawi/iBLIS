@@ -97,10 +97,16 @@
 								  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 						                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 						        </div>
-						        <div class="col-sm-2">
-									{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
-						        	'onclick' => "selectPrinter()")) }}
-							   	</div>
+						        @if(count($wards))
+							        <div class="col-sm-2">
+										{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
+							        	'onclick' => "selectPrinter()")) }}
+								   	</div>
+								   	<div class="col-sm-3">
+								  		{{ Form::button('Export', array('class' => 'btn btn-info',
+					        			'id' => "btnExport")) }}
+						            </div>
+					            @endif
 							</div>
 						</div>
 					</div>
@@ -133,54 +139,63 @@
 			?>
 			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
 			
-			<div class="table-responsive" style="width: 100%; overflow-x: scroll;">
-				@if(count($wards))
-				<table class="datatable table table-striped table-hover table-condensed">
-					<thead>
-						<tr>
-							<td><b>TESTS</b></td><td align='center' colspan="{{count($wards)}}"><b>WARDS</b></td>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach($period as $dt)
-								<tr>
-									<td ><b>{{$dt->format('F')}}</b></td>
-									@foreach($wards as $ward)
-										<?php $ward = str_replace(' ', '', $ward);?>
-										<td align='center'><b>{{$ward}}</b></td>
-									@endforeach
-									<td align='center'><b>TOTAL</b></td>
-								</tr>
-							@foreach($category->testTypes as $test_type)
-								<tr>
-									<td>{{$test_type->name}}</td>
-									<?php $total = 0;?>
-									@foreach($wards as $ward)
-										<td align='center'>{{$data[$test_type->name][$dt->format('M')][$ward]}}</td>
-										<?php $total +=$data[$test_type->name][$dt->format('M')][$ward];?>
-									@endforeach
-									<td align='center'><b>{{$total}}</b></td>
-								</tr>
-							@endforeach
-						@endforeach	
-					</tbody>
-				</table>
 			
-			
-
+			@if(count($wards))
+				@if(count($wards) > 20)
+					<div class="table-responsive" style="overflow-x: scroll;" id='dvData'>
 				@else
-					<p align='center'>There are no tests in the {{$category->name}} Lab Section for the period selected to display.</p>
+					<div class="table-responsive" id='dvData'>
 				@endif
-			</div>
+
+					<table class="datatable table table-striped table-hover table-condensed">
+						<thead>
+							<tr>
+								<td><b>TESTS</b></td><td align='center' colspan="{{count($wards)}}"><b>WARDS</b></td>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach($period as $dt)
+									<tr>
+										<td ><b>{{$dt->format('F')}}</b></td>
+										@foreach($wards as $ward)
+											<?php $ward = str_replace(' ', '', $ward);?>
+											<td align='center'><b>{{$ward}}</b></td>
+										@endforeach
+										<td align='center'><b>TOTAL</b></td>
+									</tr>
+								@foreach($category->testTypes as $test_type)
+									<tr>
+										<td>{{$test_type->name}}</td>
+										<?php $total = 0;?>
+										@foreach($wards as $ward)
+											<td align='center'>{{$data[$test_type->name][$dt->format('M')][$ward]}}</td>
+											<?php $total +=$data[$test_type->name][$dt->format('M')][$ward];?>
+										@endforeach
+										<td align='center'><b>{{$total}}</b></td>
+									</tr>
+								@endforeach
+							@endforeach	
+						</tbody>
+					</table>
+				</div>
+			@else
+				<p>
+					There are no tests in the {{$category->name}} Lab Section for the period selected to display.
+				</p>
+			@endif
 			<br>
 
 			<!--table for blood products-->
 			<?php $count_product_wards = count($product_wards);?>
 			@if($count_product_wards)
 				<p align='center'><b>BLOOD PRODUCTS ISSUED</b></p>
-				<div class="table-responsive" style="overflow-x: scroll;">
+				@if($count_product_wards > 8)
+					<div class="table-responsive" style="overflow-x: scroll;" id='dvData3'>
+				@else
+					<div class="table-responsive" id='dvData3'>
+				@endif
 					
-					<table class="table table-bordered table-hover table-condensed table-sm">
+					<table class="table table-bordered table-hover table-condensed table-sm datatable">
 						<thead>
 							<tr>
 								<th>Blood Product</th>
@@ -238,7 +253,11 @@
 			<!--table for critical values-->
 			@if(count($critical_wards))
 				<p align='center'><b>CRITICAL VALUES</b></p>
-				<div class="table-responsive" style="width: 100%; overflow-x: scroll;">
+				@if(count($critical_wards) > 20)
+					<div class="table-responsive" style="overflow-x: scroll;" id='dvData2'>
+				@else
+					<div class="table-responsive" id='dvData2'>
+				@endif
 					
 					<table class="datatable table table-striped table-hover table-condensed table-sm">
 						
@@ -289,8 +308,7 @@
 
 			<?php //echo $patients->links(); 
 			Session::put('SOURCE_URL', URL::full());?>
-		</div>
-	</div>
+
 
 
 		<!--PRINT CONFIRMATION POPUP BEGIN -->
@@ -325,4 +343,26 @@
 		</div>
 	</div>
 <!--CONFIRMATION POPUP END -->
+
+
+<script type="text/javascript">
+
+	$("#btnExport").click(function(e) {
+    window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
+
+	 <?php
+	 	if(count($critical_wards))
+	 	{
+	   		echo "window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData2').html()));";
+		}
+		
+   
+    	if($count_product_wards)
+    	{
+    		echo "window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData3').html()));";
+    	}
+    ?>
+    e.preventDefault();
+})
+</script>
 @stop

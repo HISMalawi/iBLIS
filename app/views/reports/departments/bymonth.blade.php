@@ -55,6 +55,10 @@
 							  		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
 				        	'onclick' => "selectPrinter()")) }}
 					            </div>
+					            <div class="col-sm-3">
+							  		{{ Form::button('Export', array('class' => 'btn btn-info',
+				        	'id' => "btnExport")) }}
+					            </div>
 					        </div>
 				        </div>
 					</div>
@@ -86,7 +90,8 @@
 				$from = new Datetime($from);
 			?>
 			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
-			<table class="table table-striped table-hover table-condensed">
+			<div id='dvData'>
+			<table class="table table-striped table-hover table-condensed" >
 				<tbody>
 					@foreach($categories as $cat)
 						<?php
@@ -133,6 +138,7 @@
 					@endforeach
 				</tbody>
 			</table>
+			</div>
 			<?php //echo $patients->links(); 
 			Session::put('SOURCE_URL', URL::full());?>
 		</div>
@@ -169,4 +175,12 @@
 		</div>
 	</div>
 <!--CONFIRMATION POPUP END -->
+
+<script type="text/javascript">
+
+	$("#btnExport").click(function(e) {
+    window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
+    e.preventDefault();
+})
+</script>
 @stop

@@ -53,15 +53,18 @@
 								<div class="col-sm-3">
 								    {{ Form::select('time_format', $time_formats, isset($input['time_format'])?$input['time_format']: 'hours', array('class' => 'form-control')) }}
 						        </div>
+						       
 							</div>
 						</div>
-						
 					</div>
-
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col-lg-12'>
 					<div class="row">
-						<div class="col-sm-offset-10 col-sm-3">
+						<div class="col-sm-offset-9 col-sm-3">
 							<div class="row">
-								<div class=" col-sm-3">
+								<div class="col-sm-3">
 						  			{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 				                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 				                </div>
@@ -69,6 +72,10 @@
 							  		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
 				        			'onclick' => "selectPrinter()")) }}
 					            </div>
+					             <div class="col-sm-3">
+								  		{{ Form::button('Export', array('class' => 'btn btn-info',
+					        				'id' => "btnExport")) }}
+						            </div>
 					        </div>
 			         	</div>
 					</div>
@@ -100,46 +107,48 @@
 				$from = new Datetime($from);
 				 ?>
 			<b>{{trans('messages.from').' '.$from->format('d F, Y').' '.trans('messages.to').' '.$to->format('d F, Y')}}</b>
-			<table class="table table-striped table-hover table-condensed" id="datatable">
-				<thead>
-					<tr>
-						<th>Test Types</th>
-						<th>Target Turn Around Time</th>
-						<th>Average Turn Around Time</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th colspan="3">
-							{{$category->name}}
-						</th>
-					</tr>
-					@foreach($category->testTypes as $test_type)
+			<div id='dvData'>
+				<table class="table table-striped table-hover table-condensed">
+					<thead>
 						<tr>
-							<td>{{$test_type->name}}</td>	
-							<td>
-									{{$data[$test_type->name]['target']}}
-									@if(isset($input['time_format']))
-									 	{{$input['time_format']}}
-									@else
-									 	{{'hours'}} 
-									@endif
-							</td>
-							<td>@if((isset($data[$test_type->name]['tat'])) && ($data[$test_type->name]['tat'] != 0))
-									{{$data[$test_type->name]['tat']}}
-									@if(isset($input['time_format']))
-									 {{$input['time_format']}}
-									 @else
-									 {{'hours'}} 
-									 @endif
-								@else
-									{{'-'}}
-								@endif
-							</td>
+							<th>Test Types</th>
+							<th>Target Turn Around Time</th>
+							<th>Average Turn Around Time</th>
 						</tr>
-					@endforeach
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<tr>
+							<th colspan="3">
+								{{$category->name}}
+							</th>
+						</tr>
+						@foreach($category->testTypes as $test_type)
+							<tr>
+								<td>{{$test_type->name}}</td>	
+								<td>
+										{{$data[$test_type->name]['target']}}
+										@if(isset($input['time_format']))
+										 	{{$input['time_format']}}
+										@else
+										 	{{'hours'}} 
+										@endif
+								</td>
+								<td>@if((isset($data[$test_type->name]['tat'])) && ($data[$test_type->name]['tat'] != 0))
+										{{$data[$test_type->name]['tat']}}
+										@if(isset($input['time_format']))
+										 {{$input['time_format']}}
+										 @else
+										 {{'hours'}} 
+										 @endif
+									@else
+										{{'-'}}
+									@endif
+								</td>
+							</tr>
+						@endforeach
+					</tbody>
+				</table>
+			</div>
 			<?php //echo $patients->links(); 
 			Session::put('SOURCE_URL', URL::full());?>
 		</div>
@@ -237,4 +246,13 @@
 });
 	</script>
 <!--CONFIRMATION POPUP END -->
+
+<script type="text/javascript">
+
+	$("#btnExport").click(function(e) {
+    window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
+    e.preventDefault();
+})
+</script>
+
 @stop
