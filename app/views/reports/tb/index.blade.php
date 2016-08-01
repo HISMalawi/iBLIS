@@ -47,7 +47,7 @@
 							       		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success', 'onclick' => "selectPrinter();")) }}
 							    	</div>
 							    	 <div class="col-sm-3">
-								  		{{ Form::button('Export', array('class' => 'btn btn-info',
+								  		{{ Form::button("<span class='glyphicon glyphicon-file'></span> Export", array('class' => 'btn btn-info',
 					        				'id' => "btnExport")) }}
 						            </div>
 					            @endif

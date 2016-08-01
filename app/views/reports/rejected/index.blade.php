@@ -1,5 +1,49 @@
 @extends("layout")
 @section("content")
+<style>
+		.datatable> tbody > tr > td:first-child
+		{
+		    position: absolute;
+		    display: block;
+		    background-color: #F2F2F2;
+		    /*height:100%;*/
+		    width: 170px!important;
+		    border: 0px!important;
+		
+
+		}
+				.datatable>thead:first-child>tr:first-child>td:first-child
+		{
+		    position: absolute;
+		    display: inline-block;
+		    background-color:#F2F2F2;
+		    /*height:100%;8*/
+		    width: 170px!important;
+		
+		}
+
+		.datatable>thead>tr:last-child>td:last-child
+		{
+		    width: 170px!important;
+		}
+		.datatable>tbody>tr:last-child>td:last-child
+		{
+		    width: 170px!important;
+		}
+		
+		.datatable> tbody > tr > td:nth-child(2)
+		{
+		    padding-left:170px !important;
+
+
+		}
+		.datatable> thead > tr > td:nth-child(2)
+		{
+		    padding-left:170px !important;
+
+
+		}
+		</style>
 	
 	<div>
 		<ol class="breadcrumb">
@@ -54,15 +98,21 @@
 		<div class='row'>
 			<div class='col-lg-12'>	
 				<div class="row">
-					<div class="col-sm-offset-9 col-sm-3">
+					<div class="col-sm-offset-8 col-sm-3">
 				    	<div class="row">
 							<div class="col-sm-3">
 							  	{{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 					                array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 					        </div>
+					        
 					        <div class="col-sm-2">
 							       		{{ Form::button(trans('messages.print'), array('class' => 'btn btn-success', 'onclick' => "selectPrinter();")) }}
 							</div>
+							<div class="col-sm-2">
+								  		{{ Form::button("<span class='glyphicon glyphicon-file'></span> Export", array('class' => 'btn btn-md btn-info',
+					        			'id' => "btnExport")) }}
+						            </div>
+						            
 						</div>
 					</div>	
 				</div>	
@@ -98,15 +148,21 @@
 			<!--table for rejected samples-->
 			@if(count($rejected_wards))
 				<p align='center'><b>REJECTED SAMPLES</b></p>
-					<table class="table table-striped table-hover table-condensed table-sm">
+				@if(count($rejected_wards) > 16)
+					<div class="table-responsive" style="overflow-x: scroll;" id='dvData'>
+				@else
+					<div class="table-responsive" id='dvData'>
+				@endif
+					<table class="datatable table table-striped table-hover table-condensed table-sm">
 						
 						<tbody>
 							
-							<?php $count = count($rejected_wards)+2; ?>		
+							<?php $count = count($rejected_wards)+1; ?>		
 							@foreach($rejection_reasons as $rejection_reason)
 							
 								<tr>
-									<td colspan={{$count}}><b>{{$rejection_reason}}</b></td>
+									<td>&nbsp;</td>
+									<td colspan="{{$count}}" align='center'><b>{{$rejection_reason}}</b></td>
 								</tr>
 								<tr>
 									<td>&nbsp;</td>
@@ -174,4 +230,12 @@
 	</div>
 </div>
 <!--SELECT PRINTER POPUP END -->
+
+<script type="text/javascript">
+
+	$("#btnExport").click(function(e) {
+    window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
+    e.preventDefault();
+})
+</script>
 @stop
