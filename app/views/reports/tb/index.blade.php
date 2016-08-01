@@ -96,7 +96,7 @@
 					<table class="table table-striped table-hover table-condensed table-sm">
 						<tbody>
 							@foreach($measures as $measure)
-					
+								
 								<tr>
 									<td colspan="{{$count}}" align='center'><b>{{strtoupper($measure->name)}}</b></td>
 								</tr>
@@ -113,7 +113,7 @@
 								?>
 
 								@foreach($result_names as $result_name)
-									@if(in_array($result_name, $measure_results[$measure->name]))
+									@if(in_array($result_name, $measure_results[$measure->name]) && !empty($result_name))
 										<tr>
 											<td><b>{{$result_name}}</b></td>
 											@foreach($period as $month)
