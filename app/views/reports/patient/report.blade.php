@@ -308,13 +308,15 @@
 																</td>
 															@else
 																<td>
-																	No range
+																	N/A
 																</td>
 															
 															@endif
 														@else
 															Not done
-															<td>{{!empty(Measure::find($result->measure_id)->getRange($test->visit->patient, $result->measure_id))?Measure::find($result->measure_id)->getRange($test->visit->patient, $result->measure_id) : 'No Range'}}</td>
+															<td>
+																N/A
+															</td>
 														@endif
 
 													</td>
