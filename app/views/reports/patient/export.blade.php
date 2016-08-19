@@ -185,6 +185,7 @@
 														@if($result->result)
 															<p>
 																{{ $result->result }}
+
 																<?php $organism_names = ''?>
 																@if(count($test->susceptibility)>0 && $result->result == "Growth")
 																	@foreach($test->organisms() AS $og)
@@ -202,82 +203,109 @@
 																@if($measureRng && $test->testType->instruments->count() > 0)
 																	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
 																@endif
-
 															</p>
+														@else
+															Not done
 														@endif
 													@endforeach
 												@else
-													<table style="margin: 0px;width: 100%;" class="table table-bordered">
+													<table style="margin: 0px;padding:0px;width:100%" class="table-bordered table-condensed">
 														<tr>
-															<td><b>Measure</b></td><td><b>Result</b></td><td><b>Range</b></td>
+															<td>
+																<b>Measure</b>
+															</td>
+															<td><b>Result</b></td>
+															@if($test->testType->instruments->count() > 0)
+
+																<td style="width: 20%"><b>Range</b></td>
+															@endif
 														</tr>
 														@foreach($test->testResults as $result)
-																@if(Measure::find($result->measure_id)->name == "HIV Status")
-																	<?php
-																		continue;
-																	?>
-																@endif
 
-																<tr>
-																	<td style="width: 44%">
-																		{{ Measure::find($result->measure_id)->name }}
-																	</td>
-																	<td>
-																		@if(!empty($result->result))
+															@if(Measure::find($result->measure_id)->name == "HIV Status")
+																<?php
+																continue;
+																?>
+															@endif
 
-																			{{ $result->result }}
-																			<?php $organism_names = ''?>
-																			@if(count($test->susceptibility)>0 && $result->result == "Growth")
-																				@foreach($test->organisms() AS $og)
-																					<?php
-																					$organism_name = Organism::find($og['organism_id'])->name;
-																					$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;
-																					?>
-																				@endforeach
-																				of {{$organism_names ? $organism_names : '---'}}
-																			@endif
-																			{{ Measure::find($result->measure_id)->unit }}
+
+															<tr>
+																<td style="width: 40%">
+																	{{ Measure::find($result->measure_id)->name }}
+																</td>
+																<td>
+																	@if(!empty($result->result))
+																		<?php $organism_names = ''?>
+																		{{ $result->result }}
+																		@if(count($test->susceptibility)>0 && $result->result == "Growth")
+																			@foreach($test->organisms() AS $og)
+																				<?php
+																				$organism_name = Organism::find($og['organism_id'])->name;
+																				$organism_names = (!empty($organism_names))? ($organism_names.', '.$organism_name) : $organism_name;																?>
+																			@endforeach
+																			of {{$organism_names ? $organism_names : '---'}}
+																		@endif
+																		{{ Measure::find($result->measure_id)->unit }}
+
+
+																		@if( $test->testType->instruments->count() > 0)
 																			<?php
+
 																			$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
 																			?>
+																<td>
+																	@if($measureRng)
+																		<b>{{$measureRng}}</b>&nbsp;
+																	@else
+																		N/A
+																	@endif
+																</td>
 
-																			@if($measureRng && $test->testType->instruments->count() > 0)
-																				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>{{$measureRng}}</b></i>
-																			@endif
+																@endif
+																@else
 
-																			<?php
-																				$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
-																			?>
+																	@if($test->testType->instruments->count() > 0)
 
-																			@if($measureRng)
-																				<td>
-																					{{$measureRng}}
-																				</td>
-																			@else
-																				<td>
-																					N/A
-																				</td>
-																			
-																			@endif
+																		@if ($test->testType->name == 'Manual Differential & Cell Morphology')
+																			&nbsp;
+																			<td>&nbsp;</td>
 																		@else
 																			Not done
-																			<td>N/A</td>
-																		@endif
+																			<?php
 
-																	</td>
-																</tr>
+																			$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
+																			?>
+																			<td>
+																				@if($measureRng)
+																					<b>{{$measureRng}}</b>&nbsp;
+																				@else
+																					N/A
+																				@endif
+																			</td>
+																		@endif
+																	@else
+																		@if ($test->testType->name == 'Manual Differential & Cell Morphology')
+																			&nbsp;
+																		@else
+																			Not done
+																		@endif
+																	@endif
+																@endif
+																</td>
+															</tr>
 														@endforeach
 													</table>
 												@endif
 											</td>
 											<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
-																		<td style="width: 20%;">{{ $test->testedBy->name}}<br /> On {{ $test->time_completed }}
-																			@if($test->resultDevices())
-																				<br /><br />
+											<td style="width: 20%;">{{ $test->testedBy->name}}<br />
+												On {{ $test->time_completed }}
+												@if($test->resultDevices())
+													<br /><br />
 
-																				<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
-																			@endif
-																		</td>
+													<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+												@endif
+											</td>
 
 										</tr>
 									@empty

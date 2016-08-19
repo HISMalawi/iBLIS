@@ -268,7 +268,14 @@
 								@else
 									<table style="margin: 0px;padding:0px;width:100%" class="table-bordered table-condensed">
 										<tr>
-											<td><b>Measure</b></td><td><b>Result</b></td><td><b>Range</b></td>
+											<td>
+												<b>Measure</b>
+											</td>
+											<td><b>Result</b></td>
+											@if($test->testType->instruments->count() > 0)
+
+												<td style="width: 20%"><b>Range</b></td>
+											@endif
 										</tr>
 										@foreach($test->testResults as $result)
 
@@ -280,7 +287,7 @@
 												
 
 												<tr>
-													<td style="width: 44%">
+													<td style="width: 40%">
 														{{ Measure::find($result->measure_id)->name }}
 													</td>
 													<td>
@@ -297,28 +304,50 @@
 															@endif
 															{{ Measure::find($result->measure_id)->unit }}
 
-															<?php
+
+															@if( $test->testType->instruments->count() > 0)
+																<?php
 
 																$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
-															?>
+																?>
+																<td>
+																	@if($measureRng)
+																		<b>{{$measureRng}}</b>&nbsp;
+																	@else
+																			N/A
+																	@endif
+																</td>
 
-															@if($measureRng)
-																<td>
-																	{{$measureRng}}
-																</td>
-															@else
-																<td>
-																	N/A
-																</td>
-															
-															@endif
+																@endif
 														@else
-															Not done
-															<td>
-																N/A
-															</td>
-														@endif
 
+															@if($test->testType->instruments->count() > 0)
+
+																@if ($test->testType->name == 'Manual Differential & Cell Morphology')
+																	&nbsp;
+																	<td>&nbsp;</td>
+																@else
+																 Not done
+																	<?php
+
+																	$measureRng = Measure::getRange($test->visit->patient, $result->measure_id);
+																	?>
+																	<td>
+																		@if($measureRng)
+																			<b>{{$measureRng}}</b>&nbsp;
+																		@else
+																			N/A
+																		@endif
+																	</td>
+																@endif
+															@else
+																@if ($test->testType->name == 'Manual Differential & Cell Morphology')
+																	&nbsp;
+																@else
+																	Not done
+																@endif
+															@endif
+														@endif
 													</td>
 												</tr>
 										@endforeach
