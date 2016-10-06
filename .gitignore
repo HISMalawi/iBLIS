@@ -17,3 +17,4 @@ public/patientreport*
 public/data
 *.lbl
 labstatreport*
+app/config/key

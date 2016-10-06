@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
-class Patient extends Eloquent
+class Patient extends EncryptionWrapper
 {
 	const MALE = 0;
 	const FEMALE = 1;
@@ -21,6 +21,8 @@ class Patient extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'patients';
+	
+	protected $encrypted = [ 'name', 'address', 'phone_number', 'email' ];
 
 	/**
 	 * Visits relationship
