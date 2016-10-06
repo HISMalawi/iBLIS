@@ -3,6 +3,27 @@
 class InterfacerController extends \BaseController
 {
 
+    public function getTestCatalog(){
+
+        $catalog = array();
+
+        $specimens = SpecimenType::orderBy("name")->get();
+
+        foreach ($specimens AS $specimen){
+
+            $name = $specimen->name;
+
+            $catalog[$name] = array();
+
+            $panelTests = DB::select(
+                        "SELECT * FROM test_types t INNER JOIN specimens s ON t.specimen_id = s.id
+                         WHERE t.specimen_id = ".$specimen->id
+            );
+        }
+
+        return json_encode($catalog);
+    }
+
     public function receiveLabRequest()
     {
         //authenticate() connection

@@ -47,8 +47,24 @@ Route::group(array("before" => "guest"), function()
         "uses" => "InterfacerController@updateResult"
     ));
 
+    Route::get('/api/get_test_catalog.php', array(
+        "as" => "api.get_test_catalog",
+        "uses" => "InterfacerController@getTestCatalog"
+    ));
+
 });
 
+
+
+/* Routes accessible before logging in */
+Route::group(array("before" => "print"), function()
+{
+    Route::get('/api/get_test_catalog.php', array(
+        "as" => "api.get_test_catalog",
+        "uses" => "InterfacerController@getTestCatalog"
+    ));
+
+});
 
 /*
  * *Routes accessible by cmd tools for generating printouts
