@@ -1,5 +1,6 @@
 <?php
 
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -61,6 +62,39 @@ require $framework.'/Illuminate/Foundation/start.php';
 
 /*
 |--------------------------------------------------------------------------
+|       Descrypt database credentials
+|       Kenneth Kapundi
+|--------------------------------------------------------------------------
+|
+/The function below will override encrypted database connections attributes with human-readable values
+|
+*/
+
+foreach(Config::get("database.connections.mysql") AS $key => $str){
+
+    if(strlen($str) > 40){
+        $password = $password = trim(file_get_contents(base_path("app/config/key")));
+        $cipher_method = 'AES-256-CBC';
+        $val = str_replace(array('-', '_'), array('+', '/'), $str);
+        $data = base64_decode($val);
+        $iv_length = openssl_cipher_iv_length($cipher_method);
+        $body_data = substr($data, $iv_length);
+        $iv = substr($data, 0, $iv_length);
+        $base64_body_data = base64_encode($body_data);
+        try{
+            $enc = openssl_decrypt($base64_body_data, $cipher_method, $password, 0, $iv);
+            if(!empty($enc)){
+                Config::set("database.connections.mysql." . $key, $enc);
+            }
+        }catch(Exception $e){
+            return null;
+        }
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | Return The Application
 |--------------------------------------------------------------------------
 |
@@ -69,6 +103,7 @@ require $framework.'/Illuminate/Foundation/start.php';
 | from the actual running of the application and sending responses.
 |
 */
+
 
 return $app;
 

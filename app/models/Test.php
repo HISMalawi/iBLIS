@@ -518,7 +518,12 @@ class Test extends Eloquent
 					}
 					else
 					{
-						$q->where('name', 'like', '%' . $searchString . '%');
+						$name = explode(' ', $searchString);
+						$f_name_code = isset($name[0]) ? Soundex::encode($name[0])  : null;
+						$l_name_code = isset($name[1]) ? Soundex::encode($name[sizeof($name)-1])  : null;
+						
+						$q->where('first_name_code', '=', $f_name_code)
+						->where('last_name_code', '=', $l_name_code);
 					}
 				});
 			})
