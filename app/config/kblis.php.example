@@ -114,6 +114,6 @@ return array(
 		|--------------------------------------------------------------------------
 		|
 		*/
-	'central-repo' => 'http://localhost:3014'
-
+	'central-repo' => 'http://localhost:3004',
+	'national-repo-node' => 'http://localhost:3014'
 );

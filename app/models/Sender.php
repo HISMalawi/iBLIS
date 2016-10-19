@@ -7,7 +7,7 @@ class Sender
      */
     public static function search_from_remote($trackingNumber){
 
-        $ch = curl_init( Config::get('kblis.central-repo')."/query_results/".$trackingNumber);
+        $ch = curl_init( Config::get('kblis.national-repo-node')."/query_results/".$trackingNumber);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = json_decode(curl_exec($ch));
@@ -89,7 +89,7 @@ class Sender
         #dd($order);
         $data_string = json_encode($order);
 
-        $ch = curl_init( Config::get('kblis.central-repo')."/update_order");
+        $ch = curl_init( Config::get('kblis.central-repo')."/pass_json/");
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
