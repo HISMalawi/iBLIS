@@ -443,8 +443,7 @@ P1
 			);
 
 			$data_string = json_encode($json);
-
-			$ch = curl_init( Config::get('kblis.central-repo')."/create_hl7_order");
+			$ch = curl_init( Config::get('kblis.national-repo-node')."/create_hl7_order");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
