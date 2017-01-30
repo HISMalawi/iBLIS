@@ -42,7 +42,7 @@
                 <div class="panel-body">
                 <div>
                     <div 
-                    class="{{($measure->measure_type_id == 1) ? 'col-md-12' : 'col-md-6' }} measurevalue {{$measure->id}}">
+                    class="{{($measure->measure_type_id == 1) ? 'col-md-12' : 'col-md-12' }} measurevalue {{$measure->id}}">
                     
                     @if ($measure->measure_type_id == 1)
                         <div class="col-md-12">
@@ -96,23 +96,41 @@
 
                     @elseif ($measure->measure_type_id == 2 || $measure->measure_type_id == 3)
                         <div class="col-md-12">
-                            <span class="col-md-5 val-title">{{trans('messages.range')}}</span>
-                            <span class="col-md-5 interpretation-title">{{trans('messages.interpretation')}}</span>
+                            <span class="col-md-2 val-title">{{trans('messages.range')}}</span>
+                            <span class="col-md-2 interpretation-title">{{trans('messages.interpretation')}}</span>
+                            <span class="col-md-2 interpretation-title">{{trans('messages.hl7_identifier')}}</span>
+                            <span class="col-md-2 interpretation-title">{{trans('messages.hl7_text')}}</span>
+                            <span class="col-md-2 interpretation-title">{{trans('messages.hl7_coding_system')}}</span>
                         </div>
                         @foreach($measure->measureRanges as $key=>$value)
                         <div class="col-md-12 measure-input">
-                            <div class="col-md-5">
+                            <div class="col-md-2">
                                 <input class="col-md-10 val" value="{{ $value->alphanumeric }}"
                                 name="measures[{{$measure->id}}][val][]" type="text">
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-2">
                                 <input class="col-md-10 interpretation" value="{{ $value->interpretation }}"
                                 name="measures[{{$measure->id}}][interpretation][]" type="text">
-                                <button class="col-md-2 close" aria-hidden="true" type="button" 
+
+                            </div>
+                            <div class="col-md-2">
+                                <input class="col-md-10 interpretation" value="{{ $value->hl7_identifier }}"
+                                name="measures[{{$measure->id}}][hl7_identifier][]" type="text">
+
+                            </div>
+                            <div class="col-md-2">
+                                <input class="col-md-10 interpretation" value="{{ $value->hl7_text }}"
+                                name="measures[{{$measure->id}}][hl7_text][]" type="text">
+
+                            </div>
+                            <div class="col-md-2">
+                                <input class="col-md-10 interpretation" value="{{ $value->hl7_coding_system }}"
+                                name="measures[{{$measure->id}}][hl7_coding_system][]" type="text">
+                                <button class="col-md-2 close" aria-hidden="true" type="button"
                                     title="{{trans('messages.delete')}}">×</button>
                                 <input value="{{ $value->id }}" name="measures[{{$measure->id}}][measurerangeid][]" type="hidden">
                             </div>
-                        </div>  
+                        </div>
                         @endforeach
                     @else
                         <div class="freetextInputLoader">

@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        {{ Form::label('new-measures[][measure_type_id]', trans('messages.measure-type')) }}
+                        {a{ Form::label('new-measures[][measure_type_id]', trans('messages.measure-type')) }}
                             <select class="form-control measuretype-input-trigger measure_type_id" 
                                 data-measure-id="0" 
                                 data-new-measure-id="" 
@@ -77,8 +77,11 @@
     </div><!-- alphanumericHeader -->
     <div class="hidden alphanumericHeaderLoader">
         <div class="col-md-12">
-            <span class="col-md-5 interpretation-title">{{trans('messages.value')}}</span>
-            <span class="col-md-5 interpretation-title">{{trans('messages.interpretation')}}</span>
+            <span class="col-md-2 interpretation-title">{{trans('messages.value')}}</span>
+            <span class="col-md-2 interpretation-title">{{trans('messages.interpretation')}}</span>
+            <span class="col-md-2 interpretation-title">{{trans('messages.hl7_identifier')}}</span>
+            <span class="col-md-2 interpretation-title">{{trans('messages.hl7_text')}}</span>
+            <span class="col-md-2 interpretation-title">{{trans('messages.hl7_coding_system')}}</span>
         </div>
     </div><!-- numericHeader -->
     <div class="hidden numericInputLoader">
@@ -108,12 +111,23 @@
     </div><!-- numericInput -->
     <div class="hidden alphanumericInputLoader">
         <div class="col-md-12 measure-input">
-            <div class="col-md-5">
-                <input class="col-md-10 val" name="" type="text">
-            </div>
-            <div class="col-md-5">
-                <input class="col-md-10 interpretation" name="" type="text">
-                <button class="col-md-2 close" aria-hidden="true" type="button" title="{{trans('messages.delete')}}">×</button>
+            <div class="col-md-12">
+                <div class="col-md-2">
+                    <input class="col-md-10 val" name="" type="text">
+                </div>
+                <div class="col-md-2">
+                    <input class="col-md-10 interpretation" name="" type="text">
+                </div>
+                <div class="col-md-2">
+                    <input class="col-md-10 hl7_identifier" name="" type="text">
+                </div>
+                <div class="col-md-2">
+                    <input class="col-md-10 hl7_text" name="" type="text">
+                </div>
+                <div class="col-md-2">
+                    <input class="col-md-10 hl7_coding_system" name="" type="text">
+                    <button class="col-md-2 close" aria-hidden="true" type="button" title="{{trans('messages.delete')}}">×</button>
+                </div>
                 <input class="measurerangeid" name="" type="hidden">
             </div>
         </div>

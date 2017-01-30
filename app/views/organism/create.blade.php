@@ -58,6 +58,21 @@
 						</div>
 					</div>
 				</div>
+                <div class="form-group">
+                    {{ Form::label('hl7_identifier', trans('messages.hl7_identifier')) }}
+                    {{ Form::textarea('hl7_identifier', Input::old('hl7_identifier'),
+                        array('class' => 'form-control', 'rows' => '1')) }}
+                </div>
+                <div class="form-group">
+                    {{ Form::label('hl7_text', trans('messages.hl7_text')) }}
+                    {{ Form::textarea('hl7_text', Input::old('hl7_text'),
+                        array('class' => 'form-control', 'rows' => '1')) }}
+                </div>
+                <div class="form-group">
+                    {{ Form::label('hl7_coding_system', trans('messages.hl7_coding_system')) }}
+                    {{ Form::textarea('hl7_coding_system', Input::old('hl7_coding_system'),
+                        array('class' => 'form-control', 'rows' => '1')) }}
+                </div>
 				<div class="form-group actions-row">
 					{{ Form::button("<span class='glyphicon glyphicon-save'></span> ".trans('messages.save'), 
 						array('class' => 'btn btn-primary', 'onclick' => 'submit()')) }}

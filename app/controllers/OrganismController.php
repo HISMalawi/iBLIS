@@ -47,7 +47,9 @@ class OrganismController extends \BaseController {
 			//store
 			$organism = new Organism;
 			$organism->name = Input::get('name');
-			$organism->description = Input::get('description');
+			$organism->hl7_identifier = Input::get('hl7_identifier');
+			$organism->hl7_text = Input::get('hl7_text');
+			$organism->hl7_coding_system = Input::get('hl7_coding_system');
 			try{
 				$organism->save();
 				if(Input::get('drugs')){
@@ -118,6 +120,9 @@ class OrganismController extends \BaseController {
 			$organism = Organism::find($id);
 			$organism->name = Input::get('name');
 			$organism->description = Input::get('description');
+			$organism->hl7_identifier = Input::get('hl7_identifier');
+			$organism->hl7_text = Input::get('hl7_text');
+			$organism->hl7_coding_system = Input::get('hl7_coding_system');
 			try{
 				$organism->save();
 				if(Input::get('drugs')){

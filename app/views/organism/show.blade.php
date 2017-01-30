@@ -30,6 +30,13 @@
 					{{ $organism->description }}</p>
 				<p class="view-striped"><strong>{{ trans('messages.compatible-drugs') }}:</strong>
 					{{ implode(", ", $organism->drugs->lists('name')) }}
+				<p class="view-striped"><strong>{{ trans('messages.hl7_identifier') }}:</strong>
+					{{ $organism->hl7_identifier }}</p>
+				<p class="view-striped"><strong>{{ trans('messages.hl7_text') }}:</strong>
+					{{ $organism->hl7_text }}</p>
+				<p class="view-striped"><strong>{{ trans('messages.hl7_coding_system') }}:</strong>
+					{{ $organism->hl7_coding_system }}</p>
+
 				</p>
 			</div>
 		</div>

@@ -514,13 +514,13 @@ $(function(){
 			measureTypeId = $('.measuretype-input-trigger.'+measureID).val() - 1;
 			var headerHtml = $(headerClass[measureTypeId]).html();
 			var inputHtml = $(inputClass[measureTypeId]).html();
-		if (measureTypeId == 0) {
-			$('.measurevalue.'+measureID).removeClass('col-md-6');
-			$('.measurevalue.'+measureID).addClass('col-md-12');
-		} else{
-			$('.measurevalue.'+measureID).removeClass('col-md-12');
-			$('.measurevalue.'+measureID).addClass('col-md-6');
-		}
+		//if (measureTypeId == 0) {
+		//	$('.measurevalue.'+measureID).removeClass('col-md-12');
+		//	$('.measurevalue.'+measureID).addClass('col-md-12');
+		//} else{
+		//	$('.measurevalue.'+measureID).removeClass('col-md-12');
+		//	$('.measurevalue.'+measureID).addClass('col-md-12');
+		//}
 		if (measureTypeId == 3) {
 			$('.measurevalue.'+measureID).siblings('.actions-row').addClass('hidden')
 		}else{
@@ -596,6 +596,12 @@ $(function(){
 				'name', 'measures['+measureID+'][val][]');
 			$('.measurevalue.'+measureID+' input.interpretation').attr(
 				'name', 'measures['+measureID+'][interpretation][]');
+			$('.measurevalue.'+measureID+' input.hl7_identifier').attr(
+							'name', 'measures['+measureID+'][hl7_identifier][]');
+			$('.measurevalue.'+measureID+' input.hl7_text').attr(
+							'name', 'measures['+measureID+'][hl7_text][]');
+			$('.measurevalue.'+measureID+' input.hl7_coding_system').attr(
+							'name', 'measures['+measureID+'][hl7_coding_system][]');
 			$('.measurevalue.'+measureID+' input.measurerangeid').attr(
 				'name', 'measures['+measureID+'][measurerangeid][]');
 		}
