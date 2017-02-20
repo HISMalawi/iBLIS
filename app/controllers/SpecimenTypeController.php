@@ -116,6 +116,9 @@ class SpecimenTypeController extends \BaseController {
 			$specimentype = SpecimenType::find($id);
 			$specimentype->name = Input::get('name');
 			$specimentype->description = Input::get('description');
+			$specimentype->hl7_identifier = Input::get('hl7_identifier');
+			$specimentype->hl7_text = Input::get('hl7_text');
+			$specimentype->hl7_coding_system = Input::get('hl7_coding_system');
 			$specimentype->save();
 
 			// redirect

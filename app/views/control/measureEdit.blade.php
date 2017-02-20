@@ -37,7 +37,7 @@
                 <div class="panel-body">
                 <div>
                     <div 
-                    class="{{($measure->control_measure_type_id == 1) ? 'col-md-12' : 'col-md-6' }} measurevalue {{$measure->id}}">
+                    class="{{($measure->control_measure_type_id == 1) ? 'col-md-12' : 'col-md-12' }} measurevalue {{$measure->id}}">
                     
                     @if ($measure->control_measure_type_id == 1)
                         <div class="col-md-12">
@@ -68,7 +68,7 @@
                         </div>
                         @foreach($measure->controlMeasureRanges as $key=>$controlMeasureRange)
                         <div class="col-md-12 measure-input">
-                            <div class="col-md-5">
+                            <div class="col-md-12">
                                 <input class="col-md-10 val" value="{{ $controlMeasureRange->alphanumeric }}"
                                 name="measures[{{$measure->id}}][val][]" type="text">
                                 <button class="col-md-2 close" aria-hidden="true" type="button" 
