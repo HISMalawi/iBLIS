@@ -25,7 +25,7 @@
 		</div>
 		<div class="panel-body">
 			@include("reportHeader")
-			<?php 
+			<?php
 				$from = isset($input['start'])?$input['start']:date('d-m-Y');
 			 	$to = isset($input['end'])?$input['end']:date('d-m-Y');
 				$to = new Datetime($to);
@@ -97,20 +97,22 @@
 									<td><b>PICKUP RATE</b></td>
 									@foreach($period as $month)
 										<?php
-											//echo $total[$month->format('F')];
+										//echo $total[$month->format('F')];
 										$positives = 0;
 										if(isset($data[$measure->name][$month->format('F')]['Negative']))
 										{
 											$positives =  $total[$month->format('F')] - $data[$measure->name][$month->format('F')]['Negative'];
 										}
+
+										if($total[$month->format('F')])
+										{
+											$percentage = ceil(($positives/$total[$month->format('F')]) * 100);
+										}
 										else
 										{
-											$positives =  $total[$month->format('F')] - 0;
+											$percentage = 0;
 										}
-											
-											$percentage = ceil(($positives/$total[$month->format('F')]) * 100);
-											
-										
+
 										?>
 										<td align='center'><b>{{$percentage}}</b></td>
 									@endforeach

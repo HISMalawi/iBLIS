@@ -976,7 +976,16 @@ $(function(){
 	}
 
 	function submitPrintForm(){
-		document.getElementById("word").value = "true";
+		if(document.getElementById("word")) {
+			document.getElementById("word").value = "true";
+		}
+
+		var pdf = document.createElement("input");
+		pdf.setAttribute("type", "hidden");
+		pdf.setAttribute("name", "pdf");
+		pdf.setAttribute("value", "true");
+		document.getElementById('form-patientreport-filter').appendChild(pdf);
+
 		document.getElementById('form-patientreport-filter').submit();
 		$('#myModal').modal('hide');
 	}

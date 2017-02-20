@@ -54,8 +54,6 @@ Route::group(array("before" => "guest"), function()
 
 });
 
-
-
 /* Routes accessible before logging in */
 Route::group(array("before" => "print"), function()
 {
@@ -101,6 +99,17 @@ Route::group(array("before", "print"), function()
         "as"   => "rejected.sample",
         "uses" => "ReportController@rejected_specimens"
     ));
+
+    Route::match(['get', 'post'], "/tbreport", array(
+        "as"   => "reports.tb",
+        "uses" => "ReportController@tb_report"
+    ));
+
+    Route::match(['get', 'post'], "/turnaroundtime", array(
+        "as"   => "turnaround.report",
+        "uses" => "ReportController@getTat"
+    ));
+
 });
 /* Routes accessible AFTER logging in */
 Route::group(array("before" => "auth"), function()
@@ -484,15 +493,7 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@department_report"
         ));*/
 
-        Route::match(['get', 'post'], "/tbreport", array(
-            "as"   => "reports.tb",
-            "uses" => "ReportController@tb_report"
-        ));
 
-         Route::match(['get', 'post'], "/turnaroundtime", array(
-            "as"   => "turnaround.report",
-            "uses" => "ReportController@getTat"
-        ));
 
        /*  Route::match(['get', 'post'], "/rejected", array(
             "as"   => "rejected.sample",
