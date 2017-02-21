@@ -3473,7 +3473,7 @@ class ReportController extends \BaseController {
         {
         	if(!Input::has('page'))
         	{
-				$url = Request::url()."?pdf=true&page=true&year=$year&lab_section=$lab_section_id";
+				$url = Request::url()."?pdf=true&page=true&lab_section=$lab_section_id";
 
 				$fileName = "departmentreport_".$date.".pdf";
 				$printer = Input::get("printer_name");
@@ -3514,7 +3514,10 @@ class ReportController extends \BaseController {
 	public function tb_report()
 	{
 		$date = date('Y-m-d');
-	
+		$year = date('Y');
+
+		$lab_section_id = TestCategory::where('name', 'Microbiology')->first()->id;
+
 		$start_date = Input::get('start', $date);
 		$end_date = Input::get('end', $date);
 
@@ -3573,12 +3576,13 @@ class ReportController extends \BaseController {
 		}
 
 		$view_url = "reports.tb.index";
-
 		if(Input::has('pdf'))
         {
-        	if(!Input::has('page'))
+
+			if(!Input::has('page'))
         	{
-				$url = Request::url()."?pdf=true&page=true&year=$year&lab_section=$lab_section_id";
+
+				$url = Request::url()."?pdf=true&page=true&year=$year&lab_section=$lab_section_id&start=$start_date&end=$end_date";
 
 				$fileName = "tbreport_".$date.".pdf";
 				$printer = Input::get("printer_name");

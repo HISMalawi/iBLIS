@@ -24,6 +24,9 @@
 				<p class="view-striped"><strong>{{trans('messages.description')}}</strong>
 					{{ $specimentype->description }}</p>
 				<p class="view"><strong>{{trans('messages.date-created')}}</strong>{{ $specimentype->created_at }}</p>
+				<p class="view"><strong>{{trans('messages.hl7_identifier')}}</strong>{{ $specimentype->hl7_identifier }}</p>
+				<p class="view"><strong>{{trans('messages.hl7_text')}}</strong>{{ $specimentype->hl7_text }}</p>
+				<p class="view"><strong>{{trans('messages.hl7_coding_system')}}</strong>{{ $specimentype->hl7_coding_system }}</p>
 			</div>
 		</div>
 	</div>

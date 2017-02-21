@@ -242,6 +242,10 @@ return array(
     'test-type' => 'Test Type|Test Types',
     'test-type-details' => 'Test Type Details',
     'orderable-test' => 'Can order test',
+    'hl7_identifier' => 'HL7 Code',
+    'hl7_text' => 'HL7 Text Description',
+    'hl7_coding_system' => 'HL7 Code System',
+
 
     /* Drugs */
 

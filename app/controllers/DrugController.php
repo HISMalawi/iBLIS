@@ -52,6 +52,9 @@ class DrugController extends \BaseController {
 			$drug = new Drug;
 			$drug->name = Input::get('name');
 			$drug->description = Input::get('description');
+			$drug->hl7_identifier = Input::get('hl7_identifier');
+			$drug->hl7_text = Input::get('hl7_text');
+            $drug->hl7_coding_system = Input::get('hl7_coding_system');
 			try{
 				$drug->save();
 				$url = Session::get('SOURCE_URL');
@@ -116,6 +119,9 @@ class DrugController extends \BaseController {
 			$drug = Drug::find($id);
 			$drug->name = Input::get('name');
 			$drug->description = Input::get('description');
+            $drug->hl7_identifier = Input::get('hl7_identifier');
+            $drug->hl7_text = Input::get('hl7_text');
+            $drug->hl7_coding_system = Input::get('hl7_coding_system');
 			$drug->save();
 
 			// redirect
