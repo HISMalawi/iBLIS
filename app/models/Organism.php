@@ -55,4 +55,5 @@ class Organism extends Eloquent
 		DB::table('organism_drugs')->insert($drugsAdded);
 	}
 
+
 }

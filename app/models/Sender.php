@@ -44,7 +44,7 @@ class Sender
      *
      */
     public static function send_data($patient, $specimen, $tests=[])
-    {
+    {   
         $order = array(
             '_id' => $specimen->tracking_number,
             'sample_status' => SpecimenStatus::find($specimen->specimen_status_id)->name,
@@ -54,11 +54,15 @@ class Sender
         if(sizeof($tests) == 0){
             $tests = Test::where('specimen_id', $specimen->id)->get();
         }
+        
+        $counter = 0;
+        $con =0;
 
+      
         foreach($tests AS $test){
 
-            $test_name = $test->testType->name;
-            $order['results'][$test_name] = array();
+            $test_id = $test->testType->id;
+            $order['results'][$test_id] = array();
             $h = array();
             $h['test_status'] = $test->testStatus->name;
             $h['remarks'] = $test->interpretation;
@@ -71,19 +75,81 @@ class Sender
             $h['who_updated']['first_name'] = isset($name[0]) ? $name[0]  : '';
             $h['who_updated']['last_name'] = isset($name[1]) ? $name[1]  : '';
             $h['who_updated']['ID_number'] = $who->id;
-
+            
             $r = array();
+           
+            $count = Count($test->susceptibility);
+            
+            
+            $organ_id = "";
+            $organ_names = [];
+            $organ_name =""; 
+
+            if ($count >0)
+            {
+             
+                foreach ($test->susceptibility AS $suscpt)
+                {
+                    $organ_id =  $suscpt->organism_id;
+                    
+                    $organ_name = Organism::where('id',$organ_id)->first();
+
+                   
+
+                    if (in_array($organ_name, $organ_names))
+                    {
+                        
+                    }
+                    else
+                    {
+                        $organ_names = [$organ_name->id => $organ_name->name];
+
+
+                    }
+
+                    
+                }
+               
+            }
+               
+           
+
+         if (count($test->testResults) == 0)
+         {
+                    $r['result_name'] = "";
+                    $r['result_value'] = ""; 
+                    $r['units'] = "";
+                    $r['organism'] = "";
+         }  
+         else
+            {
             foreach ($test->testResults AS $result){
                 $measure = Measure::find($result->measure_id);
+                $r[$measure->id] = array();
+
                 if($result->result) {
-                    $r[$measure->name] = $result->result . " " . $measure->unit;
+                    $r[$measure->id]['result_name'] = $measure->name;
+                    $r[$measure->id]['result_value'] = $result->result; 
+                    $r[$measure->id]['units'] = $measure->unit;
+
+                    $r[$measure->id]['organism'] = $organ_names;
+
                 }else{
-                    $r[$measure->name] = $result->result;
+                    $r[$measure->id]['result_name'] = $measure->name;
+                    $r[$measure->id]['result_value'] = $result->result; 
+                    $r[$measure->id]['units'] = $measure->unit;
+                    $r[$measure->id]['organism'] = "djdj";
                 }
+              
             }
+
+           }
+
             $h['results'] = $r;
-            $order['results'][$test_name] = $h;
+            $order['results'][$test_id] = $h;
         }
+
+
 
         #$order =  urldecode(http_build_query($order));
         #dd($order);

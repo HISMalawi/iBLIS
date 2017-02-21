@@ -144,6 +144,7 @@ class TestController extends \BaseController {
 
 		if($test->panel_id){
 			Session::set('activeTest', array($test->id));
+			
 		}
 
 		return $id;
@@ -380,6 +381,7 @@ P1
 		} else {
 
 			$visitType = ['Out-patient','In-patient'];
+
 			$activeTest = array();
 
 			/*
@@ -397,6 +399,7 @@ P1
 			* - Fields required: visit_id, test_type_id, specimen_id, test_status_id, created_by, requested_by
 			*/
 			$testTypes = Input::get('testtypes');
+
 			$testTypeNames = TestType::whereIn('id', $testTypes)->lists('name');
 			$panelNames = array_diff($testTypes, array_filter($testTypes, 'is_numeric'));
 			$testTypeNames = array_merge($testTypeNames, $panelNames);
@@ -414,9 +417,11 @@ P1
 				$middle_name = $split_name[1];
 			}
 
+			
+
 			$json = Array( 'return_path' => "",
 				'district' => Config::get('kblis.district'),
-				'health_facility_name'=> Config::get('kblis.organization'),
+				'health_facility_name'=> Facility::getFacilityCode(Config::get('kblis.organization')),
 				'first_name' => $first_name,
 				'last_name' => $last_name,
 				'middle_name' => $middle_name,
@@ -429,12 +434,12 @@ P1
 				'sample_collector_first_name' => explode(' ', Input::get('physician'))[0],
 				'sample_collector_phone_number' => '',
 				'sample_collector_id' => '',
-				'sample_order_location' => Input::get('ward'),
-				'sample_type' => SpecimenType::find(Input::get('specimen_type'))->name,
+				'sample_order_location' =>FacilityWard::getWardCode(Input::get('ward')),
+				'sample_type' => SpecimenType::find(Input::get('specimen_type'))->id,
 				'date_sample_drawn' => date('Y-m-d'),
 				'tests' => $testTypeNames,
 				'sample_priority' => (Input::get('priority') ? Input::get('priority') : 'Routine'),
-				'target_lab' => Config::get('kblis.organization'),
+				'target_lab' => Facility::getFacilityCode(Config::get('kblis.organization')),
 				'tracking_number'  => "",
 				'art_start_date'  => "",
 				'date_dispatched'  => "",
@@ -442,6 +447,7 @@ P1
 				'return_json' => 'true'
 			);
 
+			
 			$data_string = json_encode($json);
 			$ch = curl_init( Config::get('kblis.national-repo-node')."/create_hl7_order");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -465,7 +471,8 @@ P1
 				$specimen->save();
 
 				foreach ($testTypes as $value) {
-					$testTypeID = (int)$value;
+					 $testTypeID = (int)$value;
+					 
 
 					if ($testTypeID == 0){
 						$panelType = PanelType::where('name', '=', $value)->first()->id;
