@@ -77,44 +77,34 @@ class Sender
             $h['who_updated']['ID_number'] = $who->id;
             
             $r = array();
-           
             $count = Count($test->susceptibility);
-            
-            
             $organ_id = "";
             $organ_names = [];
             $organ_name =""; 
+            $counter = 0;
+     
 
             if ($count >0)
             {
-             
                 foreach ($test->susceptibility AS $suscpt)
                 {
                     $organ_id =  $suscpt->organism_id;
                     
                     $organ_name = Organism::where('id',$organ_id)->first();
-
-                   
-
                     if (in_array($organ_name, $organ_names))
                     {
                         
                     }
                     else
                     {
-                        $organ_names = [$organ_name->id => $organ_name->name];
-
-
+                       $organ_names[$organ_name->hl7_identifier] = [$organ_name->name];
+                       
                     }
-
                     
                 }
                
-            }
-               
-           
-
-         if (count($test->testResults) == 0)
+               }
+        if (count($test->testResults) == 0)
          {
                     $r['result_name'] = "";
                     $r['result_value'] = ""; 
@@ -125,36 +115,28 @@ class Sender
             {
             foreach ($test->testResults AS $result){
                 $measure = Measure::find($result->measure_id);
-                $r[$measure->id] = array();
+                $r[$measure->hl7_identifier] = array();
 
                 if($result->result) {
-                    $r[$measure->id]['result_name'] = $measure->name;
-                    $r[$measure->id]['result_value'] = $result->result; 
-                    $r[$measure->id]['units'] = $measure->unit;
-
-                    $r[$measure->id]['organism'] = $organ_names;
+                    $r[$measure->hl7_identifier]['result_name'] = $measure->name;
+                    $r[$measure->hl7_identifier]['result_value'] = $result->result; 
+                    $r[$measure->hl7_identifier]['units'] = $measure->unit;
+                    $r[$measure->hl7_identifier]['organism'] = $organ_names;
 
                 }else{
-                    $r[$measure->id]['result_name'] = $measure->name;
-                    $r[$measure->id]['result_value'] = $result->result; 
-                    $r[$measure->id]['units'] = $measure->unit;
-                    $r[$measure->id]['organism'] = "djdj";
-                }
-              
+                    $r[$measure->hl7_identifier]['result_name'] = $measure->name;
+                    $r[$measure->hl7_identifier]['result_value'] = $result->result; 
+                    $r[$measure->hl7_identifier]['units'] = $measure->unit;
+                    $r[$measure->hl7_identifier]['organism'] = $organ_names || "";
+                }              
             }
-
            }
-
             $h['results'] = $r;
             $order['results'][$test_id] = $h;
         }
-
-
-
         #$order =  urldecode(http_build_query($order));
         #dd($order);
         $data_string = json_encode($order);
-
         $ch = curl_init( Config::get('kblis.central-repo')."/pass_json/");
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -163,9 +145,7 @@ class Sender
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($data_string))
         );
-
         curl_exec($ch);
-
     }
 
     public static function merge_or_create($tracking_number){

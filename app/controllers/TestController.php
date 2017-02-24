@@ -435,7 +435,7 @@ P1
 				'sample_collector_phone_number' => '',
 				'sample_collector_id' => '',
 				'sample_order_location' =>FacilityWard::getWardCode(Input::get('ward')),
-				'sample_type' => SpecimenType::find(Input::get('specimen_type'))->id,
+				'sample_type' => SpecimenType::find(Input::get('specimen_type'))->hl7_identifier,
 				'date_sample_drawn' => date('Y-m-d'),
 				'tests' => $testTypeNames,
 				'sample_priority' => (Input::get('priority') ? Input::get('priority') : 'Routine'),
