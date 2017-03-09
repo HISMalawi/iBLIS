@@ -226,6 +226,8 @@ class InterfacerController extends \BaseController
             return "-1";
         }
 
+        $machine_name = $_REQUEST["machine_name"];
+
         $measure_id = $_REQUEST["measure_id"];
 
         $result = $_REQUEST["result"];
@@ -257,11 +259,17 @@ class InterfacerController extends \BaseController
             }
 
             $instrument = '';
+            $count = 0;
             if($_SERVER["REMOTE_ADDR"]) {
                 $instrument = DB::table('instruments')->where('ip', $_SERVER["REMOTE_ADDR"])->first();
+                $count = DB::table('instruments')->where('ip', $_SERVER["REMOTE_ADDR"])->count();
             }
 
-            if($instrument){
+            if(!empty($machine_name)){
+                $json['machine_name'] = $machine_name;
+            }
+
+            if(empty($json['machine_name']) && $count == 1){
                 $json['machine_name'] = $instrument->name;
             }
 

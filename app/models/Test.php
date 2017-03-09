@@ -740,9 +740,17 @@ class Test extends Eloquent
 		$devices = TestResult::where('test_id', $this->id)
 			->where('device_name', '<>', '')
 			->whereNotNull('device_name')
-			->select('device_name')->distinct()->pluck('device_name');
+			->select('device_name')->distinct()->lists('device_name');
 
-		return null;
+		$result = "";
+		foreach($devices as $k => $v){
+			if(!empty($result)) {
+				$result = $result.", ".$v;
+			}else{
+				$result = $v;
+			}
+		}
+		return $result;
 	}
 	/**
 	 * External dump relationship

@@ -1033,8 +1033,9 @@ P3
 			$testResult = TestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
 			$testResult->result = Input::get('m_'.$measure->id);
 
-			if($machine_name) {
-				$testResult->device_name = $testResult->result ? $machine_name : '';
+			if($machine_name && $testResult->result) {
+
+				$testResult->device_name = $machine_name;
 			}
 
 			$testResult->save();
