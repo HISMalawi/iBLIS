@@ -25,6 +25,22 @@ class TestCategory extends Eloquent
 	public function testTypes(){
          return $this->hasMany('TestType', 'test_category_id');
       }
+
+
+    public function getCategories($option)
+	{	if($option=="-- All --")
+		{
+			$types = DB::select(DB::raw("SELECT test_categories.name,test_categories.id FROM test_categories"));
+		}
+		else
+		{  $types = DB::select(DB::raw("SELECT test_categories.name,test_categories.id FROM test_categories WHERE test_categories.id='$option'"));
+		}
+
+		return $types;
+	}
+
+
+
     /**
 	* Given the test category name we return the test category ID
 	*

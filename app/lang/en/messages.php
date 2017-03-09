@@ -458,6 +458,11 @@ return array(
     'laboratory-report' => 'LABORATORY REPORT',
     'rejections-report' => 'Rejected Samples',
     'turnaround-report' => 'Turn Around Time',
+    'test-positive-negative-count' => 'Tests Results Status Counts',
+    'test-status-report' => 'Tests Result Status Counts',
+    'total-count' => 'Total Count',
+    'total-positive-count' => 'Total Positive Count',
+    'total-negative-count' => 'Total Negative Count',
 
     /* Infection Report*/
     'age-ranges'    =>  'Age Ranges',

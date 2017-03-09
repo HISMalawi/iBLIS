@@ -291,6 +291,12 @@
 							{{Lang::choice('messages.quality-control', 2)}}</a>
 						</div>
 					</li>
+					<li>
+						<div>
+							<a href="{{ URL::route("reports.aggregate.testsResultsCounts")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.test-positive-negative-count')}}</a>
+						</div>
+					</li>
 				</ul>
 				<div class="sub-menu-title">{{trans('messages.inventory-reports')}}</div>
 				<ul class="sub-menu-items">
@@ -300,7 +306,9 @@
 							{{trans('messages.stock-levels')}}</a>
 						</div>
 					</li>
-					</ul>
+				</ul>
+
+
 
 			</div>
 		</li>
@@ -382,12 +390,14 @@
 								<span class="glyphicon glyphicon-tag"></span> {{Lang::choice('messages.suppliers',2)}}</a>
 						</div>
 					</li>
+					
 					<li>
 						<div>
 							<a href="{{ URL::route("metric.index")}}">
 								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.metrics')}}</a>
 						</div>
 					</li>
+					
 					@endif
 				</ul>
 			</div>
