@@ -433,4 +433,62 @@
 			@endif
 		</div> <!-- ./ panel-body -->
 	</div> <!-- ./ panel -->
+
+
+
+	<!--PRINT CONFIRMATION POPUP BEGIN -->
+	@if(isset($available_printers))
+	<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel" style="text-align: left;">
+						Select Printer
+					</h4>
+				</div>
+				<div class="modal-body">
+        <span style="text-align:center;">
+          <table align="center" id="printers">
+			  @foreach($available_printers AS $printer)
+				  <tr onmousedown="updateValue(this)" value="{{$printer}}">
+					  <td><input type="radio" class="printer_radio_button" value="{{$printer}}" name="printer_name"/></td>
+					  <td style="text-align: left; padding-left:50px;">{{$printer}}</td>
+				  </tr>
+			  @endforeach
+		  </table>
+        </span>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
+						<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@endif
+
+	@if(isset($printers_popup))
+
+		{{ Form::open(array('url' => 'patientreport/'.$test->visit->patient->id.'/'.$visit, 'class' => 'form-inline', 'id' => 'form-patientreport-filter', 'method'=>'POST')) }}
+
+		{{ Form::hidden('patient', $test->visit->patient->id, array('id' => 'patient')) }}
+		{{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+		{{ Form::hidden('pdf', '', array('id' => 'word')) }}
+		{{ Form::hidden('test_id', $test->id, array('id' => 'test_id')) }}
+		{{ Form::hidden('from_view_details', true, array('id' => 'word')) }}
+
+
+		{{ Form::hidden('visit_id', $visit, array('id'=>'visit_id')) }}
+		{{ Form::close() }}
+
+		@if(isset($available_printers))
+			<script>
+				selectPrinter();
+			</script>
+		@endif
+
+	@endif
 @stop

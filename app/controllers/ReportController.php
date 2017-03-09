@@ -128,6 +128,13 @@ class ReportController extends \BaseController {
 
 				$process = new Process("rm $fileName && rm patientreport*.pdf");
 				$process->run();
+
+				if(Input::has('from_view_details')) {
+					return Redirect::route('test.index',
+						array('test_status' => TestStatus::where('name', 'completed')->first()->id)
+					);
+				}
+
 			}else{
 				$view_url = "reports.patient.export";
 			}

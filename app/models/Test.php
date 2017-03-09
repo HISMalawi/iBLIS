@@ -257,7 +257,7 @@ class Test extends Eloquent
 	 */
 	public function getTurnaroundTime()
 	{
-		$startTime = new DateTime($this->time_started);
+		$startTime = new DateTime($this->specimen->time_accepted);
 		$endTime = new DateTime($this->time_verified);
 		$interval = $startTime->diff($endTime);
 

@@ -1097,7 +1097,9 @@ P3
 	 */
 	public function viewDetails($testID)
 	{
-		return View::make('test.viewDetails')->with('test', Test::find($testID));
+		return View::make('test.viewDetails')
+			->with('available_printers', Config::get('kblis.A4_printers'))
+			->with('test', Test::find($testID));
 	}
 
 	/**
@@ -1138,7 +1140,12 @@ P3
 			Event::fire('test.verified', array($id));
 		}
 
-		return View::make('test.viewDetails')->with('test', $test)->with('hideVerifyButton', true);
+		return View::make('test.viewDetails')
+			->with('available_printers', Config::get('kblis.A4_printers'))
+			->with('printers_popup', true)
+			->with('test', $test)
+			->with('visit', $test->visit->id)
+			->with('hideVerifyButton', true);
 		//return Redirect::route('test.index');
 	}
 
