@@ -93,6 +93,16 @@ class TestType extends Eloquent
 		DB::table('testtype_specimentypes')->insert($specimenTypesAdded);
 	}
 
+
+	public static function getTestTypes()
+	{
+		$testTypes = DB::select(DB::raw("SELECT test_types.name FROM test_types"));
+
+		return $testTypes;
+	}
+
+
+
 	/**
 	 * Set test type measures
 	 *
