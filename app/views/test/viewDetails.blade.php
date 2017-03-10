@@ -1,5 +1,7 @@
 @extends("layout")
 @section("content")
+
+
 	<div>
 		<ol class="breadcrumb">
 			<li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
@@ -119,6 +121,58 @@
 									{{$test->getFormattedTurnaroundTime()}}</p>
 							@endif
 						</div>
+						<div id="cont" style="min-width: 310px; max-width: 800px; height: 130px; margin: 0 auto">
+				
+						</div>
+
+						<script type="text/javascript">
+							var series =    [  {  name: 'Expected TAT',
+											      data: [10]
+											   }, 
+											   {  name: 'Actual TAT',
+											      data: [5]
+											  }];
+
+							var chart = { type: 'bar'};
+
+							var subtitle = { text: ''};
+
+							var title = {text: 'Turnaround-Time'};
+
+							var xAxis = {categories: ['TAT']};
+
+							var yAxis = {     title: {
+										      text: 'Time (minutes)'
+										   },
+										   plotLines: [{
+										      value: 0,
+										      width: 1,
+										      color: '#808080'
+										   }]};  
+
+							var tooltip = { valueSuffix: '\xB0C'}
+
+							var legend = { 
+								   layout: 'vertical',
+								   align: 'right',
+								   verticalAlign: 'middle',
+								   borderWidth: 0};
+
+							var json = {};
+
+									json.chart = chart;
+									json.title = title;
+									json.subtitle = subtitle;
+									json.xAxis = xAxis;
+									json.yAxis = yAxis;
+									json.tooltip = tooltip;
+									json.legend = legend;
+									json.series = series;
+
+									$('#cont').highcharts(json);
+
+						</script>
+
 					</div>
 					<div class="col-md-6">
 						<div class="panel panel-info">  <!-- Patient Details -->
@@ -262,6 +316,7 @@
 											</div>
 										</div>
 									@endif
+
 								</div>
 							</div>
 						</div>
@@ -492,3 +547,7 @@
 
 	@endif
 @stop
+
+
+
+
