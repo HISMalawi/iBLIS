@@ -3241,9 +3241,8 @@ class ReportController extends \BaseController {
 
 	public function departments_summary()
 	{
-		$date = date('Y-m-d');
+				$date = date('Y-m-d');
 		$start_date = Input::get('start', $date);
-
 		$end_date = Input::get('end', $date);
 		$lab_section_id = Input::get('lab_section', 'All');
 
@@ -3251,6 +3250,7 @@ class ReportController extends \BaseController {
 		$end      = (new DateTime($end_date))->modify('first day of next month');
 		$interval = DateInterval::createFromDateString('1 month');
 		$period   = new DatePeriod($start, $interval, $end);
+
 		$category_names = array();
 		$category_names['All'] = 'All';
 		$categories;
@@ -3273,13 +3273,10 @@ class ReportController extends \BaseController {
 		}
 
 		$data = array();
-		$negative_counter = 0;
-		$positive_counter = 0;
 		foreach ($categories as $category) 
 		{
 			$category_name;
 			$test_category_id;
-			
 			if(count($categories) == 1)
 			{
 				$category_name = $categories->name;
@@ -3292,86 +3289,30 @@ class ReportController extends \BaseController {
 				$test_category_id = $category->id;
 			}	
 
-
 			foreach ($category->testTypes as $test_type) 
 			{
 				$test_type_name = $test_type->name;
 				$test_type_id = $test_type->id;
-				
 
 				$count = 1;
-
 				$ranges = count(iterator_to_array($period, false));
 				
 	            foreach ($period as $dt) 
-	            {$counter = 0;
+	            {
 	            	$number = 0;
     				$month_name = $dt->format('M');
     				$first_date = ($count == 1)?$start_date:$dt->format('Y-m-d');
 					$last_date = ($count == $ranges)?$end_date:$a_date = date("Y-m-t", strtotime($dt->format('Y-m-d')));
-					
 
     				$dt = $dt->format('Y-m');
-    				$query = "SELECT count(*) as tests_per_month,tests.test_type_id, tests.id FROM tests join test_types on tests.test_type_id = test_types.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$test_category_id' AND tests.time_created BETWEEN '$first_date' AND '$last_date' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY test_types.id;";
+    				$query = "SELECT count(*) as tests_per_month FROM tests join test_types on tests.test_type_id = test_types.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$test_category_id' AND tests.time_created BETWEEN '$first_date' AND '$last_date' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY test_types.id;";
     				
     				$test_per_month = DB::select(DB::raw($query)); 
-    				
-    				
     				if(count($test_per_month) > 0)
     				{ 
-    					$id = $test_per_month[0]->id;
-
-    					$query = "SELECT measure_id,result FROM test_results WHERE test_id='$id'";
-
-    					$results =  DB::select(DB::raw($query));
-    					
-    					foreach ($results as $test_result) {
-
-    						$query = "SELECT measure_types.name as measure_nam FROM measure_types join measures on measures.measure_type_id = measure_types.id WHERE measures.id='$test_result->measure_id'";
-    							$measure_name =  DB::select(DB::raw($query));
-    							
-    							if ($measure_name[0]->measure_nam == "Alphanumeric Values")
-    							{ 
-    								
-    									$sql = "SELECT measure_ranges.interpretation FROM measure_ranges WHERE measure_ranges.measure_id='$test_result->measure_id' AND measure_ranges.alphanumeric ='$test_result->result'";
-    									$interpretation = DB::select(DB::raw($sql));
-
-    								if (strtoupper($interpretation[0]->interpretation) == "NEGATIVE" || strtoupper($interpretation[0]->interpretation)=="NORMAL")
-    								{
-    										$negative_counter++;
-    										
-    								}
-    								else
-    								{ 
-    									$positive_counter++;
-    								}
-								}
-    							elseif ($measure_name == "Numeric Range")
-    							{
-    								
-    							}
-    							
-
-
-    					}
-    				
-    					$number = $test_per_month[0]->tests_per_month[0];
-
-
+    					$number = $test_per_month[0]->tests_per_month;
     				}
-    				$rst =  array(
-    						'count' => $number,
-    						'negative' => $negative_counter,
-    						'positive' => $positive_counter,
-    					);
-    				
-    				
-		           	$data[$category_name][$test_type_name][$dt] = $rst;
-		           	$rs = $data[$category_name][$test_type_name][$dt];
-		          
-		           	$negative_counter = 0;
-		           	$positive_counter =0;
-
+	            	$data[$category_name][$test_type_name][$dt] = $number;
 
 	            	$count++;
 				}
@@ -4087,6 +4028,8 @@ class ReportController extends \BaseController {
   		$ck = 0; 
   		$control =0;  		
 
+  	
+  		
   		for ($count=0;$count<count($categories);$count++)
   		{  	$id =  $categories[$count]->id;
   			$cat_name = $categories[$count]->name;
@@ -4099,6 +4042,7 @@ class ReportController extends \BaseController {
 				$test_count = DB::select(DB::raw($sql));
 				$sql = "SELECT tests.id FROM tests WHERE tests.test_type_id='$test_type_id'";
 				$test_id = DB::select(DB::raw($sql)); 
+
 				$positive_counter =0;
 				$negative_counter =0;
 				for ($inercounter=0;$inercounter<count($test_id);$inercounter++)
