@@ -161,6 +161,8 @@
 							var json = {};
 
 									json.chart = chart;
+									json.credits = false;
+									json.exporting = false;
 									json.title = title;
 									json.subtitle = subtitle;
 									json.xAxis = xAxis;
@@ -168,7 +170,6 @@
 									json.tooltip = tooltip;
 									json.legend = legend;
 									json.series = series;
-
 									$('#cont').highcharts(json);
 
 						</script>
