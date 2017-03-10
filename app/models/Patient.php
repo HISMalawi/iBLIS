@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
-class Patient extends EncryptionWrapper
+class Patient extends Eloquent //extends EncryptionWrapper
 {
 	const MALE = 0;
 	const FEMALE = 1;

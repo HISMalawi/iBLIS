@@ -62,9 +62,13 @@ class PatientController extends \BaseController {
 			// store
 			$patient = new Patient;
 			$patient->external_patient_number = Input::get('external_patient_number');
+
 			$first_name = Input::get('first_name');
 			$last_name = Input::get('last_name');
 			$patient->name = $first_name." ".$last_name;
+			$patient->first_name_code = isset($first_name) ? Soundex::encode($first_name)  : null;
+			$patient->last_name_code = isset($last_name) ? Soundex::encode($last_name)  : null;
+
 			$patient->gender = Input::get('gender');
 			$patient->dob = Input::get('dob');
 			$patient->email = Input::get('email');
@@ -144,9 +148,13 @@ class PatientController extends \BaseController {
 			$patient = Patient::find($id);
 			$patient->patient_number = Input::get('patient_number');
 			$patient->external_patient_number = Input::get('external_patient_number');
+
 			$first_name = Input::get('first_name');
 			$last_name = Input::get('last_name');
 			$patient->name = $first_name." ".$last_name;
+			$patient->first_name_code = isset($first_name) ? Soundex::encode($first_name)  : null;
+			$patient->last_name_code = isset($last_name) ? Soundex::encode($last_name)  : null;
+
 			$patient->gender = Input::get('gender');
 			$patient->dob = Input::get('dob');
 			$patient->email = Input::get('email');

@@ -18,7 +18,7 @@
 </head>
 <body>
 
-	<div class="panel panel-primary" id="patientReport" style="border: none">
+	<div class="panel panel-primary" id="patientReport" style="border: none; font-size: 1em !important;">
 		<div class="panel-heading ">
 			<span class="glyphicon glyphicon-user"></span>
 			{{ trans('messages.patient-report') }}
