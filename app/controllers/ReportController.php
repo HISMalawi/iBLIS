@@ -116,7 +116,6 @@ class ReportController extends \BaseController {
 			if(!Input::has('page')){
 				$url = Request::url()."?pdf=true&page=true";
 
-
 				$fileName = "patientreport".$id."_".$date.".pdf";
 				$printer = Input::get("printer_name");
 

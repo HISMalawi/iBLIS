@@ -32,8 +32,8 @@ class AddSoundexCodeToPatients extends Migration {
 		{
 			//
 						DB::statement('ALTER TABLE patients MODIFY name VARCHAR(100)');
-            $table->dropColumn('first_name_code');
-            $table->dropColumn('last_name_code');
+            $table->dropColumn('first_name_code')->nullable();
+            $table->dropColumn('last_name_code')->nullable();
 		});
 	}
 
