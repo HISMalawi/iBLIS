@@ -121,58 +121,12 @@
 									{{$test->getFormattedTurnaroundTime()}}</p>
 							@endif
 						</div>
+							
 						<div id="cont" style="min-width: 310px; max-width: 800px; height: 130px; margin: 0 auto">
 				
 						</div>
 
-						<script type="text/javascript">
-							var series =    [  {  name: 'Expected TAT',
-											      data: [10]
-											   }, 
-											   {  name: 'Actual TAT',
-											      data: [5]
-											  }];
-
-							var chart = { type: 'bar'};
-
-							var subtitle = { text: ''};
-
-							var title = {text: 'Turnaround-Time'};
-
-							var xAxis = {categories: ['TAT']};
-
-							var yAxis = {     title: {
-										      text: 'Time (minutes)'
-										   },
-										   plotLines: [{
-										      value: 0,
-										      width: 1,
-										      color: '#808080'
-										   }]};  
-
-							var tooltip = { valueSuffix: '\xB0C'}
-
-							var legend = { 
-								   layout: 'vertical',
-								   align: 'right',
-								   verticalAlign: 'middle',
-								   borderWidth: 0};
-
-							var json = {};
-
-									json.chart = chart;
-									json.credits = false;
-									json.exporting = false;
-									json.title = title;
-									json.subtitle = subtitle;
-									json.xAxis = xAxis;
-									json.yAxis = yAxis;
-									json.tooltip = tooltip;
-									json.legend = legend;
-									json.series = series;
-									$('#cont').highcharts(json);
-
-						</script>
+						
 
 					</div>
 					<div class="col-md-6">
@@ -333,6 +287,11 @@
 				<div class="panel-body">
 					<div class="container-fluid">
 						<?php
+						$counter=0;
+						$target_hrs = array();
+						$target_mins = array();
+						$count = 0;
+						$value ="";
 						if($test->panel_id){
 							$tests = Test::where('panel_id', $test->panel_id)->get();
 						}else{
@@ -342,7 +301,45 @@
 
 
 							@foreach($tests as $test)
+
+
 								<?php
+								
+								$value = $test->testType->targetTAT;
+
+							if (strlen($value)>0){
+
+								$value = explode(" ", $value);								
+								if ($value[1] == "weeks" || $value[1] == "wk" || $value == "wks" )
+								{
+										$target_hrs[$counter] = ($value[0] * 7) * 24;
+										$counter++;
+								}
+								else if ($value[1] == "days" || $value[1] == "day" || $value == "dy" )
+								{
+										$target_hrs[$counter] = $value[0] * 24;
+										$counter++;
+								}
+								elseif ($value[1] == "years" || $value[1] == "year" || $value == "yrs" || $value[1] == "yr")  
+								{
+										$target_hrs[$counter] = ($value[0] * 365) * 24;
+										$counter++;
+								}
+								elseif ($value[1] == "mins" || $value[1]=="min" || $value[1] == "minutes") 
+								{
+										$target_mins[$count] = $value[0];
+										$count++;
+								}
+								else
+								{
+									$target_hrs[$counter] = $value[0];
+										$counter++;
+								}
+
+							}
+								
+
+
 									if (count($test->testType->organisms) > 0){
 										$showWorkSheet = true;
 									}
@@ -405,6 +402,70 @@
 											</div>
 
 							@endforeach
+
+
+							<script type="text/javascript">
+
+							var exptdTAT = 	'<?php 
+											if (count($target_hrs)>0)
+										    {
+												echo max($target_hrs);
+											}
+											else if (count($target_mins)>0)
+											{
+												echo max($target_mins);	
+											}
+										?>';
+
+							exptdTAT = parseInt(exptdTAT);
+
+							var series =    [  {  name: 'Expected TAT',
+											      data: [exptdTAT]				      	
+											   }, 
+											   {  name: 'Actual TAT',
+											      data: [200]
+											  }];
+
+							var chart = { type: 'bar'};
+
+							var subtitle = { text: ''};
+
+							var title = {text: 'Turnaround-Time'};
+
+							var xAxis = {categories: ['TAT']};
+
+							var yAxis = {     title: {
+										      text: 'Time (minutes)'
+										   },
+										   plotLines: [{
+										      value: 0,
+										      width: 1,
+										      color: '#808080'
+										   }]};  
+
+							var tooltip = { valueSuffix: '\xB0C'}
+
+							var legend = { 
+								   layout: 'vertical',
+								   align: 'right',
+								   verticalAlign: 'middle',
+								   borderWidth: 0};
+
+							var json = {};
+
+									json.chart = chart;
+									json.credits = false;
+									json.exporting = false;
+									json.title = title;
+									json.subtitle = subtitle;
+									json.xAxis = xAxis;
+									json.yAxis = yAxis;
+									json.tooltip = tooltip;
+									json.legend = legend;
+									json.series = series;
+									$('#cont').highcharts(json);
+
+						</script>
 					</div>
 				</div> <!-- ./ panel-body -->
 			</div>  <!-- ./ panel -->

@@ -88,9 +88,8 @@
 
 				<?php
 				
-					
-
-
+				
+				
 					for ($count=0;$count<count($testTypes);$count++)
 					{
 
@@ -108,12 +107,8 @@
 
 							
 							for($counter=0;$counter<count($testTypes[$count][$cat_name][0]);$counter++)
-							{ 							
-						          
-								
-								$test_data = $testTypes[$count][$cat_name];
-								$test_name = key($test_data[0][$counter]);
-							
+							{ 	$test_data = $testTypes[$count][$cat_name];
+								$test_name = key($test_data[0][$counter]);						
 								$test_count = $test_data[0][$counter][$test_name]['count']; 
 								$positive = $test_data[0][$counter][$test_name]['positive'];
 								$negative = $test_data[0][$counter][$test_name]['negative'];
