@@ -311,8 +311,8 @@
 								$value = $test->testType->targetTAT;
 
 							if ($tat[0]!=0) { $actualTAT = ($tat[0]*365) * 24;}
-							elseif ($tat[1] !=0) { $actualTAT = ($tat[1]*7) * 24;}
-							elseif ($tat[2] !=0) { $actualTAT = ($tat[2]) * 24;}
+							elseif ($tat[1] !=0) { $actualTAT = (($tat[1]*7) * 24) + ($tat[2]*24 ) + $tat[3] ;}
+							elseif ($tat[2] !=0) { $actualTAT = (($tat[2]) * 24) + $tat[3];}
 							elseif ($tat[3] !=0) { $actualTAT = $tat[3];}
 							elseif ($tat[4] !=0) { $control = "Minute"; $actualTAT = $tat[4];}
 							elseif ($tat[5] !=0) { $control = "Second"; $actualTAT = $tat[5];}
@@ -453,7 +453,7 @@
 							<script type="text/javascript">
 
 							var actualTAT = '<?php echo($actualTAT); ?>';
-							alert('<?php echo max($target_hrs); ?>');
+						
 							var exptdTAT = 	'<?php 
 											if (count($target_hrs)>0)
 										    {
@@ -492,7 +492,7 @@
 										      color: '#808080'
 										   }]};  
 
-							var tooltip = { valueSuffix: '\xB0C'}
+							var tooltip = { valueSuffix: 'hrs'}
 
 							var legend = { 
 								   layout: 'vertical',
