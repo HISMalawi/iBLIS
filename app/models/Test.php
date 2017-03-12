@@ -317,21 +317,21 @@ class Test extends Eloquent
 	{
 
 		$tat = $this->getTurnaroundTime();		
-		$ftat = "";
+		$ftat = array(0,0,0,0,0,0);
 		$tat_y = intval($tat/(365*24*60*60));
 		$tat_w = intval(($tat-($tat_y*(365*24*60*60)))/(7*24*60*60));
 		$tat_d = intval(($tat-($tat_y*(365*24*60*60))-($tat_w*(7*24*60*60)))/(24*60*60));
 		$tat_h = intval(($tat-($tat_y*(365*24*60*60))-($tat_w*(7*24*60*60))-($tat_d*(24*60*60)))/(60*60));
 		$tat_m = intval(($tat-($tat_y*(365*24*60*60))-($tat_w*(7*24*60*60))-($tat_d*(24*60*60))-($tat_h*(60*60)))/(60));
 		$tat_s = intval(($tat-($tat_y*(365*24*60*60))-($tat_w*(7*24*60*60))-($tat_d*(24*60*60))-($tat_h*(60*60))-($tat_m*(60))));
-		if($tat_y > 0) $ftat = $tat_y."-".Lang::choice('messages.year',$tat_y)."-";
-		if($tat_w > 0) $ftat .= $tat_w."-".Lang::choice('messages.week',$tat_w)."-";
-		if($tat_d > 0) $ftat .= $tat_d."-".Lang::choice('messages.day',$tat_d)."-";
-		if($tat_h > 0) $ftat .= $tat_h."-".Lang::choice('messages.hour',$tat_h)."-";
-		if($tat_m > 0) $ftat .= $tat_m."-".Lang::choice('messages.minute',$tat_m)."-";
-		if($tat_s > 0) $ftat .= $tat_s."-".Lang::choice('messages.second',$tat_s);
+		if($tat_y > 0) $ftat[0] = $tat_y;
+		if($tat_w > 0) $ftat[1] = $tat_w;
+		if($tat_d > 0) $ftat[2] = $tat_d;
+		if($tat_h > 0) $ftat[3] = $tat_h;
+		if($tat_m > 0) $ftat[4] = $tat_m;
+		if($tat_s > 0) $ftat[5] = $tat_s;
 
-		return explode("-",$ftat);
+		return $ftat;
 
 	}
 

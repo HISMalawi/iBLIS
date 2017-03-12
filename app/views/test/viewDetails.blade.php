@@ -292,6 +292,9 @@
 						$target_mins = array();
 						$count = 0;
 						$value ="";
+						$control = "hour";
+						$actualTAT = 0;
+						$tat = array();
 						if($test->panel_id){
 							$tests = Test::where('panel_id', $test->panel_id)->get();
 						}else{
@@ -303,27 +306,63 @@
 							@foreach($tests as $test)
 
 
-								<?php
-								
+							<?php
+								$tat = $test->getFormattedTurnaroundTimeForGraph();
 								$value = $test->testType->targetTAT;
+
+							if ($tat[0]!=0) { $actualTAT = ($tat[0]*365) * 24;}
+							elseif ($tat[1] !=0) { $actualTAT = ($tat[1]*7) * 24;}
+							elseif ($tat[2] !=0) { $actualTAT = ($tat[2]) * 24;}
+							elseif ($tat[3] !=0) { $actualTAT = $tat[3];}
+							elseif ($tat[4] !=0) { $control = "Minute"; $actualTAT = $tat[4];}
+							elseif ($tat[5] !=0) { $control = "Second"; $actualTAT = $tat[5];}
+
 
 							if (strlen($value)>0){
 
-								$value = explode(" ", $value);								
+								$value = explode(" ", $value);	
+
 								if ($value[1] == "weeks" || $value[1] == "wk" || $value == "wks" )
-								{
+								{	
+
+									if ($control=="Minute") {
+										$target_hrs[$counter] = (($value[0] * 7) * 24) * 60;
+										$counter++;
+										}
+									else 
+										{
 										$target_hrs[$counter] = ($value[0] * 7) * 24;
 										$counter++;
+										}
+									
+									
 								}
 								else if ($value[1] == "days" || $value[1] == "day" || $value == "dy" )
 								{
+
+									if ($control=="Minute") {
+										$target_hrs[$counter] = (($value[0]) * 24) * 60;
+										$counter++;
+										}
+									else 
+									{
 										$target_hrs[$counter] = $value[0] * 24;
 										$counter++;
+									}
+
 								}
 								elseif ($value[1] == "years" || $value[1] == "year" || $value == "yrs" || $value[1] == "yr")  
 								{
+									if ($control=="Minute") {
+										$target_hrs[$counter] = ((($value[0]) * 365) * 24) * 60;
+										$counter++;
+									}
+									else
+									{
 										$target_hrs[$counter] = ($value[0] * 365) * 24;
 										$counter++;
+									}
+
 								}
 								elseif ($value[1] == "mins" || $value[1]=="min" || $value[1] == "minutes") 
 								{
@@ -331,9 +370,16 @@
 										$count++;
 								}
 								else
-								{
+								{  
+									if ($control=="Minute") {
+										$target_hrs[$counter] = ($value[0]) * 60;
+										$counter++;
+									}
+									else{
 									$target_hrs[$counter] = $value[0];
 										$counter++;
+									}
+
 								}
 
 							}
@@ -406,6 +452,8 @@
 
 							<script type="text/javascript">
 
+							var actualTAT = '<?php echo($actualTAT); ?>';
+							alert('<?php echo max($target_hrs); ?>');
 							var exptdTAT = 	'<?php 
 											if (count($target_hrs)>0)
 										    {
@@ -418,12 +466,13 @@
 										?>';
 
 							exptdTAT = parseInt(exptdTAT);
+							actualTAT = parseInt(actualTAT);
 
 							var series =    [  {  name: 'Expected TAT',
 											      data: [exptdTAT]				      	
 											   }, 
 											   {  name: 'Actual TAT',
-											      data: [200]
+											      data: [actualTAT]
 											  }];
 
 							var chart = { type: 'bar'};
@@ -435,7 +484,7 @@
 							var xAxis = {categories: ['TAT']};
 
 							var yAxis = {     title: {
-										      text: 'Time (minutes)'
+										      text: 'Hours (hrs)'
 										   },
 										   plotLines: [{
 										      value: 0,
