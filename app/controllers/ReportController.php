@@ -4012,89 +4012,70 @@ class ReportController extends \BaseController {
   	public function testsResultsCounts()
   	{   //	Fetch form filters
 		$date = date('Y-m-d');
-		$from = Input::get('start');
-		if(!$from) $from = date('Y-m-01');
-		$to = Input::get('end');
-		if(!$to) $to = $date;
+		$date = explode("-",$date);		
+		$year = Input::get('year');
+		$month = Input::get('month');
+		if (strlen(Input::get('month'))==1) $month ="0".Input::get('month');
+		if (strlen(Input::get('month'))==2) $month =Input::get('month');
+		if (!$year) $year = $date[0];
+		if (!$month) $month = $date[1];
+		
 		$option = Input::get('test_category');
 		if(!$option) $option = "-- All --";
   		$testCategories = new TestCategory();  		
   		$categories =  $testCategories->getCategories($option);
-
   		$data = array();  		
   		$ck = 0; 
   		$control = count($categories);  		
-
-  
+ 		
   		for ($count=0;$count<$control;$count++)
   		{  	$id =  $categories[$count]->id;
   			$cat_name = $categories[$count]->name;
-  			
-  			$sql = "SELECT count(tests.test_type_id) as Count, test_types.id, test_types.name FROM test_types inner join tests on tests.test_type_id = test_types.id  WHERE test_types.test_category_id='$id'  AND tests.time_created BETWEEN '$from' AND '$to' GROUP BY test_types.name";
-
+  			$checkDate = $year.'-'.$month;
+  			$sql = "SELECT count(tests.test_type_id) as Count, test_types.id, test_types.name,tests.time_created FROM test_types inner join tests on tests.test_type_id = test_types.id  WHERE test_types.test_category_id='$id' AND SUBSTRING(tests.time_created,1,7) = '$checkDate' GROUP BY test_types.name";
   			$test_type = DB::select(DB::raw($sql));  	
-
   			$da = array();
+  			foreach ($test_type as $test_types){   
+					$test_type_id = $test_types->id;										
+					$sql = "SELECT test_results.measure_id,test_results.result,measure_types.name, measure_ranges.range_lower,measure_ranges.range_upper,measure_ranges.alphanumeric, measure_ranges.interpretation FROM test_results inner join tests on test_results.test_id = tests.id inner join measures on measures.id = test_results.measure_id inner join measure_types on measure_types.id = measures.measure_type_id inner join measure_ranges on measure_ranges.measure_id = measures.id WHERE tests.test_type_id='$test_type_id' AND SUBSTRING(tests.time_created,1,7) = '$checkDate' ";
 
-  			foreach ($test_type as $test_types)
-			{   $test_type_id = $test_types->id;	
-								
-				$sql = "SELECT test_results.measure_id,test_results.result,measure_types.name, measure_ranges.range_lower,measure_ranges.range_upper,measure_ranges.alphanumeric, measure_ranges.interpretation FROM test_results inner join tests on test_results.test_id = tests.id inner join measures on measures.id = test_results.measure_id inner join measure_types on measure_types.id = measures.measure_type_id inner join measure_ranges on measure_ranges.measure_id = measures.id WHERE tests.test_type_id='$test_type_id' AND tests.time_created BETWEEN '$from' AND '$to'";
-
-				$test_data = DB::select(DB::raw($sql)); 
-
-				$positive_counter =0;
-				$negative_counter =0;		
-
-				foreach ($test_data as $test_id)
-				{	 	$measure_id = $test_id->measure_id;
-						$result_value = $test_id->result;
-											
-						if (($test_id->name=="Numeric Range") AND ($test_id->range_lower<=$result_value AND $test_id->range_upper>=$result_value))
-						{  
-								if ($test_id->interpretation=="POSITIVE")
-								{
- 										$positive_counter ++;
-								}
-								elseif ($test_id->interpretation=="NEGATIVE")
-								{
-										$negative_counter++;
-								}
-							
-
-						}
-						else if (($test_id->name=="Alphanumeric Values") AND ($test_id->alphanumeric==$result_value))
-						{   
-								if ($test_id->interpretation=="POSITIVE")
-								{
- 										$positive_counter ++;
-								}
-								elseif ($test_id->interpretation=="NEGATIVE")
-								{
-										$negative_counter++;
-								}
-							
-							
-						}
-										
-				}								
-				$name =  $test_types->name;
-				$test_names = array($name => array( 'count' => $test_types->Count,
-									  	            'positive' => $positive_counter,
-											        'negative' => $negative_counter));	
-				$da[$ck] = $test_names;
-				$ck++;					
-		
+					$test_data = DB::select(DB::raw($sql)); 
+					$positive_counter =0;
+					$negative_counter =0;		
+					foreach ($test_data as $test_id)
+					{	 	$measure_id = $test_id->measure_id;
+							$result_value = $test_id->result;
+												
+							if (($test_id->name=="Numeric Range") AND ($test_id->range_lower<=$result_value AND $test_id->range_upper>=$result_value)){  
+									if ($test_id->interpretation=="POSITIVE"){
+	 										$positive_counter ++;
+									}
+									elseif ($test_id->interpretation=="NEGATIVE"){
+											$negative_counter++;
+									}
+							}
+							else if (($test_id->name=="Alphanumeric Values") AND ($test_id->alphanumeric==$result_value)){   
+									if ($test_id->interpretation=="POSITIVE"){
+	 										$positive_counter ++;
+									}
+									elseif ($test_id->interpretation=="NEGATIVE"){
+											$negative_counter++;
+									}								
+							}											
+					}								
+					$name =  $test_types->name;
+					$test_names = array($name => array( 'count' => $test_types->Count,
+										  	            'positive' => $positive_counter,
+												        'negative' => $negative_counter));	
+					$da[$ck] = $test_names;
+					$ck++;		
 			}			
-
 			$ck =0;	
 			$data[$count] =  array($cat_name => array($da));	 						
-  		}
-	
+  		}	
 		return View::make('reports.testsCounts.index')
 					->with('testTypes', $data)
 					->withInput(Input::all());
-
   	}
 
 }
