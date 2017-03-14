@@ -14,22 +14,20 @@
 		<div class="col-md-3">
 	    	<div class="row">
 				<div class="col-md-2">
-					{{ Form::label('start', trans("messages.from")) }}
+					{{ Form::label('start', Lang::choice("messages.year",1)) }}
 				</div>
 				<div class="col-md-10">
-					{{ Form::text('start', isset($input['start'])?$input['start']:date('Y-m-d'), 
-				        array('class' => 'form-control standard-datepicker')) }}
+					{{ Form::text('year','2017') }}
 			    </div>
 	    	</div>
 	    </div>
 	    <div class="col-md-3">
 	    	<div class="row">
 				<div class="col-md-2">
-			    	{{ Form::label('end', trans("messages.to")) }}
+			    	{{ Form::label('end', Lang::choice("messages.month",1)) }}
 			    </div>
 				<div class="col-md-10">
-				    {{ Form::text('end', isset($input['end'])?$input['end']:date('Y-m-d'), 
-				        array('class' => 'form-control standard-datepicker')) }}
+				    {{ Form::selectMonth('month')}}
 		        </div>
 	    	</div>
 	    </div>
@@ -60,14 +58,24 @@
 		<div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
 	@endif	
 	<strong>
-		<p> {{ trans('messages.test-status-report') }} - 
-			<?php $from = isset($input['start'])?$input['start']:date('01-m-Y');?>
-			<?php $to = isset($input['end'])?$input['end']:date('d-m-Y');?>
-			@if($from!=$to)
-				{{trans('messages.from'). ' ' .$from.  ' '.trans('messages.to').' '.$to}}
-			@else
-				{{trans('messages.for').' ' .date('d-m-Y')}}
-			@endif
+			<?php 
+				function convertMonth($monthGot){  
+				    if($monthGot==1){return "January";} else if ($monthGot==2){return "February";}
+					else if($monthGot==3){return "March";}else if ($monthGot==4){return "April";}
+					else if($monthGot==5){return "May";}else if ($monthGot==6){return "June";}
+					else if($monthGot==7){return "July";}else if ($monthGot==8){return "August";}
+					else if($monthGot==9){return "September";}else if ($monthGot==10){return "October";}
+					else if($monthGot==11){return "November";}else if ($monthGot==12){return "December";} }
+			?>
+
+		<p> {{ trans('messages.test-status-report') }} 
+			<?php if (isset($input['year'])){$year = $input['year'];}else{$year=date("Y");}?>
+			<?php if (isset($input['month'])){$month= $input['month'];}else{$month=date("m");}?>
+			
+			{{Lang::choice('messages.year',1). ': ' .$year.  ' '.Lang::choice('messages.month',1).': '.convertMonth($month)}}
+			
+			
+
 		</p>
 	</strong>
 

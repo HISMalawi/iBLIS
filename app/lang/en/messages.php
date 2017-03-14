@@ -458,8 +458,8 @@ return array(
     'laboratory-report' => 'LABORATORY REPORT',
     'rejections-report' => 'Rejected Samples',
     'turnaround-report' => 'Turn Around Time',
-    'test-positive-negative-count' => 'Tests Results Status Counts',
-    'test-status-report' => 'Tests Result Status Counts',
+    'test-positive-negative-count' => 'Pos & Neg Test Counts',
+    'test-status-report' => 'Negative and Positive Counts  ',
     'total-count' => 'Total Count',
     'total-positive-count' => 'Total Positive Count',
     'total-negative-count' => 'Total Negative Count',
@@ -568,6 +568,7 @@ return array(
      */
     'year' => 'Year|Years',
     'week' => 'Week|Weeks',
+    'month' => 'month|months',
     'day' => 'Day|Days',
     'hour' => 'Hour|Hours',
     'minute' => 'Minute|Minutes',
