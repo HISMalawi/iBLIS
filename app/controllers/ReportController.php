@@ -27,6 +27,11 @@ class ReportController extends \BaseController {
 
 		dd($id);
 	}
+
+	public function printZebraReport($id, $visit){
+
+		dd($id);
+	}
 	/**
 	 * Display data after applying the filters on the report uses patient ID
 	 *

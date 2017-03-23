@@ -452,6 +452,7 @@ P1
 					'Accept: application/json',
 					'Content-Length: ' . strlen($data_string))
 			);
+			
 			$specimen = null;
 			$response = json_decode(curl_exec($ch));
 			if(is_array($testTypes) && count($testTypes) > 0){

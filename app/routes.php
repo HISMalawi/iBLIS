@@ -236,6 +236,12 @@ Route::group(array("before" => "auth"), function()
             "uses" => "InstrumentController@importDriver"
         ));
     });
+
+    Route::get("/report/{id}/print_zebra_report", array(
+        "as"   => "report.print_zebra_report",
+        "uses" => "ReportController@printZebraReport"
+    ));
+
     Route::any("/test", array(
         "as"   => "test.index",
         "uses" => "TestController@index"
