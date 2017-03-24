@@ -28,9 +28,91 @@ class ReportController extends \BaseController {
 		dd($id);
 	}
 
-	public function printZebraReport($id, $visit){
+	public function printZebraReport($id){
+		$ROW_HEIGHT_DIFF = 35;
+		$OFFSET_LEFT = 53;
+		$RESULT_OFFSET_LEFT = 455;
+		$OFFSET_TOP = 95;
+		$UNDERLINE_HEIGHT = 10;
 
-		dd($id);
+		$specimen = Specimen::find($id);
+		$sample_type = $specimen->specimen_type->name;
+		$patient = $specimen->test->visit->patient;
+		$sample_date = date_format(date_create($specimen->test->time_created), "d/M/Y");
+		$patient_name = $patient->name;
+		$npid = $patient->external_patient_number;
+		$accession_number = $specimen->accession_number;
+		$gender = $patient->gender == 0 ? "M" : "F";
+		$age = $patient->getAge();
+
+		$result =
+			'
+N
+q801
+Q329,026
+ZT
+S2
+A53,19,0,1,1,2,N,"'.$patient_name.' ('.$gender.','.$age.') | Pat.No: '.$npid.' | Date: '.$sample_date.'"
+LO25,80,760,2
+A53,56,0,1,1,2,N,"Sample Type:"
+A325,56,0,1,1,2,N," Sample ID:"
+A190,56,0,1,1,2,N,"'.$sample_type.'"
+A450,56,0,1,1,2,N,"'.$accession_number.'"';
+		
+		$tests = Test::where("specimen_id", $id)->get();
+
+		foreach($tests AS $test){
+
+			$test_type = TestType::find($test->test_type_id);
+
+			$result = $result.'
+A'.$OFFSET_LEFT.','.$OFFSET_TOP.',0,2,1,1,N,"Test: '.$test_type->name.'"';
+
+			$result = $result.'
+LO25,'.($OFFSET_TOP-$UNDERLINE_HEIGHT).',760,1';
+
+			$OFFSET_TOP = $OFFSET_TOP + $ROW_HEIGHT_DIFF;
+
+			$test_measures = TestTypeMeasure::where("test_type_id", $test->test_type_id)->get();
+
+			foreach($test_measures AS $test_measure){
+
+				$measure = Measure::find($test_measure->measure_id);
+
+				$results = TestResult::whereRaw(" test_id = ".$test->id." AND measure_id = ".$test_measure->measure_id)->get()->first();
+
+				if (!empty($results)){
+					$result = $result.'
+A'.$OFFSET_LEFT.','.$OFFSET_TOP.',0,2,1,1,N,"'.substr($measure->name, 0, 25).':"';
+
+					$result = $result.'
+A'.$RESULT_OFFSET_LEFT.','.$OFFSET_TOP.',0,2,1,1,N,"'.$results->result.'"';
+
+					$OFFSET_TOP = $OFFSET_TOP + $ROW_HEIGHT_DIFF;
+
+				}
+
+			}
+
+		}
+		$result = $result.'
+LO25,'.$OFFSET_TOP.',760,1';
+
+		$result = $result.'
+P1
+';
+
+		$filename = $id.'.lbs';
+		//fwrite($fpi, $result);
+		//fclose($fpi);
+
+		header("Content-Type: application/label; charset=utf-8");
+		header('Content-Disposition: inline; filename="'.$filename.'"');
+		header("Content-Length: " . strlen($result));
+		//header("location: /test/.$test->id/viewdetails");
+		header("Stream", false);
+		echo $result;
+		exit;
 	}
 	/**
 	 * Display data after applying the filters on the report uses patient ID

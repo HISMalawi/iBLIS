@@ -238,7 +238,7 @@ Route::group(array("before" => "auth"), function()
     });
 
     Route::get("/report/{id}/print_zebra_report", array(
-        "as"   => "report.print_zebra_report",
+        "as"   => "reports.print_zebra_report",
         "uses" => "ReportController@printZebraReport"
     ));
 

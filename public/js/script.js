@@ -1026,7 +1026,7 @@ $(function(){
 
 	function showSpinner(action, clickOnClose, shieldOn) {
 
-		if(window.location.href.match(/viewdetails|checkResult/i) || window.location.href.match(/machine\_test\_id\=\d+$/)){
+		if(window.location.href.match(/viewdetails|checkResult|print/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)){
 			hideSpinner();
 			return;
 		}
@@ -1142,7 +1142,7 @@ $(function(){
 	(function(open) {
 
 		XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-			if (!url.match(/checkresult/i)) {
+			if (!url.match(/checkresult|print/i)) {
 				setTimeout(function () {
 					showSpinner(null, false, false)
 				}, 10);
