@@ -1026,8 +1026,12 @@ $(function(){
 
 	function showSpinner(action, clickOnClose, shieldOn) {
 
-		if(window.location.href.match(/viewdetails|checkResult|print/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)){
+		console.log(window.location);
+		if(window.location.href.match(/viewdetails|checkResult|patientreport|verify/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)) {
 			hideSpinner();
+			if ($('.modal')){
+				$('.modal').modal('hide');
+			}
 			return;
 		}
 

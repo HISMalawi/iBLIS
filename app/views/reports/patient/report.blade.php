@@ -474,6 +474,14 @@
 		  </table>
         </span>
 				<div class="modal-footer">
+					@if($test->specimen->printSmallLabels())
+						<a class="btn btn-success pull-left"
+						   href="{{URL::route('reports.print_zebra_report', array($test->specimen_id))}}"
+						   data-toggle="modal" >
+							<span class="glyphicon glyphicon-print"></span>
+							Print On Small Label
+						</a>
+					@endif
 					<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
 					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
 				</div>

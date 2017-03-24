@@ -103,13 +103,9 @@ P1
 ';
 
 		$filename = $id.'.lbs';
-		//fwrite($fpi, $result);
-		//fclose($fpi);
-
 		header("Content-Type: application/label; charset=utf-8");
 		header('Content-Disposition: inline; filename="'.$filename.'"');
 		header("Content-Length: " . strlen($result));
-		//header("location: /test/.$test->id/viewdetails");
 		header("Stream", false);
 		echo $result;
 		exit;

@@ -283,14 +283,6 @@
 			<div class="panel panel-info">  <!-- Test Results -->
 				<div class="panel-heading">
 					<h3 class="panel-title">{{trans("messages.test-results")}}</h3>
-
-						<a class="btn btn-sm btn-success pull-right"
-						   href="{{URL::route('reports.print_zebra_report', array($test->specimen_id))}}"
-						   data-toggle="modal" >
-							<span class="glyphicon glyphicon-print"></span>
-							Print Results
-						</a>
-
 				</div>
 				<div class="panel-body">
 					<div class="container-fluid">
@@ -635,7 +627,16 @@
 		  </table>
         </span>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
+						@if($test->specimen->printSmallLabels())
+							<a class="btn btn-sm btn-success pull-left"
+							   href="{{URL::route('reports.print_zebra_report', array($test->specimen_id))}}"
+							   data-toggle="modal" >
+								<span class="glyphicon glyphicon-print"></span>
+								Print On Small Label
+							</a>
+						@endif
+
+							<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
 						<button type="button" class="btn" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>

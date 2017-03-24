@@ -179,6 +179,23 @@ class Specimen extends Eloquent
 		}
 		return $tnames;
 	}
+
+	public function printSmallLabels()
+	{
+
+		$tests = Test::where("specimen_id", $this->id)->get();
+		$result = false;
+		foreach($tests AS $test){
+			if(count(TestType::where("id", $test->test_type_id)
+				->where("print_device", "1")->get()) > 0){
+				$result = true;
+				break;
+			}
+		}
+
+		return $result;
+	}
+
 	public function testTypesShortNamed(){
 
 		$types = Specimen::join('tests', 'tests.specimen_id', '=', 'specimens.id')
