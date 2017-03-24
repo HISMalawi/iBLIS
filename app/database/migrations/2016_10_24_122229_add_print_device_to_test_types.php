@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSoundexCodeToPatients extends Migration {
+class AddPrintDeviceToTestTypes extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,10 @@ class AddSoundexCodeToPatients extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('patients', function(Blueprint $table)
+		Schema::table('test_types', function(Blueprint $table)
 		{
 			//
-						DB::statement('ALTER TABLE patients MODIFY name VARCHAR(255);');
-            $table->string('first_name_code')->nullable();
-            $table->string('last_name_code')->nullable();
+            $table->string('print_device')->nullable();
 		});
 	}
 
@@ -28,12 +26,10 @@ class AddSoundexCodeToPatients extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('patients', function(Blueprint $table)
+		Schema::table('test_types', function(Blueprint $table)
 		{
 			//
-			DB::statement('ALTER TABLE patients MODIFY name VARCHAR(100)');
-            $table->dropColumn('first_name_code');
-            $table->dropColumn('last_name_code');
+            $table->dropColumn('print_device');
 		});
 	}
 

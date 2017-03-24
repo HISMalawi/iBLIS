@@ -75,6 +75,7 @@ class TestTypeController extends \BaseController {
 			$testtype->prevalence_threshold = Input::get('prevalence_threshold');
 			$testtype->orderable_test = Input::get('orderable_test');
 			$testtype->accredited = Input::get('accredited');
+			$testtype->print_device = Input::get('print_device');
 			try{
 				$testtype->save();
 				$measureIds = array();
@@ -166,6 +167,7 @@ class TestTypeController extends \BaseController {
 			$testtype->prevalence_threshold = Input::get('prevalence_threshold');
 			$testtype->orderable_test = Input::get('orderable_test');
 			$testtype->accredited = Input::get('accredited');
+			$testtype->print_device = Input::get('print_device');
 
 			try{
 				$testtype->save();

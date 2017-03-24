@@ -416,6 +416,15 @@ class TestType extends Eloquent
 	 *
 	 * @return counts
 	 */
+
+	public function printSmallLabels()
+	{
+		if($this->print_device == null || $this->print_device != "1"){
+			return false;
+		}
+		else
+			return true;
+	}
 	public function cd4($from = null, $to = null, $range, $comment)
 	{
 		$tests = array();

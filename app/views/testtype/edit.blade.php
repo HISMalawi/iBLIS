@@ -127,6 +127,12 @@
 			{{ Form::label('accredited', trans('messages.accredited')) }}
 			{{ Form::checkbox('accredited', "1", $testtype->isAccredited(), array()) }}
 		</div>
+
+		<div class="form-group">
+			{{ Form::label('print_device', "Print Results On Small Labels") }}
+			{{ Form::checkbox('print_device', "1", $testtype->printSmallLabels(), array()) }}
+		</div>
+
 		<div class="panel-footer">
 			<div class="form-group actions-row">
 				{{ Form::button(
