@@ -8,7 +8,7 @@ class Facility extends Eloquent
 
 	public static function getFacilityCode($facility_name)
 	{
-
+		
 			$id = Facility::where('name',$facility_name)->first()->id;
 
 

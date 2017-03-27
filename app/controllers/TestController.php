@@ -474,9 +474,10 @@ P1
 					 $testTypeID = (int)$value;
 					 
 
+
 					if ($testTypeID == 0){
 						$panelType = PanelType::where('name', '=', $value)->first()->id;
-
+						
 						$panelTests = DB::select("SELECT test_type_id FROM panels
 											WHERE panel_type_id = $panelType"
 										);

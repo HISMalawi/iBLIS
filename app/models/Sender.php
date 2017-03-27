@@ -61,7 +61,7 @@ class Sender
       
         foreach($tests AS $test){
 
-            $test_id = $test->testType->id;
+            $test_id = $test->testType->hl7_identifier;
             $order['results'][$test_id] = array();
             $h = array();
             $h['test_status'] = $test->testStatus->name;
@@ -103,7 +103,8 @@ class Sender
                     
                 }
                
-               }
+            }
+
         if (count($test->testResults) == 0)
          {
                     $r['result_name'] = "";
@@ -133,6 +134,8 @@ class Sender
            }
             $h['results'] = $r;
             $order['results'][$test_id] = $h;
+      
+
         }
         #$order =  urldecode(http_build_query($order));
         #dd($order);
