@@ -307,83 +307,84 @@
 
 
 							<?php
-								$tat = $test->getFormattedTurnaroundTimeForGraph();
-								$value = $test->testType->targetTAT;
+							if(false && ((!$test->isLocked()) && ($test->isVerified()))){
+									$tat = $test->getFormattedTurnaroundTimeForGraph();
+									$value = $test->testType->targetTAT;
 
-							if ($tat[0]!=0) { $actualTAT = ($tat[0]*365) * 24;}
-							elseif ($tat[1] !=0) { $actualTAT = (($tat[1]*7) * 24) + ($tat[2]*24 ) + $tat[3] ;}
-							elseif ($tat[2] !=0) { $actualTAT = (($tat[2]) * 24) + $tat[3];}
-							elseif ($tat[3] !=0) { $actualTAT = $tat[3];}
-							elseif ($tat[4] !=0) { $control = "Minute"; $actualTAT = $tat[4];}
-							elseif ($tat[5] !=0) { $control = "Second"; $actualTAT = $tat[5];}
+									if ($tat[0]!=0) { $actualTAT = ($tat[0]*365) * 24;}
+									elseif ($tat[1] !=0) { $actualTAT = (($tat[1]*7) * 24) + ($tat[2]*24 ) + $tat[3] ;}
+									elseif ($tat[2] !=0) { $actualTAT = (($tat[2]) * 24) + $tat[3];}
+									elseif ($tat[3] !=0) { $actualTAT = $tat[3];}
+									elseif ($tat[4] !=0) { $control = "Minute"; $actualTAT = $tat[4];}
+									elseif ($tat[5] !=0) { $control = "Second"; $actualTAT = $tat[5];}
 
 
-							if (strlen($value)>0){
+									if (strlen($value)>0){
 
-								$value = explode(" ", $value);	
+										$value = explode(" ", $value);
 
-								if ($value[1] == "weeks" || $value[1] == "wk" || $value == "wks" )
-								{	
-
-									if ($control=="Minute") {
-										$target_hrs[$counter] = (($value[0] * 7) * 24) * 60;
-										$counter++;
-										}
-									else 
+										if (!empty($value[1]) && ($value[1] == "weeks" || $value[1] == "wk" || $value == "wks" ))
 										{
-										$target_hrs[$counter] = ($value[0] * 7) * 24;
-										$counter++;
+
+											if ($control=="Minute") {
+												$target_hrs[$counter] = (($value[0] * 7) * 24) * 60;
+												$counter++;
+												}
+											else
+												{
+												$target_hrs[$counter] = ($value[0] * 7) * 24;
+												$counter++;
+												}
+
+
 										}
-									
-									
-								}
-								else if ($value[1] == "days" || $value[1] == "day" || $value == "dy" )
-								{
+										else if (!empty($value[1]) && ($value[1] == "days" || $value[1] == "day" || $value == "dy") )
+										{
 
-									if ($control=="Minute") {
-										$target_hrs[$counter] = (($value[0]) * 24) * 60;
-										$counter++;
+											if ($control=="Minute") {
+												$target_hrs[$counter] = (($value[0]) * 24) * 60;
+												$counter++;
+												}
+											else
+											{
+												$target_hrs[$counter] = $value[0] * 24;
+												$counter++;
+											}
+
 										}
-									else 
-									{
-										$target_hrs[$counter] = $value[0] * 24;
-										$counter++;
-									}
+										elseif (!empty($value[1]) && ($value[1] == "years" || $value[1] == "year" || $value == "yrs" || $value[1] == "yr"))
+										{
+											if ($control=="Minute") {
+												$target_hrs[$counter] = ((($value[0]) * 365) * 24) * 60;
+												$counter++;
+											}
+											else
+											{
+												$target_hrs[$counter] = ($value[0] * 365) * 24;
+												$counter++;
+											}
 
-								}
-								elseif ($value[1] == "years" || $value[1] == "year" || $value == "yrs" || $value[1] == "yr")  
-								{
-									if ($control=="Minute") {
-										$target_hrs[$counter] = ((($value[0]) * 365) * 24) * 60;
-										$counter++;
-									}
-									else
-									{
-										$target_hrs[$counter] = ($value[0] * 365) * 24;
-										$counter++;
-									}
+										}
+										elseif (!empty($value[1]) && ($value[1] == "mins" || $value[1]=="min" || $value[1] == "minutes"))
+										{
+												$target_mins[$count] = $value[0];
+												$count++;
+										}
+										else
+										{
+											if ($control=="Minute") {
+												$target_hrs[$counter] = ($value[0]) * 60;
+												$counter++;
+											}
+											else{
+											$target_hrs[$counter] = $value[0];
+												$counter++;
+											}
 
-								}
-								elseif ($value[1] == "mins" || $value[1]=="min" || $value[1] == "minutes") 
-								{
-										$target_mins[$count] = $value[0];
-										$count++;
-								}
-								else
-								{  
-									if ($control=="Minute") {
-										$target_hrs[$counter] = ($value[0]) * 60;
-										$counter++;
-									}
-									else{
-									$target_hrs[$counter] = $value[0];
-										$counter++;
-									}
+										}
 
+									}
 								}
-
-							}
-								
 
 
 									if (count($test->testType->organisms) > 0){
@@ -451,56 +452,56 @@
 
 
 							<script type="text/javascript">
+								@if(false && (!$test->isLocked()) && ($test->isVerified()))
+									var actualTAT = '<?php echo($actualTAT); ?>';
 
-							var actualTAT = '<?php echo($actualTAT); ?>';
-						
-							var exptdTAT = 	'<?php 
-											if (count($target_hrs)>0)
-										    {
-												echo max($target_hrs);
-											}
-											else if (count($target_mins)>0)
-											{
-												echo max($target_mins);	
-											}
-										?>';
+									var exptdTAT = 	'<?php
+													if (count($target_hrs)>0)
+													{
+														echo max($target_hrs);
+													}
+													else if (count($target_mins)>0)
+													{
+														echo max($target_mins);
+													}
+												?>';
 
-							exptdTAT = parseInt(exptdTAT);
-							actualTAT = parseInt(actualTAT);
+									exptdTAT = parseInt(exptdTAT);
+									actualTAT = parseInt(actualTAT);
 
-							var series =    [  {  name: 'Expected TAT',
-											      data: [exptdTAT]				      	
-											   }, 
-											   {  name: 'Actual TAT',
-											      data: [actualTAT]
-											  }];
+									var series =    [  {  name: 'Expected TAT',
+														  data: [exptdTAT]
+													   },
+													   {  name: 'Actual TAT',
+														  data: [actualTAT]
+													  }];
 
-							var chart = { type: 'bar'};
+									var chart = { type: 'bar'};
 
-							var subtitle = { text: ''};
+									var subtitle = { text: ''};
 
-							var title = {text: 'Turnaround-Time'};
+									var title = {text: 'Turnaround-Time'};
 
-							var xAxis = {categories: ['TAT']};
+									var xAxis = {categories: ['TAT']};
 
-							var yAxis = {     title: {
-										      text: 'Hours (hrs)'
-										   },
-										   plotLines: [{
-										      value: 0,
-										      width: 1,
-										      color: '#808080'
-										   }]};  
+									var yAxis = {     title: {
+													  text: 'Hours (hrs)'
+												   },
+												   plotLines: [{
+													  value: 0,
+													  width: 1,
+													  color: '#808080'
+												   }]};
 
-							var tooltip = { valueSuffix: 'hrs'}
+									var tooltip = { valueSuffix: 'hrs'}
 
-							var legend = { 
-								   layout: 'vertical',
-								   align: 'right',
-								   verticalAlign: 'middle',
-								   borderWidth: 0};
+									var legend = {
+										   layout: 'vertical',
+										   align: 'right',
+										   verticalAlign: 'middle',
+										   borderWidth: 0};
 
-							var json = {};
+									var json = {};
 
 									json.chart = chart;
 									json.credits = false;
@@ -513,7 +514,7 @@
 									json.legend = legend;
 									json.series = series;
 									$('#cont').highcharts(json);
-
+							@endif
 						</script>
 					</div>
 				</div> <!-- ./ panel-body -->
