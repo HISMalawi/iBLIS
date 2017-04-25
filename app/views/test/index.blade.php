@@ -113,6 +113,14 @@
                             $testName = '';
                             $test = Test::find($key);
 
+                        $type = TestType::find($test->test_type_id);
+
+                        if (empty($type) && empty($test->panel_id)){
+                            //dd($test->id);
+                            //continue;
+                        }
+
+
                         ?>
 
                         @if($test->panel_id > 0 && in_array($test->panel_id, $panels))
@@ -292,9 +300,9 @@
                             }}</td> <!--Patient Number -->
 
                         <td>{{ $test->visit->patient->name.'('.($test->visit->patient->getGender(true)).',
-                            '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
-                        <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
-                        <td>{{ $test->testType->name }}</td> <!--Test-->
+                            '.$test->visit->patient->getAge('Y'). ')'}}</td>
+                        <td>{{ $test->getSpecimenId(); }}</td>
+                        <td>{{ TestType::getByTestId($test->id) }}</td>
                             <?php
                                 $string = $test->visit->ward_or_location
                             ?>

@@ -101,6 +101,13 @@ class TestType extends Eloquent
 		return $testTypes;
 	}
 
+	public static function getByTestId($id)
+	{
+		$testTypes = DB::select(
+			DB::raw("SELECT test_types.name AS name FROM test_types INNER JOIN tests ON tests.test_type_id = test_types.id WHERE tests.id = '$id' "))[0]->name;
+		return $testTypes;
+	}
+
 
 
 	/**
