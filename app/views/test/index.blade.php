@@ -307,13 +307,16 @@
                                 <div class="row">
 
                                     <div class="col-md-12">
-                                        @if($test->isVoided())
+                                        
+					@if($test->isVoided())
                                             <span class='label'>
                                                     Voided</span>
                                         @elseif($test->isIgnored())
                                             <span class='label'>
                                                 Not Done</span>
-                                        @else
+                                        
+					
+					@else
                                             @if($test->isNotReceived())
                                                 @if(!$test->isPaid())
                                                     <span class='label'>
@@ -336,6 +339,7 @@
                                                     {{trans('messages.verified')}}</span>
                                             @endif
                                         @endif
+					
                                     </div>
     
                                     </div>
