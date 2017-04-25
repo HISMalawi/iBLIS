@@ -118,8 +118,8 @@
                                     {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
                                 @endif
                                     <span class="unit pull-right">
-										{{($measure->unit)}}
-									</span>
+                                        {{($measure->unit)}}
+                                    </span>
                             </div>
                         @endforeach
                         <div class="form-group">
