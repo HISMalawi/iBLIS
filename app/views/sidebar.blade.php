@@ -293,8 +293,14 @@
 					</li>
 					<li>
 						<div>
-							<a href="{{ URL::route("reports.aggregate.testsResultsCounts")}}">
-								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.test-positive-negative-count')}}</a>
+						 <a href="{{ URL::route("reports.aggregate.cultureSensitivityCounts")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.tab_label')}}</a>
+						</div>
+					</li>
+					<li>
+						<div>
+						 <a href="{{ URL::route("reports.aggregate.positiveNegativeCounts")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.pos_neg_tab_label')}}</a>
 						</div>
 					</li>
 				</ul>
