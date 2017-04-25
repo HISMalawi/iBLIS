@@ -138,7 +138,9 @@
 								<tr>
 									<td><b>TOTAL EXAMINED</b></td>
 									@foreach($period as $month)
-										<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
+										@if(isset($total[$month->format('F')]))
+											<td align='center'><b>{{$total[$month->format('F')]}}</b></td>
+										@endif
 									@endforeach
 								</tr>
 
