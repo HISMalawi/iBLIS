@@ -457,11 +457,36 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@infectionReport"
         ));
 
-        Route::any("/testsresultscounts", array(
-            "as"   => "reports.aggregate.testsResultsCounts",
-            "uses" => "ReportController@testsResultsCounts"
+        Route::any("/culturesensitivitycounts", array(
+            "as"   => "reports.aggregate.cultureSensitivityCounts",
+            "uses" => "ReportController@cultureSensitivityCounts"
+        ));
+
+        Route::any("/positivenegativecounts",array(
+            "as" => "reports.aggregate.positiveNegativeCounts",
+            "uses" => "ReportController@positiveNegativeCounts"
+
         ));
         
+        Route::any("/wardcounts",array(
+            "as" => "reports.aggregate.cultureSensitivityCounts.wardscounts",
+            "uses" => "ReportController@get_culture_sensitivity_counts_for_wards"
+
+        ));
+        
+         Route::any("/organimcounts",array(
+            "as" => "reports.aggregate.cultureSensitivityCounts.organimcounts",
+            "uses" => "ReportController@get_organisms_counts"
+
+        ));
+
+        Route::any("/checking",array(
+            "as" => "reports.aggregate.checking",
+            "uses" => "ReportController@positiveNegativeCounts"
+
+        ));
+        
+
         Route::any("/userstatistics", array(
             "as"   => "reports.aggregate.userStatistics",
             "uses" => "ReportController@userStatistics"

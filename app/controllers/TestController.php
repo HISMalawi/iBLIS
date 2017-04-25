@@ -363,7 +363,7 @@ P1
 	 */
 
 	public function saveNewTest()
-	{
+	{	
 		//Create New Test
 		$rules = array(
 			'visit_type' => 'required',

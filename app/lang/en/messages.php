@@ -464,6 +464,15 @@ return array(
     'total-positive-count' => 'Total Positive Count',
     'total-negative-count' => 'Total Negative Count',
 
+    /* culture and sensitivity */
+    'tab_label' => 'Culture & sensitivity Tests',
+    'breadcrumb_title' => 'Culture and sensitivity',
+
+
+    /* positive and negative counts */
+     'pos_neg_tab_label' => 'Negative & Positive Test Counts',
+     'breadcrumb_title_positive_negative' => "Positive & Negative Test Counts",
+
     /* Infection Report*/
     'age-ranges'    =>  'Age Ranges',
     'infection-report' => 'Infection Report',
