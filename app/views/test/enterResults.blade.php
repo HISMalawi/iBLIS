@@ -118,8 +118,8 @@
                                     {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
                                 @endif
                                     <span class="unit pull-right">
-										{{($measure->unit)}}
-									</span>
+                                        {{($measure->unit)}}
+                                    </span>
                             </div>
                         @endforeach
                         <div class="form-group">
@@ -210,7 +210,6 @@
                                                     $zebra = (((int)$cnt/2)%2==1?"row-striped":"");
                                                 ?>
                                                 <div style="display: {{$checked ? '' : 'none'}}" class="col-md-4" id="organism{{$value->id}}">
-                                                    <h5>Am checkiug</h5> 
                                                     <label  class="checkbox">
                                                         <input type="checkbox" name="organism[]" value="{{ $value->id}}" {{ $checked }} onchange="javascript:showSusceptibility(<?php echo $value->id; ?>)" />{{$value->name}}
                                                     </label>
@@ -232,7 +231,6 @@
                                         @endforeach
                                     @endif
                                     <?php if($checker=='checked'){$display='display:block';}else if($checker!='checked'){$display='display:none';} ?>
-
                                 {{ Form::open(array('','id' => 'drugSusceptibilityForm_'.$value->id, 'name' => 'drugSusceptibilityForm_'.$value->id, 'style'=>$display)) }}
                                 <table class="table table-bordered" id="susc_<?php echo $value->id; ?>">
                                     <thead>
@@ -528,10 +526,10 @@
                         </span>
                         {{ ($cnt%6==0)?"</div>":"" }}
                     @endforeach
-                    </div>                    
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button onclick="hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
+                    <button onclick="displayOrganisms(); hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
                 </div>
             </div>
 

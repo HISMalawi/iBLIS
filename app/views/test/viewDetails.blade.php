@@ -89,7 +89,7 @@
 								}
 
 								?>
-								{{ !empty($testName) ? $testName : $test->testType->name }}</h3>
+								{{ !empty($testName) ? $testName : TestType::getById($test->id)}}</h3>
 
 							<p class="view"><strong>{{trans('messages.date-ordered')}}</strong>
 								{{ $test->isExternal()?$test->external()->request_date:$test->time_created }}</p>
@@ -387,7 +387,7 @@
 								}
 
 
-									if (count($test->testType->organisms) > 0){
+									if (count( TestType::getOrganism($test->id)) > 0){
 										$showWorkSheet = true;
 									}
 								?>
@@ -397,10 +397,10 @@
 												<table class="table table-bordered">
 													<tbody>
 													<tr>
-														<th>{{ $test->testType->name }}</th>
+														<th>{{ TestType::getById($test->id)}}</th>
 														<th>
 
-															@if($test->testType->name == 'Cross-match' && $test->isVerified())
+															@if(TestType::getById($test->id)== 'Cross-match' && $test->isVerified())
 																<a class="btn btn-sm btn-success pull-left" id="edit-{{$test->id}}-link"
 																   href="javascript:printPackDetails({{$test->id}});"
 																   title="{{trans('messages.edit-test-results')}}">
