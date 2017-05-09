@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddStandardCodeToSpecimenTypes extends Migration {
+class AddStandardCodeToTestTypes extends Migration {
 
 	/**
 	 * Run the migrations.
