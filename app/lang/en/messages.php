@@ -195,6 +195,11 @@ return array(
     'value' => 'Value',
     'test-not-done' => 'Test Not Done Reasons',
     'add-not-done-reason' => 'Add Not Done Reasons',
+    'sucess-not-done-added' => 'Successfully added a test not done reason',
+    'sucess-not-done-edit' => 'Successfully edited a test not done reason',
+    'edit-test-not-done-reason' => 'Edit Test Not Done Reason',
+    'can-not-delete-reason' => 'reason can not be deleted, it is in use by certain tests',
+    'sucess-deleted-reason' => 'successfully deleted a reason',
 
 
     /*Specimen Type*/
