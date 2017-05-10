@@ -193,6 +193,9 @@ return array(
     'success-updating-measure' => 'The measure details were successfully updated!',
     'update-measure' => 'Update Measure',
     'value' => 'Value',
+    'test-not-done' => 'Test Not Done Reasons',
+    'add-not-done-reason' => 'Add Not Done Reasons',
+
 
     /*Specimen Type*/
 
@@ -463,6 +466,17 @@ return array(
     'total-count' => 'Total Count',
     'total-positive-count' => 'Total Positive Count',
     'total-negative-count' => 'Total Negative Count',
+    'Counts-Based-On-Wards' =>'Counts Based On Wards',
+    'Counts-Based-On-Organisms' => 'Counts Based On Organisms',
+    'Counts-Based-On-Organisms-In-Wards' => 'Counts Based On Organisms In Wards',
+    'General-Counts' => 'General Counts',
+    'Counts-Heading' => 'Organism Counts Based on Wards',
+    'Measure-Values-Counts' => 'Counts Based On Measure Values',
+    'General-Counts-Label' => 'Culture and Sensitivity General Counts',
+    'Measure-Values-Count' => 'Count of Culture & Sensitivity Tests Based On Measure Values',
+    'Organims-Count-Label' => 'Organism Counts Based on Growth from Culture & Sensitivity Tests',
+    'Wards-Count-Label' => 'Culture and Sensitivity General Counts based on Wards',
+    'General-count-header' => 'Total Culture and Sensitivity Tests:',
 
     /* culture and sensitivity */
     'tab_label' => 'Culture & sensitivity Tests',

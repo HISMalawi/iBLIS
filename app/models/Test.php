@@ -785,4 +785,19 @@ class Test extends Eloquent
 	}
 
 	
+	public function checkTest($date,$testId)
+	{  
+		$sql = "SELECT * FROM tests WHERE tests.id='$testId' AND (SUBSTRING(tests.time_created,1,7)='$date')";
+
+		$test = DB::select(DB::raw($sql));
+
+		$status = false;
+		if (count($test)>0)
+		{
+			$status = true;
+		}
+		
+		return $status;
+	}
+
 }

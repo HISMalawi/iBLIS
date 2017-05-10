@@ -86,7 +86,6 @@ class TestController extends \BaseController {
 					->orderBy('time_created', 'DESC');
 			}
 		}
-
 		// Create Test Statuses array. Include a first entry for ALL
 		$statuses = array('all')+TestStatus::all()->lists('name','id');
 
@@ -120,6 +119,7 @@ class TestController extends \BaseController {
 		if(count($tests) == 0 && Session::has('search_string')){
 			Session::set('message', 'Test does not belong to current lab section');
 		}
+		
 		// Load the view and pass it the tests
 		return View::make('test.index')
 					->with('testSet', $tests)
@@ -826,7 +826,12 @@ P1
 	 * @return
 	 */
 	public function ignore($tid)
-	{
+	{ 
+		$notdoneObject = new NotDoneReason;
+		$reasons = $notdoneObject->getNotDoneReasons();
+
+		var_dump($reasons);exit;
+
 		$test = Test::find($tid);
 		if ($test->panel_id) {
 			$tests = Test::where('panel_id', $test->panel_id)->get();
@@ -852,9 +857,9 @@ P1
 			$input['page'] = $pageParts[1];
 		}
 		// redirect
-		return Redirect::action('TestController@index')
-			->with('activeTest', array($test->id))
-			->withInput($input);
+		return View::make('test.notDone')
+					->with('activeTest', $test)
+					->withInput(Input::all());
 	}
 
 	/**
@@ -1019,7 +1024,7 @@ P3
 	 * @return view
 	 */
 	public function saveResults($testID)
-	{
+	{  
 		$test = Test::find($testID);
 		$test->test_status_id = Test::COMPLETED;
 		$test->interpretation = Input::get('interpretation');
@@ -1097,10 +1102,17 @@ P3
 	 * @return
 	 */
 	public function viewDetails($testID)
-	{
+	{	
+		$sql = "SELECT organisms.name AS organismName FROM organisms INNER JOIN test_organisms ON 
+			organisms.id = test_organisms.organism_id INNER JOIN tests ON tests.id = test_organisms.test_id
+			WHERE tests.id='$testID'";
+		$org = DB::select(DB::raw($sql));
+
 		return View::make('test.viewDetails')
 			->with('available_printers', Config::get('kblis.A4_printers'))
-			->with('test', Test::find($testID));
+			->with('organisms',$org)
+			->with('test', Test::find($testID))
+			->withInput(Input::all());
 	}
 
 	/**
@@ -1235,4 +1247,22 @@ P3
 
 		return View::make('test.viewDetails')->with('test', $test);
 	}
+
+	public function selectedOrganisms()
+	{
+		$ids = Input::get('ids');
+		$ids = explode(',',$ids);		
+		$sql = "SELECT count(*)  as total_test_result  FROM test_results";
+		$total_count = DB::select(DB::raw($sql));
+		foreach ($ids as $value) {	
+			$visit = new TestOrganism;
+			$visit->test_id= Input::get('test_id');
+			$visit->result_id = ($total_count[0]->total_test_result + 1);
+			$visit->organism_id = $value;
+			$visit->created_at = date('Y-m-d H:i:s');
+			$visit->save();
+		}
+
+	}
+
 }

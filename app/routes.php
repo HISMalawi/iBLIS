@@ -211,8 +211,14 @@ Route::group(array("before" => "auth"), function()
             "as"   => "specimenrejection.delete",
             "uses" => "SpecimenRejectionController@delete"
         ));
-        Route::resource('drug', 'DrugController');
-        
+
+        Route::resource('testnotdone', 'TestNotDoneController');
+        Route::any("/testnotdone/{id}/delete", array(
+            "as"   => "testnotdone.delete",
+            "uses" => "TestNotDoneController@delete"
+        ));
+
+        Route::resource('drug', 'DrugController');       
         Route::get("/drug/{id}/delete", array(
             "as"   => "drug.delete",
             "uses" => "DrugController@delete"
@@ -340,6 +346,11 @@ Route::group(array("before" => "auth"), function()
         "uses" => "TestController@mergeRemoteResults"
     ));
 
+     Route::get("/notdone", array(
+        "as"   => "test.notdone",
+        "uses" => "TestController@notDone"
+    ));
+
      Route::get("/test/{test}/enterresults", array(
         "before" => "checkPerms:enter_test_results",
         "as"   => "test.enterResults",
@@ -361,6 +372,12 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.saveResults",
         "uses" => "TestController@saveResults"
     ));
+
+    Route::any("/postOrganisms", array(
+            "as"   => "test.selectedOrganisms",
+            "uses" => "TestController@selectedOrganisms"
+    ));
+
     Route::get("/test/{test}/viewdetails", array(
         "as"   => "test.viewDetails",
         "uses" => "TestController@viewDetails"
@@ -474,10 +491,21 @@ Route::group(array("before" => "auth"), function()
 
         ));
         
-         Route::any("/organimcounts",array(
-            "as" => "reports.aggregate.cultureSensitivityCounts.organimcounts",
+         Route::any("/organismcounts",array(
+            "as" => "reports.aggregate.cultureSensitivityCounts.organismcounts",
             "uses" => "ReportController@get_organisms_counts"
 
+        ));
+
+         Route::any("/organisminwardscounts",array(
+            "as" => "reports.aggregate.cultureSensitivityCounts.organisminwards",
+            "uses" => "ReportController@getOrganismInWards"
+
+        ));
+
+         Route::any("/susceptibilitycounts",array(
+            "as" => "reports.aggregate.cultureSensitivityCounts.susceptibilitycounts",
+            "uses" => "ReportController@getsusceptibilitycount"
         ));
 
         Route::any("/checking",array(

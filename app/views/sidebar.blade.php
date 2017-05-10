@@ -158,6 +158,12 @@
 							<a href="{{ URL::route("specimenrejection.index")}}">
 								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.specimen-rejection')}}</a>
 						</div>
+					</li>	
+					<li>
+						<div>
+							<a href="{{ URL::route("testnotdone.index")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.test-not-done')}}</a>
+						</div>
 					</li>					
 					<li>
 						<div>

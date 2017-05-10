@@ -55,4 +55,13 @@ class Organism extends Eloquent
 		DB::table('organism_drugs')->insert($drugsAdded);
 	}
 
+
+	public function getOrganisms()
+	{
+		$sql ="SELECT organisms.name AS organismName, organisms.id AS organismsId FROM organisms";
+		$organisms = DB::select(DB::raw($sql));
+
+		return $organisms;
+	}
+
 }
