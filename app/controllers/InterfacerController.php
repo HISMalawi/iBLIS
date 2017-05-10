@@ -226,12 +226,13 @@ class InterfacerController extends \BaseController
             return "-1";
         }
 
-        $machine_name = $_REQUEST["machine_name"];
+        $machine_name = "";
+        if(isset($_REQUEST["machine_name"])) {
+            $machine_name = $_REQUEST["machine_name"];
+        }
 
         $measure_id = $_REQUEST["measure_id"];
-
         $result = $_REQUEST["result"];
-
         $remote_ip = '';    // $_SERVER["REMOTE_ADDR"] . "/";
 
         if (!file_exists($base . "/data/$remote_ip")) {
