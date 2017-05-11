@@ -351,6 +351,22 @@ Route::group(array("before" => "auth"), function()
         "uses" => "TestController@notDone"
     ));
 
+     Route::any("ignoreSpecimen", array(
+        "as"   => "test.ignoreSpecimen",
+        "uses" => "TestController@ignoreSpecimen"
+    ));
+
+    Route::get("/test/{id}/ignoretest", array(
+         "as"   => "test.ignoreTest",
+        "uses" => "TestController@ignoreTest"
+    ));
+
+    Route::any("ignoresingletest", array(
+        "as"   => "test.ignoreSingleTest",
+        "uses" => "TestController@ignoreSingleTest"
+    ));
+
+
      Route::get("/test/{test}/enterresults", array(
         "before" => "checkPerms:enter_test_results",
         "as"   => "test.enterResults",

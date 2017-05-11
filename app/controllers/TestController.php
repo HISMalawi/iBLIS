@@ -830,22 +830,36 @@ P1
 		$notdoneObject = new NotDoneReason;
 		$reasons = $notdoneObject->getNotDoneReasons();
 
-		var_dump($reasons);exit;
+		return View::make('test.notDone')
+					->with('test_id', $tid)
+					->with('reasons',$reasons)
+					->withInput(Input::all());
+	}
 
-		$test = Test::find($tid);
-		if ($test->panel_id) {
-			$tests = Test::where('panel_id', $test->panel_id)->get();
-		} else{
-			$tests = Test::where('id', $test->id)->get();
-		}
+	public function ignoreTest($tid)
+	{ 
+
+      $notdoneObject = new NotDoneReason;
+		$reasons = $notdoneObject->getNotDoneReasons();	
+
+		return View::make('test.notDoneForSingle')
+					->with('test_id', $tid)
+					->with('reasons',$reasons)
+					->withInput(Input::all());
+	}
+
+	public function ignoreSingleTest()
+	{
+		$test = Test::find(Input::get('test_id'));		
+		$tests = Test::where('id', $test->id)->get();		
 
 		foreach($tests AS $tst){
 			$tst->test_status_id = Test::NOT_DONE;
+			$tst->not_done_reasons = Input::get('reasonGot');
+			$tst->person_talked_to_for_not_done = Input::get('not_done_explained_to');
 			$tst->save();
 		}
-
 		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
-
 		$input = Session::get('TESTS_FILTER_INPUT');
 		Session::put('fromRedirect', 'true');
 
@@ -856,12 +870,44 @@ P1
 			$pageParts = explode('=', $urlParts['page']);
 			$input['page'] = $pageParts[1];
 		}
-		// redirect
-		return View::make('test.notDone')
-					->with('activeTest', $test)
-					->withInput(Input::all());
+		return Redirect::action('TestController@index')
+			->with('activeTest', array($test->id))
+			->withInput($input);
+
 	}
 
+
+	public function ignoreSpecimen()
+	{	
+		$test = Test::find(Input::get('test_id'));
+		if ($test->panel_id) {
+			$tests = Test::where('panel_id', $test->panel_id)->get();
+		} else{
+			$tests = Test::where('id', $test->id)->get();
+		}
+
+		foreach($tests AS $tst){
+			$tst->test_status_id = Test::NOT_DONE;
+			$tst->not_done_reasons = Input::get('reasonGot');
+			$tst->person_talked_to_for_not_done = Input::get('not_done_explained_to');
+			$tst->save();
+		}
+		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
+		$input = Session::get('TESTS_FILTER_INPUT');
+		Session::put('fromRedirect', 'true');
+
+		// Get page
+		$url = Session::get('SOURCE_URL');
+		$urlParts = explode('&', $url);
+		if(isset($urlParts['page'])){
+			$pageParts = explode('=', $urlParts['page']);
+			$input['page'] = $pageParts[1];
+		}
+		return Redirect::action('TestController@index')
+			->with('activeTest', array($test->id))
+			->withInput($input);
+
+	}
 	/**
 	 * Display Result Entry page
 	 *

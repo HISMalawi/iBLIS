@@ -29,18 +29,28 @@
 				{{ HTML::ul($errors->all()) }}
 			</div>
 		@endif
-		<?php
-			var_dump($activeTest->testType->name);exit;
-		?>
-		{{ Form::open(array('route' => 'test.rejectAction')) }}
-			{{ Form::hidden('test_id', $activeTest) }}
+		
+		{{ Form::open(array('route' => 'test.ignoreSpecimen')) }}
+			{{ Form::hidden('test_id', $test_id) }}
 			<div class="panel-body">
-				<div class="display-details">
-				    <p><strong>{{ Lang::choice('messages.test-type',1) }}</strong>
-				        {{$activeTest->testType->name}}</p>
-				    
-				</div>
+				<div class="form-group">
+					{{ Form::label('rejectionReason', trans('messages.rejection-reason')) }}
 				
+					<select name="reasonGot">
+						
+						@foreach($reasons AS $reason)
+							<option value="{{$reason->id}}">
+								{{$reason->reason}}
+							</option>
+						@endforeach
+
+					</select>
+				</div>
+				<div class="form-group">
+					{{ Form::label('not_done_explained_to', trans("messages.reject-explained-to")) }}
+					{{Form::text('not_done_explained_to', Input::old('not_done_explained_to'),
+						array('class' => 'form-control'))}}
+				</div>
 				<div class="form-group actions-row">
 					{{ Form::button("<span class='glyphicon glyphicon-thumbs-down'></span> ".trans('messages.reject'),
 						['class' => 'btn btn-danger', 'onclick' => 'submit()']) }}

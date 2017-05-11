@@ -399,6 +399,7 @@
                                     {{trans('messages.receive-test')}}
                                 </a>
                             @endif
+
                         @elseif ($test->specimen->isNotCollected() && !$test->panel_id && !($test->isLocked()))
                             @if(Auth::user()->can('accept_test_specimen'))
                                 <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
@@ -429,6 +430,15 @@
                                         {{trans('messages.start-test')}}
                                     </a>
                                 @endif
+                                 @if(Auth::user()->can('receive_external_test') && $test->isPaid())
+                               <a class="{{(!$test->panel_id) ? 'main-view main-view-'.$test->id : ''}} btn btn-sm btn-danger start-test" 
+                                   href="{{URL::route('test.ignoreTest', array($test->id))}}"
+                                   title="{{trans('messages.notdone-title')}}">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                    <span>{{trans('messages.notdone')}}</span>
+                                    
+                                </a>
+                            @endif
                                 @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()) && !$test->panel_id)
                                     <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
                                         <span class="glyphicon glyphicon-edit"></span>
