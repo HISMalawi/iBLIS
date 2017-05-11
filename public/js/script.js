@@ -794,6 +794,22 @@ $(function(){
 		);
 	}
 
+	function cancelSelectedOrganism(id,test_id)
+	{  
+		var url = '/cancelSelectedOrganims?organismId=' + id + '&test_id=' + test_id;
+		jQuery.ajax({ async: true,
+					  url : url,
+					  success : function()
+					  {
+					  		$("#organism"+id).hide();
+					  },
+					  error : function()
+					  {
+
+					  }
+		})
+		
+	}
 	function deleteDrugSusceptibility(tid, oid){
 		$.getJSON('/susceptibility/saveSusceptibility', { testId: tid, organismId: oid, action: "delete"},
 			function(data){

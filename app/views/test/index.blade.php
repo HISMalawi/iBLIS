@@ -134,7 +134,7 @@
                                 <td>{{ empty($test->visit->patient->external_patient_number)?
                                 $test->visit->patient->patient_number:
                                 $test->visit->patient->external_patient_number
-                            }}</td>
+                                }}</td>
                                 <td>{{ $test->visit->patient->name.'('.($test->visit->patient->getGender(true)).',
                             '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
                                 <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
@@ -155,7 +155,7 @@
                                         @elseif($test->isVoided())
                                             <span class='label'>
                                                 Voided</span>
-                                        @elseif($test->isIgnored())
+                                        @elseif($test->isIgnoreBothTestsInPanel())
                                             <span class='label'>
                                                 Not Done</span>
                                         @else
@@ -238,7 +238,7 @@
 
                                     @endif
 
-                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) && !($test->isLocked()) &&
+                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) &&
                                      Auth::user()->can('verify_test_results')
                                         && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
                                         <a class="main-view main-view-{{$test->id}} btn btn-sm btn-success" id="verify-{{$test->id}}-link"

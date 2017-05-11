@@ -70,4 +70,10 @@ class Organism extends Eloquent
 		DB::update(DB::raw($sql));
 	}
 
+	public function deleteTestOrganismsByOrgId($test_id,$orgId)
+	{	
+		$sql = "DELETE FROM test_organisms WHERE test_organisms.test_id='$test_id' AND test_organisms.organism_id='$orgId'";
+		DB::update(DB::raw($sql));
+	}
+
 }

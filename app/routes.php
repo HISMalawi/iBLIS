@@ -360,7 +360,10 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.editOrganisms",
         "uses" => "TestController@editOrganisms"
     ));
-
+    Route::any("/cancelSelectedOrganims", array(
+            "as"   => "organism.cancelSelectedOrganims",
+            "uses" => "OrganismController@cancelSelectedOrganims"
+        ));
     Route::get("/test/{id}/ignoretest", array(
          "as"   => "test.ignoreTest",
         "uses" => "TestController@ignoreTest"
@@ -486,6 +489,7 @@ Route::group(array("before" => "auth"), function()
             "as"   => "reports.aggregate.counts",
             "uses" => "ReportController@countReports"
         ));
+        
         Route::any("/tat", array(
             "as"   => "reports.aggregate.tat",
             "uses" => "ReportController@turnaroundTime"
