@@ -28,6 +28,18 @@ class TestType extends Eloquent
 	  return $this->belongsTo('TestCategory', 'test_category_id');
 	}
 
+
+	public function checkTestByTestType($id,$type)
+	{  $status = false;
+		$sql = "SELECT tests.id FROM tests INNER JOIN test_types ON test_types.id = tests.test_type_id WHERE tests.id='$id' AND test_types.name='$type'";
+		$rst = DB::select(DB::raw($sql));
+		if(count($rst)>0)
+		{
+			$status = true;
+		}
+		return $status;
+	}
+
 	/**
 	 * SpecimenType relationship
 	 */

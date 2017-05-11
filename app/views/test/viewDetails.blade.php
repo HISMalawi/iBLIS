@@ -555,11 +555,9 @@
 						<div class="row">
 
 							<div class="col-md-5">
-							<p><strong>ORGANISMS FOUND</strong></p>
+							<p><strong>ORGANISMS ISOLATED</strong></p>
 									<table class="table table-bordered">
-										<tr>
-											<th>Organism Name</th>
-										</tr>
+										
 										<?php
 											if(isset($organisms))
 											{

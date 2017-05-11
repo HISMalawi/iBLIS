@@ -1149,10 +1149,23 @@ P3
 	 */
 	public function viewDetails($testID)
 	{	
-		$sql = "SELECT organisms.name AS organismName FROM organisms INNER JOIN test_organisms ON 
+		$panObject = new Panel;
+		$typeObject = new TestType;
+		$rst = $panObject->checkPanel($testID);
+		$org = array();
+
+		foreach( $rst AS $tst)
+		{   
+			if (($typeObject->checkTestByTestType($tst->testId,'Culture & Sensitivity'))==true)
+			{
+			$sql = "SELECT organisms.name AS organismName FROM organisms INNER JOIN test_organisms ON 
 			organisms.id = test_organisms.organism_id INNER JOIN tests ON tests.id = test_organisms.test_id
-			WHERE tests.id='$testID'";
-		$org = DB::select(DB::raw($sql));
+			WHERE tests.id='$tst->testId'";
+			$org = DB::select(DB::raw($sql));
+			}
+
+		}
+		
 
 		return View::make('test.viewDetails')
 			->with('available_printers', Config::get('kblis.A4_printers'))
