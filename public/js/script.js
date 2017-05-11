@@ -1001,6 +1001,37 @@ $(function(){
 
 	}
 
+
+	function editOrganism(test_id)
+	{
+		var values =[];
+		var counter=0;
+		$(".organism-option:checkbox:checked").each(function() {
+			values[counter] = $(this).val();
+			counter++;				
+		});
+		
+		if (values.length >0)
+		{   var url = '/editOrganisms?ids=' + values +'&test_id=' + test_id;
+		
+			jQuery.ajax({
+						async: true,
+						url: url,
+						success : function(res)
+						{
+							displayOrganisms();
+						},
+						error : function(err)
+						{
+
+						}
+
+				});
+		}
+
+
+	}
+
 	function displayOrganisms(){
 		
 		var nodes = $(".organism-option:checkbox:checked").each(function() {

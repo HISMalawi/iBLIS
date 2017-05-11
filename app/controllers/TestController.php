@@ -1155,7 +1155,7 @@ P3
 		$org = array();
 
 		foreach( $rst AS $tst)
-		{   
+		{  
 			if (($typeObject->checkTestByTestType($tst->testId,'Culture & Sensitivity'))==true)
 			{
 			$sql = "SELECT organisms.name AS organismName FROM organisms INNER JOIN test_organisms ON 
@@ -1316,6 +1316,28 @@ P3
 		foreach ($ids as $value) {	
 			$visit = new TestOrganism;
 			$visit->test_id= Input::get('test_id');
+			$visit->result_id = ($total_count[0]->total_test_result + 1);
+			$visit->organism_id = $value;
+			$visit->created_at = date('Y-m-d H:i:s');
+			$visit->save();
+		}
+
+	}
+
+	public function editOrganisms()
+	{  
+		$test_id = Input::get('test_id');
+
+		$orgObject = new Organism;
+		$orgObject->deleteTestOrganisms($test_id);
+
+		$ids = Input::get('ids');
+		$ids = explode(',',$ids);		
+		$sql = "SELECT count(*)  as total_test_result  FROM test_results";
+		$total_count = DB::select(DB::raw($sql));
+		foreach ($ids as $value) {	
+			$visit = new TestOrganism;
+			$visit->test_id= $test_id;
 			$visit->result_id = ($total_count[0]->total_test_result + 1);
 			$visit->organism_id = $value;
 			$visit->created_at = date('Y-m-d H:i:s');

@@ -356,6 +356,11 @@ Route::group(array("before" => "auth"), function()
         "uses" => "TestController@ignoreSpecimen"
     ));
 
+    Route::any("/editOrganisms", array(
+        "as"   => "test.editOrganisms",
+        "uses" => "TestController@editOrganisms"
+    ));
+
     Route::get("/test/{id}/ignoretest", array(
          "as"   => "test.ignoreTest",
         "uses" => "TestController@ignoreTest"

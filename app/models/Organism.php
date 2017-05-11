@@ -64,4 +64,10 @@ class Organism extends Eloquent
 		return $organisms;
 	}
 
+	public function deleteTestOrganisms($test_id)
+	{	
+		$sql = "DELETE FROM test_organisms WHERE test_organisms.test_id='$test_id'";
+		DB::update(DB::raw($sql));
+	}
+
 }

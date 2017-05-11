@@ -542,7 +542,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button onclick="displayOrganisms(); hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
+					<button onclick="editOrganism({{$test->id}}); hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
 				</div>
 			</div>
 
