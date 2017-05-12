@@ -482,6 +482,7 @@ return array(
     'Organims-Count-Label' => 'Organism Counts Based on Growth from Culture & Sensitivity Tests',
     'Wards-Count-Label' => 'Culture and Sensitivity General Counts based on Wards',
     'General-count-header' => 'Total Culture and Sensitivity Tests:',
+    'tab-label'  => 'Antibiotic Susceptibility Test (AST)',
 
     /* culture and sensitivity */
     'tab_label' => 'Culture & sensitivity Tests',

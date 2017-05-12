@@ -23,7 +23,7 @@
 				<li><a  href="/wardcounts">{{trans('messages.Counts-Based-On-Wards')}}</a></li>
 				<li><a  href="/organismcounts">{{trans('messages.Counts-Based-On-Organisms')}}</a></li>
 				<li><a  href="/organisminwardscounts">{{trans('messages.Counts-Based-On-Organisms-In-Wards')}}</a></li>
-				<li><a style="background-color: black;color:white;" href="/susceptibilitycounts">{{trans('messages.Measure-Values-Counts')}}</a></li>
+				<li><a style="background-color: black;color:white;" href="/susceptibilitycounts">{{trans('messages.tab-label')}}</a></li>
 
 		</ul>
 	</div>

@@ -303,12 +303,7 @@
 								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.tab_label')}}</a>
 						</div>
 					</li>
-					<li>
-						<div>
-						 <a href="{{ URL::route("reports.aggregate.positiveNegativeCounts")}}">
-								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.pos_neg_tab_label')}}</a>
-						</div>
-					</li>
+					
 				</ul>
 				<div class="sub-menu-title">{{trans('messages.inventory-reports')}}</div>
 				<ul class="sub-menu-items">
