@@ -483,6 +483,7 @@ return array(
     'Wards-Count-Label' => 'Culture and Sensitivity General Counts based on Wards',
     'General-count-header' => 'Total Culture and Sensitivity Tests:',
     'tab-label'  => 'Antibiotic Susceptibility Test (AST)',
+    'csv' => 'Export',
 
     /* culture and sensitivity */
     'tab_label' => 'Culture & sensitivity Tests',
