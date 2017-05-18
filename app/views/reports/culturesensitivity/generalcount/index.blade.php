@@ -77,10 +77,21 @@
 						        </div>
 						    </div>
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-3">
 		 				   {{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'), 
 		    			    array('class' => 'btn btn-info', 'id' => 'filter', 'type' => 'submit')) }}
 	    				</div> 
+
+	    				<div class="col-md-1">
+			 				   {{ Form::button("<span class='glyphicon glyphicon-export'></span> ".trans('messages.csv'), 
+			    			    array('class' => 'btn btn-success', 'id' => 'export', 'type' => 'button', 'onclick' => "export()")) }}
+		    				</div> 
+
+							<div class="col-md-1">
+			 				   {{ Form::button("<span class='glyphicon glyphicon-print'></span> ".trans('messages.print'), 
+			    			    array('class' => 'btn btn-success', 'id' => 'filter', 'type' => 'button', 'onclick' => 'getWardsCount()')) }}
+		    				</div> 
+
 					</div>
 
 					<div class="row" style="margin-top: 30px;">
@@ -127,5 +138,45 @@
 	</div>
   </div>
 </div>
+
+
+<script type="text/javascript">
+	
+	$("#export").click(function(e)
+	{  var period = '<?php echo(convertMonth($month)."_".$year) ;?>';	  
+		exportTableToCSV(period +'_'+'culturesensitivitycounts_basedonwards.csv');
+	})
+
+	function downloadCSV(csv, filename) {
+		    var csvFile;
+		    var downloadLink;
+		    csvFile = new Blob([csv], {type: "text/csv"});
+		    downloadLink = document.createElement("a");
+		    downloadLink.download = filename;
+		    downloadLink.href = window.URL.createObjectURL(csvFile);
+		    downloadLink.style.display = "none";
+		    document.body.appendChild(downloadLink);
+		    downloadLink.click();
+	}
+
+	function exportTableToCSV(filename) {
+		var period = '<?php echo(convertMonth($month)."_".$year) ;?>';
+	    var csv = [];
+	    var rows = document.querySelectorAll("table tr");
+	   	var row = [];	
+	   	var lbl = '<?php echo("Culture and Sensitivity Tests: ");?>';	   	
+	    row.push(lbl+period);
+	    row.push("Total Counts: "+ '<?php echo($total); ?>');	        
+	    csv.push(row.join(",")); 
+	    for (var i = 0; i < rows.length; i++) {
+	        var row = [], cols = rows[i].querySelectorAll("td, th");	        
+	        for (var j = 0; j < cols.length; j++) 
+	            row.push(cols[j].innerText);	        
+	        csv.push(row.join(","));   	             
+	    }
+	    downloadCSV(csv.join("\n"), filename);
+	}
+	
+</script>
 @stop
 
