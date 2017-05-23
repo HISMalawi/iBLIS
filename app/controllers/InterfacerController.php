@@ -232,9 +232,7 @@ class InterfacerController extends \BaseController
 	}
 
         $measure_id = $_REQUEST["measure_id"];
-
         $result = $_REQUEST["result"];
-
         $remote_ip = '';    // $_SERVER["REMOTE_ADDR"] . "/";
 
         if (!file_exists($base . "/data/$remote_ip")) {

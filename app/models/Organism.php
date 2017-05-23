@@ -55,4 +55,25 @@ class Organism extends Eloquent
 		DB::table('organism_drugs')->insert($drugsAdded);
 	}
 
+
+	public function getOrganisms()
+	{
+		$sql ="SELECT organisms.name AS organismName, organisms.id AS organismsId FROM organisms";
+		$organisms = DB::select(DB::raw($sql));
+
+		return $organisms;
+	}
+
+	public function deleteTestOrganisms($test_id)
+	{	
+		$sql = "DELETE FROM test_organisms WHERE test_organisms.test_id='$test_id'";
+		DB::update(DB::raw($sql));
+	}
+
+	public function deleteTestOrganismsByOrgId($test_id,$orgId)
+	{	
+		$sql = "DELETE FROM test_organisms WHERE test_organisms.test_id='$test_id' AND test_organisms.organism_id='$orgId'";
+		DB::update(DB::raw($sql));
+	}
+
 }

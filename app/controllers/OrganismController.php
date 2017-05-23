@@ -28,6 +28,14 @@ class OrganismController extends \BaseController {
 		return View::make('organism.create')->with('drugs', $drugs);
 	}
 
+	public function cancelSelectedOrganims()
+	{
+		$orgId = Input::get('organismId');
+		$test_id = Input::get('test_id');
+		$orgObject = new Organism;
+		$orgObject->deleteTestOrganismsByOrgId($test_id,$orgId);
+
+	}
 
 	/**
 	 * Store a newly created resource in storage.

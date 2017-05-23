@@ -188,7 +188,12 @@ class Instrument extends Eloquent
 
 			$measureFound = $testType->measures->filter(
 				function($measure) use ($measureId){
-					if($measure->id == $measureId) return $measure;
+					$common_name = '';
+					try{
+						$common_name = strtoupper(Measure::where('id', $measureId)->first()->name);
+					}catch(Exception $ex){}
+
+					if($measure->id == $measureId or strtoupper($measure->name) == $common_name) return $measure;
 			});
 
 			if(empty($measureFound->toArray())){

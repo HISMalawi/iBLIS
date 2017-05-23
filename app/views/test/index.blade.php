@@ -112,6 +112,10 @@
                         <?php
                             $testName = '';
                             $test = Test::find($key);
+<<<<<<< HEAD
+=======
+                            
+>>>>>>> e3272d01177692b29fb5742d63d503a798b8b269
                         ?>
 
                         @if($test->panel_id > 0 && in_array($test->panel_id, $panels))
@@ -133,7 +137,7 @@
                                 <td>{{ empty($test->visit->patient->external_patient_number)?
                                 $test->visit->patient->patient_number:
                                 $test->visit->patient->external_patient_number
-                            }}</td>
+                                }}</td>
                                 <td>{{ $test->visit->patient->name.'('.($test->visit->patient->getGender(true)).',
                             '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
                                 <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
@@ -154,7 +158,7 @@
                                         @elseif($test->isVoided())
                                             <span class='label'>
                                                 Voided</span>
-                                        @elseif($test->isIgnored())
+                                        @elseif($test->isIgnoreBothTestsInPanel())
                                             <span class='label'>
                                                 Not Done</span>
                                         @else
@@ -237,7 +241,7 @@
 
                                     @endif
 
-                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) && !($test->isLocked()) &&
+                                    @if($test->isPanelCompleted() == true && !($test->isVerified()) &&
                                      Auth::user()->can('verify_test_results')
                                         && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
                                         <a class="main-view main-view-{{$test->id}} btn btn-sm btn-success" id="verify-{{$test->id}}-link"
@@ -306,8 +310,13 @@
                                 <div class="row">
 
                                     <div class="col-md-12">
+<<<<<<< HEAD
                                         
 					@if($test->isVoided())
+=======
+                                  
+                                        @if($test->isVoided())
+>>>>>>> e3272d01177692b29fb5742d63d503a798b8b269
                                             <span class='label'>
                                                     Voided</span>
                                         @elseif($test->isIgnored())
@@ -401,6 +410,7 @@
                                     {{trans('messages.receive-test')}}
                                 </a>
                             @endif
+
                         @elseif ($test->specimen->isNotCollected() && !$test->panel_id && !($test->isLocked()))
                             @if(Auth::user()->can('accept_test_specimen'))
                                 <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
@@ -431,6 +441,15 @@
                                         {{trans('messages.start-test')}}
                                     </a>
                                 @endif
+                                 @if(Auth::user()->can('receive_external_test') && $test->isPaid())
+                               <a class="{{(!$test->panel_id) ? 'main-view main-view-'.$test->id : ''}} btn btn-sm btn-danger start-test" 
+                                   href="{{URL::route('test.ignoreTest', array($test->id))}}"
+                                   title="{{trans('messages.notdone-title')}}">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                    <span>{{trans('messages.notdone')}}</span>
+                                    
+                                </a>
+                            @endif
                                 @if(Auth::user()->can('refer_specimens') && !($test->isExternal()) && !($test->specimen->isReferred()) && !$test->panel_id)
                                     <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info" href="{{ URL::route('test.refer', array($test->specimen_id)) }}">
                                         <span class="glyphicon glyphicon-edit"></span>

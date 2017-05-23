@@ -551,15 +551,37 @@
 							@endif
 							</tbody>
 						</table>
+						
+						<div class="row">
+
+							<div class="col-md-5">
+							<p><strong>ORGANISMS ISOLATED</strong></p>
+									<table class="table table-bordered">
+										
+										<?php
+											if(isset($organisms))
+											{
+												foreach($organisms AS $values)
+												{	echo "<tr>";
+														echo "<td>".$values->organismName."</td>";
+													echo "</tr>";
+												}
+											}									
+										?>
+									</table>
+
+							</div>
+						</div>
 						<p><strong>{{trans("messages.susceptibility-test-results")}}</strong></p>
 						@foreach($tests as $test)
-						<div class="row">
+						<div class="row"> 
 							@if(count($test->susceptibility)>0)
 								@foreach($test->organisms() as $organism)
 									<?php
 										$organism = Organism::find($organism->organism_id);
 									?>
-									<div class="col-md-6">
+									<div class="col-md-10">
+									
 										<table class="table table-bordered">
 											<tbody>
 											<tr>
@@ -589,12 +611,15 @@
 												@endif
 											@endforeach
 											</tbody>
-										</table>
+										</table> 
 									</div>
 								@endforeach
 							@endif
+
+							
 						</div>
 						@endforeach
+					
 					</div>
 				</div> <!-- ./ panel-body -->
 			@endif

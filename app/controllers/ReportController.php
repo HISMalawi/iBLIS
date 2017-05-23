@@ -4161,4 +4161,262 @@ P1
 					->withInput(Input::all());
   	}
 
+
+  	function positiveNegativeCounts()
+  	{
+  		$ward_date = date('Y-m-d');
+  		$ward_month = Input::get('ward_month');
+  		$ward_year = Input::get('ward_year');
+  		if (!$ward_year){$ward_year= date('Y');}
+  		if (!$ward_month){$ward_month = date('m');}
+  		if (strlen($ward_month)==1) $ward_month ="0".$ward_month;				  		
+  		
+  		$ward_check_date = $ward_year."-".$ward_month;
+  		$sql ="SELECT count(*) as count,visits.ward_or_location  as ward_name, visits.visit_type as ward_type FROM tests 
+  			INNER JOIN visits ON tests.visit_id = visits.id 
+  			INNER JOIN test_types on test_types.id = tests.test_type_id
+  			WHERE visits.ward_or_location 
+  			IN (SELECT wards.name FROM wards) 
+  			AND test_types.name='Culture & Sensitivity' 
+  			AND (SUBSTRING(tests.time_created,1,7) ='$ward_check_date') 
+  			GROUP BY iblis.visits.ward_or_location 
+  			Order By visits.visit_type ";
+
+  		$ward_counts = DB::select(DB::raw($sql));
+
+  		return $ward_counts;
+  	}
+
+  	function get_culture_sensitivity_counts_for_wards()
+  	{
+  			//for ward section
+  		$ward_date = date('Y-m-d');
+  		$ward_month = Input::get('ward_month');
+  		$ward_year = Input::get('ward_year');
+  		if (!$ward_year){$ward_year= date('Y');}
+  		if (!$ward_month){$ward_month = date('m');}
+  		if (strlen($ward_month)==1) $ward_month ="0".$ward_month;				  		
+  		
+  		$ward_check_date = $ward_year."-".$ward_month;
+  		$sql ="SELECT count(*) as count,visits.ward_or_location  as ward_name, visits.visit_type as ward_type FROM tests 
+  			INNER JOIN visits ON tests.visit_id = visits.id 
+  			INNER JOIN test_types on test_types.id = tests.test_type_id
+  			WHERE visits.ward_or_location 
+  			IN (SELECT wards.name FROM wards) 
+  			AND test_types.name='Culture & Sensitivity' 
+  			AND (SUBSTRING(tests.time_created,1,7) ='$ward_check_date') 
+  			GROUP BY iblis.visits.ward_or_location 
+  			Order By visits.visit_type ";
+
+  		$ward_counts = DB::select(DB::raw($sql));
+
+ 		return View::make('reports.culturesensitivity.wardscounts.index')
+  					->with('ward_counts',$ward_counts)
+  					->withInput(Input::all());
+  		
+  	}
+
+  	function get_organisms_counts()
+  	{ 
+  			//for ward section
+  		$date = date('Y-m-d');
+  		$month = Input::get('month');
+  		$year = Input::get('year');
+  		if (!$year){$year= date('Y');}
+  		if (!$month){$month = date('m');}
+  		if (strlen($month)==1) $month ="0".$month;				  		
+  		
+  		$check_date = $year."-".$month;
+  		$sql = "SELECT count(*) as total FROM tests INNER JOIN test_types ON test_types.id = tests.test_type_id WHERE (test_types.name='Culture & Sensitivity') AND (SUBSTRING(tests.time_created,1,7) ='$check_date')";
+  		$count = DB::select(DB::raw($sql));
+
+  		$sql = "SELECT count(*) as total_growth FROM tests INNER JOIN test_results ON test_results.test_id = tests.id WHERE test_results.result ='Growth'
+  			AND (SUBSTRING(tests.time_created,1,7) ='$check_date')";
+  		$total_growth = DB::select(DB::raw($sql));
+
+  		$sql = "SELECT count(*) AS organismCount, organisms.name AS organismName FROM tests INNER JOIN test_organisms ON test_organisms.test_id = tests.id INNER JOIN organisms ON organisms.id = test_organisms.organism_id INNER JOIN test_results ON test_results.test_id = tests.id WHERE (SUBSTRING(tests.time_created,1,7) = '$check_date') AND test_results.result='Growth' GROUP BY organisms.name ORDER BY organismCount DESC"; 
+
+  		$counts = DB::select(DB::raw($sql));
+  		
+ 		return View::make('reports.culturesensitivity.organismcounts.index')
+ 					->with('total_count',$count[0]->total)
+ 					->with('total_growth',$total_growth[0]->total_growth)
+  					->with('organism_details',$counts)
+  					->withInput(Input::all());  		
+  	}
+
+  	function getOrganismInWards()
+  	{
+  		$date = date('Y-m-d');
+  		$month = Input::get('month');
+  		$year = Input::get('year');
+  		if (!$year){$year= date('Y');}
+  		if (!$month){$month = date('m');}
+  		if (strlen($month)==1) $month ="0".$month;				  		
+  		
+  		$check_date = $year."-".$month;
+  		$sql = "SELECT wards.name AS wardName, visit_types.name AS visitType FROM wards INNER JOIN visittype_wards ON visittype_wards.ward_id = wards.id 
+  			INNER JOIN visit_types ON visit_types.id = visittype_wards.visit_type_id";
+
+  		$wards = DB::select(DB::raw($sql));
+  		$data = array();
+  		$counter =0;
+  		$count = 0;
+
+
+  		foreach ($wards as $wardDetails) 
+  		{
+  			$organs = array();
+  			$sql = "SELECT count(*) AS organismCount, organisms.name AS organismName  FROM visits INNER JOIN tests ON tests.visit_id = visits.id INNER JOIN test_organisms ON test_organisms.test_id = tests.id INNER JOIN organisms ON organisms.id = test_organisms.organism_id INNER JOIN test_results ON
+  			test_results.test_id = tests.id 
+  			WHERE (SUBSTRING(tests.time_created,1,7) = '$check_date') 
+  			AND test_results.result='Growth' AND 
+  				visits.ward_or_location = '$wardDetails->wardName' GROUP BY organisms.name 
+  			ORDER BY organismCount DESC";
+
+  			$rs = DB::select(DB::raw($sql));
+  			$data[$counter][0] =$wardDetails->wardName;
+  			$data[$counter][1] =$wardDetails->visitType;
+
+			if(count($rs)>0)
+			{	foreach ($rs as $value) 
+				{	$organs[$count][0] = $value->organismName;
+					$organs[$count][1] = $value->organismCount;
+					$count ++;
+				}
+			}
+			else
+			{	$organs[$count][0] = '-';
+				$organs[$count][1] = 0;
+				$count++;
+			}
+			$data[$counter][2] = $organs;
+			$count = 0;
+			$counter++;
+		}
+		
+  		return View::make('reports.culturesensitivity.organisminwards.index')
+  					->with('info',$data)
+  					->withInput(Input::all());  		
+  	}  
+
+  	function cultureSensitivityCounts()
+  	{
+  		//for general counts section
+  		$date = date('Y-m-d');
+  		$month = Input::get('month');
+  		$year = Input::get('year');
+  		if (!$year){$year= date('Y');;}
+  		if (!$month){$month = date('m');}
+  		if (strlen($month)==1) $month ="0".$month;				  		
+  		$check_date = $year."-".$month;
+  			$values = array('Mixed growth; no predominant organism',
+  						'Growth of normal flora; no pathogens isolated',
+  						'No growth','Growth','Growth of contaminants');
+  		$data = array();
+  		$counter=0;
+  		$sql = "SELECT count(*) as total FROM tests INNER JOIN test_types ON test_types.id = tests.test_type_id WHERE (test_types.name='Culture & Sensitivity') AND (SUBSTRING(tests.time_created,1,7) ='$check_date')";
+  		$totalCount = DB::select(DB::raw($sql));
+
+  		foreach($values AS $measure)
+  		{
+  			$sql = "SELECT count(*) AS count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id WHERE (SUBSTRING(tests.time_created,1,7) ='$check_date') AND test_results.result='$measure'";
+
+  			$count = DB::select(DB::raw($sql));
+
+  			if (count($count)>0)
+  			{
+  					$data[$counter][0] = $measure;
+  					$data[$counter][1] = $count[0]->count;  					
+  			}
+  			else
+  			{
+  					$data[$counter][0] = $measure;
+  					$data[$counter][1] = 0;
+  			}
+
+  			$counter++;  			
+  		}
+  		return View::make('reports.culturesensitivity.generalcount.index')
+  						->with('data',$data)
+  						->with('total',$totalCount[0]->total)
+  						->withInput(Input::all());
+  	}
+
+
+  	function getsusceptibilitycount()
+  	{	$date = date('Y-m-d');
+  		$month = Input::get('month');
+  		$year = Input::get('year');
+  		if (!$year){$year= date('Y');}
+  		if (!$month){$month = date('m');}
+  		if (strlen($month)==1) $month ="0".$month;				  		
+  		
+  		$check_date = $year."-".$month;
+
+  		$organismObject = new  Organism;
+  		$drugObject = new Drug;
+  		$susceptibilityObject = new Susceptibility;
+  		$testObject = new Test;
+
+  		$i = 0;
+  		$s = 0;
+  		$r = 0;
+  		
+  		$details = array();
+  		$count =0;
+  		$counter=0;
+
+		$organism = $organismObject->getOrganisms();
+
+		foreach($organism AS $organismDetails)
+		{ 
+			$drugs = $drugObject->getOrganismDrugs($organismDetails->organismName);
+			$inter = array();
+			foreach($drugs AS $drug)
+			{ 
+			  $Susceptibility = $susceptibilityObject->getOrganismSusceptibility($organismDetails->organismsId,$drug->drugId);			  
+
+			  	if(count($Susceptibility)>0)
+			  	{ 
+				  	foreach($Susceptibility AS $sus)
+				  	{	
+				 	  if(($testObject->checkTest($check_date,$sus->testId))==true)
+				 	  {
+				 	  	 if ($sus->inter=='I')
+				 	  	 {
+				 	  	 	$i+=1;
+				 	  	 }
+				 	  	 elseif($sus->inter=='R')
+				 	  	 {
+				 	  	 	$r+=1;
+				 	  	 }
+				 	  	 elseif($sus->inter=='S')
+				 	  	 {	
+				 	  	 	$s+=1;
+				 	  	 }
+				 	  }	
+				 	}		 	 
+			  	}		
+			  	$inter[$count][0] = $drug->drugName;
+			  	$inter[$count][1] = $i;
+			  	$inter[$count][2] = $r;
+			  	$inter[$count][3] = $s;
+			  	$count++;	
+			  	$i=0;
+			  	$r=0;
+			  	$s=0; 
+
+			}
+			$details[$counter][0]=$organismDetails->organismName;
+			$details[$counter][1]=$inter;
+			$counter++;		
+		}
+
+  		return View::make('reports.culturesensitivity.susceptibility.index')
+  					->with('info',$details)
+  					->withInput(Input::all()); 
+
+  	}
+
 }

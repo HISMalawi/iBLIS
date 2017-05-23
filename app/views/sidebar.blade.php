@@ -158,6 +158,12 @@
 							<a href="{{ URL::route("specimenrejection.index")}}">
 								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.specimen-rejection')}}</a>
 						</div>
+					</li>	
+					<li>
+						<div>
+							<a href="{{ URL::route("testnotdone.index")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.test-not-done')}}</a>
+						</div>
 					</li>					
 					<li>
 						<div>
@@ -293,10 +299,11 @@
 					</li>
 					<li>
 						<div>
-							<a href="{{ URL::route("reports.aggregate.testsResultsCounts")}}">
-								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.test-positive-negative-count')}}</a>
+						 <a href="{{ URL::route("reports.aggregate.cultureSensitivityCounts")}}">
+								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.tab_label')}}</a>
 						</div>
 					</li>
+					
 				</ul>
 				<div class="sub-menu-title">{{trans('messages.inventory-reports')}}</div>
 				<ul class="sub-menu-items">
