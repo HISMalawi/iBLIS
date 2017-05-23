@@ -112,10 +112,6 @@
                         <?php
                             $testName = '';
                             $test = Test::find($key);
-<<<<<<< HEAD
-=======
-                            
->>>>>>> e3272d01177692b29fb5742d63d503a798b8b269
                         ?>
 
                         @if($test->panel_id > 0 && in_array($test->panel_id, $panels))
@@ -310,13 +306,9 @@
                                 <div class="row">
 
                                     <div class="col-md-12">
-<<<<<<< HEAD
                                         
 					@if($test->isVoided())
-=======
                                   
-                                        @if($test->isVoided())
->>>>>>> e3272d01177692b29fb5742d63d503a798b8b269
                                             <span class='label'>
                                                     Voided</span>
                                         @elseif($test->isIgnored())
