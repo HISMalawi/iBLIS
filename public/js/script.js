@@ -1248,6 +1248,11 @@ $(function(){
 		if(window.location.href.match(/test\/\d+\/enterresults|test\/\d+\/edit/i)){
 			checkMachineOutput();
 		}
+
+		if(window.location.href.match(/test/)){
+			checkingMachineResults();
+		}
+
 	});
 
 	function checkBarcode(){
@@ -1267,10 +1272,39 @@ $(function(){
 			}
 		}
 	}
-
+	var info;
 	setTimeout(function(){
 		checkBarcode();
 	}, 1000);
+
+	function checkingMachineResults()
+	{
+		var buttons = __$('hider');		
+		var info = buttons.getAttribute('data').split(',');		
+		var availableResults = [];
+
+		$.get('/checkMachineResults').done(function(result){
+			availableResults = result;
+
+			for(var counter=0; counter<info.length;counter++)
+			{	var va = info[counter]+".json"; 
+				var ele = info[counter];
+				if(availableResults.includes(va))
+				{
+					var elmnt = __$(ele);
+					elmnt.style.display = 'block';
+					elmnt.style.color='green';
+				}
+			 	else
+			 	{
+					var elmnt = __$(ele);
+					elmnt.style.display = 'none';
+			 	}					 	
+			}		
+		});
+		setTimeout("checkingMachineResults()",300);
+	}
+
 
 	function checkMachineOutput(){
 		var button = __$('fetch-link');
