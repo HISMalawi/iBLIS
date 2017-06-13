@@ -51,7 +51,7 @@ class Soundex
 		$tail = preg_replace("/[DT]/", "3", $tail);	
 		$tail = preg_replace("/[LR]/", "4", $tail);	
 		$tail = preg_replace("/[MN]/", "5", $tail);	
-		$tail = preg_replace("/[SZ]/", "7", $tail);	
+		$tail = preg_replace("/[SZ]/", "6", $tail);
 		$tail = preg_replace("/[J]/", "7", $tail);	
 		
 		# Remove all pairs of digits which occur beside each other from the string
