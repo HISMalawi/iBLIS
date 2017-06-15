@@ -1220,12 +1220,12 @@ $(function(){
 	(function(open) {
 
 		XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-			if (!url.match(/checkresult|print/i)) {
+			if (!url.match(/checkresult|print|checkMachineResult/i)) {
 				setTimeout(function () {
 					showSpinner(null, false, false)
 				}, 10);
 			}
-
+			
 			this.addEventListener("load", function() {
 				hideSpinner();
 			}, false);
@@ -1250,6 +1250,7 @@ $(function(){
 		}
 
 		if(window.location.href.match(/test/)){
+
 			checkingMachineResults();
 		}
 
@@ -1272,17 +1273,47 @@ $(function(){
 			}
 		}
 	}
-	var info;
+	
 	setTimeout(function(){
 		checkBarcode();
 	}, 1000);
 
 	function checkingMachineResults()
-	{
+	{ 
 		var buttons = __$('hider');		
 		var info = buttons.getAttribute('data').split(',');		
 		var availableResults = [];
+		var url = '/checkMachineResults';
+		jQuery.ajax({
+			async : true,
+			url : url,
+			success : function(results)
+			{
+				availableResults = results;
 
+				for(var counter=0; counter<info.length;counter++)
+				{	var va = info[counter]+".json"; 
+					var ele = info[counter];
+					if(availableResults.includes(va))
+					{
+						var elmnt = __$(ele);
+						elmnt.style.display = 'block';
+						elmnt.style.color='green';
+					}
+				 	else
+				 	{
+						var elmnt = __$(ele);
+						elmnt.style.display = 'none';
+				 	}					 	
+				}		
+			},
+			error : function(err)
+			{
+
+			}
+		})
+
+		/*
 		$.get('/checkMachineResults').done(function(result){
 			availableResults = result;
 
@@ -1302,9 +1333,10 @@ $(function(){
 			 	}					 	
 			}		
 		});
+		*/
+
 		setTimeout("checkingMachineResults()",300);
 	}
-
 
 	function checkMachineOutput(){
 		var button = __$('fetch-link');
