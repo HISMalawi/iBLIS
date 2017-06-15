@@ -329,7 +329,10 @@
                                                 <span class='label'>
                                                     {{trans('messages.pending')}}</span>
                                             @elseif($test->isStarted())
-                                                <span class='label'>
+                                            <?php
+                                                $idd = "sp".$test->getSpecimenId();
+                                            ?>
+                                                <span id ="{{$idd}}" class='label'>
                                                     {{trans('messages.started')}}</span>
                                             @elseif($test->isCompleted())
                                                 <span class='label'>

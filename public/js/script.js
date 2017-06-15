@@ -1297,6 +1297,8 @@ $(function(){
 					if(availableResults.includes(va))
 					{
 						var elmnt = __$(ele);
+						var starlabl = __$("sp"+ele);
+						starlabl.style.display ='none';
 						elmnt.style.display = 'block';
 						elmnt.style.color='green';
 					}
