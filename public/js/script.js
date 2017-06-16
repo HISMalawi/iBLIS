@@ -1280,31 +1280,35 @@ $(function(){
 
 	function checkingMachineResults()
 	{ 
-		var buttons = __$('hider');		
+		var buttons = __$('hider');	
 		var info = buttons.getAttribute('data').split(',');		
+		var id_number = "";
+		var splited_data=[];
 		var availableResults = [];
 		var url = '/checkMachineResults';
 		jQuery.ajax({
 			async : true,
 			url : url,
 			success : function(results)
-			{
+			{	
 				availableResults = results;
 
 				for(var counter=0; counter<info.length;counter++)
-				{	var va = info[counter]+".json"; 
-					var ele = info[counter];
-					if(availableResults.includes(va))
-					{
-						var elmnt = __$(ele);
-						var starlabl = __$("sp"+ele);
-						starlabl.style.display ='none';
+				{	var va = info[counter]; 
+					
+					splited_data = va.split('_');
+					id_number = splited_data[0]+".json";
+					if(availableResults.includes(id_number))
+					{	
+						var elmnt = __$(va);
+						var lab = 'sp'+ va;
+						var lbl = __$(lab);						
 						elmnt.style.display = 'block';
 						elmnt.style.color='green';
+						lbl.style.display = 'none';
 					}
 				 	else
-				 	{
-						var elmnt = __$(ele);
+				 	{	var elmnt = __$(ele);
 						elmnt.style.display = 'none';
 				 	}					 	
 				}		

@@ -55,6 +55,7 @@ return array(
     'tests' => 'Patient Tests',
     'fetch-results' => 'results-available',
     'machine_results_available' => 'results-available',
+    'view_results' => 'click inorder to fetch',
 
     /** 
      *   Generic phrases

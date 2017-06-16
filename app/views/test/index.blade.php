@@ -307,7 +307,10 @@
                             <div class="container-fluid">
                             
                                 <div class="row">
-
+                                        <?php 
+                                                $type = str_replace(" ", "", $test->testType->name);
+                                                $t_id = $test->getSpecimenId()."_". $type;                         
+                                            ?>
                                     <div class="col-md-12">
                                          
                                         @if($test->isVoided())
@@ -330,7 +333,7 @@
                                                     {{trans('messages.pending')}}</span>
                                             @elseif($test->isStarted())
                                             <?php
-                                                $idd = "sp".$test->getSpecimenId();
+                                                $idd = "sp".$t_id;
                                             ?>
                                                 <span id ="{{$idd}}" class='label'>
                                                     {{trans('messages.started')}}</span>
@@ -351,16 +354,19 @@
                                        
                                         @if($test->testType->instruments->count() > 0 && $test->isStarted() == true)          
                                             
+
                                             <a  href="{{ URL::route('test.enterResults', array($test->id)) }}"
-                                                title="{{trans('messages.enter-results-title')}}"
+                                                title="{{trans('messages.view_results')}}"
                                                 style="display: none;" 
-                                                id="{{$test->getSpecimenId()}}">
+                                                id="{{$t_id}}">
                                                 {{trans('messages.machine_results_available')}}
                                             </a>
                                             
                                             <?php
-                                            $data[$counter] = $test->getSpecimenId();
+                                            
+                                            $data[$counter] = $t_id ;
                                             $counter++;
+                                            
                                             ?>
 
                                         @endif
