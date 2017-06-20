@@ -126,10 +126,12 @@ P1
 
 		$visitId = (!$visitId && $visit) ? $visit : $visitId;
 
+
 		//	Check checkbox if checked and assign the 'checked' value
 		if (Input::get('tests') === '1') {
 		    $pending='checked';
 		}
+
 		//	Query to get tests of a particular patient
 		if(($visit || $visitId) && $id){
 			$tests = Test::where('visit_id', '=', $visit?$visit:$visitId)->orderBy("time_completed", "ASC");
@@ -137,18 +139,22 @@ P1
 		else{
 			$tests = Test::join('visits', 'visits.id', '=', 'tests.visit_id')
 							->where('patient_id', '=', $id)->orderBy("time_completed", "ASC");
+
 		}
+		$tests_count = count($tests->get(array('tests.*')));
+		
 		//	Begin filters - include/exclude pending tests
 		if($pending){
-			$tests=$tests->where('tests.test_status_id', '!=', Test::NOT_RECEIVED);
+			$tests=$tests->where('tests.test_status_id', '!=', Test::PENDING);
 		}
 		else{
+
 			$tests = $tests->whereIn('tests.test_status_id', [Test::COMPLETED, Test::VERIFIED]);
 		}
 
+		
 		//	Date filters
 		if($from||$to){
-
 			if(!$to) $to = $date;
 
 			if(strtotime($from)>strtotime($to)||strtotime($from)>strtotime($date)||strtotime($to)>strtotime($date)){
@@ -162,8 +168,15 @@ P1
 		}
 		//	Get tests collection
 		//$tests = $tests->orderBy('time_completed', 'ASC');
-		$tests = $tests->get(array('tests.*'));
 
+		$tests = $tests->get(array('tests.*'));		
+		$patient_visit_checker = count($tests);
+		
+		$checking_status = false;
+		if($tests_count==0 && $patient_visit_checker==0)
+		{
+			$checking_status = true;
+		}
 		//	Get patient details
 		$patient = Patient::find($id);
 		//	Check if tests are accredited
@@ -221,17 +234,21 @@ P1
 				$view_url = "reports.patient.export";
 			}
 		}
-		return View::make($view_url)
-			->with('patient', $patient)
-			->with('tests', $tests)
-			->with('data', $data)
-			->with('pending', $pending)
-			->with('error', $error)
-			->with('visit', $visitId)
-			->with('accredited', $accredited)
-			->with('verified', $verified)
-			->with('available_printers', Config::get('kblis.A4_printers'))
-			->withInput(Input::all());
+			return View::make($view_url)
+				->with('patient', $patient)
+				->with('tests', $tests)
+				->with('data', $data)
+				->with('pending', $pending)
+				->with('error', $error)
+				->with('visit', $visitId)
+				->with('accredited', $accredited)
+				->with('verified', $verified)
+				->with('patient_visits',$patient_visit_checker)
+				->with('checking_status',$checking_status)
+				->with('available_printers', Config::get('kblis.A4_printers'))
+				->withInput(Input::all());
+		
+
 	}
 	//	End patient report functions
 

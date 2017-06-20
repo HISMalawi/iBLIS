@@ -110,6 +110,7 @@
 				}
 				?>
 
+
 				<tr>
 					<th>{{trans('messages.patient-id')}}</th>
 					<td>{{ $patient->external_patient_number }}</td>
@@ -120,6 +121,16 @@
 				</tr>
 			</tbody>
 		</table>
+
+		@if($patient_visits < 1)
+
+			@if($checking_status == true)
+				<p style="color:red;"> patient has no tests </p>
+			@else
+				<p style="color:red;"> patient tests not verified or not completed </p>
+			@endif
+
+		@else
 
 			@forelse($data as $accession_number => $tests)
 				<?php
@@ -355,14 +366,17 @@
 								@endif
 							</td>
 							<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
-							<td style="width: 20%;">{{ $test->testedBy->name}}<br />
-								On {{ $test->time_completed }}
-								@if($test->resultDevices())
-								<br /><br />
+							
+							@if($test->tested_by !=0)
+								<td style="width: 20%;">{{ $test->testedBy->name}}<br />
+									On {{ $test->time_completed }}
+									@if($test->resultDevices())
+									<br /><br />
 
-								<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
-								@endif
-							</td>
+									<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+									@endif
+								</td>
+							@endif
 
 						</tr>
 				@empty
@@ -446,6 +460,8 @@
 			@endforelse
 		@endif
 		</div>
+		@endif
+
 	</div>
 
 </div>
@@ -454,7 +470,7 @@
 <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
 	<div class="modal-dialog">
 
-		<!-- Modal content-->
+		<!-- - content-->
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -474,6 +490,7 @@
 		  </table>
         </span>
 				<div class="modal-footer">
+				@if($patient_visits>0)
 					@if($test->specimen->printSmallLabels())
 						<a class="btn btn-success pull-left"
 						   href="{{URL::route('reports.print_zebra_report', array($test->specimen_id))}}"
@@ -482,6 +499,8 @@
 							Print On Small Label
 						</a>
 					@endif
+				@endif
+
 					<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
 					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
