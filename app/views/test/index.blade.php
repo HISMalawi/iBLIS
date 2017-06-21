@@ -105,7 +105,8 @@
                                 $activePanel = $p_id;
                             }
                         }
-
+                        $data = array();
+                        $counter =0;
                 ?>
                 @foreach($testIds as $key)
 
@@ -148,6 +149,7 @@
                                     <div class="row">
 
                                     <div class="col-md-12">
+                                    
                                         @if($test->isVerified())
                                             <span class='label'>
                                                 {{trans('messages.verified')}}</span>
@@ -304,11 +306,13 @@
                             <div class="container-fluid">
                             
                                 <div class="row">
-
+                                        <?php 
+                                                $type = str_replace(" ", "", $test->testType->name);
+                                                $t_id = $test->getSpecimenId()."_". $type;                         
+                                            ?>
                                     <div class="col-md-12">
-                                        
-					@if($test->isVoided())
-                                  
+                                         
+                                        @if($test->isVoided())
                                             <span class='label'>
                                                     Voided</span>
                                         @elseif($test->isIgnored())
@@ -329,7 +333,10 @@
                                                 <span class='label'>
                                                     {{trans('messages.pending')}}</span>
                                             @elseif($test->isStarted())
-                                                <span class='label'>
+                                            <?php
+                                                $idd = "sp".$t_id;
+                                            ?>
+                                                <span id ="{{$idd}}" class='label'>
                                                     {{trans('messages.started')}}</span>
                                             @elseif($test->isCompleted())
                                                 <span class='label'>
@@ -342,10 +349,32 @@
 					
                                     </div>
     
-                                    </div>
+                                </div>
                                 <div class="row">
+                                
                                     <div class="col-md-12">
-                                        <!-- Specimen statuses -->
+                                       
+                                        @if($test->testType->instruments->count() > 0 && $test->isStarted() == true)          
+                                            
+
+                                            <a  href="{{ URL::route('test.enterResults', array($test->id)) }}"
+                                                title="{{trans('messages.view_results')}}"
+                                                style="display: none;" 
+                                                id="{{$t_id}}">
+                                                {{trans('messages.machine_results_available')}}
+                                            </a>
+                                            
+                                            <?php
+                                            
+                                            $data[$counter] = $t_id ;
+                                            $counter++;
+                                            
+                                            ?>
+
+                                        @endif
+
+                                    </div>
+                                                <!-- Specimen statuses -->
                                         @if(!$test->panel_id && !$test->isLocked())
                                             @if($test->specimen->isNotCollected())
                                              @if(($test->isPaid()))
@@ -518,6 +547,8 @@
         
         </div>
     </div>
+    
+    <div style="display: none" id="hider" data="{{implode(',',$data)}}"></div>
 
     <!-- MODALS -->
     <div class="modal fade" id="new-test-modal">

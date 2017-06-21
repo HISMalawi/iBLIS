@@ -225,4 +225,13 @@ class InstrumentController extends \BaseController {
 			return 'true';
 		}
 	}
+
+	public function checkMachineResults()
+	{	$base = realpath(".");
+		$DUMP_URL = "$base/data/";
+		$data = scandir($DUMP_URL);
+		return $data;
+	}
+
+
 }

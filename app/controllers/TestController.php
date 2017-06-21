@@ -1117,6 +1117,56 @@ P3
 		}
 		// redirect
 
+		if($test->testType->instruments->count() > 0) 
+		{ 
+			$base = realpath(".");			 
+			$test_id = $test->getSpecimenId(); 
+			$backup_file_path ="../../machine_results"; 
+			$file_path = "$base/data/"; 
+			$path = Config::get('kblis.machine_results_path'); 
+		 
+			 
+			if(!file_exists($backup_file_path)) 
+			{ 
+				mkdir($backup_file_path); 
+				chmod($backup_file_path,255); 
+				$results = scandir($file_path);			 
+				$_id = $test_id.".json";	 
+				 
+				if($results && in_array($_id, $results)) 
+				{	 
+					$file_name = $file_path.$_id; 
+					$backup_file_name = $backup_file_path."/".$_id; 
+					$file = fopen($backup_file_name,'w'); 
+					 
+					if (copy($file_name, $backup_file_name) == 1) 
+					{							 
+						 
+					}	 
+					 
+				} 
+			} 
+			else 
+			{ 
+				$results = scandir($file_path);			 
+				$_id = $test_id.".json";	 
+				 
+				if($results && in_array($_id, $results)) 
+				{	 
+					$file_name = $file_path.$_id; 
+					$backup_file_name = $backup_file_path."/".$_id; 
+					$file = fopen($backup_file_name,'w'); 
+					 
+					if (copy($file_name, $backup_file_name) == 1) 
+					{							 
+						 
+					}	 
+					 
+				} 
+			} 
+			 
+		} 
+
 		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 
 		return Redirect::action('TestController@index')
