@@ -149,9 +149,8 @@ P1
 		}
 		else{
 
-			$tests = $tests->whereIn('tests.test_status_id', [Test::COMPLETED, Test::VERIFIED]);
+			$tests = $tests->whereIn('tests.test_status_id', [Test::COMPLETED, Test::VERIFIED, Test::PENDING]);
 		}
-
 		
 		//	Date filters
 		if($from||$to){

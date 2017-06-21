@@ -134,10 +134,12 @@
 
 			@forelse($data as $accession_number => $tests)
 				<?php
-
+				$rejected = Specimen::REJECTED;
 				$specimen = Specimen::where('accession_number', '=', $accession_number)->first();
-
+				$status = DB::select(DB::raw("SELECT specimens.id FROM specimens WHERE specimen_status_id='$rejected' AND specimens.accession_number='$accession_number'"));
 				?>
+
+	@if(count($status)==0)
 				<div class="panel panel-success">
 						<div class="panel-heading ">
 							<span class="glyphicon glyphicon-tint"></span>
@@ -386,6 +388,81 @@
 				@endforelse
 			</tbody>
 		</table>
+	@else
+		<div class="panel panel-success">
+						<div class="panel-heading ">
+							<span class="glyphicon glyphicon-tint"></span>
+							<span><strong>{{Lang::choice('messages.specimen-id', 1)}}</strong>&nbsp;:&nbsp;  <strong> {{ $specimen->accession_number }}</strong></span>
+
+							<span class="pull-right"><strong>Requested By </strong>&nbsp;:&nbsp;  <strong> {{ $test->requested_by }}
+									({{$test->visit->ward_or_location or trans('messages.unknown') }})</strong></span>
+						</div>
+				<div class="panel-body">
+
+			<table class="table table-bordered rspecimen">
+				<tbody>
+
+					<tr>
+						<td><strong>{{Lang::choice('messages.specimen-type', 1)}}</strong></td>
+						<td>{{ $specimen->specimenType->name }}</td>
+
+						<td><strong>{{Lang::choice('messages.date-ordered', 1)}}</strong></td>
+						<td>{{	$test ? $test->isExternal()?$test->external()->request_date:$test->time_created : ''}}</td>
+					</tr>
+
+					<tr>
+						<td><strong>{{Lang::choice('messages.specimen-tests-ordered', 1)}}</strong></td>
+						<td>{{ $specimen->testTypes() }}</td>
+
+						<td><strong>{{Lang::choice('messages.test-category', 2)}}</strong></td>
+						<td>{{ $specimen->labSections() }}</td>
+					</tr>
+
+					<tr>
+						<td><strong>{{trans('messages.ordered-specimen-status')}}</strong></td>
+						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+							<td>{{trans('messages.specimen-not-collected')}}</td>
+						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+							<td>{{trans('messages.specimen-accepted')}}</td>
+						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
+							<td style="background: black;color:white;">{{trans('messages.specimen-rejected')}}</td>
+						@endif
+
+						@if($specimen->specimen_status_id == Specimen::ACCEPTED)
+							<td><strong>{{ trans('messages.collected-by') }}</strong></td>
+						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
+							<td><strong>{{ trans('messages.rejected-by') }}</strong></td>
+						@endif
+
+						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+							<td></td>
+						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+							<td>{{$specimen->acceptedBy->name}}</td>
+						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
+							<td>{{$specimen->rejectedBy->name}}</td>
+						@endif
+					</tr>
+
+					
+				</tbody>
+			</table>
+					<?php
+						$number = $specimen->accession_number;
+							$rej_reason = DB::select(DB::raw("SELECT rejection_reasons.reason AS reason FROM rejection_reasons INNER JOIN specimens ON specimens.rejection_reason_id = rejection_reasons.id WHERE specimens.accession_number='$number'"));
+					?>
+			<table class="table table-bordered rtest">
+				<tbody>
+					<tr>
+						<th colspan="8">{{trans('messages.specimenrejected')}}
+						</th>
+					</tr>
+
+					<tr>
+						<td>{{$rej_reason[0]->reason}}</td>
+					</tr>
+				</tbody>
+			</table>
+	@endif
 					<?php  
 						$susc_available = false;
 						foreach($tests as $test){

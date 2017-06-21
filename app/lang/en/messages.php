@@ -56,6 +56,7 @@ return array(
     'fetch-results' => 'results-available',
     'machine_results_available' => 'results-available',
     'view_results' => 'click inorder to fetch',
+    'specimenrejected' => 'Rejection Reason',
 
     /** 
      *   Generic phrases
