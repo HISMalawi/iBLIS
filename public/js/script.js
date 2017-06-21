@@ -1220,12 +1220,12 @@ $(function(){
 	(function(open) {
 
 		XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-			if (!url.match(/checkresult|print/i)) {
+			if (!url.match(/checkresult|print|checkMachineResult/i)) {
 				setTimeout(function () {
 					showSpinner(null, false, false)
 				}, 10);
 			}
-
+			
 			this.addEventListener("load", function() {
 				hideSpinner();
 			}, false);
@@ -1248,6 +1248,12 @@ $(function(){
 		if(window.location.href.match(/test\/\d+\/enterresults|test\/\d+\/edit/i)){
 			checkMachineOutput();
 		}
+
+		if(window.location.href.match(/test/)){
+
+			checkingMachineResults();
+		}
+
 	});
 
 	function checkBarcode(){
@@ -1267,10 +1273,76 @@ $(function(){
 			}
 		}
 	}
-
+	
 	setTimeout(function(){
 		checkBarcode();
 	}, 1000);
+
+	function checkingMachineResults()
+	{ 
+		var buttons = __$('hider');	
+		var info = buttons.getAttribute('data').split(',');		
+		var id_number = "";
+		var splited_data=[];
+		var availableResults = [];
+		var url = '/checkMachineResults';
+		jQuery.ajax({
+			async : true,
+			url : url,
+			success : function(results)
+			{	
+				availableResults = results;
+
+				for(var counter=0; counter<info.length;counter++)
+				{	var va = info[counter]; 
+					
+					splited_data = va.split('_');
+					id_number = splited_data[0]+".json";
+					if(availableResults.includes(id_number))
+					{	
+						var elmnt = __$(va);
+						var lab = 'sp'+ va;
+						var lbl = __$(lab);						
+						elmnt.style.display = 'block';
+						elmnt.style.color='green';
+						lbl.style.display = 'none';
+					}
+				 	else
+				 	{	var elmnt = __$(ele);
+						elmnt.style.display = 'none';
+				 	}					 	
+				}		
+			},
+			error : function(err)
+			{
+
+			}
+		})
+
+		/*
+		$.get('/checkMachineResults').done(function(result){
+			availableResults = result;
+
+			for(var counter=0; counter<info.length;counter++)
+			{	var va = info[counter]+".json"; 
+				var ele = info[counter];
+				if(availableResults.includes(va))
+				{
+					var elmnt = __$(ele);
+					elmnt.style.display = 'block';
+					elmnt.style.color='green';
+				}
+			 	else
+			 	{
+					var elmnt = __$(ele);
+					elmnt.style.display = 'none';
+			 	}					 	
+			}		
+		});
+		*/
+
+		setTimeout("checkingMachineResults()",300);
+	}
 
 	function checkMachineOutput(){
 		var button = __$('fetch-link');

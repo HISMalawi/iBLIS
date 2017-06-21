@@ -356,6 +356,12 @@ Route::group(array("before" => "auth"), function()
         "uses" => "TestController@ignoreSpecimen"
     ));
 
+     Route::any("/checkMachineResults", array(
+        "as"   => "Instrument.checkMachineResults",
+        "uses" => "InstrumentController@checkMachineResults"
+    ));
+
+
     Route::any("/editOrganisms", array(
         "as"   => "test.editOrganisms",
         "uses" => "TestController@editOrganisms"
