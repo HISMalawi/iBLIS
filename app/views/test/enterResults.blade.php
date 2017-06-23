@@ -118,8 +118,8 @@
                                     {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
                                 @endif
                                     <span class="unit pull-right">
-										{{($measure->unit)}}
-									</span>
+                                        {{($measure->unit)}}
+                                    </span>
                             </div>
                         @endforeach
                         <div class="form-group">
@@ -209,9 +209,13 @@
                                                     $cnt++;
                                                     $zebra = (((int)$cnt/2)%2==1?"row-striped":"");
                                                 ?>
-                                                <div style="display: {{$checked ? '' : 'none'}}" class="col-md-4" id="organism{{$value->id}}">
+                                                <div style="display: {{$checked ? '' : 'none'}}" class="col-md-5" id="organism{{$value->id}}">
                                                     <label  class="checkbox">
+                                                        
                                                         <input type="checkbox" name="organism[]" value="{{ $value->id}}" {{ $checked }} onchange="javascript:showSusceptibility(<?php echo $value->id; ?>)" />{{$value->name}}
+                                                        
+                                                        <button type="button" style="color:red;font-size:35px;" class="close" 
+                                                        onclick="cancelSelectedOrganism({{$value->id}},{{$test->id}})">&times;</button>
                                                     </label>
                                                 </div>
                                                 {{ ($cnt%3==0)?"</div>":"" }}
@@ -529,7 +533,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button onclick="displayOrganisms(); hideCultureOrganisms()" type="button" class="btn btn-success">Save</button>
+                    <button onclick="hideCultureOrganisms(); sendOrganism({{$test->id}});" type="button" class="btn btn-success">Save</button>
                 </div>
             </div>
 

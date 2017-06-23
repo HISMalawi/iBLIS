@@ -52,4 +52,14 @@ class Susceptibility extends Eloquent
 
 		return $drugs;
 	}
+
+	public function getOrganismSusceptibility($organismId,$drugId)
+	{
+			$sql = "SELECT drug_susceptibility.interpretation AS inter, drug_susceptibility.test_id AS testId FROM drug_susceptibility WHERE drug_susceptibility.organism_id='$organismId' AND drug_susceptibility.drug_id='$drugId'";
+			$susc = DB::select(DB::raw($sql));
+
+			return $susc;
+	}
+
+
 }

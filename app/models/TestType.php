@@ -28,6 +28,18 @@ class TestType extends Eloquent
 	  return $this->belongsTo('TestCategory', 'test_category_id');
 	}
 
+
+	public function checkTestByTestType($id,$type)
+	{  $status = false;
+		$sql = "SELECT tests.id FROM tests INNER JOIN test_types ON test_types.id = tests.test_type_id WHERE tests.id='$id' AND test_types.name='$type'";
+		$rst = DB::select(DB::raw($sql));
+		if(count($rst)>0)
+		{
+			$status = true;
+		}
+		return $status;
+	}
+
 	/**
 	 * SpecimenType relationship
 	 */
@@ -97,6 +109,20 @@ class TestType extends Eloquent
 	public static function getTestTypes()
 	{
 		$testTypes = DB::select(DB::raw("SELECT test_types.name FROM test_types"));
+
+		return $testTypes;
+	}
+
+	public static function getById($id)
+	{
+		$testTypes = DB::select(DB::raw("SELECT test_types.name as name FROM test_types INNER JOIN tests ON tests.test_type_id = test_types.id WHERE tests.id ='$id'"))[0]->name;
+
+		return $testTypes;
+	}
+
+	public static function getOrganism($id)
+	{
+		$testTypes = DB::select(DB::raw("SELECT test_types.name as name FROM test_types INNER JOIN tests ON tests.test_type_id = test_types.id INNER JOIN testtype_organisms ON testtype_organisms.test_type_id = test_types.id INNER JOIN organisms ON organisms.id = testtype_organisms.organism_id WHERE tests.id ='$id'"));
 
 		return $testTypes;
 	}

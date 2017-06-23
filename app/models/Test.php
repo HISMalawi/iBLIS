@@ -179,6 +179,28 @@ class Test extends Eloquent
 		else
 			return false;
 	}
+	
+	public function isIgnoreBothTestsInPanel()
+	{
+		$test_panel = $this->panel_id;
+		$test_status = Test::NOT_DONE;
+
+		$sql = "SELECT count(*) AS totalTests FROM  panels WHERE panels.panel_type_id = (SELECT panel_types.id FROM panel_types INNER JOIN test_panels ON test_panels.panel_type_id = panel_types.id INNER JOIN tests ON tests.panel_id = test_panels.id WHERE tests.panel_id='$test_panel' LIMIT 1)";
+        $rst = DB::select(DB::raw($sql));
+         
+		$total = $rst[0]->totalTests;
+		$status = false;
+		$sql = "SELECT tests.id FROM tests WHERE tests.panel_id='$test_panel' AND tests.test_status_id='$test_status'";
+		$rst = DB::select(DB::raw($sql));
+
+		if (count($rst)==$total)
+		{
+			$status = true;
+		}
+		return $status;
+	}
+
+
 
 	/**
 	 * Helper function: check if the Test status is COMPLETED
@@ -198,7 +220,7 @@ class Test extends Eloquent
 		if(!$this->panel_id)
 			return false;
 		else {
-			$sibling_tests = Test::where("panel_id", '=', $this->panel_id)
+			$sibling_tests = Test::where("panel_id", '=', $this->panel_id)->where('test_status_id','!=',Test::NOT_DONE)
 				->count();
 			$tested_sibling_tests = Test::where("panel_id", '=', $this->panel_id)->where('tested_by', '>', 0)->count();
 
@@ -546,9 +568,13 @@ class Test extends Eloquent
 						$name = explode(' ', $searchString);
 						$f_name_code = isset($name[0]) ? Soundex::encode($name[0])  : null;
 						$l_name_code = isset($name[1]) ? Soundex::encode($name[sizeof($name)-1])  : null;
-						
-						$q->where('first_name_code', '=', $f_name_code)
-						->where('last_name_code', '=', $l_name_code);
+
+						if($f_name_code && $l_name_code) {
+							$q->where('first_name_code', '=', $f_name_code)
+								->where('last_name_code', '=', $l_name_code);
+						}elseif($l_name_code == null){
+							$q->where('name', 'like', '%'.$searchString.'%');
+						}
 					}
 				});
 			})
@@ -785,4 +811,19 @@ class Test extends Eloquent
 	}
 
 	
+	public function checkTest($date,$testId)
+	{  
+		$sql = "SELECT * FROM tests WHERE tests.id='$testId' AND (SUBSTRING(tests.time_created,1,7)='$date')";
+
+		$test = DB::select(DB::raw($sql));
+
+		$status = false;
+		if (count($test)>0)
+		{
+			$status = true;
+		}
+		
+		return $status;
+	}
+
 }

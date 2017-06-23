@@ -180,7 +180,7 @@ class Instrument extends Eloquent
 
  		// Invoke the Instrument Class to get the results
 		$result = (new $this->driver_name($this->ip))->getResult($accessionNumber);
-
+		
 		// Change measure names to measure_ids in the returned array
 		$resultWithIDs = array();
 
@@ -188,7 +188,12 @@ class Instrument extends Eloquent
 
 			$measureFound = $testType->measures->filter(
 				function($measure) use ($measureId){
-					if($measure->id == $measureId) return $measure;
+					$common_name = '';
+					try{
+						$common_name = strtoupper(Measure::where('id', $measureId)->first()->name);
+					}catch(Exception $ex){}
+
+					if($measure->id == $measureId or strtoupper($measure->name) == $common_name) return $measure;
 			});
 
 			if(empty($measureFound->toArray())){

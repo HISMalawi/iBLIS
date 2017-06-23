@@ -1,27 +1,29 @@
 <?php
 namespace KBLIS\Plugins;
- 
-class SysmexKX21NMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
+
+class  MindrayBS400 extends \KBLIS\Instrumentation\AbstractInstrumentor
 {
-	/**
-	* Returns information about an instrument 
-	*
-	* @return array('name' => '', 'description' => '', 'testTypes' => array()) 
-	*/
-    public function getEquipmentInfo(){
-    	return array(
-    		'code' => 'KX21', 
-    		'name' => 'Sysmex KX 21', 
-    		'description' => 'Automatic analyzer with 22 parameters and WBC 5 part diff Hematology Analyzer',
-    		'testTypes' => array("FBC")
-    		);
+    /**
+     * Returns information about an instrument
+     *
+     * @return array('name' => '', 'description' => '', 'testTypes' => array())
+     */
+    public function getEquipmentInfo()
+    {
+        return array(
+            'code' => ' MBS400',
+            'name' => 'Mindray BS 400',
+            'description' => 'Automatic Analyzer for Chemistries',
+            'testTypes' => array("Renal Function Test", "Liver Function Tests", "Calcium", "Uric Acid", "Phosphorus", "Glucose")
+        );
     }
 
-	/**
-	* Fetch Test Result from machine and format it as an array
-	*
-	* @return array
-	*/
+
+    /**
+     * Fetch Test Result from machine and format it as an array
+     *
+     * @return array
+     */
     public function getResult($specimen_id = 0)
     {
 
@@ -54,7 +56,12 @@ class SysmexKX21NMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
 
         }
 
+				if (!empty($json["machine_name"])){
+					$results["machine_name"] = $json["machine_name"];
+				}
+
         return $results;
 
     }
+
 }

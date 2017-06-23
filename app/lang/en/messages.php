@@ -52,6 +52,11 @@ return array(
     'refer' => 'Refer',
     'in' => 'In',
     'out' => 'Out',
+    'tests' => 'Patient Tests',
+    'fetch-results' => 'results-available',
+    'machine_results_available' => 'results-available',
+    'view_results' => 'click inorder to fetch',
+    'specimenrejected' => 'Rejection Reason',
 
     /** 
      *   Generic phrases
@@ -193,6 +198,14 @@ return array(
     'success-updating-measure' => 'The measure details were successfully updated!',
     'update-measure' => 'Update Measure',
     'value' => 'Value',
+    'test-not-done' => 'Test Not Done Reasons',
+    'add-not-done-reason' => 'Add Not Done Reasons',
+    'sucess-not-done-added' => 'Successfully added a test not done reason',
+    'sucess-not-done-edit' => 'Successfully edited a test not done reason',
+    'edit-test-not-done-reason' => 'Edit Test Not Done Reason',
+    'can-not-delete-reason' => 'reason can not be deleted, it is in use by certain tests',
+    'sucess-deleted-reason' => 'successfully deleted a reason',
+
 
     /*Specimen Type*/
 
@@ -463,6 +476,28 @@ return array(
     'total-count' => 'Total Count',
     'total-positive-count' => 'Total Positive Count',
     'total-negative-count' => 'Total Negative Count',
+    'Counts-Based-On-Wards' =>'Counts Based On Wards',
+    'Counts-Based-On-Organisms' => 'Counts Based On Organisms',
+    'Counts-Based-On-Organisms-In-Wards' => 'Counts Based On Organisms In Wards',
+    'General-Counts' => 'General Counts',
+    'Counts-Heading' => 'Organism Counts Based on Wards',
+    'Measure-Values-Counts' => 'Counts Based On Measure Values',
+    'General-Counts-Label' => 'Culture and Sensitivity General Counts',
+    'Measure-Values-Count' => 'Count of Culture & Sensitivity Tests Based On Measure Values',
+    'Organims-Count-Label' => 'Organism Counts Based on Growth from Culture & Sensitivity Tests',
+    'Wards-Count-Label' => 'Culture and Sensitivity General Counts based on Wards',
+    'General-count-header' => 'Total Culture & Sensitivity Tests:',
+    'tab-label'  => 'Antibiotic Susceptibility Test (AST)',
+    'csv' => 'Export',
+
+    /* culture and sensitivity */
+    'tab_label' => 'Culture & sensitivity Tests',
+    'breadcrumb_title' => 'Culture and sensitivity',
+
+
+    /* positive and negative counts */
+     'pos_neg_tab_label' => 'Negative & Positive Test Counts',
+     'breadcrumb_title_positive_negative' => "Positive & Negative Test Counts",
 
     /* Infection Report*/
     'age-ranges'    =>  'Age Ranges',

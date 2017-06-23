@@ -86,7 +86,6 @@ class TestController extends \BaseController {
 					->orderBy('time_created', 'DESC');
 			}
 		}
-
 		// Create Test Statuses array. Include a first entry for ALL
 		$statuses = array('all')+TestStatus::all()->lists('name','id');
 
@@ -120,6 +119,7 @@ class TestController extends \BaseController {
 		if(count($tests) == 0 && Session::has('search_string')){
 			Session::set('message', 'Test does not belong to current lab section');
 		}
+		
 		// Load the view and pass it the tests
 		return View::make('test.index')
 					->with('testSet', $tests)
@@ -363,7 +363,7 @@ P1
 	 */
 
 	public function saveNewTest()
-	{
+	{	
 		//Create New Test
 		$rules = array(
 			'visit_type' => 'required',
@@ -826,21 +826,40 @@ P1
 	 * @return
 	 */
 	public function ignore($tid)
+	{ 
+		$notdoneObject = new NotDoneReason;
+		$reasons = $notdoneObject->getNotDoneReasons();
+
+		return View::make('test.notDone')
+					->with('test_id', $tid)
+					->with('reasons',$reasons)
+					->withInput(Input::all());
+	}
+
+	public function ignoreTest($tid)
+	{ 
+
+      $notdoneObject = new NotDoneReason;
+		$reasons = $notdoneObject->getNotDoneReasons();	
+
+		return View::make('test.notDoneForSingle')
+					->with('test_id', $tid)
+					->with('reasons',$reasons)
+					->withInput(Input::all());
+	}
+
+	public function ignoreSingleTest()
 	{
-		$test = Test::find($tid);
-		if ($test->panel_id) {
-			$tests = Test::where('panel_id', $test->panel_id)->get();
-		} else{
-			$tests = Test::where('id', $test->id)->get();
-		}
+		$test = Test::find(Input::get('test_id'));		
+		$tests = Test::where('id', $test->id)->get();		
 
 		foreach($tests AS $tst){
 			$tst->test_status_id = Test::NOT_DONE;
+			$tst->not_done_reasons = Input::get('reasonGot');
+			$tst->person_talked_to_for_not_done = Input::get('not_done_explained_to');
 			$tst->save();
 		}
-
 		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
-
 		$input = Session::get('TESTS_FILTER_INPUT');
 		Session::put('fromRedirect', 'true');
 
@@ -851,12 +870,44 @@ P1
 			$pageParts = explode('=', $urlParts['page']);
 			$input['page'] = $pageParts[1];
 		}
-		// redirect
 		return Redirect::action('TestController@index')
 			->with('activeTest', array($test->id))
 			->withInput($input);
+
 	}
 
+
+	public function ignoreSpecimen()
+	{	
+		$test = Test::find(Input::get('test_id'));
+		if ($test->panel_id) {
+			$tests = Test::where('panel_id', $test->panel_id)->get();
+		} else{
+			$tests = Test::where('id', $test->id)->get();
+		}
+
+		foreach($tests AS $tst){
+			$tst->test_status_id = Test::NOT_DONE;
+			$tst->not_done_reasons = Input::get('reasonGot');
+			$tst->person_talked_to_for_not_done = Input::get('not_done_explained_to');
+			$tst->save();
+		}
+		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
+		$input = Session::get('TESTS_FILTER_INPUT');
+		Session::put('fromRedirect', 'true');
+
+		// Get page
+		$url = Session::get('SOURCE_URL');
+		$urlParts = explode('&', $url);
+		if(isset($urlParts['page'])){
+			$pageParts = explode('=', $urlParts['page']);
+			$input['page'] = $pageParts[1];
+		}
+		return Redirect::action('TestController@index')
+			->with('activeTest', array($test->id))
+			->withInput($input);
+
+	}
 	/**
 	 * Display Result Entry page
 	 *
@@ -1019,7 +1070,7 @@ P3
 	 * @return view
 	 */
 	public function saveResults($testID)
-	{
+	{  
 		$test = Test::find($testID);
 		$test->test_status_id = Test::COMPLETED;
 		$test->interpretation = Input::get('interpretation');
@@ -1066,6 +1117,56 @@ P3
 		}
 		// redirect
 
+		if($test->testType->instruments->count() > 0) 
+		{ 
+			$base = realpath(".");			 
+			$test_id = $test->getSpecimenId(); 
+			$backup_file_path ="../../machine_results"; 
+			$file_path = "$base/data/"; 
+			$path = Config::get('kblis.machine_results_path'); 
+		 
+			 
+			if(!file_exists($backup_file_path)) 
+			{ 
+				mkdir($backup_file_path); 
+				chmod($backup_file_path,255); 
+				$results = scandir($file_path);			 
+				$_id = $test_id.".json";	 
+				 
+				if($results && in_array($_id, $results)) 
+				{	 
+					$file_name = $file_path.$_id; 
+					$backup_file_name = $backup_file_path."/".$_id; 
+					$file = fopen($backup_file_name,'w'); 
+					 
+					if (copy($file_name, $backup_file_name) == 1) 
+					{							 
+						 
+					}	 
+					 
+				} 
+			} 
+			else 
+			{ 
+				$results = scandir($file_path);			 
+				$_id = $test_id.".json";	 
+				 
+				if($results && in_array($_id, $results)) 
+				{	 
+					$file_name = $file_path.$_id; 
+					$backup_file_name = $backup_file_path."/".$_id; 
+					$file = fopen($backup_file_name,'w'); 
+					 
+					if (copy($file_name, $backup_file_name) == 1) 
+					{							 
+						 
+					}	 
+					 
+				} 
+			} 
+			 
+		} 
+
 		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 
 		return Redirect::action('TestController@index')
@@ -1097,10 +1198,30 @@ P3
 	 * @return
 	 */
 	public function viewDetails($testID)
-	{
+	{	
+		$panObject = new Panel;
+		$typeObject = new TestType;
+		$rst = $panObject->checkPanel($testID);
+		$org = array();
+
+		foreach( $rst AS $tst)
+		{  
+			if (($typeObject->checkTestByTestType($tst->testId,'Culture & Sensitivity'))==true)
+			{
+			$sql = "SELECT organisms.name AS organismName FROM organisms INNER JOIN test_organisms ON 
+			organisms.id = test_organisms.organism_id INNER JOIN tests ON tests.id = test_organisms.test_id
+			WHERE tests.id='$tst->testId'";
+			$org = DB::select(DB::raw($sql));
+			}
+
+		}
+		
+
 		return View::make('test.viewDetails')
 			->with('available_printers', Config::get('kblis.A4_printers'))
-			->with('test', Test::find($testID));
+			->with('organisms',$org)
+			->with('test', Test::find($testID))
+			->withInput(Input::all());
 	}
 
 	/**
@@ -1235,4 +1356,44 @@ P3
 
 		return View::make('test.viewDetails')->with('test', $test);
 	}
+
+	public function selectedOrganisms()
+	{
+		$ids = Input::get('ids');
+		$ids = explode(',',$ids);		
+		$sql = "SELECT count(*)  as total_test_result  FROM test_results";
+		$total_count = DB::select(DB::raw($sql));
+		foreach ($ids as $value) {	
+			$visit = new TestOrganism;
+			$visit->test_id= Input::get('test_id');
+			$visit->result_id = ($total_count[0]->total_test_result + 1);
+			$visit->organism_id = $value;
+			$visit->created_at = date('Y-m-d H:i:s');
+			$visit->save();
+		}
+
+	}
+
+	public function editOrganisms()
+	{  
+		$test_id = Input::get('test_id');
+
+		$orgObject = new Organism;
+		$orgObject->deleteTestOrganisms($test_id);
+
+		$ids = Input::get('ids');
+		$ids = explode(',',$ids);		
+		$sql = "SELECT count(*)  as total_test_result  FROM test_results";
+		$total_count = DB::select(DB::raw($sql));
+		foreach ($ids as $value) {	
+			$visit = new TestOrganism;
+			$visit->test_id= $test_id;
+			$visit->result_id = ($total_count[0]->total_test_result + 1);
+			$visit->organism_id = $value;
+			$visit->created_at = date('Y-m-d H:i:s');
+			$visit->save();
+		}
+
+	}
+
 }
