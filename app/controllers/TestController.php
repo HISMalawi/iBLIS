@@ -1257,6 +1257,22 @@ P1
 			$test->verified_by = Auth::user()->id;
 			$test->save();
 			$testIds = array($testID);
+		
+			$count = DB::select(DB::raw("SELECT tests.specimen_id AS specimen_id FROM tests WHERE tests.id=$testID"));
+
+			if($count[0]->specimen_id)
+			{   $id =$count[0]->specimen_id;				
+				$co = DB::select(DB::raw("SELECT * FROM tests WHERE specimen_id='$id'"));
+				if(count($co)>1)
+				{
+					$ver = Test::VERIFIED;
+					DB::update(DB::raw("UPDATE tests SET tests.test_status_id ='$ver'
+										WHERE tests.specimen_id='$id'
+										AND
+										tests.test_type_id ='29'"));
+				}
+			}			
+
 		}else{
 
 			Test::where('panel_id', $test->panel_id)
