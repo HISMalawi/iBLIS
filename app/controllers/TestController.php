@@ -938,12 +938,27 @@ P1
 	 */
 	public function printPackDetails($testID)
 	{
-
+		$date_cross_matched = date('Y-m-d');
 		$test = Test::find($testID);
 		$patient_name = $test->visit->patient->name;
 		$npid = $test->visit->patient->external_patient_number;
 		$accession_number = $test->specimen->accession_number;
 
+		if($test)
+		{
+			$ward = DB::select(DB::raw("SELECT visits.ward_or_location AS location, users.name AS tester
+										FROM visits 
+										INNER JOIN tests ON tests.visit_id = visits.id  INNER JOIN
+										users ON users.id = tests.tested_by
+										WHERE tests.id ='$test->id'"));
+			if($ward && $ward[0]->location && $ward[0]->tester)
+			{
+				$ward_or_location = $ward[0]->location;
+				$tester = $ward[0]->tester;
+			}
+
+		}
+		
 		try {
 			$sample_abo_test_id = Test::where('specimen_id', $test->specimen_id)
 				->where('test_type_id', TestType::where('name', 'ABO Blood Grouping')->get()->last()->id)
@@ -991,7 +1006,9 @@ q801
 Q329,026
 ZT
 S2
-A53,19,0,1,1,2,N,"Cross-match for : '.$patient_name.' ('.$npid.')"
+A25,19,0,1,1,2,N,"Accession No: '.$accession_number.'"
+A320,19,0,1,1,2,N,"ABO Group: '.$sample_abo_group.'"
+A600,19,0,1,1,2,N,"Date:'.$date_cross_matched.'"
 LO25,110,760,2
 LO25,140,760,2
 LO25,170,760,2
@@ -1002,23 +1019,22 @@ LO25,290,760,2
 LO25,110,1,180
 LO785,110,1,180
 LO430,110,1,180
-A53,56,0,1,1,2,N,"Sample Accession Number:"
-A450,56,0,1,1,2,N," Sample ABO Group:"
+A25,56,0,1,1,2,N,"Patient:'.$patient_name.'('.$npid.')"
+A310,56,0,1,1,2,N,"Ward:'.$ward_or_location.'"
+A520,56,0,1,1,2,N,"By:'.$tester.'"
 A53,116,0,2,1,1,N,"Pack No."
 A53,146,0,2,1,1,N,"Pack ABO Group"
 A53,176,0,2,1,1,N,"Product Type"
 A53,206,0,2,1,1,N,"Volume"
 A53,236,0,2,1,1,N,"Cross-match Method"
 A53,266,0,2,1,1,N,"Expiry Date"
-A315,56,0,1,1,2,N,"'.$accession_number.'"
-A650,56,0,1,1,2,N,"'.$sample_abo_group.'"
 A455,120,0,2,1,1,N,"'.$pack_no.'"
 A455,148,0,2,1,1,N,"'.$pack_abo_group.'"
 A455,178,0,2,1,1,N,"'.$product_type.'"
 A455,208,0,2,1,1,N,"'.$volume.'mL"
 A455,238,0,2,1,1,N,"'.$method.'"
 A455,268,0,2,1,1,N,"'.$expiry_date.'"
-P3
+P1
 ';
 		$filename = $test->id.'.lbs';
 		//fwrite($fpi, $result);

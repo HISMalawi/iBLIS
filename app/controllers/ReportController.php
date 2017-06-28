@@ -233,6 +233,7 @@ P1
 				$view_url = "reports.patient.export";
 			}
 		}
+		var_dump("hello");exit;
 			return View::make($view_url)
 				->with('patient', $patient)
 				->with('tests', $tests)
