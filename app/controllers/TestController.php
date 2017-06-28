@@ -952,9 +952,11 @@ P1
 										users ON users.id = tests.tested_by
 										WHERE tests.id ='$test->id'"));
 			if($ward && $ward[0]->location && $ward[0]->tester)
-			{
+			{  
 				$ward_or_location = $ward[0]->location;
-				$tester = $ward[0]->tester;
+				$tester = explode(" ",$ward[0]->tester);
+				$name = substr($tester[0],0,1).".". $tester[count($tester)-1]; 
+				
 			}
 
 		}
@@ -1021,7 +1023,7 @@ LO785,110,1,180
 LO430,110,1,180
 A25,56,0,1,1,2,N,"Patient:'.$patient_name.'('.$npid.')"
 A310,56,0,1,1,2,N,"Ward:'.$ward_or_location.'"
-A520,56,0,1,1,2,N,"By:'.$tester.'"
+A520,56,0,1,1,2,N,"By:'.$name.'"
 A53,116,0,2,1,1,N,"Pack No."
 A53,146,0,2,1,1,N,"Pack ABO Group"
 A53,176,0,2,1,1,N,"Product Type"
