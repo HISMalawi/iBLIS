@@ -312,7 +312,15 @@
                                                 $t_id = $test->getSpecimenId()."_". $type;                         
                                             ?>
                                     <div class="col-md-12">
-                                         
+                                   
+
+                                    @if($test->specimenIsRejected())
+
+                                        <span class='label panel-label'>
+                                            {{trans('messages.specimen-rejected-label')}}</span>
+
+
+                                    @else
                                         @if($test->isVoided())
                                             <span class='label'>
                                                     Voided</span>
@@ -320,6 +328,8 @@
                                             <span class='label'>
                                                 Not Done</span>
                                         @else
+
+
                                             @if($test->isNotReceived())
                                                 @if(!$test->isPaid())
                                                     <span class='label'>
@@ -345,6 +355,8 @@
                                                     {{trans('messages.verified')}}</span>
                                             @endif
                                         @endif
+                                    @endif
+
                                     </div>
     
                                 </div>
