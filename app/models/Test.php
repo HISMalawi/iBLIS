@@ -21,6 +21,7 @@ class Test extends Eloquent
 	const VERIFIED = 5;
 	const VOIDED = 6;
 	const NOT_DONE = 7;
+	const TEST_REJECTED = 8;
 
 	/**
 	 * Other constants
@@ -125,7 +126,6 @@ class Test extends Eloquent
 			return true;
 	}
 
-
 	public function specimenIsRejected()
 	{
 		$status = false;
@@ -165,6 +165,14 @@ class Test extends Eloquent
 		if($this->test_status_id == Test::PENDING)
 			return true;
 		else 
+			return false;
+	}
+
+	public function isRejected()
+	{
+		if ($this->test_status_id == Test::TEST_REJECTED)
+			return true;
+		else
 			return false;
 	}
 

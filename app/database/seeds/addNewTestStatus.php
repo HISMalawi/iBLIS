@@ -6,7 +6,7 @@ class addNewTestStatus extends DatabaseSeeder
     { Eloquent::unguard();
     	$status = TestStatus::create(array(
     		'id' => 8,
-    		'name' => 'test_rejected',
+    		'name' => 'test-rejected',
     		'test_phase_id' => 1
     	));
     }

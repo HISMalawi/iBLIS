@@ -709,6 +709,8 @@ P1
 			$specimen->time_rejected = date('Y-m-d H:i:s');
 			$specimen->reject_explained_to = Input::get('reject_explained_to');
 			$specimen->save();
+			Test::where('specimen_id',Input::get('specimen_id'))->update(array('test_status_id' => Test::TEST_REJECTED));
+
 			Sender::send_data($specimen->test->visit->patient, $specimen);
 			$url = Session::get('SOURCE_URL');
 			
