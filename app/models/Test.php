@@ -21,6 +21,7 @@ class Test extends Eloquent
 	const VERIFIED = 5;
 	const VOIDED = 6;
 	const NOT_DONE = 7;
+	const TEST_REJECTED = 8;
 
 	/**
 	 * Other constants
@@ -125,6 +126,22 @@ class Test extends Eloquent
 			return true;
 	}
 
+	public function specimenIsRejected()
+	{
+		$status = false;
+		$spe_id = $this->specimen_id;
+		$rst = DB::select("SELECT specimen_statuses.name 
+							FROM 
+						specimen_statuses INNER JOIN specimens ON
+						specimens.specimen_status_id = specimen_statuses.id 
+						WHERE specimens.id='$spe_id' AND specimen_statuses.name='specimen-rejected'");
+		if($rst)
+		{
+  			$status = true;
+		}
+		return $status;
+	}
+
 	/**
 	 * Helper function: check if the Test status is NOT_RECEIVED
 	 *
@@ -148,6 +165,14 @@ class Test extends Eloquent
 		if($this->test_status_id == Test::PENDING)
 			return true;
 		else 
+			return false;
+	}
+
+	public function isRejected()
+	{
+		if ($this->test_status_id == Test::TEST_REJECTED)
+			return true;
+		else
 			return false;
 	}
 

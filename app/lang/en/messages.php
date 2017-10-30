@@ -52,6 +52,11 @@ return array(
     'refer' => 'Refer',
     'in' => 'In',
     'out' => 'Out',
+    'tests' => 'Patient Tests',
+    'fetch-results' => 'results-available',
+    'machine_results_available' => 'results-available',
+    'view_results' => 'click inorder to fetch',
+    'specimenrejected' => 'Rejection Reason',
 
     /** 
      *   Generic phrases
@@ -350,6 +355,7 @@ return array(
     'visit-number' => 'Visit No.',
     'visit-type' => 'Visit Type',
     'visit-type-details' => 'Visit Type Details',
+    'test-rejected' => 'Test Rejected',
 
     /** 
      *   Tests search panel
@@ -481,7 +487,7 @@ return array(
     'Measure-Values-Count' => 'Count of Culture & Sensitivity Tests Based On Measure Values',
     'Organims-Count-Label' => 'Organism Counts Based on Growth from Culture & Sensitivity Tests',
     'Wards-Count-Label' => 'Culture and Sensitivity General Counts based on Wards',
-    'General-count-header' => 'Total Culture and Sensitivity Tests:',
+    'General-count-header' => 'Total Culture & Sensitivity Tests:',
     'tab-label'  => 'Antibiotic Susceptibility Test (AST)',
     'csv' => 'Export',
 
