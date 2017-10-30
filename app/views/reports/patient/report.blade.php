@@ -355,7 +355,13 @@
 								@endif
 							</td>
 							<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
-							<td style="width: 20%;">{{ $test->testedBy->name}}<br />
+							<td style="width: 20%;">
+								 @if(intval($test->tested_by) > 0)
+                           {{ $test->testedBy->name}}<br />
+                 @else
+                              ?<br />
+                @endif
+							
 								On {{ $test->time_completed }}
 								@if($test->resultDevices())
 								<br /><br />

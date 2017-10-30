@@ -84,8 +84,10 @@ class TestController extends \BaseController {
 					->select('tests.*')
 					->where('test_types.test_category_id', '=', Session::get("location_id"))
 					->orderBy('time_created', 'DESC');
+		
 			}
 		}
+		
 		// Create Test Statuses array. Include a first entry for ALL
 		$statuses = array('all')+TestStatus::all()->lists('name','id');
 
