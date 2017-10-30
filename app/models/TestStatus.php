@@ -9,6 +9,8 @@ class TestStatus extends Eloquent
 	 */
 	protected $table = 'test_statuses';
 
+	const test_rejected = 8;
+
 	public $timestamps = false;
 
 	/**
