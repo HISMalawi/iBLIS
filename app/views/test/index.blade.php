@@ -306,9 +306,15 @@
                             <div class="container-fluid">
                             
                                 <div class="row">
-                                        <?php 
-                                                $type = str_replace(" ", "", $test->testType->name);
-                                                $t_id = $test->getSpecimenId()."_". $type;                         
+                                        <?php
+						if($test->testType){ 
+                                                	$type = str_replace(" ", "", $test->testType->name);
+						
+                                                	$t_id = $test->getSpecimenId()."_". $type;  
+						 }else{
+						 	$type = "";
+							$t_id = "";
+						}       
                                             ?>
                                     <div class="col-md-12">
                                          
@@ -354,7 +360,7 @@
                                 
                                     <div class="col-md-12">
                                        
-                                        @if($test->testType->instruments->count() > 0 && $test->isStarted() == true)          
+                                        @if(($test->testType && $test->testType->instruments->count()) > 0 && $test->isStarted() == true)          
                                             
 
                                             <a  href="{{ URL::route('test.enterResults', array($test->id)) }}"
