@@ -105,8 +105,7 @@
                                 $activePanel = $p_id;
                             }
                         }
-                        $data = array();
-                        $counter =0;
+
                 ?>
                 @foreach($testIds as $key)
 
@@ -149,7 +148,6 @@
                                     <div class="row">
 
                                     <div class="col-md-12">
-                                    
                                         @if($test->isVerified())
                                             <span class='label'>
                                                 {{trans('messages.verified')}}</span>
@@ -306,8 +304,11 @@
                             <div class="container-fluid">
                             
                                 <div class="row">
+
                                         <?php
+						$counter = 0;
 						if($test->testType){ 
+
                                                 	$type = str_replace(" ", "", $test->testType->name);
 						
                                                 	$t_id = $test->getSpecimenId()."_". $type;  
@@ -316,8 +317,11 @@
 							$t_id = "";
 						}       
                                             ?>
+
+
+
                                     <div class="col-md-12">
-                                         
+                                  
                                         @if($test->isVoided())
                                             <span class='label'>
                                                     Voided</span>
@@ -339,10 +343,7 @@
                                                 <span class='label'>
                                                     {{trans('messages.pending')}}</span>
                                             @elseif($test->isStarted())
-                                            <?php
-                                                $idd = "sp".$t_id;
-                                            ?>
-                                                <span id ="{{$idd}}" class='label'>
+                                                <span class='label'>
                                                     {{trans('messages.started')}}</span>
                                             @elseif($test->isCompleted())
                                                 <span class='label'>
@@ -350,15 +351,18 @@
                                             @elseif($test->isVerified())
                                                 <span class='label'>
                                                     {{trans('messages.verified')}}</span>
+                                            @elseif($test->isRejected())
+                                                <span class='label'>
+                                                    {{trans('messages.test-rejected')}}</span>
                                             @endif
                                         @endif
 					
                                     </div>
     
-                                </div>
+                                    </div>
                                 <div class="row">
-                                
                                     <div class="col-md-12">
+
                                        
                                         @if(($test->testType && $test->testType->instruments->count()) > 0 && $test->isStarted() == true)          
                                             
@@ -381,6 +385,9 @@
 
                                     </div>
                                                 <!-- Specimen statuses -->
+
+                                        <!-- Specimen statuses -->
+
                                         @if(!$test->panel_id && !$test->isLocked())
                                             @if($test->specimen->isNotCollected())
                                              @if(($test->isPaid()))
@@ -553,8 +560,6 @@
         
         </div>
     </div>
-    
-    <div style="display: none" id="hider" data="{{implode(',',$data)}}"></div>
 
     <!-- MODALS -->
     <div class="modal fade" id="new-test-modal">
