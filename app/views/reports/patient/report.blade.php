@@ -188,7 +188,7 @@
 						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
 							<td></td>
 						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
-							<td>{{$specimen->acceptedBy->name}}</td>
+							<td>{{$specimen->getUserAcceptedSpecimen($specimen->id)}}</td>
 						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
 							<td>{{$specimen->rejectedBy->name}}</td>
 						@endif
