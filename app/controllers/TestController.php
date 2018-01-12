@@ -709,6 +709,8 @@ P1
 			$specimen->time_rejected = date('Y-m-d H:i:s');
 			$specimen->reject_explained_to = Input::get('reject_explained_to');
 			$specimen->save();
+			Test::where('specimen_id',Input::get('specimen_id'))->update(array('test_status_id' => Test::TEST_REJECTED));
+
 			Sender::send_data($specimen->test->visit->patient, $specimen);
 			$url = Session::get('SOURCE_URL');
 			
@@ -938,12 +940,29 @@ P1
 	 */
 	public function printPackDetails($testID)
 	{
-
+		$date_cross_matched = date('Y-m-d');
 		$test = Test::find($testID);
 		$patient_name = $test->visit->patient->name;
 		$npid = $test->visit->patient->external_patient_number;
 		$accession_number = $test->specimen->accession_number;
 
+		if($test)
+		{
+			$ward = DB::select(DB::raw("SELECT visits.ward_or_location AS location, users.name AS tester
+										FROM visits 
+										INNER JOIN tests ON tests.visit_id = visits.id  INNER JOIN
+										users ON users.id = tests.tested_by
+										WHERE tests.id ='$test->id'"));
+			if($ward && $ward[0]->location && $ward[0]->tester)
+			{  
+				$ward_or_location = $ward[0]->location;
+				$tester = explode(" ",$ward[0]->tester);
+				$name = substr($tester[0],0,1).".". $tester[count($tester)-1]; 
+				
+			}
+
+		}
+		
 		try {
 			$sample_abo_test_id = Test::where('specimen_id', $test->specimen_id)
 				->where('test_type_id', TestType::where('name', 'ABO Blood Grouping')->get()->last()->id)
@@ -991,7 +1010,9 @@ q801
 Q329,026
 ZT
 S2
-A53,19,0,1,1,2,N,"Cross-match for : '.$patient_name.' ('.$npid.')"
+A25,19,0,1,1,2,N,"Accession No: '.$accession_number.'"
+A320,19,0,1,1,2,N,"ABO Group: '.$sample_abo_group.'"
+A600,19,0,1,1,2,N,"Date:'.$date_cross_matched.'"
 LO25,110,760,2
 LO25,140,760,2
 LO25,170,760,2
@@ -1002,23 +1023,22 @@ LO25,290,760,2
 LO25,110,1,180
 LO785,110,1,180
 LO430,110,1,180
-A53,56,0,1,1,2,N,"Sample Accession Number:"
-A450,56,0,1,1,2,N," Sample ABO Group:"
+A25,56,0,1,1,2,N,"Patient:'.$patient_name.'('.$npid.')"
+A310,56,0,1,1,2,N,"Ward:'.$ward_or_location.'"
+A520,56,0,1,1,2,N,"By:'.$name.'"
 A53,116,0,2,1,1,N,"Pack No."
 A53,146,0,2,1,1,N,"Pack ABO Group"
 A53,176,0,2,1,1,N,"Product Type"
 A53,206,0,2,1,1,N,"Volume"
 A53,236,0,2,1,1,N,"Cross-match Method"
 A53,266,0,2,1,1,N,"Expiry Date"
-A315,56,0,1,1,2,N,"'.$accession_number.'"
-A650,56,0,1,1,2,N,"'.$sample_abo_group.'"
 A455,120,0,2,1,1,N,"'.$pack_no.'"
 A455,148,0,2,1,1,N,"'.$pack_abo_group.'"
 A455,178,0,2,1,1,N,"'.$product_type.'"
 A455,208,0,2,1,1,N,"'.$volume.'mL"
 A455,238,0,2,1,1,N,"'.$method.'"
 A455,268,0,2,1,1,N,"'.$expiry_date.'"
-P3
+P1
 ';
 		$filename = $test->id.'.lbs';
 		//fwrite($fpi, $result);
@@ -1116,57 +1136,7 @@ P3
 			$print = true;
 		}
 		// redirect
-
-		if($test->testType->instruments->count() > 0) 
-		{ 
-			$base = realpath(".");			 
-			$test_id = $test->getSpecimenId(); 
-			$backup_file_path ="../../machine_results"; 
-			$file_path = "$base/data/"; 
-			$path = Config::get('kblis.machine_results_path'); 
-		 
-			 
-			if(!file_exists($backup_file_path)) 
-			{ 
-				mkdir($backup_file_path); 
-				chmod($backup_file_path,255); 
-				$results = scandir($file_path);			 
-				$_id = $test_id.".json";	 
-				 
-				if($results && in_array($_id, $results)) 
-				{	 
-					$file_name = $file_path.$_id; 
-					$backup_file_name = $backup_file_path."/".$_id; 
-					$file = fopen($backup_file_name,'w'); 
-					 
-					if (copy($file_name, $backup_file_name) == 1) 
-					{							 
-						 
-					}	 
-					 
-				} 
-			} 
-			else 
-			{ 
-				$results = scandir($file_path);			 
-				$_id = $test_id.".json";	 
-				 
-				if($results && in_array($_id, $results)) 
-				{	 
-					$file_name = $file_path.$_id; 
-					$backup_file_name = $backup_file_path."/".$_id; 
-					$file = fopen($backup_file_name,'w'); 
-					 
-					if (copy($file_name, $backup_file_name) == 1) 
-					{							 
-						 
-					}	 
-					 
-				} 
-			} 
-			 
-		} 
-
+		
 		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 
 		return Redirect::action('TestController@index')
@@ -1241,6 +1211,22 @@ P3
 			$test->verified_by = Auth::user()->id;
 			$test->save();
 			$testIds = array($testID);
+		
+			$count = DB::select(DB::raw("SELECT tests.specimen_id AS specimen_id FROM tests WHERE tests.id=$testID"));
+
+			if($count[0]->specimen_id)
+			{   $id =$count[0]->specimen_id;				
+				$co = DB::select(DB::raw("SELECT * FROM tests WHERE specimen_id='$id'"));
+				if(count($co)>1)
+				{
+					$ver = Test::VERIFIED;
+					DB::update(DB::raw("UPDATE tests SET tests.test_status_id ='$ver'
+										WHERE tests.specimen_id='$id'
+										AND
+										tests.test_type_id ='29'"));
+				}
+			}			
+
 		}else{
 
 			Test::where('panel_id', $test->panel_id)
