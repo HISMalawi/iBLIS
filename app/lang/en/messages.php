@@ -355,6 +355,7 @@ return array(
     'visit-number' => 'Visit No.',
     'visit-type' => 'Visit Type',
     'visit-type-details' => 'Visit Type Details',
+    'test-rejected' => 'Test Rejected',
 
     /** 
      *   Tests search panel
