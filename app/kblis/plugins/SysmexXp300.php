@@ -1,7 +1,7 @@
 <?php
 namespace KBLIS\Plugins;
 
-class  MindrayBC120 extends \KBLIS\Instrumentation\AbstractInstrumentor
+class  SysmexXp300 extends \KBLIS\Instrumentation\AbstractInstrumentor
 {
     /**
      * Returns information about an instrument
@@ -11,10 +11,10 @@ class  MindrayBC120 extends \KBLIS\Instrumentation\AbstractInstrumentor
     public function getEquipmentInfo()
     {
         return array(
-            'code' => ' MBC120',
-            'name' => 'Mindray BC 120',
-            'description' => 'Automatic Analyzer for Enzymes',
-            'testTypes' => array("Pancreatic Function Test", "Renal Function Test","Lipogram", "Cardiac Test", "Electrolytes", "Magnesium", "Fluids",  "Liver Function Tests", "Calcium", "Uric Acid", "Phosphorus", "Glucose")
+            'code' => ' SysmexXP300',
+            'name' => 'sysmex-xp-300',
+            'description' => 'Automatic Analyzer for Full Blood Count (FBC)',
+            'testTypes' => array("FBC")
         );
     }
 
@@ -55,6 +55,10 @@ class  MindrayBC120 extends \KBLIS\Instrumentation\AbstractInstrumentor
             $results[$key] = $RESULT;
 
         }
+
+				if (!empty($json["machine_name"])){
+					$results["machine_name"] = $json["machine_name"];
+				}
 
         return $results;
 
