@@ -117,7 +117,7 @@ class LabCatlog extends Command {
 				}
 
 			$json = array(
-						"KCH" => array(
+						"KCH2" => array(
 								"tests" => $specimen_types_with_tests,
 								"samples" => $specimen_types,
 								"test_panels" => $panels,

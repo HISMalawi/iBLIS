@@ -3,6 +3,9 @@
 
 
 Artisan::add(new LabCatlog);
+Artisan::add(new NlimsAunthenticate);
+Artisan::add(new NlimsCreateUser);
+
 
 /*
 |--------------------------------------------------------------------------
