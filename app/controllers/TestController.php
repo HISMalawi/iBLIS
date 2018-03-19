@@ -550,6 +550,11 @@ P1
 						}
 						Sender::send_data($patient, Specimen::find($specimen->id));
 					}				
+					else
+					{
+						return Redirect::route('test.create', 
+						array(Input::get('patient_id')))->withInput()->withErrors("national_lims:  " .$response->message);
+					}
 				}
 				else
 				{
@@ -654,11 +659,20 @@ P1
 								}
 								Sender::send_data($patient, Specimen::find($specimen->id));
 							}
-					}
-					else
-					{
+							else
+							{
+								return Redirect::route('test.create', 
+								array(Input::get('patient_id')))->withInput()->withErrors("national_lims:  " .$response->message);
+							}
+
 
 					}
+					else
+					{ 
+						return Redirect::route('test.create', 
+						array(Input::get('patient_id')))->withInput()->withErrors("national_lims:  " .$response->message);
+					}
+							
 
 				}					
 
