@@ -74,6 +74,12 @@ Route::group(array("before", "print"), function()
         "as" => "reports.patient.report",
         "uses" => "ReportController@viewPatientReport"
     ));
+    
+
+    Route::any("/track_patient_report_printing", array(
+        "as" => "reports.patient.report",
+        "uses" => "ReportController@trackPatientReportPrint"
+    ));
 
     Route::any("/patientreport/{id}", array(
         "as" => "reports.patient.report",

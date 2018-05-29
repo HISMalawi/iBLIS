@@ -86,7 +86,10 @@
 		<strong>
 			<p>
 				{{trans('messages.patient-report').' - '.date('d-m-Y')}}
+
+				<b style="padding-left: 10%;"><i> {{ 'No. Printed:  '. $print_status }}</i></b> 
 			</p>
+
 		</strong>
 		<table class="table table-bordered">
 			<tbody>
@@ -220,6 +223,7 @@
 
 				$sorted_tests = Array();
 				$predefined_order = Array();
+			
 
 				if (in_array("CSF Analysis", explode(', ', $specimen->testTypes()))){
 					$predefined_order = Array("Cell Count", "India Ink", "Gram Stain", "Differential", "Culture & Sensitivity");
@@ -244,7 +248,7 @@
 				$tests = array_unique(array_merge($sorted_tests, $tests));
 
 				?>
-
+			
 				@forelse($tests as $test)
 						<tr>
 							<td>{{ $test->testType->name }}</td>
@@ -373,21 +377,26 @@
 								<td style="width: 20%;">{{ $test->testedBy->name}}<br />
 									On {{ $test->time_completed }}
 									@if($test->resultDevices())
-									<br /><br />
-
-									<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+										<br /><br />
+										<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>					
 									@endif
+									<br /><br />
+									
 								</td>
 							@endif
 
 						</tr>
+						
 				@empty
 					<tr>
 						<td colspan="8">{{trans("messages.no-records-found")}}</td>
 					</tr>
+					
 				@endforelse
+				
 			</tbody>
 		</table>
+	
 	@else
 		<div class="panel panel-success">
 						<div class="panel-heading ">
@@ -578,12 +587,33 @@
 					@endif
 				@endif
 
-					<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
+					<button type="button" class="btn btn-primary" 
+						onclick="submitPrintForm(), track_printing('<?php echo $specimen_id; ?>')">Okay</button>
 					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+		function track_printing(specimen_id)		
+		{	
+			var url = "/track_patient_report_printing?specimen_id=" + specimen_id;
+			jQuery.ajax({ async: true,
+					  url : url,
+					  success : function()
+					  {	
+					  		
+					  },
+					  error : function()
+					  {
+					  
+					  }
+			})
+		}
+</script>
+
+
 <!--CONFIRMATION POPUP END -->
 @stop

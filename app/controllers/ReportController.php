@@ -127,6 +127,7 @@ P1
 		$visitId = (!$visitId && $visit) ? $visit : $visitId;
 
 
+
 		//	Check checkbox if checked and assign the 'checked' value
 		if (Input::get('tests') === '1') {
 		    $pending='checked';
@@ -152,6 +153,7 @@ P1
 			$tests = $tests->whereIn('tests.test_status_id', [Test::COMPLETED, Test::VERIFIED, Test::PENDING]);
 		}
 		
+
 		//	Date filters
 		if($from||$to){
 			if(!$to) $to = $date;
@@ -181,12 +183,17 @@ P1
 		//	Check if tests are accredited
 		$accredited = array();
 		$verified = array();
+		$print_statuses = array();
 		foreach ($tests as $test) {
+		
+			array_push($print_statuses, $test);
 			if($test->testType->isAccredited())
 				array_push($accredited, $test->id);
 			else
 				continue;
 		}
+			
+			
 		foreach ($tests as $test) {
 			if($test->isVerified())
 				array_push($verified, $test->id);
@@ -198,12 +205,18 @@ P1
 
 		foreach($tests as $test){
 			$specimen = Specimen::find($test->specimen_id);
+			$spe_id = $specimen->id;
+			
 			if(empty($data[$specimen->accession_number])){
 				$data[$specimen->accession_number] = array();
 			}
 
 			array_push($data[$specimen->accession_number], $test);
 		}
+
+		$obj = new PatientReportPrintStatus;
+		$res = $obj->get_print_status($visitId);
+
 
 		$view_url = "reports.patient.report";
 
@@ -244,11 +257,25 @@ P1
 				->with('verified', $verified)
 				->with('patient_visits',$patient_visit_checker)
 				->with('checking_status',$checking_status)
+				->with('print_status', $res )
+				->with('specimen_id', $spe_id )
 				->with('available_printers', Config::get('kblis.A4_printers'))
 				->withInput(Input::all());
 		
 
 	}
+
+	public function trackPatientReportPrint()
+	{	$specimen_id = Input::get('specimen_id');
+
+		$obj = new PatientReportPrintStatus;
+
+		$obj->specimen_id = $specimen_id;
+		$obj->printed_by =  $user_id = Auth::user()->id;;
+		$obj->save();
+
+	}
+
 	//	End patient report functions
 
 	/**
