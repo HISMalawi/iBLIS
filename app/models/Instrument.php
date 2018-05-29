@@ -180,12 +180,15 @@ class Instrument extends Eloquent
 
  		// Invoke the Instrument Class to get the results
 		$result = (new $this->driver_name($this->ip))->getResult($accessionNumber);
-		
+				
 		// Change measure names to measure_ids in the returned array
 		$resultWithIDs = array();
 
 		foreach ($result as $measureId => $value) {
-
+			if ($measureId == "machine_name")
+			{
+			 $resultWithIDs['machine_name'] = $value;
+			}else{
 			$measureFound = $testType->measures->filter(
 				function($measure) use ($measureId){
 					$common_name = '';
@@ -201,13 +204,10 @@ class Instrument extends Eloquent
 			}else{
 				$resultWithIDs['m_'.$measureFound->first()->id] = $value;
 			}
+		    }
 		}
 
-		if(!isset($resultWithIDs['machine_name'])){
-			//Works only for tests that use a single machine and have no ip address assigned on driver
-			$resultWithIDs['machine_name'] = $this->name;
-		}
-		// Send back a json result
+	//d back a json result
 		return json_encode($resultWithIDs);
 	}
 	/**

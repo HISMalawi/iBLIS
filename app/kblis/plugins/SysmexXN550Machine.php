@@ -1,7 +1,7 @@
 <?php
 namespace KBLIS\Plugins;
  
-class SysmexKX21NMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
+class SysmexXN550Machine extends \KBLIS\Instrumentation\AbstractInstrumentor
 {
 	/**
 	* Returns information about an instrument 
@@ -10,9 +10,9 @@ class SysmexKX21NMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
 	*/
     public function getEquipmentInfo(){
     	return array(
-    		'code' => 'KX21', 
-    		'name' => 'Sysmex KX 21', 
-    		'description' => 'Automatic analyzer with 22 parameters and WBC 5 part diff Hematology Analyzer',
+    		'code' => 'XN550', 
+    		'name' => 'Sysmex-XN-550', 
+    		'description' => '',
     		'testTypes' => array("FBC")
     		);
     }
@@ -54,6 +54,7 @@ class SysmexKX21NMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
 
         }
 	$results["machine_name"] = $json["machine_name"];
+
         return $results;
 
     }
