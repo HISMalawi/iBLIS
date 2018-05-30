@@ -46,6 +46,7 @@
                 </div>
             </div>
         </div>
+
         <div class="panel-body">
         <!-- if there are creation errors, they will show here -->
             
@@ -73,6 +74,7 @@
                                 }
                                 $fieldName = "m_".$measure->id;
                                 ?>
+
                                 @if ( $measure->isNumeric() ) 
                                     {{ Form::label($fieldName , $measure->name) }}
                                     {{ Form::text($fieldName, $ans, array(
@@ -103,31 +105,73 @@
                                         )) 
                                     }}
                                 @elseif ( $measure->isFreeText() ) 
-                                    {{ Form::label($fieldName, $measure->name) }}
-                                    <?php
-                                        $sense = '';
-                                        $datepicker = '';
+                                    @if( $measure->name == "Clinical Data" && $location_name == true )
+                                        <div class="form-group">
+                                            {{ Form::label($fieldName, $measure->name) }}
+                                            <?php
+                                                $sense = '';
+                                                $datepicker = '';
 
-                                        if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
-                                            $sense = ' sense'.$test->id;
-                                        }
-                                        if($measure->name == "Expiry Date"){
-                                            $datepicker = ' datepicker';
-                                        }
-                                    ?>
-                                    {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
+                                                if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
+                                                    $sense = ' sense'.$test->id;
+                                                }
+                                                if($measure->name == "Expiry Date"){
+                                                    $datepicker = ' datepicker';
+                                                }
+                                            ?>
+                                            {{Form::text($fieldName, $ans, 
+                                                array('style' => 'display: none', 'id' => 'data_txtxt' ,'class' => 'form-control'.$sense.$datepicker))}}
+
+
+                                            {{ Form::button('<span >
+                                            </span> '.'Enter '.$measure->name,
+                                            array('class' => 'btn btn-default', 'onclick' => 'load_data_modal()')) }}
+                                        </div>
+
+                                    
+                                    @else
+                                        {{ Form::label($fieldName, $measure->name) }}
+                                        <?php
+                                            $sense = '';
+                                            $datepicker = '';
+
+                                            if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
+                                                $sense = ' sense'.$test->id;
+                                            }
+                                            if($measure->name == "Expiry Date"){
+                                                $datepicker = ' datepicker';
+                                            }
+                                        ?>
+                                        {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
+
+                                    @endif
                                 @endif
                                     <span class="unit pull-right">
                                         {{($measure->unit)}}
                                     </span>
                             </div>
                         @endforeach
-                        <div class="form-group">
-                            {{ Form::label('interpretation', trans('messages.remarks')) }}
-                            {{ Form::textarea('interpretation', $test->interpretation, 
-                                array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
-                        </div>
-                        <div class="form-group actions-row">
+                        
+                            @if($location_name == true )
+                                <div class="form-group">
+                                    {{ Form::label('interpretation', trans('messages.remarks')) }}
+                                    {{ Form::textarea('interpretation', $test->interpretation, 
+                                        array( 'style' => 'display: none', 'id' => 'remarks_txtxt', 'class' => 'form-control result-interpretation', 'rows' => '2')) }}
+
+                                    {{ Form::button('<span >
+                                    </span> '.'Enter '. trans('messages.remarks'),
+                                    array('class' => 'btn btn-default', 'onclick' => 'load_remarks_modal()')) }}
+
+                                </div>
+                                
+                            @else
+                                <div class="form-group">
+                                    {{ Form::label('interpretation', trans('messages.remarks')) }}
+                                    {{ Form::textarea('interpretation', $test->interpretation, 
+                                        array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
+                                </div>
+                            @endif
+                        <div class="form-group actions-row" style="margin-top: 50px;">
                             {{ Form::button('<span class="glyphicon glyphicon-save">
                                 </span> '.trans('messages.save-test-results'),
                                 array('class' => 'btn btn-default', 'onclick' => 'submit()')) }}
@@ -487,6 +531,8 @@
             </div>
         </div>
 
+    load_remarks_modal()
+
     <!-- Modal -->
     <div id="organismsModel" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
@@ -539,5 +585,95 @@
 
         </div>
     </div>
+
+
+
+
+
+       <!-- Modal -->
+    <div id="dataModel"  class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" >
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Enter Clinical Data</h4>
+                </div>
+                <div class="modal-body">
+                
+                    <div class="modal-data">
+                        <textarea name="remarks" id="data_txt" cols="110" rows="25" placeholder="type here" > 
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="set_data_value();" type="button" class="btn btn-success">Save
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+     <!-- Modal -->
+    <div id="remarksModel"  class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" >
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Enter Remarks</h4>
+                </div>
+                <div class="modal-body">
+                
+                    <div class="modal-data">
+                        <textarea name="remarks" id="remarks_txt"  cols="110" rows="25" placeholder="type here"> 
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="set_value();" type="button" class="btn btn-success">Save
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+        
+    function load_remarks_modal()
+    {
+        
+        $('#remarksModel').modal('show');
+    }
+
+    function load_data_modal()
+    {
+        
+        $('#dataModel').modal('show');
+    }
+
+    function set_value(){
+        var txt = document.getElementById('remarks_txt').value;
+        document.getElementById('remarks_txtxt').value = document.getElementById('remarks_txt').value;    
+        $('#remarksModel').modal('hide');  
+
+    }
+
+    function set_data_value(){ 
+        var txt = document.getElementById('data_txt').value;
+        document.getElementById('data_txtxt').value = txt;    
+        $('#dataModel').modal('hide');  
+
+    }
+
+</script>
+
 
 @stop

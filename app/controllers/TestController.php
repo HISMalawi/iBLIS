@@ -925,10 +925,17 @@ P1
 			$EMPTY_FILE_URL = "http://192.168.1.88/celtac/emptyfile.php";
 			@file_get_contents($EMPTY_FILE_URL);
 		}*/
+		$loc_name = Session::get('location_id');
+		$cat = TestCategory::find($loc_name);
+		$status = false;
+		if ($cat == "Histopathology" || $cat == "histopathology")
+		{
+			$status = true;
+		}
 
 		$drugs = Drug::orderBy("name")->lists('name', 'id');
 
-		return View::make('test.enterResults')->with('test', $test)
+		return View::make('test.enterResults')->with('test', $test) ->with('location_name', $status)
 			->with('all_drugs', $drugs);
 	}
 
