@@ -928,7 +928,9 @@ P1
 		$loc_name = Session::get('location_id');
 		$cat = TestCategory::find($loc_name);
 		$status = false;
-		if ($cat == "Histopathology" || $cat == "histopathology")
+		
+		if ($cat->name == "Histopathology" || $cat->name == "histopathology")
+
 		{
 			$status = true;
 		}
