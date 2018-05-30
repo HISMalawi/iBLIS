@@ -1,5 +1,9 @@
 <?php
 
+
+
+Artisan::add(new LabCatlog);
+
 /*
 |--------------------------------------------------------------------------
 | Register The Artisan Commands

@@ -1143,7 +1143,7 @@ P1
 			$print = true;
 		}
 		// redirect
-		
+
 		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 
 		return Redirect::action('TestController@index')

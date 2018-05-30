@@ -1,7 +1,7 @@
 <?php
 namespace KBLIS\Plugins;
 
-class  MindrayBS400 extends \KBLIS\Instrumentation\AbstractInstrumentor
+class  SysmexXp300 extends \KBLIS\Instrumentation\AbstractInstrumentor
 {
     /**
      * Returns information about an instrument
@@ -11,10 +11,10 @@ class  MindrayBS400 extends \KBLIS\Instrumentation\AbstractInstrumentor
     public function getEquipmentInfo()
     {
         return array(
-            'code' => ' MBS400',
-            'name' => 'Mindray BS 400',
-            'description' => 'Automatic Analyzer for Chemistries',
-            'testTypes' => array("Renal Function Test","Lipogram", "Cardiac Test", "Electrolytes", "Magnesium", "Fluids",  "Liver Function Tests", "Calcium", "Uric Acid", "Phosphorus", "Glucose")
+            'code' => ' SysmexXP300',
+            'name' => 'sysmex-xp-300',
+            'description' => 'Automatic Analyzer for Full Blood Count (FBC)',
+            'testTypes' => array("FBC")
         );
     }
 

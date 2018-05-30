@@ -176,6 +176,7 @@ class Instrument extends Eloquent
 	 * @param $accessionNumber
 	 * @return Response json
 	 */
+
  	public function fetchResult($testType, $accessionNumber){
 
                 // Invoke the Instrument Class to get the results
@@ -210,16 +211,7 @@ class Instrument extends Eloquent
         //d back a json result
                 return json_encode($resultWithIDs);
     }
-
-
-
-
-
-
-
-
-
-	/**
+	/*
 	 * Lots relationship
 	 */
 	public function lots()
