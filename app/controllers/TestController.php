@@ -1047,7 +1047,7 @@ A455,178,0,2,1,1,N,"'.$product_type.'"
 A455,208,0,2,1,1,N,"'.$volume.'mL"
 A455,238,0,2,1,1,N,"'.$method.'"
 A455,268,0,2,1,1,N,"'.$expiry_date.'"
-P1
+P3
 ';
 		$filename = $test->id.'.lbs';
 		//fwrite($fpi, $result);
