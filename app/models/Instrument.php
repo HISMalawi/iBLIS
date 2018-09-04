@@ -181,7 +181,7 @@ class Instrument extends Eloquent
  		// Invoke the Instrument Class to get the results
 		$result = (new $this->driver_name($this->ip))->getResult($accessionNumber);
 		
-		var_dump($resu
+		
 		// Change measure names to measure_ids in the returned array
 		$resultWithIDs = array();
 
