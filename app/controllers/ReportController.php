@@ -116,17 +116,17 @@ P1
 	 * @return Response
 	 */
 	public function viewPatientReport($id, $visit = null){
-
+               	
 		$from = Input::get('start');
 		$to = Input::get('end');
 		$pending = Input::get('pending');
 		$date = date('Y-m-d');
 		$error = '';
 		$visitId = Input::get('visit_id');
-
+		$spe_id = "";
 		$visitId = (!$visitId && $visit) ? $visit : $visitId;
 
-
+		
 		//	Check checkbox if checked and assign the 'checked' value
 		if (Input::get('tests') === '1') {
 		    $pending='checked';
@@ -149,8 +149,9 @@ P1
 		}
 		else{
 
-			$tests = $tests->whereIn('tests.test_status_id', [Test::COMPLETED, Test::VERIFIED, Test::PENDING]);
+			$tests = $tests->whereIn('tests.test_status_id', [Test::COMPLETED, Test::VERIFIED, Test::PENDING, Test::TEST_REJECTED]);
 		}
+		
 		
 		//	Date filters
 		if($from||$to){
@@ -181,12 +182,17 @@ P1
 		//	Check if tests are accredited
 		$accredited = array();
 		$verified = array();
+		$print_statuses = array();
 		foreach ($tests as $test) {
+		
+			array_push($print_statuses, $test);
 			if($test->testType->isAccredited())
 				array_push($accredited, $test->id);
 			else
 				continue;
 		}
+			
+			
 		foreach ($tests as $test) {
 			if($test->isVerified())
 				array_push($verified, $test->id);
@@ -198,6 +204,8 @@ P1
 
 		foreach($tests as $test){
 			$specimen = Specimen::find($test->specimen_id);
+			$spe_id = $specimen->id;
+			
 			if(empty($data[$specimen->accession_number])){
 				$data[$specimen->accession_number] = array();
 			}
@@ -205,10 +213,15 @@ P1
 			array_push($data[$specimen->accession_number], $test);
 		}
 
-		$view_url = "reports.patient.report";
+		$obj = new PatientReportPrintStatus;
+		$res = $obj->get_print_status($visitId);
 
+
+		$view_url = "reports.patient.report";
+	
 		if(Input::has('pdf')){
 			if(!Input::has('page')){
+				
 				$url = Request::url()."?pdf=true&page=true";
 
 				$fileName = "patientreport".$id."_".$date.".pdf";
@@ -222,7 +235,7 @@ P1
 
 				$process = new Process("rm $fileName && rm patientreport*.pdf");
 				$process->run();
-
+				
 				if(Input::has('from_view_details')) {
 					return Redirect::route('test.index',
 						array('test_status' => TestStatus::where('name', 'completed')->first()->id)
@@ -230,9 +243,17 @@ P1
 				}
 
 			}else{
-				$view_url = "reports.patient.export";
+					$view_url = "reports.patient.export";
 			}
 		}
+	
+			$sql = "SELECT * FROM users INNER JOIN specimens ON specimens.accepted_by = users.id WHERE specimens.id='$spe_id'";
+			$collected_by =  DB::select(DB::raw($sql));
+	
+                        $rejected = Specimen::REJECTED;
+     	                $specimen = Specimen::where('id', '=', $spe_id)->first();
+     	                $rej_status = DB::select(DB::raw("SELECT specimens.id FROM specimens WHERE specimen_status_id='$rejected' AND specimens.id='$spe_id'"));
+					                       
 			return View::make($view_url)
 				->with('patient', $patient)
 				->with('tests', $tests)
@@ -244,11 +265,29 @@ P1
 				->with('verified', $verified)
 				->with('patient_visits',$patient_visit_checker)
 				->with('checking_status',$checking_status)
+				->with('collected_by',$collected_by[0]->name)
+				->with('date_sample_collected',$collected_by[0]->date_of_collection)
+				->with('print_status', $res)
+				->with('rej_status',$rej_status)
+				->with('specimen_id', $spe_id )
+				->with('spdetails',$specimen)
 				->with('available_printers', Config::get('kblis.A4_printers'))
 				->withInput(Input::all());
 		
 
 	}
+
+	public function trackPatientReportPrint()
+	{	$specimen_id = Input::get('specimen_id');
+
+		$obj = new PatientReportPrintStatus;
+
+		$obj->specimen_id = $specimen_id;
+		$obj->printed_by =  $user_id = Auth::user()->id;;
+		$obj->save();
+
+	}
+
 	//	End patient report functions
 
 	/**

@@ -24,7 +24,7 @@
                 </a>
                 @endif
             </div>
-        </div>
+        </div> 
         <div class="panel-body">
             <div class="display-details">
                 <h3 class="view"><strong>{{ Lang::choice('messages.name',1) }}</strong>{{ $patient->name }} </h3>

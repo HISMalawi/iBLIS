@@ -61,12 +61,15 @@
                     <div class="col-md-11">
                         <span class="glyphicon glyphicon-filter"></span>{{trans('messages.list-tests')}}
                         @if(Auth::user()->can('request_test'))
-                        <div class="panel-btn">
-                            <a class="btn btn-sm btn-info" href="javascript:void(0)"
-                                data-toggle="modal" data-target="#new-test-modal">
-                                <span class="glyphicon glyphicon-plus-sign"></span>
-                                {{trans('messages.new-test')}}
-                            </a>
+                    	{{$request_test = false}}
+			<div class="panel-btn">
+                        	@if($request_test == true)
+			    		<a class="btn btn-sm btn-info" href="javascript:void(0)"
+                        	        	data-toggle="modal" data-target="#new-test-modal">
+                                		<span class="glyphicon glyphicon-plus-sign"></span>
+                                		{{trans('messages.new-test')}}
+                            		</a>
+				@endif
                         </div>
                         @endif
                     </div>
@@ -112,7 +115,6 @@
                         <?php
                             $testName = '';
                             $test = Test::find($key);
-                            
                         ?>
 
                         @if($test->panel_id > 0 && in_array($test->panel_id, $panels))
@@ -306,6 +308,21 @@
                             
                                 <div class="row">
 
+                                        <?php
+						$counter = 0;
+						if($test->testType){ 
+
+                                                	$type = str_replace(" ", "", $test->testType->name);
+						
+                                                	$t_id = $test->getSpecimenId()."_". $type;  
+						 }else{
+						 	$type = "";
+							$t_id = "";
+						}       
+                                            ?>
+
+
+
                                     <div class="col-md-12">
                                   
                                         @if($test->isVoided())
@@ -314,7 +331,9 @@
                                         @elseif($test->isIgnored())
                                             <span class='label'>
                                                 Not Done</span>
-                                        @else
+                                        
+					
+					@else
                                             @if($test->isNotReceived())
                                                 @if(!$test->isPaid())
                                                     <span class='label'>
@@ -340,12 +359,38 @@
                                                     {{trans('messages.test-rejected')}}</span>
                                             @endif
                                         @endif
+					
                                     </div>
     
                                     </div>
                                 <div class="row">
                                     <div class="col-md-12">
+
+                                       
+                                        @if(($test->testType && $test->testType->instruments->count()) > 0 && $test->isStarted() == true)          
+                                            
+
+                                            <a  href="{{ URL::route('test.enterResults', array($test->id)) }}"
+                                                title="{{trans('messages.view_results')}}"
+                                                style="display: none;" 
+                                                id="{{$t_id}}">
+                                                {{trans('messages.machine_results_available')}}
+                                            </a>
+                                            
+                                            <?php
+                                            
+                                            $data[$counter] = $t_id ;
+                                            $counter++;
+                                            
+                                            ?>
+
+                                        @endif
+
+                                    </div>
+                                                <!-- Specimen statuses -->
+
                                         <!-- Specimen statuses -->
+
                                         @if(!$test->panel_id && !$test->isLocked())
                                             @if($test->specimen->isNotCollected())
                                              @if(($test->isPaid()))

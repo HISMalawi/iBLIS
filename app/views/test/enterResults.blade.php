@@ -46,6 +46,7 @@
                 </div>
             </div>
         </div>
+
         <div class="panel-body">
         <!-- if there are creation errors, they will show here -->
             
@@ -61,7 +62,13 @@
                         'id' => 'form-enter-results')) }}
 
                         @if($test->testType->instruments->count() > 0)
-                            {{ Form::hidden('machine_name', '', array('id' => 'machine_name')) }}
+				<?php 
+					$sql = "SELECT instruments.name FROM tests INNER JOIN test_types ON test_types.id=tests.test_type_id INNER JOIN instrument_testtypes ON test_types.id = instrument_testtypes.test_type_id INNER JOIN instruments ON instruments.id = instrument_testtypes.instrument_id WHERE tests.id = '$test->id' ORDER BY instruments.id DESC LIMIT 1";
+
+			                $dev_name = DB::select(DB::raw($sql));
+					$dev_name = $dev_name[0]->name;
+				?>
+                            {{ Form::hidden('machine_name', $dev_name, array('id' => 'machine_name')) }}
                         @endif
 
                         @foreach($test->testType->measures as $measure)
@@ -73,6 +80,7 @@
                                 }
                                 $fieldName = "m_".$measure->id;
                                 ?>
+
                                 @if ( $measure->isNumeric() ) 
                                     {{ Form::label($fieldName , $measure->name) }}
                                     {{ Form::text($fieldName, $ans, array(
@@ -103,31 +111,72 @@
                                         )) 
                                     }}
                                 @elseif ( $measure->isFreeText() ) 
-                                    {{ Form::label($fieldName, $measure->name) }}
-                                    <?php
-                                        $sense = '';
-                                        $datepicker = '';
+                                    @if( $measure->name == "Clinical Data" && $location_name == true )
+                                        <div class="form-group">
+                                            {{ Form::label($fieldName, $measure->name) }}
+                                            <?php
+                                                $sense = '';
+                                                $datepicker = '';
 
-                                        if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
-                                            $sense = ' sense'.$test->id;
-                                        }
-                                        if($measure->name == "Expiry Date"){
-                                            $datepicker = ' datepicker';
-                                        }
-                                    ?>
-                                    {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
+                                                if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
+                                                    $sense = ' sense'.$test->id;
+                                                }
+                                                if($measure->name == "Expiry Date"){
+                                                    $datepicker = ' datepicker';
+                                                }
+                                            ?>
+                                            {{Form::text($fieldName, $ans, 
+                                                array('style' => 'display: none', 'id' => 'data_txtxt' ,'class' => 'form-control'.$sense.$datepicker))}}
+
+
+                                            {{ Form::button('<span >
+                                            </span> '.'Enter '.$measure->name,
+                                            array('class' => 'btn btn-default', 'onclick' => 'load_data_modal()')) }}
+                                        </div>
+
+                                    
+                                    @else
+                                        {{ Form::label($fieldName, $measure->name) }}
+                                        <?php
+                                            $sense = '';
+                                            $datepicker = '';
+
+                                            if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
+                                                $sense = ' sense'.$test->id;
+                                            }
+                                            if($measure->name == "Expiry Date"){
+                                                $datepicker = ' datepicker';
+                                            }
+                                        ?>
+                                        {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
+
+                                    @endif
                                 @endif
                                     <span class="unit pull-right">
                                         {{($measure->unit)}}
                                     </span>
                             </div>
                         @endforeach
-                        <div class="form-group">
-                            {{ Form::label('interpretation', trans('messages.remarks')) }}
-                            {{ Form::textarea('interpretation', $test->interpretation, 
-                                array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
-                        </div>
-                        <div class="form-group actions-row">
+                             @if($location_name == true )
+                                <div class="form-group">
+                                    {{ Form::label('interpretation', trans('messages.remarks')) }}
+                                    {{ Form::textarea('interpretation', $test->interpretation, 
+                                        array( 'style' => 'display: none', 'id' => 'remarks_txtxt', 'class' => 'form-control result-interpretation', 'rows' => '2')) }}
+
+                                    {{ Form::button('<span >
+                                    </span> '.'Enter '. trans('messages.remarks'),
+                                    array('class' => 'btn btn-default', 'onclick' => 'load_remarks_modal()')) }}
+
+                                </div>
+                                
+                            @else
+                                <div class="form-group">
+                                    {{ Form::label('interpretation', trans('messages.remarks')) }}
+                                    {{ Form::textarea('interpretation', $test->interpretation, 
+                                        array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
+                                </div>
+                            @endif
+                        <div class="form-group actions-row" style="margin-top: 50px;">
                             {{ Form::button('<span class="glyphicon glyphicon-save">
                                 </span> '.trans('messages.save-test-results'),
                                 array('class' => 'btn btn-default', 'onclick' => 'submit()')) }}
@@ -539,5 +588,95 @@
 
         </div>
     </div>
+
+
+
+
+
+       <!-- Modal -->
+    <div id="dataModel"  class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" >
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Enter Clinical Data</h4>
+                </div>
+                <div class="modal-body">
+                
+                    <div class="modal-data">
+                        <textarea name="remarks" id="data_txt" cols="110" rows="25" placeholder="type here" > 
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="set_data_value();" type="button" class="btn btn-success">Save
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+     <!-- Modal -->
+    <div id="remarksModel"  class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" >
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Enter Remarks</h4>
+                </div>
+                <div class="modal-body">
+                
+                    <div class="modal-data">
+                        <textarea name="remarks" id="remarks_txt"  cols="110" rows="25" placeholder="type here"> 
+                        </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="set_value();" type="button" class="btn btn-success">Save
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+        
+    function load_remarks_modal()
+    {
+        
+        $('#remarksModel').modal('show');
+    }
+
+    function load_data_modal()
+    {
+        
+        $('#dataModel').modal('show');
+    }
+
+    function set_value(){
+        var txt = document.getElementById('remarks_txt').value;
+        document.getElementById('remarks_txtxt').value = document.getElementById('remarks_txt').value;    
+        $('#remarksModel').modal('hide');  
+
+    }
+
+    function set_data_value(){ 
+        var txt = document.getElementById('data_txt').value;
+        document.getElementById('data_txtxt').value = txt;    
+        $('#dataModel').modal('hide');  
+
+    }
+
+</script>
+
 
 @stop

@@ -12,7 +12,7 @@ class ERBAXL200 extends \KBLIS\Instrumentation\AbstractInstrumentor
     {
         return array(
             'code' => 'ERBAXL200',
-            'name' => 'ERBA XL 200',
+            'name' => 'ERBA XL 600',
             'description' => 'Automatic analyzer For LFTs, RFTs, etc',
             'testTypes' => array("Liver Function Tests", "Renal Function Test", "Glucose", "Lipogram")
         );
