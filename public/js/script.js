@@ -1260,7 +1260,7 @@ $(function(){
 		var node = document.getElementsByClassName('barcode')[0];
 		if(node){
 
-			if (node.value.match(/\$$/)){
+			if (node.value.match(/\$$/)){				
 				node.value =node.value.replace(/\$$/, "");
 				node.form.submit();
 			}else{

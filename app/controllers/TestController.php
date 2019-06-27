@@ -49,10 +49,14 @@ class TestController extends \BaseController {
 		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
 
 			$remoteResults = Sender::search_from_remote($searchString);
-			if(!empty($remoteResults) && isset($remoteResults->_id)) {
+			$test_results = Sender::search_results_from_remote($searchString);
+			//var_dump($remoteResults);exit;
+			if(!empty($remoteResults) && $remoteResults->error == false) {
 				// Load the view and pass it the tests
 				return View::make('test.remoteorder')
 					->with('test', $remoteResults)
+					->with('test_result',$test_results)
+					->with('tracking_number', $searchString)
 					->with('searchString', $searchString);
 			}
 		}
@@ -69,9 +73,9 @@ class TestController extends \BaseController {
 				$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
 			}
 
-			if (count($tests) == 0) {
+			/*if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
-			}
+			}*/
 		}
 		else
 		{
@@ -1100,6 +1104,7 @@ P1
 		}
 		$test->save();
 		$machine_name = Input::get('machine_name');
+		$rst = array();
 		foreach ($test->testType->measures as $measure) {
 			$testResult = TestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
 			$testResult->result = Input::get('m_'.$measure->id);
@@ -1108,9 +1113,62 @@ P1
 
 				$testResult->device_name = $machine_name;
 			}
-
+			//array_push($rst,$measure->name => $testResult->result);		
+			$rst[$measure->name] =  $testResult->result;	
 			$testResult->save();
 		}
+		
+		$testName = $test->testType->name;
+		$testStatus = "completed";
+		$tracking_number = Specimen::find($test->specimen_id)->tracking_number;
+		$whoUpdated = Array(
+				'id_number' =>  Auth::user()->id,
+				'phone_number' => '',
+				'first_name'=>  Auth::user()->name,
+				'last_name'=>  ''
+		);
+		
+		$json = Array( 'tracking_number' => $tracking_number,
+				'test_status' => $testStatus,
+				'test_name'=> $testName,
+				'who_updated' => $whoUpdated,
+				'results' => $rst
+			);
+	
+		$token = Session::get('nlims_token');
+        if(!isset($token)){
+            $token = "ddssc";            
+        }
+		$data_string = json_encode($json);
+	
+        if(Config::get('kblis.nlims_controller') == true){
+            $ch = curl_init("http://localhost:3010/api/v1/update_test");
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+						'token:'.$token,
+						'Content-Type: application/json'));
+			$result = json_decode(curl_exec($ch));   				
+			if($result->error == true && $result->message == "token expired"){
+                $ch = curl_init("http://localhost:3010/api/v1/re_authenticate/admin/knock_knock");
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $result = json_decode(curl_exec($ch));
+                $token = $result->data->token;
+                Session::put('nlims_token', $token);
+
+				$ch = curl_init("http://localhost:3010/api/v1/update_test");
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+							'token:'.$token,
+							'Content-Type: application/json'));
+				$result = json_decode(curl_exec($ch));   			
+            }     
+        }
+		
 
 		//Fire of entry saved/edited event
 		Event::fire('test.saved', array($testID));
