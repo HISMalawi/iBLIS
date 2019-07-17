@@ -401,6 +401,13 @@ return array(
     /** 
      *   Reports
      */
+    'moh-report' => 'MoH Diagonistic Report',
+    'biochemistry' => 'Biochemistry Report',
+    'haematology' => 'Haematology Report',
+    'blood-bank' => 'Blood Bank Report',
+    'microbiology' => 'Microbiology Report',
+    'parasitology' => 'Parasitology Report',
+    'serology' => 'Serology Report',
     'aggregate-reports' => 'Aggregate Reports',
     'collected-by'  =>  'Received By',
     'counts' => 'Counts',

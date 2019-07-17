@@ -12,7 +12,7 @@ class MindrayBC3000Machine extends \KBLIS\Instrumentation\AbstractInstrumentor
     {
         return array(
             'code' => 'MBC3000',
-            'name' => 'Mindray BC 3000',
+            'name' => 'SYSMEX SX-500i',
             'description' => 'Automatic analyzer with 19 parameters Hematology Analyzer',
             'testTypes' => array("FBC")
         );

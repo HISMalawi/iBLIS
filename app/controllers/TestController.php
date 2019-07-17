@@ -491,6 +491,8 @@ P1
 									$test->visit_id = $visit->id;
 									$test->test_type_id = $tType->test_type_id;
 									$test->specimen_id = $specimen->id;
+									$test->not_done_reasons = "";
+                        						$test->person_talked_to_for_not_done = "";
 									$test->test_status_id = Test::PENDING;
 									$test->created_by = Auth::user()->id;
 									$test->panel_id = $panel->id;
@@ -513,6 +515,8 @@ P1
 							$test->test_type_id = $testTypeID;
 							$test->specimen_id = $specimen->id;
 							$test->test_status_id = Test::PENDING;
+							$test->not_done_reasons = "null";
+                        				$test->person_talked_to_for_not_done = "null";
 							$test->created_by = Auth::user()->id;
 							$test->requested_by = Input::get('physician');
 							$test->save();
@@ -621,6 +625,8 @@ P1
 									$test->test_type_id = $tType->test_type_id;
 									$test->specimen_id = $specimen->id;
 									$test->test_status_id = Test::PENDING;
+									$test->not_done_reasons = "";
+                                                        		$test->person_talked_to_for_not_done = "";
 									$test->created_by = Auth::user()->id;
 									$test->panel_id = $panel->id;
 									$test->requested_by = Input::get('physician');
@@ -653,6 +659,8 @@ P1
 							$test->specimen_id = $specimen->id;
 							$test->test_status_id = Test::PENDING;
 							$test->created_by = Auth::user()->id;
+							$test->not_done_reasons = "";
+                                                        $test->person_talked_to_for_not_done = "";
 							$test->requested_by = Input::get('physician');
 							$test->save();
 
@@ -732,7 +740,7 @@ P1
 		$specimen->accepted_by = Auth::user()->id;
 		$specimen->time_accepted = date('Y-m-d H:i:s');
 		$specimen->save();
-		Sender::send_data($specimen->test->visit->patient, $specimen);
+		//Sender::send_data($specimen->test->visit->patient, $specimen);
 		return $specimen->specimen_status_id;
 	}
 
@@ -776,8 +784,8 @@ P1
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
 
-		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
-		Session::set('activeTest', array($test->id));
+		//Sender::send_data($test->visit->patient, $test->specimen, Array($test));
+		//Session::set('activeTest', array($test->id));
 
 		return $test->testType->instruments->count();
 	}
@@ -925,10 +933,19 @@ P1
 			$EMPTY_FILE_URL = "http://192.168.1.88/celtac/emptyfile.php";
 			@file_get_contents($EMPTY_FILE_URL);
 		}*/
+		$loc_name = Session::get('location_id');
+		$cat = TestCategory::find($loc_name);
+		$status = false;
+		
+		if ($cat->name == "Histopathology" || $cat->name == "histopathology")
+
+		{
+			$status = true;
+		}
 
 		$drugs = Drug::orderBy("name")->lists('name', 'id');
 
-		return View::make('test.enterResults')->with('test', $test)
+		return View::make('test.enterResults')->with('test', $test) ->with('location_name', $status)
 			->with('all_drugs', $drugs);
 	}
 
@@ -1098,21 +1115,50 @@ P1
 		if(empty($test->time_completed) || $test->time_completed == null) {
 			$test->time_completed = date('Y-m-d H:i:s');
 		}
+		$test_me = array();
 		$test->save();
+		$details = array();
+		$dev_name = "";
 		$machine_name = Input::get('machine_name');
 		foreach ($test->testType->measures as $measure) {
-			$testResult = TestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
-			$testResult->result = Input::get('m_'.$measure->id);
+			//$testResult = TestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
+			//$testResult->result = Input::get('m_'.$measure->id);
+			$res = Input::get('m_'.$measure->id);
 
-			if($machine_name && $testResult->result) {
+			if($machine_name && $res) {
 
-				$testResult->device_name = $machine_name;
+				$dev_name = $machine_name;
 			}
-
-			$testResult->save();
+			array_push($test_me,$measure->id);
+			$dat = array('test_id' => $testID, 'measure_id' => $measure->id,'result' => $res, 'device_name' => $dev_name);
+			array_push($details,$dat);
+			//$testResult->save();
+			//TestResult::insert($details);
+			//var_dump($details);exit;
 		}
+		$r = DB::select("SELECT id FROM test_results WHERE test_id='$testID'");
+		if (count($r)>0)
+		{ foreach ($test->testType->measures as $measure) {
+			$testResult = TestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));	
+			$testResult->result = Input::get('m_'.$measure->id);
+				 if($machine_name && $testResult) {
 
+                                	$testResult->device_name = $machine_name;
+                       		 }
+				$testResult->save();
+			}
+		}
+		else
+		{	//$colums = array('test_id','measure_id','result','device_name');
+			//$sql = "INSERT INTO test_results ({$colums}) VALUES {$details}";
+			//DB::statement($sql);	
+			 TestResult::insert($details);
+		}
+		
+		//DB::table('test_results')->saveMany($details);
+		//var_dump($details);exit;
 		//Fire of entry saved/edited event
+		
 		Event::fire('test.saved', array($testID));
 
 		$input = Session::get('TESTS_FILTER_INPUT');
@@ -1124,19 +1170,20 @@ P1
 		if(isset($urlParts['page'])){
 			$pageParts = explode('=', $urlParts['page']);
 			$input['page'] = $pageParts[1];
+			
 		}
 
 		if(count($test->susceptibility)>0){
 			//delete all susceptibility values if result has no culture worksheet
 		}
-
+		
 		//Print pack details
 		$print = false;
 		if($test->testType->name == "Cross-match") {
 			$print = true;
 		}
 		// redirect
-		
+	
 		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 
 		return Redirect::action('TestController@index')
@@ -1168,7 +1215,7 @@ P1
 	 * @return
 	 */
 	public function viewDetails($testID)
-	{	
+	{       	
 		$panObject = new Panel;
 		$typeObject = new TestType;
 		$rst = $panObject->checkPanel($testID);
@@ -1186,10 +1233,13 @@ P1
 
 		}
 		
-
+		$sql = "SELECT name FROM users INNER JOIN tests ON tests.created_by = users.id WHERE tests.id ='$testID'";
+		$req_by = DB::select(DB::raw($sql));
+		$registeredBy = $req_by[0]->name;
 		return View::make('test.viewDetails')
 			->with('available_printers', Config::get('kblis.A4_printers'))
 			->with('organisms',$org)
+			->with('reqistered_by',$registeredBy)
 			->with('test', Test::find($testID))
 			->withInput(Input::all());
 	}

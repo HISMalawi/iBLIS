@@ -22,6 +22,7 @@
 			<div class="col-sm-3">
 				<label class="checkbox-inline">
 	        		{{ Form::checkbox('pending', "1", isset($pending)) }}{{trans('messages.include-pending-tests')}}
+				
 				</label>
 			</div>
 			<div class="col-sm-3">
@@ -50,7 +51,7 @@
 			            {{ Form::button("<span class='glyphicon glyphicon-filter'></span> ".trans('messages.view'),
 			                    array('class' => 'btn btn-primary', 'id' => 'filter', 'type' => 'submit')) }}
 		            </div>
-		            @if(count($verified) == count($tests))
+		            @if(count($verified) == count($tests)  || count($verified) >= 1 || count($rej_status) > 0 )
 		            <div class="col-sm-1">
 				        {{ Form::button(trans('messages.print'), array('class' => 'btn btn-success',
 				        	'onclick' => "selectPrinter()")) }}
@@ -86,7 +87,11 @@
 		<strong>
 			<p>
 				{{trans('messages.patient-report').' - '.date('d-m-Y')}}
+
+				<b style="padding-left: 10%;"> {{ 'No. Printed:  '. $print_status }}</b> 
+		        	<b style="padding-left: 10%;"> Date Sample Collected: {{$date_sample_collected}} </b>
 			</p>
+
 		</strong>
 		<table class="table table-bordered">
 			<tbody>
@@ -134,12 +139,14 @@
 
 			@forelse($data as $accession_number => $tests)
 				<?php
-				$rejected = Specimen::REJECTED;
+				#$rejected = Specimen::REJECTED;
 				$specimen = Specimen::where('accession_number', '=', $accession_number)->first();
-				$status = DB::select(DB::raw("SELECT specimens.id FROM specimens WHERE specimen_status_id='$rejected' AND specimens.accession_number='$accession_number'"));
+				#$status = DB::select(DB::raw("SELECT specimens.id FROM specimens WHERE specimen_status_id='$rejected' AND specimens.accession_number='$accession_number'"));
+
+	$specimen = $spdetails;
 				?>
 
-	@if(count($status)==0)
+	@if(count($rej_status)==0)
 				<div class="panel panel-success">
 						<div class="panel-heading ">
 							<span class="glyphicon glyphicon-tint"></span>
@@ -184,11 +191,11 @@
 						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
 							<td><strong>{{ trans('messages.rejected-by') }}</strong></td>
 						@endif
-
+						
 						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
 							<td></td>
 						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
-							<td>{{$specimen->acceptedBy->name}}</td>
+							<td>{{$collected_by}}</td>
 						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
 							<td>{{$specimen->rejectedBy->name}}</td>
 						@endif
@@ -220,6 +227,7 @@
 
 				$sorted_tests = Array();
 				$predefined_order = Array();
+			
 
 				if (in_array("CSF Analysis", explode(', ', $specimen->testTypes()))){
 					$predefined_order = Array("Cell Count", "India Ink", "Gram Stain", "Differential", "Culture & Sensitivity");
@@ -244,12 +252,13 @@
 				$tests = array_unique(array_merge($sorted_tests, $tests));
 
 				?>
-
+			
 				@forelse($tests as $test)
 						<tr>
 							<td>{{ $test->testType->name }}</td>
-							<td>
+							<td> 
 								@if(count($test->testResults) <= 1)
+									
 									@foreach($test->testResults as $result)
 
 										@if($result->result)
@@ -276,7 +285,9 @@
 											</p>
 										@else
 											Not done
+
 										@endif
+										
 									@endforeach
 								@else
 									<table style="margin: 0px;padding:0px;width:100%" class="table-bordered table-condensed">
@@ -373,22 +384,28 @@
 								<td style="width: 20%;">{{ $test->testedBy->name}}<br />
 									On {{ $test->time_completed }}
 									@if($test->resultDevices())
-									<br /><br />
-
-									<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+										<br /><br />
+										<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>					
 									@endif
+									<br /><br />
+									
 								</td>
 							@endif
 
 						</tr>
+						
 				@empty
 					<tr>
 						<td colspan="8">{{trans("messages.no-records-found")}}</td>
 					</tr>
+					
 				@endforelse
+				
 			</tbody>
 		</table>
+	
 	@else
+	<?php $test_data =  $test; ?>
 		<div class="panel panel-success">
 						<div class="panel-heading ">
 							<span class="glyphicon glyphicon-tint"></span>
@@ -425,11 +442,12 @@
 						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
 							<td>{{trans('messages.specimen-accepted')}}</td>
 						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
-							<td style="background: black;color:white;">{{trans('messages.specimen-rejected')}}</td>
+							<td style="background: red;color:white;">{{trans('messages.specimen-rejected')}}</td>
 						@endif
 
 						@if($specimen->specimen_status_id == Specimen::ACCEPTED)
 							<td><strong>{{ trans('messages.collected-by') }}</strong></td>
+						   
 						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
 							<td><strong>{{ trans('messages.rejected-by') }}</strong></td>
 						@endif
@@ -437,10 +455,10 @@
 						@if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
 							<td></td>
 						@elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
-							<td>{{$specimen->acceptedBy->name}}</td>
+							<td>{{collected_by}}</td>
 						@elseif($specimen->specimen_status_id == Specimen::REJECTED)
 							<td>{{$specimen->rejectedBy->name}}</td>
-						@endif
+						@endif	
 					</tr>
 
 					
@@ -542,7 +560,7 @@
 	</div>
 
 </div>
-
+pecimen->specimen_status_id == Specimen::ACCEPTED
 <!--PRINT CONFIRMATION POPUP BEGIN -->
 <div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
 	<div class="modal-dialog">
@@ -578,12 +596,34 @@
 					@endif
 				@endif
 
-					<button type="button" class="btn btn-primary" onclick="submitPrintForm();">Okay</button>
+					<button type="button" class="btn btn-primary" 
+						onclick="submitPrintForm(), track_printing('<?php echo $specimen_id; ?>')">Okay</button>
 					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+		function track_printing(specimen_id)		
+		{	
+			var url = "/track_patient_report_printing?specimen_id=" + specimen_id;
+			jQuery.ajax({ async: true,
+					  url : url,
+					  success : function(res)
+					  {	console.log("hello");
+					  	console.log(res);	
+							
+					  },
+					  error : function(err)
+					  {
+					  	console.log(err);
+					  }
+			})
+		}
+</script>
+
+
 <!--CONFIRMATION POPUP END -->
 @stop
