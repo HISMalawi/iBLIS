@@ -381,7 +381,6 @@ return array(
     /** 
      *   Access Controls
      */
-
     'access-controls' => 'Access Controls',
     'assign-roles' => 'Assign Roles',
     'assign-roles-to-users' => 'Assign roles to Users',
