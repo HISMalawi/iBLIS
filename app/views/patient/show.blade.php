@@ -17,11 +17,16 @@
                     {{ trans('messages.edit') }}
                 </a>
                 @if(Auth::user()->can('request_test'))
-                <a class="btn btn-sm btn-info" 
-                    href="{{ URL::route('test.create', array('patient_id' => $patient->id)) }}">
-                    <span class="glyphicon glyphicon-edit"></span>
-                    {{ trans('messages.new-test') }}
-                </a>
+                	<?php $new_test = false; ?>
+			@if($new_test == true)	
+				<a class="btn btn-sm btn-info" 
+                    			href="{{ URL::route('test.create', array('patient_id' => $patient->id)) }}">
+                    			<span class="glyphicon glyphicon-edit"></span>
+                    			
+						{{trans('messages.new-test')}} 
+                		
+				</a>
+	              @endif
                 @endif
             </div>
         </div> 

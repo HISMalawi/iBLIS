@@ -14,7 +14,7 @@ class  MindrayBC120 extends \KBLIS\Instrumentation\AbstractInstrumentor
             'code' => ' MBC120',
             'name' => 'Mindray BC 120',
             'description' => 'Automatic Analyzer for Enzymes',
-            'testTypes' => array("Enzymes")
+            'testTypes' => array("Pancreatic Function Test", "Renal Function Test","Lipogram", "Cardiac Test", "Electrolytes", "Magnesium", "Fluids",  "Liver Function Tests", "Calcium", "Uric Acid", "Phosphorus", "Glucose")
         );
     }
 
