@@ -151,8 +151,7 @@
                                     </span>
                             </div>
                         @endforeach
-                        
-                            @if($location_name == true )
+                             @if($location_name == true )
                                 <div class="form-group">
                                     {{ Form::label('interpretation', trans('messages.remarks')) }}
                                     {{ Form::textarea('interpretation', $test->interpretation, 
@@ -530,8 +529,6 @@
                 </div>
             </div>
         </div>
-
-    load_remarks_modal()
 
     <!-- Modal -->
     <div id="organismsModel" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">

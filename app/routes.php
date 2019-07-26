@@ -515,7 +515,54 @@ Route::group(array("before" => "auth"), function()
             "as"   => "reports.aggregate.cultureSensitivityCounts",
             "uses" => "ReportController@cultureSensitivityCounts"
         ));
+	
+	Route::any("/biochemistrymohreport",array(
+            "as" => "reports.aggregate.biochemistryMohReport",
+            "uses" => "ReportController@biochemistryMohReport"
 
+        ));
+        
+        
+        Route::any("/microbiologyMohReport",array(
+            "as" => "reports.aggregate.microbiologyMohReport",
+            "uses" => "ReportController@microbiologyMohReport"
+
+        ));
+
+
+        Route::any("/haematologyMohReport",array(
+            "as" => "reports.aggregate.haematologyMohReport",
+            "uses" => "ReportController@haematologyMohReport"
+
+        ));
+
+
+
+        Route::any("/serologyMohReport",array(
+            "as" => "reports.aggregate.serologyMohReport",
+            "uses" => "ReportController@serologyMohReport"
+
+        ));
+
+
+        Route::any("/parasitologyMohReport",array(
+            "as" => "reports.aggregate.parasitologyMohReport",
+            "uses" => "ReportController@parasitologyMohReport"
+
+        ));
+
+
+        Route::any("/bloodbankmohreport",array(
+            "as" => "reports.aggregate.bloodBankMohReport",
+            "uses" => "ReportController@bloodBankMohReport"
+
+        ));
+
+        Route::any("/moh_diagnostic_stats",array(
+            "as" => "reports.aggregate.mohDiagnosticStats",
+            "uses" => "ReportController@mohDiagnosticStats"
+
+        ));
         Route::any("/positivenegativecounts",array(
             "as" => "reports.aggregate.positiveNegativeCounts",
             "uses" => "ReportController@positiveNegativeCounts"

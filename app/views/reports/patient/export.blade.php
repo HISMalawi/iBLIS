@@ -17,6 +17,7 @@
 	<title>{{ Config::get('kblis.name') }} {{ Config::get('kblis.version') }}</title>
 </head>
 <body>
+     <?php $specimen = $spdetails ?>
 
 	<div class="panel panel-primary" id="patientReport" style="border: none; font-size: 1em !important;">
 		<div class="panel-heading ">
@@ -27,6 +28,139 @@
 			@if($error!='')
 				<!-- if there are search errors, they will show here -->
 				<div class="alert alert-info">{{ $error }}</div>
+		
+			@elseif (count($rej_status) > 0)
+                                @include("reportHeader")
+                                 <strong>
+                                                <p> 
+                                                 <?php
+                                                   if($print_status == 0)
+                                                    {
+                                                        $print_status = 1;
+                                                    }
+                                                ?>
+                                                        {{trans('messages.patient-report').' - '.date('d-m-Y')}}
+                                                        <b style="padding-left: 10%;"><i> {{ 'No. Printed:  '. $print_status }}</i></b> 
+                                                        <b style="padding-left: 10%;"> Date Sample Collected: {{$date_sample_collected}} </b>
+                                                </p>
+                                                
+                                </strong>
+
+                                 <table class="table table-bordered">
+                                                <tbody>
+                                                <tr>
+                                                        <th>{{ trans('messages.patient-name')}}</th>
+                                                                <td>{{ $patient->name }}</td>
+                                                        <th>{{ trans('messages.gender')}}</th>
+                                                        <td>{{ $patient->getGender(false) }}</td>
+                                                        <th>{{ trans('messages.age')}}</th>
+                                                        <td>{{ $patient->getAge("YY/MM")}}</td>
+                                                </tr>
+                                                <?php
+                                                $test = array();
+                                                if(!empty($tests[0])){
+                                                        $test = $tests[0];
+                                                }
+                                                ?>
+
+                                                <tr>
+                                                        <th>{{trans('messages.patient-id')}}</th>
+                                                        <td>{{ $patient->external_patient_number }}</td>
+
+                                                        <th colspan="2">Physical Address</th>
+                                                        <td colspan="2">{{ $patient->address }}</td>
+
+                                                </tr>
+                                                </tbody>
+                               </table>
+ 			       <div class="panel-heading ">
+                                  <span class="glyphicon glyphicon-tint"></span>
+                                  <span><strong>{{Lang::choice('messages.specimen-id', 1)}}</strong>&nbsp;:&nbsp;  <strong> {{ $specimen->accession_number }}</strong></span>
+				<?php 
+
+					$res =  DB::select(DB::raw("SELECT tests.time_created AS time_cre, tests.requested_by AS req_by,visits.ward_or_location AS ward FROM tests INNER JOIN specimens ON specimens.id = tests.specimen_id INNER JOIN visits ON visits.id = tests.visit_id WHERE specimens.id ='$specimen->id'"));
+				?>
+                                  <span class="pull-right"><strong>Requested By </strong>&nbsp;:&nbsp;  <strong> {{ $res[0]->req_by }} ( {{$res[0]->ward}})   
+                                                                   </strong></span>
+                               </div>
+
+
+			       <table class="table table-bordered rspecimen">
+                                                                        <tbody>
+
+                                                                        <tr>
+                                                                                <td><strong>{{Lang::choice('messages.specimen-type', 1)}}</strong></td>
+                                                                                <td>{{ $specimen->specimenType->name }}</td>
+
+                                                                                <td><strong>{{Lang::choice('messages.date-ordered', 1)}}</strong></td>
+                                                                                <td> {{ $res[0]->time_cre  }}</td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                                <td><strong>{{Lang::choice('messages.specimen-tests-ordered', 1)}}</strong></td>
+                                                                                <td>{{ $specimen->testTypes() }}</td>
+
+                                                                                <td><strong>{{Lang::choice('messages.test-category', 2)}}</strong></td>
+                                                                                <td>{{ $specimen->labSections() }}</td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                                <td><strong>{{trans('messages.ordered-specimen-status')}}</strong></td>
+                                                                                @if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+                                                                                        <td>{{trans('messages.specimen-not-collected')}}</td>
+                                                                                @elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+                                                                                        <td>{{trans('messages.specimen-accepted')}}</td>
+                                                                                @elseif($specimen->specimen_status_id == Specimen::REJECTED)
+                                                                                        <td>{{trans('messages.specimen-rejected')}}</td>
+                                                                                @endif
+
+                                                                                @if($specimen->specimen_status_id == Specimen::ACCEPTED)
+                                                                                        <td><strong>{{ trans('messages.collected-by') }}</strong></td>
+                                                                                @elseif($specimen->specimen_status_id == Specimen::REJECTED)
+                                                                                        <td><strong>{{ trans('messages.rejected-by') }}</strong></td>
+                                                                                @endif
+
+                                                                                @if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+                                                                                        <td></td>
+                                                                                @elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+                                                                                        <td>{{$specimen->acceptedBy->name}}</td>
+                                                                                @elseif($specimen->specimen_status_id == Specimen::REJECTED)
+                                                                                        <td>{{$specimen->rejectedBy->name}}</td>
+                                                                                @endif
+                                                                        </tr>
+
+
+					</tbody>
+			</table>
+
+
+			<?php
+                                                $number = $specimen->accession_number;
+                                                        $rej_reason = DB::select(DB::raw("SELECT rejection_reasons.reason AS reason FROM rejection_reasons INNER JOIN specimens ON specimens.rejection_reason_id = rejection_reasons.id WHERE specimens.accession_number='$number'"));
+                                        ?>
+                        <table class="table table-bordered rtest">
+                                <tbody>
+                                        <tr>
+                                                <th colspan="8">{{trans('messages.specimenrejected')}}
+                                                </th>
+                                        </tr>
+
+                                        <tr>
+                                                <td>{{$rej_reason[0]->reason}}</td>
+                                        </tr>
+                                </tbody>
+                        </table>
+
+
+
+
+
+
+
+
+
+
+
 			@else
 
 				<div id="report_content">
@@ -34,6 +168,9 @@
 					<strong>
 						<p>
 							{{trans('messages.patient-report').' - '.date('d-m-Y')}}
+							 <b style="padding-left: 10%;"><i> {{ 'No. Printed:  '. $print_status }}</i></b> 
+                                                        <b style="padding-left: 10%;"> Date Sample Collected: {{$date_sample_collected}} </b>
+
 						</p>
 					</strong>
 					<table class="table table-bordered">

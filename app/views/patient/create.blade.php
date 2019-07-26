@@ -20,7 +20,6 @@
 					{{ HTML::ul($errors->all()) }}
 				</div>
 			@endif
-
 			{{ Form::open(array('url' => 'patient', 'id' => 'form-create-patient')) }}
 
 				<div class="form-group">

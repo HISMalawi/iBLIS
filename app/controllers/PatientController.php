@@ -16,13 +16,13 @@ class PatientController extends \BaseController {
 	public function index()
 		{
 		$search = Input::get('search');
-
+		
 		$patients = Patient::search($search)->orderBy('id', 'desc')->paginate(Config::get('kblis.page-items'))->appends(Input::except('_token'));
-
+		
 		if (count($patients) == 0) {
 		 	Session::flash('message', trans('messages.no-match'));
 		}
-
+		
 		// Load the view and pass the patients
 		return View::make('patient.index')->with('patients', $patients)->withInput(Input::all());
 	}

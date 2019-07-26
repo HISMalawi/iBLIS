@@ -1100,8 +1100,8 @@ $(function(){
 
 	function showSpinner(action, clickOnClose, shieldOn) {
 
-		console.log(window.location);
-		if(window.location.href.match(/viewdetails|checkResult|patientreport|verify/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)) {
+		
+		if(window.location.href.match(/viewdetails|checkResult|serologyMohReport|bloodBankMohReport|biochemistryMohReport|haematologyMohReport|patientreport|verify/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)) {
 			hideSpinner();
 			if ($('.modal')){
 				$('.modal').modal('hide');
@@ -1245,14 +1245,17 @@ $(function(){
 
 		hideSpinner();
 
-		if(window.location.href.match(/test\/\d+\/enterresults|test\/\d+\/edit/i)){
+		if(window.location.href.match(/enterresults|edit/)){
 			checkMachineOutput();
+		}else if (window.location.href.match(/test/))
+		{
+			
 		}
 
-		if(window.location.href.match(/test/)){
+		//if(window.location.href.match(/test/)){
 
-			checkingMachineResults();
-		}
+			//checkingMachineResults();
+		//}
 
 	});
 
@@ -1362,5 +1365,5 @@ $(function(){
 					}
 			});
 		}
-		setTimeout("checkMachineOutput()",300);
+		//setTimeout("checkMachineOutput()",300);
 	}

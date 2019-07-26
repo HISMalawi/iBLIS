@@ -36,12 +36,15 @@
 	<div class="panel-heading ">
 		<span class="glyphicon glyphicon-user"></span>
 		{{trans('messages.list-patients')}}
-		<div class="panel-btn">
-			<a class="btn btn-sm btn-info" href="{{ URL::route('patient.create') }}">
-				<span class="glyphicon glyphicon-plus-sign"></span>
-				{{trans('messages.new-patient')}}
-			</a>
-		</div>
+		<?php $new_patient = false;?>
+		@if($new_patient == true)
+			<div class="panel-btn">
+				<a class="btn btn-sm btn-info" href="{{ URL::route('patient.create') }}">
+					<span class="glyphicon glyphicon-plus-sign"></span>
+					{{trans('messages.new-patient')}}
+				</a>
+			</div>
+		 @endif
 	</div>
 	<div class="panel-body">
 		<table class="table table-striped table-hover table-condensed">
@@ -69,13 +72,15 @@
 					<td>{{ $patient->dob }}</td>
 					<td>{{ $patient->address }}</td>
 
-					<td>
+					<td> {{ $request_test = false}}
 						@if(Auth::user()->can('request_test'))
-						<a class="btn btn-sm btn-info" 
-							href="{{ URL::route('test.create', array('patient_id' => $patient->id)) }}">
-							<span class="glyphicon glyphicon-edit"></span>
-							{{ trans('messages.new-test') }}
-						</a>
+						  @if($request_test == true)		
+							<a class="btn btn-sm btn-info" 
+								href="{{ URL::route('test.create', array('patient_id' => $patient->id)) }}">
+								<span class="glyphicon glyphicon-edit"></span>
+								{{ trans('messages.new-test') }}
+							</a>
+						  @endif
 						@endif
 						<!-- show the patient (uses the show method found at GET /patient/{id} -->
 						<a class="btn btn-sm btn-success" href="{{ URL::route('patient.show', array($patient->id)) }}" >

@@ -173,6 +173,7 @@ class SpecimenTypeController extends \BaseController {
 		$specimen_type = Input::get('specimentype');
 		$specimenType = SpecimenType::find($specimen_type);
 		$testTypes = [];
+		$testPanels = [];
 		if($specimenType) {
 			$location = TestCategory::where("id", '=', Session::get('location_id'))->first();
 

@@ -54,17 +54,17 @@ class MeasureController extends \BaseController {
             }else if( $measure->isAlphanumeric() || $measure->isAutocomplete() ) {
                 $val['val'] = $data['val'];
                 $val['interpretation'] = $data['interpretation'];
-                $val['hl7_identifier'] = $data['hl7_identifier'];
-                $val['hl7_text'] = $data['hl7_text'];
-                $val['hl7_coding_system'] = $data['hl7_coding_system'];
+                #$val['hl7_identifier'] = $data['hl7_identifier'];
+                #$val['hl7_text'] = $data['hl7_text'];
+                #$val['hl7_coding_system'] = $data['hl7_coding_system'];
                 for ($i=0; $i < count($val['val']); $i++) { 
                     $measurerange = new MeasureRange;
                     $measurerange->measure_id = $measure->id;
                     $measurerange->alphanumeric = $val['val'][$i];
                     $measurerange->interpretation = $val['interpretation'][$i];
-                    $measurerange->hl7_identifier = $val['hl7_identifier'][$i];
-                    $measurerange->hl7_text = $val['hl7_text'][$i];
-                    $measurerange->hl7_coding_system = $val['hl7_coding_system'][$i];
+                   #$measurerange->hl7_identifier = $val['hl7_identifier'][$i];
+                   #$measurerange->hl7_text = $val['hl7_text'][$i];
+                   #$measurerange->hl7_coding_system = $val['hl7_coding_system'][$i];
                     $measurerange->save();
                 }
             }

@@ -181,6 +181,7 @@ class InstrumentController extends \BaseController {
 		$accession_number = Input::get("accession_number");
 
  		// Fetch the results
+		
 		return $instrument->fetchResult($testType, $accession_number);
 	}
 
