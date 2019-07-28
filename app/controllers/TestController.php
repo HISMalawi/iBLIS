@@ -68,7 +68,7 @@ class TestController extends \BaseController {
 			}else{
 				$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
 			}
-
+			
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
 			}
