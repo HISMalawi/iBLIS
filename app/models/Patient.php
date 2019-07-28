@@ -104,7 +104,7 @@ class Patient extends Eloquent //extends EncryptionWrapper
 	* @return Collection 
 	*/
 	public static function search($searchText)
-	{
+	{  
 		return Patient::where('patient_number', '=', $searchText)
 						->orWhere('name', 'LIKE', '%'.$searchText.'%')
 						->orWhere('external_patient_number', '=', $searchText);

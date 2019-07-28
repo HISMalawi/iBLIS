@@ -1107,8 +1107,13 @@ P1
 	 * @return view
 	 */
 	public function saveResults($testID)
-	{  
+	{       $isCrossMatch = false;
 		$test = Test::find($testID);
+		if ($test->test_type_id == 30)
+		{
+			$isCrossMatch = true;
+		}
+
 		$test->test_status_id = Test::COMPLETED;
 		$test->interpretation = Input::get('interpretation');
 		$test->tested_by = Auth::user()->id;
@@ -1126,10 +1131,23 @@ P1
 			//$testResult->result = Input::get('m_'.$measure->id);
 			$res = Input::get('m_'.$measure->id);
 
+
+			if ($isCrossMatch)
+			{
+			    $rr = DB::SELECT(DB::raw("SELECT * FROM test_results WHERE result='$res'"));
+			    if(count($rr)>0){
+				$tr_id = $rr[0]->test_id;
+			    	DB::DELETE("DELETE FROM test_results WHERE test_id='$tr_id'");		
+			    	$isCrossMatch = false;
+			    }	
+			}
+
+
 			if($machine_name && $res) {
 
 				$dev_name = $machine_name;
 			}
+
 			array_push($test_me,$measure->id);
 			$dat = array('test_id' => $testID, 'measure_id' => $measure->id,'result' => $res, 'device_name' => $dev_name);
 			array_push($details,$dat);

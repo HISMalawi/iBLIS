@@ -630,7 +630,8 @@ class Test extends Eloquent
 			{
 				$q->where(function($q) use ($searchString){
 					$q->where('visit_number', '=', $searchString )//Search by visit number
-					->orWhere('id', '=', $searchString);
+					->orWhere('id', '=', $searchString)
+					->orWhere('ward_or_location', '=', $searchString);
 				});
 			});
 		});

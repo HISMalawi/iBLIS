@@ -184,7 +184,8 @@ class Instrument extends Eloquent
 
                 // Change measure names to measure_ids in the returned array
                 $resultWithIDs = array();
-
+		//var_dump("helo -------------------------------------------------------");
+		//var_dump($result);
                 foreach ($result as $measureId => $value) {
                         if ($measureId == "machine_name")
                         {
