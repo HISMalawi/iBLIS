@@ -1125,10 +1125,12 @@ P1
 		$details = array();
 		$dev_name = "";
 		$machine_name = Input::get('machine_name');
+		#$machine_name = "Gen";
 		foreach ($test->testType->measures as $measure) {
 			//$testResult = TestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
 			//$testResult->result = Input::get('m_'.$measure->id);
 			$res = Input::get('m_'.$measure->id);
+
 
 			if ($isCrossMatch)
 			{
@@ -1145,6 +1147,7 @@ P1
 
 				$dev_name = $machine_name;
 			}
+
 			array_push($test_me,$measure->id);
 			$dat = array('test_id' => $testID, 'measure_id' => $measure->id,'result' => $res, 'device_name' => $dev_name);
 			array_push($details,$dat);
