@@ -69,13 +69,15 @@
 					<td>{{ $patient->dob }}</td>
 					<td>{{ $patient->address }}</td>
 
-					<td>
+					<td> {{ $request_test = false}}
 						@if(Auth::user()->can('request_test'))
-						<a class="btn btn-sm btn-info" 
-							href="{{ URL::route('test.create', array('patient_id' => $patient->id)) }}">
-							<span class="glyphicon glyphicon-edit"></span>
-							{{ trans('messages.new-test') }}
-						</a>
+						  @if($request_test == true)		
+							<a class="btn btn-sm btn-info" 
+								href="{{ URL::route('test.create', array('patient_id' => $patient->id)) }}">
+								<span class="glyphicon glyphicon-edit"></span>
+								{{ trans('messages.new-test') }}
+							</a>
+						  @endif
 						@endif
 						<!-- show the patient (uses the show method found at GET /patient/{id} -->
 						<a class="btn btn-sm btn-success" href="{{ URL::route('patient.show', array($patient->id)) }}" >

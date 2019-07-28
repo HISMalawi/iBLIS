@@ -17,7 +17,7 @@
 					<div class="col-md-11">
 						<span class="glyphicon glyphicon-cog"></span>{{trans('messages.test-details')}}
 
-						@if($test->isCompleted() && $test->specimen->isAccepted())
+						@if( $test->isCompleted() && $test->specimen->isAccepted() )
 							<div class="panel-btn">
 
 								@if(empty($hideVerifyButton) && Auth::user()->can('verify_test_results') && (Auth::user()->id != $test->tested_by || Entrust::hasRole(Role::getAdminRole()->name)))
@@ -28,7 +28,7 @@
 								@endif
 							</div>
 						@endif
-						@if($test->isCompleted() ||$test->isVerified())
+						@if($test->isCompleted() ||$test->isVerified() || $test->isRejected())
 							<div class="panel-btn">
 								@if(Auth::user()->can('view_reports'))
 									<a class="btn btn-sm btn-default" href="{{ URL::to('patientreport/'.$test->visit->patient->id.'/'.$test->visit->id) }}">
@@ -108,7 +108,7 @@
 									{{ $test->visit->visit_type }}
 								@endif</p>
 							<p class="view-striped"><strong>{{trans('messages.registered-by')}}</strong>
-								{{$test->createdBy->name or trans('messages.unknown') }}</p>
+								{{$reqistered_by or trans('messages.unknown') }}</p>
 							<p class="view"><strong>{{trans('messages.tested-by')}}</strong>
 								{{$test->testedBy->name or trans('messages.unknown')}}</p>
 							@if($test->isVerified())

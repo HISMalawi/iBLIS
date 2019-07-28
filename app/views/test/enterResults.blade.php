@@ -60,9 +60,15 @@
                     <div class="col-md-6">
                     {{ Form::open(array('route' => array('test.saveResults',$test->id), 'method' => 'POST',
                         'id' => 'form-enter-results')) }}
+		        @if($test->testType->instruments->count() > 0)
+				<?php
+                                	$typeid = $test->test_type_id;
+                                	$r = DB::select(DB::raw("SELECT instruments.name FROM instruments INNER JOIN instrument_testtypes ON instruments.id = instrument_testtypes.instrument_id WHERE instrument_testtypes.test_type_id ='$typeid' LIMIT 1"));
+                                	$machine_name = $r[0]->name;
+			        	#var_dump($machine_name);exit;
+                        	 ?>
 
-                        @if($test->testType->instruments->count() > 0)
-                            {{ Form::hidden('machine_name', '', array('id' => 'machine_name')) }}
+				 {{ Form::hidden('machine_name', $machine_name, array('id' => 'machine_name')) }}
                         @endif
 
                         @foreach($test->testType->measures as $measure)
@@ -151,8 +157,7 @@
                                     </span>
                             </div>
                         @endforeach
-                        
-                            @if($location_name == true )
+                             @if($location_name == true )
                                 <div class="form-group">
                                     {{ Form::label('interpretation', trans('messages.remarks')) }}
                                     {{ Form::textarea('interpretation', $test->interpretation, 
@@ -530,8 +535,6 @@
                 </div>
             </div>
         </div>
-
-    load_remarks_modal()
 
     <!-- Modal -->
     <div id="organismsModel" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
