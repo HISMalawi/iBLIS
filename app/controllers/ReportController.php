@@ -216,7 +216,6 @@ P1
 		$obj = new PatientReportPrintStatus;
 		$res = $obj->get_print_status($visitId);
 
-
 		$view_url = "reports.patient.report";
 	
 		if(Input::has('pdf')){
@@ -501,6 +500,1344 @@ P1
 			}
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public function mohDiagnosticStats(){
+		$department = Input::get("department");
+		$indicator = Input::get("indicator");
+		$year = Input::get("year");
+		$quarter = Input::get("quarter");
+
+		$months = array();
+            if($quarter == "Quarter 1"){
+                $months = ["01","02","03"];
+            }else if ($quarter == "Quarter 2"){
+                $months = ["04","05","06"];
+            }else if ($quarter == "Quarter 3"){
+                $months = ["07","08","09"];
+            }else if ($quarter == "Quarter 4"){
+                $months = ["10","11","12"];
+			}
+		
+		if($department == "bio"){
+			$data =  array();
+			$counter = 0 ;
+			foreach($months AS $month){		
+				$sql = $this->extractBiochemistryMohDiagnonisticStats($indicator,$month,$year);
+			
+				$org = DB::select(DB::raw($sql));
+				array_push($data,[$month,$org[0]->test_count]);			
+			}
+
+			return Response::json($data);
+		}else if ($department == "blood"){
+			$data =  array();
+			$counter = 0 ;
+			foreach($months AS $month){		
+				$sql = $this->extractBloodBankMohDiagnonisticStats($indicator,$month,$year);
+			
+				$org = DB::select(DB::raw($sql));
+				array_push($data,[$month,$org[0]->test_count]);			
+			}
+
+			return Response::json($data);	
+		}else if ($department == "micro"){
+			$data =  array();
+			$counter = 0 ;
+			foreach($months AS $month){		
+				$sql = $this->extractMicrobiologyMohDiagnonisticStats($indicator,$month,$year);
+			
+				$org = DB::select(DB::raw($sql));
+				array_push($data,[$month,$org[0]->test_count]);			
+			}
+
+			return Response::json($data);	
+		}else if ($department == "haema"){
+			$data =  array();
+			$counter = 0 ;
+			foreach($months AS $month){		
+				$sql = $this->extracthaematologyMohDiagnonisticStats($indicator,$month,$year);
+			
+				$org = DB::select(DB::raw($sql));
+				array_push($data,[$month,$org[0]->test_count]);			
+			}
+
+			return Response::json($data);	
+		}else if ($department == "sero"){
+			$data =  array();
+			$counter = 0 ;
+			foreach($months AS $month){		
+				$sql = $this->extractserologyMohDiagnonisticStats($indicator,$month,$year);
+			
+				$org = DB::select(DB::raw($sql));
+				array_push($data,[$month,$org[0]->test_count]);			
+			}
+
+			return Response::json($data);	
+		}else if ($department == "para"){
+			$data =  array();
+			$counter = 0 ;
+			foreach($months AS $month){		
+				$sql = $this->extractparasitolgyMohDiagnonisticStats($indicator,$month,$year);
+			
+				$org = DB::select(DB::raw($sql));
+				array_push($data,[$month,$org[0]->test_count]);			
+			}
+
+			return Response::json($data);	
+		}
+
+		
+	}
+
+	
+	public function extractBloodBankMohDiagnonisticStats($indicator,$month,$year){
+		$period = $year."-".$month;
+		$data = array(
+		"blood grouping done on Patients" => "SELECT count(*) AS test_count FROM 
+								tests INNER JOIN test_results ON test_results.test_id = tests.id 
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								INNER JOIN measures ON measures.id = test_results.measure_id	
+								WHERE test_types.name = 'ABO Blood Grouping' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Grouping' AND test_results.result IS NOT NULL ))",
+		
+		"Total X-matched" => "SELECT count(*) AS test_count FROM 
+								tests INNER JOIN test_results ON test_results.test_id = tests.id 
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								INNER JOIN measures ON measures.id = test_results.measure_id	
+								WHERE test_types.name = 'Cross-match' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))",
+
+		"X- matched for matenity" => "SELECT count(*) AS test_count FROM 
+					tests INNER JOIN test_results ON test_results.test_id = tests.id 
+					INNER JOIN measures ON measures.id = test_results.measure_id
+					INNER JOIN test_types ON test_types.id = tests.test_type_id
+					INNER JOIN visits ON visits.id = tests.visit_id	
+					WHERE test_types.name = 'Cross-match' AND 
+					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
+                    
+                    ",
+
+		"X-macthed for peads" => "SELECT count(*) AS test_count FROM 
+					tests INNER JOIN test_results ON test_results.test_id = tests.id 
+					INNER JOIN measures ON measures.id = test_results.measure_id
+					INNER JOIN test_types ON test_types.id = tests.test_type_id
+					INNER JOIN visits ON visits.id = tests.visit_id	
+					WHERE test_types.name = 'Cross-match' AND 
+					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'CWA' OR visits.ward_or_location = 'CWB' OR visits.ward_or_location = 'CWC' OR visits.ward_or_location ='EM Nursery' OR visits.ward_or_location ='Under 5 Clinic')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
+                    ",
+
+		
+		"X-matched for others" => "SELECT count(*) AS test_count FROM 
+					tests INNER JOIN test_results ON test_results.test_id = tests.id 
+					INNER JOIN measures ON measures.id = test_results.measure_id
+					INNER JOIN test_types ON test_types.id = tests.test_type_id
+					INNER JOIN visits ON visits.id = tests.visit_id	
+					WHERE test_types.name = 'Cross-match' AND 
+					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'Other')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
+                    ",
+
+		
+		"X-matches done on patients with Hb ≤ 6.0g/dl" => "SELECT count(*) AS test_count FROM 
+										tests INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN measures ON measures.id = test_results.measure_id	
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										WHERE test_types.name = 'Cross-match' AND 
+										(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ) 
+										) AND visits.patient_id  IN (SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											WHERE test_results.measure_id = 148 AND test_results.result <= 6)",
+
+
+		"X-matches done on patients with Hb > 6.0g/dl" => "SELECT count(*) AS test_count FROM 
+										tests INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN measures ON measures.id = test_results.measure_id	
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										WHERE test_types.name = 'Cross-match' AND 
+										(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ) 
+										) AND visits.patient_id  IN (SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											WHERE test_results.measure_id = 148 AND test_results.result > 6)"
+								
+		);
+	
+
+		return $data[$indicator];
+
+	}
+
+	public function extractBiochemistryMohDiagnonisticStats($indicator,$month,$year){
+		$period = $year."-".$month;
+		$data = array(
+		"Blood glucose" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								INNER JOIN specimens ON specimens.id = tests.specimen_id
+								WHERE (test_types.name = 'Glucose' AND specimens.specimen_type_id ='3' )AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result IS NOT NULL)",
+		
+		"CSF glucose" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								INNER JOIN specimens ON specimens.id = tests.specimen_id
+								WHERE (test_types.name = 'Glucose' AND specimens.specimen_type_id ='2' )AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result IS NOT NULL)",
+
+		"Total Protein" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'Microprotein' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result IS NOT NULL)",
+
+		"Albumin" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'Microalbumin' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		
+		"Alkaline Phosphatase(ALP)" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Alanine aminotransferase (ALT)" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Amylase" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+								
+	    "Antistreptolysin O (ASO)" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+		
+		"Aspartate aminotransferase(AST)" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Bilirubin Total" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Bilirubin Direct" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		
+		"Calcium" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Chloride" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Cholesterol Total" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+
+
+		"Cholesterol LDL" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+		
+		"Cholesterol HDL" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Cholinesterase" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"C Reactive Protein (CRP)" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		
+		"Creatinine" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Creatine Kinase NAC" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result ='Purulent' OR test_results.result = 'MTB DETECTED'))",
+
+		"Creatine Kinase MB" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+
+		"Haemoglobin A1c" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+
+		"Iron" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Lipase" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Lactate Dehydrogenase (LDH)" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+
+		"Magnesium" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Micro-protein" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Micro-albumin" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+
+		"Phosphorus" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Potassium" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Rheumatoid Factor" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+
+		"Sodium" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Triglycerides" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		
+		"Urea" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		"Uric acid" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'MTB NOT DETECTED')",
+
+		);
+
+		return $data[$indicator];
+
+	}
+
+
+	public function extractMicrobiologyMohDiagnonisticStats($indicator,$month,$year){
+		$period = $year."-".$month;
+		$data = array(
+				"Number of AFB sputum examined" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'TB Microscopic Exam' AND 
+										(substr(time_created,1,7) = '$period')",
+
+
+				"Number of  new TB cases examined" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'MTB DETECTED' OR test_results.result = 'MTB DETECTED LOW' OR test_results.result = 'MTB DETECTED HIGH' OR test_results.result = 'MTB DETECTED MEDIUM' OR test_results.result = 'MTB DETECTED VERY LOW'))",
+				
+				"New cases with positive smear" => "SELECT count(*) AS test_count FROM 
+										test_results 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+										WHERE measures.name= 'Smear microscopy result' AND
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '++' OR test_results.result = '+++' OR test_results.result = '+' OR test_results.result = 'positive' OR test_results.result LIKE '%scanty%'))
+										",
+
+				"MTB Not Detected" => "SELECT count(*) AS test_count FROM 
+										test_results 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+										WHERE measures.name= 'Gene Xpert MTB' AND
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'MTB NOT DETECTED'))",
+
+				"RIF Resistant Detected" => "SELECT count(*) AS test_count FROM 
+										test_results 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+										WHERE measures.name= 'Gene Xpert RIF Resistance' AND
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'Rif Resistance DETECTED'))",
+				
+
+				"RIF Resistant Not Detected" => "SELECT count(*) AS test_count FROM 
+										test_results 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+										WHERE measures.name= 'Gene Xpert RIF Resistance' AND
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'RIF Resistant not detected'))",
+
+
+				"RIF Resistant Indeterminate" => "SELECT count(*) AS test_count FROM 
+										test_results 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+										WHERE measures.name= 'Gene Xpert RIF Resistance' AND
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'indeterminate' OR test_results.result = 'RIF Indeterminant' OR test_results.result = 'INDETERMINATE' ))",
+				
+				"Invalid" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'INVALID' OR test_results.result = 'invalid'))",
+
+				"No results" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'TB Tests' AND 
+								(substr(tests.time_created,1,7) = '$period' AND tests.test_status_id =3)",
+
+				"Number of CSF samples analysed" => "SELECT count(*) AS test_count FROM 
+								specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								WHERE specimen_types.name = 'CSF' AND 
+								(substr(specimens.time_accepted,1,7) = '$period' )",
+
+				"Number of CSF samples analysed for AFB" => "SELECT count(*) AS test_count FROM 
+								specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								WHERE specimen_types.name = 'CSFF' AND 
+								(substr(specimens.time_accepted,1,7) = '$period' )",
+				
+				"Number of CSF samples with Organism" => "SELECT count(*) AS test_count FROM 
+								specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'CSF' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
+				
+
+				"HVS analysed" => "SELECT count(*) AS test_count FROM 
+								specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								WHERE specimen_types.name = 'HVS' AND 
+								(substr(specimens.time_accepted,1,7) = '$period' )",
+
+				
+				"Number of Blood Cultures done" => "SELECT count(*) AS test_count FROM 
+								specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period' )",
+
+				"Positive blood Cultures" => "SELECT count(*) AS test_count FROM 
+								specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
+
+
+				"Number of tests on microscopy" => "SELECT count(*) AS test_count FROM 
+                                                                                test_results 
+                                                                                INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+                                                                                WHERE (measures.name= 'Smear microscopy result') AND
+                                                                                (substr(tests.time_created,1,7) = '$period' AND (test_results.result IS NOT NULL))",
+
+				"Number of tests on GeneXpert" => "SELECT count(*) AS test_count FROM 
+                                                                                test_results 
+                                                                                INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+                                                                                WHERE (measures.name= 'Gene Xpert MTB' OR measures.name = 'Gene Xpert RIF Resistance') AND
+                                                                                (substr(tests.time_created,1,7) = '$period' AND (test_results.result IS NOT NULL))",
+
+				"MTB Detected" => "SELECT count(*) AS test_count FROM 
+										test_results 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+										WHERE measures.name= 'Gene Xpert MTB' AND
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'MTB DETECTED' OR test_results.result = 'MTB DETECTED LOW' OR test_results.result = 'MTB DETECTED HIGH' OR test_results.result = 'MTB DETECTED MEDIUM' OR test_results.result = 'MTB DETECTED VERY LOW'))",
+				
+				"India ink positive" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'India Ink' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'POSITIVE' OR test_results.result = 'positive'))",
+				
+				
+				"Gram stain positive" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'Gram Stain' AND 
+								(substr(tests.time_created,1,7) = '$period' AND ((test_results.result = 'yes' OR test_results.result = 'organism seen') AND test_results.result IS NOT NULL))",
+				
+		);
+
+		
+		return $data[$indicator];
+				
+	}
+	
+	public function microbiologyMohReport(){
+
+		$quarter = ['Quarter 1','QNumber of CSF samples analysed for AFBuarter 2','Quarter 3','Quarter 4'];	
+		$currentYear = date("Y");
+		$years = array();
+		for($i = $currentYear; $i >= "2016"; $i = $i - 1){
+			array_push($years,$i);
+		}
+
+		$indicators = array(
+			"Number of AFB sputum examined",
+			"Number of  new TB cases examined",
+			"New cases with positive smear",
+			"MTB Not Detected",
+			"RIF Resistant Detected",
+			"RIF Resistant Not Detected",
+			"RIF Resistant Indeterminate",
+			"Invalid",
+			"No results",
+			"Number of CSF samples analysed",
+			"Number of CSF samples analysed for AFB",
+			"Number of CSF samples with Organism",
+			"HVS analysed",
+			"Number of Blood Cultures done",
+			"Positive blood Cultures",
+			"Number of tests on microscopy",
+			"Number of tests on GeneXpert",
+			"MTB Detected",
+			"India ink positive",
+			"Gram stain positive");
+
+		return View::make('reports.moh.microbiologyReport')
+						->with('quarterPeriod',$quarter)
+						->with('years',$years)
+						->with('heading','MoH Diagonistic Report (Microbiology Department)')
+						->with('indicators',$indicators);
+	}
+
+
+
+	public function biochemistryMohReport(){
+
+		$quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4'];	
+		$currentYear = date("Y");
+		$years = array();
+		for($i = $currentYear; $i >= "2016"; $i = $i - 1){
+			array_push($years,$i);
+		}
+
+
+		$indicators = array(
+			"Blood glucose",
+			"CSF glucose",
+			"Total Protein",
+			"Albumin",
+			"Alkaline Phosphatase(ALP)",
+			"Alanine aminotransferase (ALT)",
+			"Amylase",
+			"Antistreptolysin O (ASO)",
+			"Aspartate aminotransferase(AST)",
+			"Bilirubin Total",
+			"Bilirubin Direct",
+			"Calcium",
+			"Chloride",
+			"Cholesterol Total",
+			"Cholesterol LDL",
+			"Cholesterol HDL",
+			"Cholinesterase",
+			"C Reactive Protein (CRP)",
+			"Creatinine",
+			"Creatine Kinase NAC",
+			"Creatine Kinase MB",
+			"Haemoglobin A1c",
+			"Iron",
+			"Lipase",
+			"Lactate Dehydrogenase (LDH)",
+			"Magnesium",
+			"Micro-protein",
+			"Micro-albumin",
+			"Phosphorus",
+			"Potassium",
+			"Rheumatoid Factor",
+			"Sodium",
+			"Triglycerides",
+			"Urea",
+			"Uric acid");
+	
+		return View::make('reports.moh.biochemistryReport')
+						->with('quarterPeriod',$quarter)
+						->with('years',$years)
+						->with('heading','MoH Diagonistic Report (Biochemistry Department)')
+						->with('indicators',$indicators);
+	}
+
+
+
+
+
+	public function haematologyMohReport(){
+
+		$quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4'];	
+		$currentYear = date("Y");
+		$years = array();
+		for($i = $currentYear; $i >= "2016"; $i = $i - 1){
+			array_push($years,$i);
+		}
+
+
+		$indicators = array(			
+			"Full Blood Count",
+			"Heamoglobin only (blood donors excluded)",
+			"Patients with Hb ≤ 6.0g/dl",
+			"Patients with Hb ≤ 6.0g/dl who were transfused",
+			"Patients with Hb > 6.0g/dl",
+			"Patients with Hb >6.0g/dl who were transfused",
+			"WBC manual count",
+			"WBC differential",
+			"Erythrocyte Sedimentation Rate (ESR)",
+			"Sickling Test",
+			"Reticulocyte count",
+			"Prothrombin time (PT)",
+			"Activated Partial Thromboplastin Time (APTT)",
+			"International Normalized Ratio (INR)",
+			"Bleeding/ cloting time",
+			"CD4 absolute count",
+			"CD4 percentage",
+			"Blood film for red cell morphology",
+			"Bleeding/clotting time");
+	
+		return View::make('reports.moh.haematologyReport')
+						->with('quarterPeriod',$quarter)
+						->with('years',$years)
+						->with('heading','MoH Diagonistic Report (Haematology Department)')
+						->with('indicators',$indicators);
+	}
+
+	public function extracthaematologyMohDiagnonisticStats($indicator,$month,$year){
+		$period = $year."-".$month;
+		$data = array(
+				"Full Blood Count" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'FBC' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"Heamoglobin only (blood donors excluded)" => "SELECT count(*) AS test_count FROM 
+										test_results 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										INNER JOIN tests ON tests.id = test_results.test_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id                                        
+										WHERE (measures.name= 'HGB' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
+										(substr(tests.time_created,1,7) = '$period' )
+										",
+
+				"Patients with Hb ≤ 6.0g/dl" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											WHERE (test_results.measure_id = 148 AND test_results.result <= 6) AND (substr(tests.time_created,1,7) = '$period')",
+
+				"Patients with Hb ≤ 6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM 
+										tests INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN measures ON measures.id = test_results.measure_id	
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										WHERE test_types.name = 'Cross-match' AND 
+										(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ) 
+										) AND visits.patient_id  IN (SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											WHERE test_results.measure_id = 148 AND test_results.result <= 6)",
+				
+				"Patients with Hb > 6.0g/dl" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											WHERE (test_results.measure_id = 148 AND test_results.result > 6) AND (substr(tests.time_created,1,7) = '$period')",
+
+
+				"Patients with Hb >6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM 
+										tests INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN measures ON measures.id = test_results.measure_id	
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										WHERE test_types.name = 'Cross-match' AND 
+										(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ) 
+										) AND visits.patient_id  IN (SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											WHERE test_results.measure_id = 148 AND test_results.result > 6)",
+
+
+				"WBC manual count" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
+										(substr(time_created,1,7) = '$period')",
+
+
+
+				"WBC differential" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
+										(substr(time_created,1,7) = '$period')",
+
+
+				"Erythrocyte Sedimentation Rate (ESR)" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'ESR' AND 
+										(substr(time_created,1,7) = '$period')",
+
+
+
+				"Sickling Test" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Sickling Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
+										(substr(time_created,1,7) = '$period')",
+
+				"Reticulocyte count" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'Reticulocyte count' AND 
+										(substr(time_created,1,7) = '$period')",
+
+
+				"Prothrombin time (PT)" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Prothrombin Time' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND										
+										(substr(time_created,1,7) = '$period')",
+
+
+				"Activated Partial Thromboplastin Time (APTT)" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'APTT' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
+										(substr(time_created,1,7) = '$period')",
+
+
+				"International Normalized Ratio (INR)" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'INR' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
+										(substr(time_created,1,7) = '$period')",
+
+
+
+				"Bleeding/ cloting time" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'Bleeding/ cloting time' AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"CD4 absolute count" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'CD4 absolute count' AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"CD4 percentage" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'CD4 percentage' AND 
+										(substr(time_created,1,7) = '$period')",
+				
+
+				"Blood film for red cell morphology" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
+										(substr(time_created,1,7) = '$period')",
+
+				
+				"Bleeding/clotting time" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'Bleeding/clotting time' AND 
+										(substr(time_created,1,7) = '$period')",
+
+				
+		);
+
+		
+		return $data[$indicator];
+				
+	}
+
+	public function bloodBankMohReport(){
+
+		$quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4'];	
+		$currentYear = date("Y");
+		$years = array();
+		for($i = $currentYear; $i >= "2016"; $i = $i - 1){
+			array_push($years,$i);
+		}
+
+
+		$indicators = array(
+				"blood grouping done on Patients",
+				"Total X-matched","X- matched for matenity",
+				"X-macthed for peads",
+				"X-matched for others",
+				"X-matches done on patients with Hb ≤ 6.0g/dl",
+				"X-matches done on patients with Hb > 6.0g/dl"
+			);
+	
+		return View::make('reports.moh.bloodBankReport')
+						->with('quarterPeriod',$quarter)
+						->with('years',$years)
+						->with('heading','MoH Diagonistic Report (Blood Bank Department)')
+						->with('indicators',$indicators);
+	}
+
+
+
+
+	public function serologyMohReport(){
+
+		$quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4'];	
+		$currentYear = date("Y");
+		$years = array();
+		for($i = $currentYear; $i >= "2016"; $i = $i - 1){
+			array_push($years,$i);
+		}
+
+
+		$indicators = array(
+				"Syphilis Test",
+				"Syphilis screening on patients (by depart_option)",
+				"Positive tests^",
+				"Syphilis screening on antenatal mothers",
+				"Positive tests ^",
+				"HepBs test done on patients",
+				"Positive_tests  ^",
+				"HepC test done on patients",
+				"Positive tests  ^",
+				"Hcg  Pregnacy tests done",
+				"Positive tests   ^",
+				"HIV tests on PEP",
+				"positives tests    ^",
+			);
+	
+		return View::make('reports.moh.serologyReport')
+						->with('quarterPeriod',$quarter)
+						->with('years',$years)
+						->with('heading','MoH Diagonistic Report (Serology Department)')
+						->with('indicators',$indicators);
+	}
+
+	public function extractserologyMohDiagnonisticStats($indicator,$month,$year){
+		$period = $year."-".$month;
+		$data = array(
+				"Syphilis Test" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Syphilis Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"Syphilis screening on patients (by depart_option)" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Syphilis Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"Positive tests^" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											INNER JOIN measures ON measures.id = test_results.measure_id
+											INNER JOIN test_types ON test_types.id = tests.test_type_id
+											WHERE (test_results.measure_id = 112 OR test_results.measure_id = 113 OR test_results.measure_id = 114) AND (test_results.result = 'REACTIVE')
+											AND (substr(tests.time_created,1,7) = '$period' AND test_types.name = 'Syphilis Test')",
+
+				
+				"Syphilis screening on antenatal mothers" => "SELECT count(*) AS test_count FROM 
+							tests INNER JOIN test_results ON test_results.test_id = tests.id 
+							INNER JOIN measures ON measures.id = test_results.measure_id
+							INNER JOIN test_types ON test_types.id = tests.test_type_id
+							INNER JOIN visits ON visits.id = tests.visit_id	
+							WHERE test_types.name = 'Syphilis Test' AND 
+							((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW')) )
+							",
+
+				"Positive tests ^" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+											INNER JOIN visits ON visits.id = tests.visit_id 
+											INNER JOIN measures ON measures.id = test_results.measure_id
+											INNER JOIN test_types ON test_types.id = tests.test_type_id
+											WHERE ((test_results.measure_id = 112 OR test_results.measure_id = 113 OR test_results.measure_id = 114) AND test_results.result = 'REACTIVE')
+											AND ((substr(tests.time_created,1,7) = '$period' AND test_types.name = 'Syphilis Test') AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW'))",
+
+				"HepBs test done on patients" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Hepatitis B Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"Positive_tests  ^" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Hepatitis B Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))",
+
+				"HepC test done on patients" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Hepatitis C Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"Positive tests  ^" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Hepatitis C Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))",
+				
+
+				"Hcg  Pregnacy tests done" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Pregnancy Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"Positive tests   ^" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Pregnancy Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))",
+
+				"HIV tests on PEP" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'HIV' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										(substr(time_created,1,7) = '$period')",
+
+				"positives tests    ^" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'HIV' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))"
+
+	
+		);
+		
+		return $data[$indicator];
+				
+	}
+
+
+
+	public function parasitologyMohReport(){
+
+		$quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4'];	
+		$currentYear = date("Y");
+		$years = array();
+		for($i = $currentYear; $i >= "2016"; $i = $i - 1){
+			array_push($years,$i);
+		}
+
+
+		$indicators = array(
+				"Total malaria microscopy tests done",
+				"Malaria microscopy in <= 5yrs (by species)?",
+				"Positive malaria slides in < 5yrs",
+				"Malaria microscopy in unknown age",
+				"Positive malaria slides in unknown age",
+				"Total MRDTs Done",
+				"MRDTs Positives",
+				"MRDTs in <=  5yrs",
+				"MRDT Positives in < 5yrs",
+				"MRDTs in >= 5yrs",
+				"MRDT Positives in > 5yrs",
+				"Total invalid MRDTs tests",
+				"Trypanosome tests",
+				"Positive tests",
+				"Urine microscopy total",
+				"Schistosome Haematobium",
+				"Other urine parasites",
+				"urine chemistry (count)",
+				"Semen analysis (count)",
+				"Blood Parasites (count)",
+				"Blood Parasites seen",
+				"Stool Microscopy (count)",
+				"Stool Microscopy Parasites seen"
+			);
+	
+		return View::make('reports.moh.parasitologyReport')
+						->with('quarterPeriod',$quarter)
+						->with('years',$years)
+						->with('heading','MoH Diagonistic Report (Parasitology Department)')
+						->with('indicators',$indicators);
+	}
+
+
+	public function extractparasitolgyMohDiagnonisticStats($indicator,$month,$year){
+		$period = $year."-".$month;
+		$data = array(
+				"Total malaria microscopy tests done" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.id = 96 ) AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)' OR test_results.result = 'No parasite seen'))",
+
+					"Malaria microscopy in <= 5yrs (by species)?" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND (substr(tests.time_created,1,4) - substr(patients.dob,1,4) <= 5)) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'Blood film') AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)' OR test_results.result = 'No parasite seen'))",
+
+					"Positive malaria slides in < 5yrs" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND (substr(tests.time_created,1,4) - substr(patients.dob,1,4) < 5)) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'Blood film') AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)'))",
+
+
+					"Malaria microscopy in unknown age" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND patients.dob IS NULL) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'Blood film') AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)' OR test_results.result = 'No parasite seen'))",
+
+
+					"Positive malaria slides in unknown age" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND patients.dob IS NULL) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'Blood film') AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)'))",
+
+				"Total MRDTs Done" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT'))",
+
+				
+				"MRDTs Positives" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive'))",
+
+				"MRDTs in <=  5yrs" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND (substr(tests.time_created,1,4) - substr(patients.dob,1,4) <= 5)) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT'))",
+
+			"MRDT Positives in < 5yrs" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND (substr(tests.time_created,1,4) - substr(patients.dob,1,4) < 5)) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive'))",
+
+			"MRDTs in >= 5yrs" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND (substr(tests.time_created,1,4) - substr(patients.dob,1,4) >= 5)) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT'))",
+
+
+			"MRDT Positives in > 5yrs" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN visits ON visits.id = tests.visit_id	
+										INNER JOIN patients ON patients.id = visits.patient_id
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE ((test_types.name = 'Malaria Screening' AND (substr(tests.time_created,1,4) - substr(patients.dob,1,4) > 5)) AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive'))",
+
+
+			"Total invalid MRDTs tests" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'invalid' OR test_results.result IS NULL))",
+
+				"Trypanosome tests" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Trypanosome tests' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive' OR test_results.result = 'negative' OR test_results.result = 'invalid'))",
+
+					"Positive tests" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Trypanosome tests' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive' OR test_results.result = 'negative' OR test_results.result = 'invalid'))",
+
+
+					"Urine microscopy total" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Urine Microscopy' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' ))",
+
+					"Schistosome Haematobium" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Schistosome Haematobiums' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive' OR test_results.result = 'negative' OR test_results.result = 'invalid'))",
+
+					"Other urine parasites" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'Other urine parasites' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive' OR test_results.result = 'negative' OR test_results.result = 'invalid'))",
+			"urine chemistry (count)" => "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										INNER JOIN test_results ON test_results.test_id = tests.id 
+										INNER JOIN measures ON measures.id = test_results.measure_id
+										WHERE (test_types.name = 'urine chemistry (count)' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' AND measures.name = 'MRDT') AND (test_results.result = 'positive' OR test_results.result = 'negative' OR test_results.result = 'invalid'))",
+
+					"Semen analysis (count)" =>  "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Semen Analysis' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' ))",
+
+
+			"Blood Parasites (count)" =>  "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Blood Parasites seen' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' ))",
+
+			"Blood Parasites seen" =>  "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Blood Parasites seen' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' ))",
+
+			"Stool Microscopy (count)" =>  "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Stool Analysis' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' ))",
+
+			"Stool Microscopy Parasites seen" =>  "SELECT count(*) AS test_count FROM 
+										tests 
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE (test_types.name = 'Stool Microscopy Parasites seen' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+										((substr(tests.time_created,1,7) = '$period' ))",
+
+		);
+	
+		return $data[$indicator];
+				
+	}
+
 	//	End Daily Log-Patient report functions
 
 	/*	Begin Aggregate reports functions	*/

@@ -254,6 +254,7 @@
 							{{trans('messages.turnaround-report')}}</a>
 						</div>
 					</li>
+	
 					<!--li>
 						<div><a href="{{ URL::route('reports.aggregate.prevalence')}}">
 							<span class="glyphicon glyphicon-tag"></span>
@@ -305,6 +306,49 @@
 					</li>
 					
 				</ul>
+				<div class="sub-menu {{$active[5]}}">
+						<div class="sub-menu-title">{{trans('messages.moh-report')}}</div>
+						<ul class="sub-menu-items">
+							<li>
+								<div>
+									<a href="{{ URL::route('reports.aggregate.biochemistryMohReport')}}">
+										<span class="glyphicon glyphicon-tag"></span>
+										{{trans('messages.biochemistry')}}</a>
+								</div>
+							</li>
+							<li>
+								<div>
+									<a href="{{ URL::route('reports.aggregate.haematologyMohReport')}}">
+										<span class="glyphicon glyphicon-tag"></span>
+										{{trans('messages.haematology')}}</a>
+								</div>
+							</li>
+							<li>
+								<div><a href="{{ URL::route('reports.aggregate.bloodBankMohReport')}}">
+									<span class="glyphicon glyphicon-tag"></span>
+									{{trans('messages.blood-report')}}</a>
+								</div>
+							</li>  
+							<li>
+								<div><a href="{{ URL::route('reports.aggregate.parasitologyMohReport')}}">
+									<span class="glyphicon glyphicon-tag"></span>
+									{{trans('messages.parasitology-report')}}</a>
+								</div>
+							</li>
+							<li>
+								<div><a href="{{ URL::route('reports.aggregate.microbiologyMohReport')}}">
+									<span class="glyphicon glyphicon-tag"></span>
+									{{trans('messages.microbilogy-report')}}</a>
+								</div>
+							</li>
+							<li>
+								<div><a href="{{ URL::route('reports.aggregate.serologyMohReport')}}">
+									<span class="glyphicon glyphicon-tag"></span>
+									{{trans('messages.serology-report')}}</a>
+								</div>
+							</li>
+						</ul>
+				</div>
 				<div class="sub-menu-title">{{trans('messages.inventory-reports')}}</div>
 				<ul class="sub-menu-items">
 					<li>
