@@ -35,8 +35,7 @@ class UserController extends Controller {
                         $lab_sections = DB::select("SELECT * FROM user_testcategory cc
                                 INNER JOIN users u ON cc.user_id = u.id
                                 WHERE u.username = '$username' AND cc.test_category_id = $test_category_id");
-
-                        if (COUNT($lab_sections) > 0) {
+			 if (COUNT($lab_sections) > 0) {
                             if (Auth::attempt($credentials)) {
                                 Session::set("location_id", Input::get("lab_section"));
                                 return Redirect::route("user.home");
@@ -71,7 +70,7 @@ class UserController extends Controller {
     }
 
     public function homeAction(){
-        return View::make("user.home");
+    	return View::make("user.home");	
     }
 
 

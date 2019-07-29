@@ -12,7 +12,7 @@ class  SysmexXp300 extends \KBLIS\Instrumentation\AbstractInstrumentor
     {
         return array(
             'code' => ' SysmexXP300',
-            'name' => 'sysmex-xp-300',
+            'name' => 'sysmex-xp-300-017',
             'description' => 'Automatic Analyzer for Full Blood Count (FBC)',
             'testTypes' => array("FBC")
         );

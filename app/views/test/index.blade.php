@@ -61,12 +61,15 @@
                     <div class="col-md-11">
                         <span class="glyphicon glyphicon-filter"></span>{{trans('messages.list-tests')}}
                         @if(Auth::user()->can('request_test'))
-                        <div class="panel-btn">
-                            <a class="btn btn-sm btn-info" href="javascript:void(0)"
-                                data-toggle="modal" data-target="#new-test-modal">
-                                <span class="glyphicon glyphicon-plus-sign"></span>
-                                {{trans('messages.new-test')}}
-                            </a>
+                    	{{$request_test = false}}
+			<div class="panel-btn">
+                        	@if($request_test == true)
+			    		<a class="btn btn-sm btn-info" href="javascript:void(0)"
+                        	        	data-toggle="modal" data-target="#new-test-modal">
+                                		<span class="glyphicon glyphicon-plus-sign"></span>
+                                		{{trans('messages.new-test')}}
+                            		</a>
+				@endif
                         </div>
                         @endif
                     </div>
