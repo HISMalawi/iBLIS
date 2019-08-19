@@ -14,7 +14,7 @@ class  MindrayBS400 extends \KBLIS\Instrumentation\AbstractInstrumentor
             'code' => ' MBS400',
             'name' => 'Mindray BS 400',
             'description' => 'Automatic Analyzer for Chemistries',
-            'testTypes' => array("Renal Function Test", "Liver Function Tests", "Calcium", "Uric Acid", "Phosphorus", "Glucose")
+            'testTypes' => array("Renal Function Test","Lipogram", "Cardiac Test", "Electrolytes", "Magnesium", "Fluids",  "Liver Function Tests", "Calcium", "Uric Acid", "Phosphorus", "Glucose")
         );
     }
 

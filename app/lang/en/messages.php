@@ -381,7 +381,6 @@ return array(
     /** 
      *   Access Controls
      */
-
     'access-controls' => 'Access Controls',
     'assign-roles' => 'Assign Roles',
     'assign-roles-to-users' => 'Assign roles to Users',
@@ -401,8 +400,29 @@ return array(
     /** 
      *   Reports
      */
+    'moh-report' => 'MoH Diagonistic Report',
+    'biochemistry' => 'Biochemistry Report',
+    'haematology' => 'Haematology Report',
+    'blood-bank' => 'Blood Bank Report',
+    'microbiology' => 'Microbiology Report',
+    'parasitology' => 'Parasitology Report',
+    'serology' => 'Serology Report',
     'aggregate-reports' => 'Aggregate Reports',
     'collected-by'  =>  'Received By',
+    'report-year'      => 'Year',
+    'biochemistry' => 'Biochemistry Report',
+    'haematology' => 'Haematology Report',
+    'blood-bank' => 'Blood Bank Report',
+    'microbiology' => 'Microbiology Report',
+    'parasitology' => 'Parasitology Report',
+    'serology' => 'Serology Report',
+     'moh-report'    => 'MoH Diagnostic Report',
+    'biochemistry-report' => 'Biochemistry Report',
+    'haematology' => 'Haematology Report',
+    'blood-report' => 'Blood Bank Report',
+    'parasitology-report' => 'Parasitology Report',
+    'microbilogy-report' => 'Microbiology Report',
+    'serology-report' => 'Serology Report',
     'counts' => 'Counts',
     'daily-log' => 'Daily Log',
     'daily-reports' => 'Daily Reports',

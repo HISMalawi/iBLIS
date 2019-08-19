@@ -60,15 +60,16 @@
                     <div class="col-md-6">
                     {{ Form::open(array('route' => array('test.saveResults',$test->id), 'method' => 'POST',
                         'id' => 'form-enter-results')) }}
+		        @if($test->testType->instruments->count() > 0)
+				<?php
+                                	$typeid = $test->test_type_id;
+                                	$r = DB::select(DB::raw("SELECT instruments.name FROM instruments INNER JOIN instrument_testtypes ON instruments.id = instrument_testtypes.instrument_id WHERE instrument_testtypes.test_type_id ='$typeid' LIMIT 1"));
+                                	$machine_name = $r[0]->name;
+			        	#var_dump($machine_name);exit;
+                        	 ?>
+         
+				 {{ Form::hidden('machine_name', $machine_name, array('id' => 'machine_name')) }}
 
-                        @if($test->testType->instruments->count() > 0)
-				<?php 
-					$sql = "SELECT instruments.name FROM tests INNER JOIN test_types ON test_types.id=tests.test_type_id INNER JOIN instrument_testtypes ON test_types.id = instrument_testtypes.test_type_id INNER JOIN instruments ON instruments.id = instrument_testtypes.instrument_id WHERE tests.id = '$test->id' ORDER BY instruments.id DESC LIMIT 1";
-
-			                $dev_name = DB::select(DB::raw($sql));
-					$dev_name = $dev_name[0]->name;
-				?>
-                            {{ Form::hidden('machine_name', $dev_name, array('id' => 'machine_name')) }}
                         @endif
 
                         @foreach($test->testType->measures as $measure)
