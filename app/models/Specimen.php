@@ -73,7 +73,7 @@ class Specimen extends Eloquent
         return $this->belongsTo('Referral');
     }
     
-    /**
+    /**Input::get('id')
 	 * User (accepted) relationship
 	 */
 	public function acceptedBy()

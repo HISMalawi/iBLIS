@@ -301,12 +301,18 @@ $(function(){
 	 */
 	$('.tests-log').on( "click", ".accept-specimen", function(e) {
 
-		var testID = $(this).data('test-id');
-		var specID = $(this).data('specimen-id');
-		var url = $(this).data('url');
-		$.post(url, { id: specID}).done(function(){
-			window.location.reload()
-		});
+		try {
+			var testID = $(this).data('test-id');
+			var specID = $(this).data('specimen-id');
+			var url = $(this).data('url');
+			$.post(url, { id: specID}).done(function(){
+				window.location.reload();
+				});
+		  }
+		  catch(err) {
+			alert(err.message);
+		  }
+		
 
 		/*
 		var parent = $(e.currentTarget).parent();
@@ -377,8 +383,8 @@ $(function(){
 			}
 		});
 
-		/*
-		var parent = $(e.currentTarget).parent();
+		
+		/*var parent = $(e.currentTarget).parent();
 		// First replace the status
 		var newStatus = $('.started-test-accepted-specimen').html();
 		parent.siblings('.test-status').html(newStatus);
@@ -394,8 +400,8 @@ $(function(){
 
 		// Now remove the unnecessary buttons
 		$(this).siblings('.refer-button').remove();
-		$(this).remove();
-		*/
+		// $(this).remove();*/
+	
 	});
 
 	/**
@@ -1100,7 +1106,7 @@ $(function(){
 
 	function showSpinner(action, clickOnClose, shieldOn) {
 
-		console.log(window.location);
+		// console.log(window.location);
 		if(window.location.href.match(/viewdetails|checkResult|patientreport|verify/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)) {
 			hideSpinner();
 			if ($('.modal')){
@@ -1281,6 +1287,7 @@ $(function(){
 	function checkingMachineResults()
 	{ 
 		var buttons = __$('hider');	
+		
 		var info = buttons.getAttribute('data').split(',');		
 		var id_number = "";
 		var splited_data=[];

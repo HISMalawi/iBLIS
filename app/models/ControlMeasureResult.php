@@ -1,4 +1,4 @@
-<?php
+Input::get('id')<?php
 
 
 class ControlMeasureResult extends Eloquent {

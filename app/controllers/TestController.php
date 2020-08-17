@@ -3,6 +3,7 @@
 use Illuminate\Database\QueryException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Nlims\NlimsService;
 
 /**
  * Contains test resources  
@@ -209,17 +210,7 @@ class TestController extends \BaseController {
 		$panels = DB::table('test_types')
 			->join("testtype_specimentypes", "testtype_specimentypes.test_type_id", '=', "test_types.id")
 			->join("panels", "panels.test_type_id", '=', "test_types.id")
-			->join("panel_types", "panel_types.id", "=", 'panels.panel_type_id')
-			->select("panel_types.*")
-			->where('orderable_test', 1)
-			->where('testtype_specimentypes.specimen_type_id', $specimen->specimen_type->id)
-			->where("test_category_id", '=', Session::get('location_id'))
-			->groupBy("panel_types.name")
-			->orderBy('name', 'asc')->get();
-
-		$visit = $specimen->test->visit;
-		$specimen_type =  $specimen->specimen_type;
-
+			->join("panel_types", "panel_types.id", "=", 'panels.panel_type_id');
 		//Load Test Create View
 		return View::make('test.append')
 			->with('testtypes', $testTypes)
@@ -232,6 +223,7 @@ class TestController extends \BaseController {
 
 	public function printMachineId($sid){
 		$specimen = Specimen::find($sid);
+
 		$test_types = $specimen->testTypesShortNamed();
 		$test = $specimen->test;
 		$visit = $test->visit;
@@ -294,10 +286,7 @@ P1
 		header("Stream", false);
 		echo $s;
 		exit;
-	}
-
-	public function printTrackingNumber($sid){
-		$specimen = Specimen::find($sid);
+	
 		$test_types = $specimen->testTypesShortNamed();
 		$test = $specimen->test;
 		$visit = $test->visit;
@@ -368,11 +357,12 @@ P1
 
 	public function saveNewTest()
 	{	
+
 		//Create New Test
 		$rules = array(
 			'visit_type' => 'required',
 			'ward' => 'required',
-			'physician' => 'required',
+			'requesting_clinician' => 'required',
 			'testtypes' => 'required',
 		);
 		$validator = Validator::make(Input::all(), $rules);
@@ -417,7 +407,8 @@ P1
 			if(sizeof($split_name) > 2){
 				$middle_name = $split_name[1];
 			}
-
+	
+			$this->create_order_url = Config::get('nlims_connection.nlims_controller_ip')."/api/".Config::get('nlims_connection.nlims_api_version')."/create_order";
 			$json = Array( 'return_path' => "",
 				'district' => Config::get('kblis.district'),
 				'health_facility_name'=> Config::get('kblis.organization'),
@@ -429,42 +420,50 @@ P1
 				'national_patient_id' => $patient->external_patient_number,
 				'phone_number' => $patient->phone_number,
 				'reason_for_test' => '',
-				'sample_collector_last_name' => (isset(explode(' ', Input::get('physician'))[1]) ? explode(' ', Input::get('physician'))[1] : ''),
-				'sample_collector_first_name' => explode(' ', Input::get('physician'))[0],
-				'sample_collector_phone_number' => '',
-				'sample_collector_id' => '',
-				'sample_order_location' => Input::get('ward'),
+				'national_patient_id' =>  '505050',
+				'phone_number' => "000-00-00-00",
 				'sample_type' => SpecimenType::find(Input::get('specimen_type'))->name,
+				'sample_status' => 1,
+				'order_location' => Input::get('ward'),
 				'date_sample_drawn' => date('Y-m-d'),
 				'tests' => $testTypeNames,
 				'sample_priority' => (Input::get('priority') ? Input::get('priority') : 'Routine'),
 				'target_lab' => Config::get('kblis.organization'),
-				'tracking_number'  => "",
 				'art_start_date'  => "",
-				'date_dispatched'  => "",
 				'date_received'  => date('Y-m-d'),
+				'requesting_clinician' => Input::get('requesting_clinician'),
+				'who_order_test_first_name' => Input::get('requesting_clinician'),
+				'who_order_test_last_name' => Input::get('requesting_clinician'),
+
 				'return_json' => 'true'
 			);
 
 			$data_string = json_encode($json);
-			$ch = curl_init( Config::get('kblis.national-repo-node')."/create_hl7_order");
+			$token_ = strval(File::get(storage_path('token/nlims_token')));
+
+			$ch = curl_init( $this->create_order_url);
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 					'Content-Type: application/json',
 					'Accept: application/json',
+					'token: ' . $token_,
 					'Content-Length: ' . strlen($data_string))
 			);
 			$specimen = null;
 			$response = json_decode(curl_exec($ch));
+
+			// dd($response);
+
 			if(is_array($testTypes) && count($testTypes) > 0){
 
 				// Create Specimen - specimen_type_id, accepted_by, referred_from, referred_to
 				$specimen = new Specimen;
 				$specimen->specimen_type_id = Input::get('specimen_type');
 				$specimen->accepted_by = Auth::user()->id;
-				$specimen->tracking_number = $response->tracking_number;
+				$specimen->tracking_number = $response->data->tracking_number;
+				// $result->data->token;
 				$specimen->accession_number = Specimen::assignAccessionNumber();
 				$specimen->save();
 
@@ -498,7 +497,7 @@ P1
 									$test->test_status_id = Test::PENDING;
 									$test->created_by = Auth::user()->id;
 									$test->panel_id = $panel->id;
-									$test->requested_by = Input::get('physician');
+									$test->requested_by = Input::get('requesting_clinician');
 									$test->save();
 
 									$activeTest[] = $test->id;
@@ -518,7 +517,7 @@ P1
 							$test->specimen_id = $specimen->id;
 							$test->test_status_id = Test::PENDING;
 							$test->created_by = Auth::user()->id;
-							$test->requested_by = Input::get('physician');
+							$test->requested_by = Input::get('requesting_clinician');
 							$test->save();
 
 							$activeTest[] = $test->id;
@@ -533,6 +532,52 @@ P1
 			return Redirect::to($url)->with('message', 'messages.success-creating-test')
 					->with('activeTest', $activeTest);
 		}
+	}
+
+	#post data to nlims
+	public function postToNlims($nlimsData){
+
+		$json = Array( 'return_path' => "",
+				'district' => Config::get('kblis.district'),
+				'health_facility_name'=> Config::get('kblis.organization'),
+				'first_name' => $first_name,
+				'last_name' => $last_name,
+				'middle_name' => $middle_name,
+				'date_of_birth'=> $patient->dob,
+				'gender'=> ($patient->gender == '1' ? "F" : "M"),
+				'national_patient_id' => $patient->external_patient_number,
+				'phone_number' => $patient->phone_number,
+				'reason_for_test' => '',
+				'sample_collector_last_name' => (isset(explode(' ', Input::get('requesting_clinician'))[1]) ? explode(' ', Input::get('requesting_clinician'))[1] : ''),
+				'sample_collector_first_name' => explode(' ', Input::get('requesting_clinician'))[0],
+				'sample_collector_phone_number' => '',
+				'sample_collector_id' => '',
+				'sample_order_location' => Input::get('ward'),
+				'sample_type' => SpecimenType::find(Input::get('specimen_type'))->name,
+				'date_sample_drawn' => date('Y-m-d'),
+				'tests' => $testTypeNames,
+				'sample_priority' => (Input::get('priority') ? Input::get('priority') : 'Routine'),
+				'target_lab' => Config::get('kblis.organization'),
+				'tracking_number'  => "",
+				'art_start_date'  => "",
+				'date_dispatched'  => "",
+				'date_received'  => date('Y-m-d'),
+				'return_json' => 'true'
+			);
+
+
+
+
+
+
+
+
+
+
+
+
+
+		return $result;
 	}
 
 	#Append a New Test To an order
@@ -627,7 +672,7 @@ P1
 									$test->test_status_id = Test::PENDING;
 									$test->created_by = Auth::user()->id;
 									$test->panel_id = $panel->id;
-									$test->requested_by = Input::get('physician');
+									$test->requested_by = Input::get('requesting_clinician');
 									$test->save();
 
 									$activeTest[] = $test->id;
@@ -657,7 +702,7 @@ P1
 							$test->specimen_id = $specimen->id;
 							$test->test_status_id = Test::PENDING;
 							$test->created_by = Auth::user()->id;
-							$test->requested_by = Input::get('physician');
+							$test->requested_by = Input::get('requesting_clinician');
 							$test->save();
 
 							$activeTest[] = $test->id;
@@ -715,12 +760,35 @@ P1
 			$specimen->save();
 			Test::where('specimen_id',Input::get('specimen_id'))->update(array('test_status_id' => Test::TEST_REJECTED));
 
-			Sender::send_data($specimen->test->visit->patient, $specimen);
+
+			// update nlims
+
+			$user = Auth()->user();
+			$id = $user->id;
+
+			$tempName = explode(" ", $user->name);
+			$firstName = $tempName[0];
+			$secondName = $tempName[1];
+			$trackingNumber = $specimen->tracking_number;
+
+			$rejectData = "{
+				'tracking_number: '".$trackingNumber.",
+				'who_updated': {
+					'id': '".$id.",
+					'first_name': '". $firstName."',
+					'last_name': '".$lastName."'
+				},
+				'status': 'specimen_rejected'
+			}";
+
+			$nlims =  new NlimsService();
+			$nlims->reject($rejectData);
+
 			$url = Session::get('SOURCE_URL');
-			
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
 						->with('activeTest', array($specimen->test->id));
 		}
+
 	}
 
 	/**
@@ -731,12 +799,29 @@ P1
 	 */
 	public function accept()
 	{
+	
 		$specimen = Specimen::find(Input::get('id'));
 		$specimen->specimen_status_id = Specimen::ACCEPTED;
 		$specimen->accepted_by = Auth::user()->id;
 		$specimen->time_accepted = date('Y-m-d H:i:s');
 		$specimen->save();
-		Sender::send_data($specimen->test->visit->patient, $specimen);
+
+		$trackingNumber = $specimen->tracking_number;
+		
+		$accept_data = "{
+			'tracking_number: '" + $trackingNumber + ",
+			'who_updated': {
+				'id': '" + Auth::user()->id + ",
+				'first_name': '" + Auth::user()->name + "',
+				'last_name': '" + Auth::user()->name + "'
+			},
+			'status': 'specimen_accepted'
+		}";
+
+		$nlims =  new NlimsService();
+		$nlims->accept($accept_data);
+
+		
 		return $specimen->specimen_status_id;
 	}
 
@@ -1141,33 +1226,34 @@ P1
         }
 		$data_string = json_encode($json);
 	
-        if(Config::get('kblis.nlims_controller') == true){
-            $ch = curl_init("http://localhost:3010/api/v1/update_test");
+		// update nlims
+        // if(Config::get('kblis.nlims_controller') == true){
+		$ch = curl_init("http://localhost:7070/api/v1/update_test");
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+					'token:'.$token,
+					'Content-Type: application/json'));
+		$result = json_decode(curl_exec($ch));   				
+		if($result->error == true && $result->message == "token expired"){
+			$ch = curl_init("http://localhost:7070/api/v1/re_authenticate/admin/knock_knock");
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$result = json_decode(curl_exec($ch));
+			$token = $result->data->token;
+			Session::put('nlims_token', $token);
+
+			$ch = curl_init("http://localhost:7070/api/v1/update_test");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 						'token:'.$token,
 						'Content-Type: application/json'));
-			$result = json_decode(curl_exec($ch));   				
-			if($result->error == true && $result->message == "token expired"){
-                $ch = curl_init("http://localhost:3010/api/v1/re_authenticate/admin/knock_knock");
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = json_decode(curl_exec($ch));
-                $token = $result->data->token;
-                Session::put('nlims_token', $token);
-
-				$ch = curl_init("http://localhost:3010/api/v1/update_test");
-				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-							'token:'.$token,
-							'Content-Type: application/json'));
-				$result = json_decode(curl_exec($ch));   			
-            }     
-        }
+			$result = json_decode(curl_exec($ch));   			
+		}     
+        // }
 		
 
 		//Fire of entry saved/edited event
@@ -1195,7 +1281,7 @@ P1
 		}
 		// redirect
 		
-		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
+		//     Sender::send_data($test->visit->patient, $test->specimen, Array($test));
 
 		return Redirect::action('TestController@index')
 					->with('message', trans('messages.success-saving-results'))

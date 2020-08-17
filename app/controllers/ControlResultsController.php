@@ -1,10 +1,6 @@
 <?php
 
 class ControlResultsController extends \BaseController {
-
-	
-
-
 	/**
 	 * Update the specified resource in storage.
 	 *
@@ -28,7 +24,4 @@ class ControlResultsController extends \BaseController {
 		}
 		return Redirect::route('control.resultsIndex')->with('message', trans('messages.success-updating-control-result'));
 	}
-
-
-
 }

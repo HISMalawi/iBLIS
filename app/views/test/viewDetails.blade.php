@@ -121,7 +121,7 @@
 									{{$test->getFormattedTurnaroundTime()}}</p>
 							@endif
 						</div>
-							
+						Add Tests
 						<div id="cont" style="min-width: 310px; max-width: 800px; height: 130px; margin: 0 auto">
 				
 						</div>

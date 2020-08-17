@@ -62,8 +62,8 @@
 							</div>
 
 							<div class="form-group">
-								{{ Form::label('physician', trans("messages.physician")) }}
-								{{Form::text('physician', Input::old('physician'), array('class' => 'form-control'))}}
+								{{ Form::label('requesting_clinician', trans("messages.physician")) }}
+								{{Form::text('requesting_clinician', Input::old('requesting_clinician'), array('class' => 'form-control'))}}
 							</div>
 
 							<div class="form-group">
