@@ -49,7 +49,9 @@ class TestController extends \BaseController {
 
 		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
 
+			
 			$remoteResults = Sender::search_from_remote($searchString);
+			// var_dump($remoteResults); exit;
 			$test_results = Sender::search_results_from_remote($searchString);
 			//var_dump($remoteResults);exit;
 			if(!empty($remoteResults) && $remoteResults->error == false) {
@@ -60,6 +62,8 @@ class TestController extends \BaseController {
 					->with('tracking_number', $searchString)
 					->with('searchString', $searchString);
 			}
+		}else{
+			
 		}
 
 		// Search Conditions

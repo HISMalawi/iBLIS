@@ -11,52 +11,59 @@ class Sender
         if(!isset($token)){
             $token = "ddssc";            
         }
-        if(Config::get('kblis.nlims_controller') == true){
-            $ch = curl_init("http://localhost:3010/api/v1/query_order_by_tracking_number/".$trackingNumber);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
-            $result = json_decode(curl_exec($ch));    
-           
-            if($result->error == true && $result->message == "token expired"){
-                $ch = curl_init("http://localhost:3010/api/v1/re_authenticate/admin/knock_knock");
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $result = json_decode(curl_exec($ch));
-                $token = $result->data->token;
-                Session::put('nlims_token', $token);
 
-                $ch = curl_init("http://localhost:3010/api/v1/query_order_by_tracking_number/".$trackingNumber);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
-                $result = json_decode(curl_exec($ch));
-            }      
-        }else{
-            $ch = curl_init( Config::get('kblis.national-repo-node')."/query_results/".$trackingNumber);
+        $ch = curl_init("http://localhost:7070/api/v1/query_order_by_tracking_number/".$trackingNumber);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
+        $result = json_decode(curl_exec($ch));    
+       
+        if($result->error == true && $result->message == "token expired"){
+            $ch = curl_init("http://localhost:7070/api/v1/re_authenticate/admin/knock_knock");
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $result = json_decode(curl_exec($ch));
-        }
+            $token = $result->data->token;
+            Session::put('nlims_token', $token);
+
+            $ch = curl_init("http://localhost:7070/api/v1/query_order_by_tracking_number/".$trackingNumber);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
+            $result = json_decode(curl_exec($ch));
+        }      
+        // if(Config::get('kblis.nlims_controller') == true){
+          
+        // }else{
+        //     $ch = curl_init( Config::get('kblis.national-repo-node')."/query_results/".$trackingNumber);
+        //     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //     $result = json_decode(curl_exec($ch));
+        // }
         return $result;
     }
 
 
     public static function search_results_from_remote($trackingNumber){
         /* XLLH196N051 */
-        $token = "tsg9WCiGgthO";
-        if(Config::get('kblis.nlims_controller') == true){
-            $ch = curl_init("http://localhost:3010/api/v1/query_results_by_tracking_number/".$trackingNumber);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
-            $result = json_decode(curl_exec($ch));           
-        }else{
-            $ch = curl_init( Config::get('kblis.national-repo-node')."/query_results/".$trackingNumber);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result = json_decode(curl_exec($ch));
-        }
+        // $token = "tsg9WCiGgthO";
+        $token = strval(File::get(storage_path('token/nlims_token')));
+
+
+        $ch = curl_init("http://localhost:7070/api/v1/query_results_by_tracking_number/".$trackingNumber);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
+        $result = json_decode(curl_exec($ch));           
+
+        // if(Config::get('kblis.nlims_controller') == true){
+            
+        // }else{
+        //     $ch = curl_init( Config::get('kblis.national-repo-node')."/query_results/".$trackingNumber);
+        //     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //     $result = json_decode(curl_exec($ch));
+        // }
         return $result;
     }
 

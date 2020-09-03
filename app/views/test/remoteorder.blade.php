@@ -1,5 +1,9 @@
 @extends("layout")
 @section("content")
+<?php
+	// var_dump("test"); exit;
+
+?>
 	<div>
 		<ol class="breadcrumb">
 			<li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
@@ -64,6 +68,10 @@
 
 						</div>
 					</div>
+					<?php
+
+						// var_dump($test); exit;
+					?>
 					<div class="col-md-6">
 						<div class="panel panel-info">  <!-- Patient Details -->
 							<div class="panel-heading">
@@ -161,9 +169,10 @@
 		</div>
 		<div class="panel-body">
 			<div class="container-fluid">
+			
 				@if ($test_result->error == false)						
 						@foreach($test_result->data->results as $testName => $results)
-						
+
 							<div class="col-md-6">
 								<table class="table table-bordered">
 									<tbody>
@@ -179,6 +188,7 @@
 									</tr>
 
 										@foreach($results as $measure => $value)
+
 											@if($measure != "result_date")
 												<tr>
 													<td>{{ $measure }}</td>
