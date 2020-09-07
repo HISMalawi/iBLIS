@@ -743,6 +743,11 @@ P1
 	 */
 	public function rejectAction()
 	{
+
+		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+		
 		//Reject justifying why.
 		$rules = array(
 			'rejectionReason' => 'required|non_zero_key',
@@ -767,14 +772,14 @@ P1
 
 			// update nlims
 
-			$user = Auth()->user();
+			$user = Auth::user();
 			$id = $user->id;
 
 			$tempName = explode(" ", $user->name);
 			$firstName = $tempName[0];
 			$secondName = $tempName[1];
 			$trackingNumber = $specimen->tracking_number;
-
+			/*
 			$rejectData = "{
 				'tracking_number: '".$trackingNumber.",
 				'who_updated': {
@@ -784,9 +789,27 @@ P1
 				},
 				'status': 'specimen_rejected'
 			}";
+			*/
+			$update_specimen = array();
+			$update_specimen["tracking_number"] = $trackingNumber;
+			$update_specimen["who_updated"] = array();
+			$update_specimen["who_updated"]["id"] = $id;
+			$update_specimen["who_updated"]["first_name"] = $firstName;
+			$update_specimen["who_updated"]["last_name"] = $secondName;
+			$update_specimen["status"] = 'specimen_rejected';
+
+
+			$su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+			curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
+			curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
+			$result = json_decode(curl_exec($su));
+			$token = $result->data->token;
+			Session::put('nlims_token', $token);
+
+
 
 			$nlims =  new NlimsService();
-			$nlims->reject($rejectData);
+			$nlims->reject($update_specimen, $token);
 
 			$url = Session::get('SOURCE_URL');
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
@@ -803,6 +826,9 @@ P1
 	 */
 	public function accept()
 	{
+		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
 	
 		$specimen = Specimen::find(Input::get('id'));
 		$specimen->specimen_status_id = Specimen::ACCEPTED;
@@ -810,8 +836,15 @@ P1
 		$specimen->time_accepted = date('Y-m-d H:i:s');
 		$specimen->save();
 
+		$user = Auth::user();
+		$id = $user->id;
+
+		$tempName = explode(" ", $user->name);
+		$firstName = $tempName[0];
+		$secondName = $tempName[1];
+
 		$trackingNumber = $specimen->tracking_number;
-		
+		/*
 		$accept_data = "{
 			'tracking_number: '" + $trackingNumber + ",
 			'who_updated': {
@@ -821,9 +854,26 @@ P1
 			},
 			'status': 'specimen_accepted'
 		}";
+		*/
+
+		$update_specimen = array();
+		$update_specimen["tracking_number"] = $trackingNumber;
+		$update_specimen["who_updated"] = array();
+		$update_specimen["who_updated"]["id"] = $id;
+		$update_specimen["who_updated"]["first_name"] = $firstName;
+		$update_specimen["who_updated"]["last_name"] = $secondName;
+		$update_specimen["status"] = 'specimen_accepted';
+
+
+		$su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+		curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
+		curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
+		$result = json_decode(curl_exec($su));
+		$token = $result->data->token;
+		Session::put('nlims_token', $token);
 
 		$nlims =  new NlimsService();
-		$nlims->accept($accept_data);
+		$nlims->accept($update_specimen, $token);
 
 		
 		return $specimen->specimen_status_id;
@@ -908,7 +958,7 @@ P1
 			$input['page'] = $pageParts[1];
 		}
 		// redirect
-		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
+		Sender::send_data($test->visit->patient, $test->specimen);
 		return Redirect::action('TestController@index')
 			->with('activeTest', array($test->id))
 			->withInput($input);
@@ -954,7 +1004,7 @@ P1
 			$tst->person_talked_to_for_not_done = Input::get('not_done_explained_to');
 			$tst->save();
 		}
-		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
+		Sender::send_data($test->visit->patient, $test->specimen);
 		$input = Session::get('TESTS_FILTER_INPUT');
 		Session::put('fromRedirect', 'true');
 
@@ -987,7 +1037,7 @@ P1
 			$tst->person_talked_to_for_not_done = Input::get('not_done_explained_to');
 			$tst->save();
 		}
-		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
+		Sender::send_data($test->visit->patient, $test->specimen);
 		$input = Session::get('TESTS_FILTER_INPUT');
 		Session::put('fromRedirect', 'true');
 
@@ -1184,6 +1234,10 @@ P1
 	 */
 	public function saveResults($testID)
 	{  
+		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+		
 		$test = Test::find($testID);
 		$test->test_status_id = Test::COMPLETED;
 		$test->interpretation = Input::get('interpretation');
@@ -1192,6 +1246,7 @@ P1
 			$test->time_completed = date('Y-m-d H:i:s');
 		}
 		$test->save();
+
 		$machine_name = Input::get('machine_name');
 		$rst = array();
 		foreach ($test->testType->measures as $measure) {
@@ -1206,7 +1261,9 @@ P1
 			$rst[$measure->name] =  $testResult->result;	
 			$testResult->save();
 		}
-		
+
+		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
+		/*
 		$testName = $test->testType->name;
 		$testStatus = "completed";
 		$tracking_number = Specimen::find($test->specimen_id)->tracking_number;
@@ -1229,10 +1286,12 @@ P1
             $token = "ddssc";            
         }
 		$data_string = json_encode($json);
-	
+		
+
+
 		// update nlims
         // if(Config::get('kblis.nlims_controller') == true){
-		$ch = curl_init("http://localhost:7070/api/v1/update_test");
+		$ch = curl_init($nlims_url."/api/v1/update_test");
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1241,14 +1300,14 @@ P1
 					'Content-Type: application/json'));
 		$result = json_decode(curl_exec($ch));   				
 		if($result->error == true && $result->message == "token expired"){
-			$ch = curl_init("http://localhost:7070/api/v1/re_authenticate/admin/knock_knock");
+			$ch = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			$result = json_decode(curl_exec($ch));
 			$token = $result->data->token;
 			Session::put('nlims_token', $token);
 
-			$ch = curl_init("http://localhost:7070/api/v1/update_test");
+			$ch = curl_init($nlims_url."/api/v1/update_test");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1258,7 +1317,7 @@ P1
 			$result = json_decode(curl_exec($ch));   			
 		}     
         // }
-		
+		*/
 
 		//Fire of entry saved/edited event
 		Event::fire('test.saved', array($testID));
@@ -1390,7 +1449,8 @@ P1
 		}
 
 		Sender::send_data($test->visit->patient, $test->specimen);
-
+//		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
+		
 		//Fire of entry verified event
 		foreach($testIds As $id) {
 			Event::fire('test.verified', array($id));
