@@ -1,4 +1,5 @@
 <?php
+use App\Nlims\NlimsService;
 class Sender
 {
     /**
@@ -7,26 +8,32 @@ class Sender
      */
     public static function search_from_remote($trackingNumber){
         /* XLLH196N051 */
+        $nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+        $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+
         $token = Session::get('nlims_token');
         if(!isset($token)){
             $token = "ddssc";            
         }
 
-        $ch = curl_init("http://localhost:7070/api/v1/query_order_by_tracking_number/".$trackingNumber);
+        // $ch = curl_init("http://localhost:7070/api/v1/query_order_by_tracking_number/".$trackingNumber);
+
+        $ch = curl_init($nlims_url."/api/v1/query_order_by_tracking_number/".$trackingNumber);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
         $result = json_decode(curl_exec($ch));    
        
         if($result->error == true && $result->message == "token expired"){
-            $ch = curl_init("http://localhost:7070/api/v1/re_authenticate/admin/knock_knock");
+            $ch = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $result = json_decode(curl_exec($ch));
             $token = $result->data->token;
             Session::put('nlims_token', $token);
 
-            $ch = curl_init("http://localhost:7070/api/v1/query_order_by_tracking_number/".$trackingNumber);
+            $ch = curl_init($nlims_url."/api/v1/query_order_by_tracking_number/".$trackingNumber);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
@@ -47,10 +54,11 @@ class Sender
     public static function search_results_from_remote($trackingNumber){
         /* XLLH196N051 */
         // $token = "tsg9WCiGgthO";
+        $nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
         $token = strval(File::get(storage_path('token/nlims_token')));
 
 
-        $ch = curl_init("http://localhost:7070/api/v1/query_results_by_tracking_number/".$trackingNumber);
+        $ch = curl_init($nlims_url."/api/v1/query_results_by_tracking_number/".$trackingNumber);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
@@ -99,6 +107,10 @@ class Sender
      */
     public static function send_data($patient, $specimen, $tests=[])
     {
+        $nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+        $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+
         $order = array(
             '_id' => $specimen->tracking_number,
             'sample_status' => SpecimenStatus::find($specimen->specimen_status_id)->name,
@@ -108,6 +120,14 @@ class Sender
         if(sizeof($tests) == 0){
             $tests = Test::where('specimen_id', $specimen->id)->get();
         }
+        //check token
+        
+        $ch = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($ch));
+        $token = $result->data->token;
+        Session::put('nlims_token', $token);
 
         foreach($tests AS $test){
 
@@ -122,9 +142,13 @@ class Sender
             $h['who_updated'] = array();
             $who = Auth::user();
             $name = explode(' ', $who->name);
-            $h['who_updated']['first_name'] = isset($name[0]) ? $name[0]  : '';
-            $h['who_updated']['last_name'] = isset($name[1]) ? $name[1]  : '';
-            $h['who_updated']['ID_number'] = $who->id;
+            // $h['who_updated']['first_name'] = isset($name[0]) ? $name[0]  : '';
+            // $h['who_updated']['last_name'] = isset($name[1]) ? $name[1]  : '';
+            // $h['who_updated']['ID_number'] = $who->id;
+
+            $who_updated_fname = isset($name[0]) ? $name[0]  : '';
+            $who_updated_lname = isset($name[1]) ? $name[1]  : '';
+            $who_updated_id = $who->id;
 
             $r = array();
             foreach ($test->testResults AS $result){
@@ -135,28 +159,46 @@ class Sender
                     $r[$measure->name] = $result->result;
                 }
             }
-            $h['results'] = $r;
-            $order['results'][$test_name] = $h;
+            /*
+            $data = "{
+                'tracking_number: '" + $specimen->tracking_number + "',
+                'test_name: '" + $test_name + "',
+                'result_date: '" + $test->time_completed + "',
+                'who_updated': {
+                    'id': '" + $who_updated_id + "',
+                    'first_name': '" + $who_updated_fname + "',
+                    'last_name': '" + $who_updated_lname + "'
+                },
+                'test_status': '" + $test->testStatus->name + "'
+            }";
+            */
+            $update_test = array();
+            $update_test["tracking_number"] = $specimen->tracking_number;
+            $update_test["test_name"] = $test_name;
+            $update_test["time_updated"] = $test->updated_at;
+            $update_test["who_updated"] = array();
+            $update_test["who_updated"]["id"] = Auth::user()->id;
+            $update_test["who_updated"]["first_name"] = $who_updated_fname;
+            $update_test["who_updated"]["last_name"] = $who_updated_lname;
+            $update_test["test_status"] = $test->testStatus->name;
+
+            if ($r && $test->testStatus->name == 'completed'){
+                $update_test['results'] = $r;
+                $update_test["result_date"] = $test->time_completed;
+            }
+            
+            $test_updater = New NlimsService();
+            $resp_ = $test_updater->update_test($update_test, $token);
+
         }
-
-        #$order =  urldecode(http_build_query($order));
-        #dd($order);
-        $data_string = json_encode($order);
-
-        $ch = curl_init( Config::get('kblis.central-repo')."/pass_json/");
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string))
-        );
-
-        curl_exec($ch);
 
     }
 
     public static function merge_or_create($tracking_number){
+        $nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+        $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+
         $order = Sender::search_from_remote($tracking_number);
         $specimen = Specimen::where('tracking_number', $tracking_number)->first();
         $patient = Patient::where('external_patient_number', $order->data->other->patient->id)->first();
@@ -185,6 +227,39 @@ class Sender
         $specimen->accepted_by = Auth::user()->id;
         $specimen->time_accepted = time();
         $specimen->save();
+
+        $fname = explode(' ',$order->data->other->sample_created_by->name)[0];
+        $sname = explode(' ',$order->data->other->sample_created_by->name)[1];
+        /*
+        $update_specimen = {
+            'tracking_number':'" + $specimen->tracking_number + "',
+            'who_updated': {
+                'id': '" + Auth::user()->id + "',
+                'first_name': '" + $fname ? $fname : '' +  "',
+                'last_name': '" + $sname ? $sname : '' +  "'
+            },
+            'status': 'specimen_accepted'
+        };
+        */
+
+        $update_specimen = array();
+        $update_specimen["tracking_number"] = $specimen->tracking_number;
+        $update_specimen["who_updated"] = array();
+        $update_specimen["who_updated"]["id"] = Auth::user()->id;
+        $update_specimen["who_updated"]["first_name"] = $fname ? $fname : '';
+        $update_specimen["who_updated"]["last_name"] = $sname ? $sname : '';
+        $update_specimen["status"] = 'specimen_accepted';
+        
+        $su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+        curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($su));
+        $token = $result->data->token;
+        Session::put('nlims_token', $token);
+
+        $updater = New NlimsService();
+        $resp_ = $updater->update_order($update_specimen, $token);
+        //var_dump($resp_); exit;
 
         $panels_available = Sender::get_name($order, true);
         $testPanel = new TestPanel;
@@ -230,9 +305,22 @@ class Sender
             $test->visit_id = $visit->id;
             $test->save();
 
-            
+            $update_test = array();
+            $update_test["tracking_number"] = $specimen->tracking_number;
+            $update_test["test_name"] = $name;
+            $update_test["time_updated"] = $test->updated_at;
+            $update_test["who_updated"] = array();
+            $update_test["who_updated"]["id"] = Auth::user()->id;
+            $update_test["who_updated"]["first_name"] = $fname ? $fname : '';
+            $update_test["who_updated"]["last_name"] = $sname ? $sname : '';
+            $update_test["test_status"] = 'pending';
+
+            $test_updater = New NlimsService();
+            $resp_ = $test_updater->update_test($update_test, $token);
+                
         }
 
         return $specimen;
     }
+    
 }
