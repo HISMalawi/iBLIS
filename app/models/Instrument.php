@@ -213,6 +213,44 @@ class Instrument extends Eloquent
                 return json_encode($resultWithIDs);
     }
 	/*
+
+	public function fetchResult($testType, $accessionNumber){
+
+ 		// Invoke the Instrument Class to get the results
+		$result = (new $this->driver_name($this->ip))->getResult($accessionNumber);
+		
+		
+		// Change measure names to measure_ids in the returned array
+		$resultWithIDs = array();
+
+		foreach ($result as $measureId => $value) {
+			if ($measureId == "machine_name")
+                {
+                         $resultWithIDs['machine_name'] = $value;
+                }else{
+				$measureFound = $testType->measures->filter(
+					function($measure) use ($measureId){
+						$common_name = '';
+						try{
+							$common_name = strtoupper(Measure::where('id', $measureId)->first()->name);
+						}catch(Exception $ex){}
+
+						if($measure->id == $measureId or strtoupper($measure->name) == $common_name) return $measure;
+				});
+
+				if(empty($measureFound->toArray())){
+					$resultWithIDs[$measureId] = $value;
+				}else{
+					$resultWithIDs['m_'.$measureFound->first()->id] = $value;
+				}
+			}
+		}
+
+		// Send back a json result
+		return json_encode($resultWithIDs);
+	}
+	/**
+
 	 * Lots relationship
 	 */
 	public function lots()

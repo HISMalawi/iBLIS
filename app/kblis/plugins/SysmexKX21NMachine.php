@@ -56,6 +56,7 @@ class SysmexKX21NMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
 
         }
 
+
 	$results["results"] = $json[$specimen_id];
 	$results["machine_name"] = $json["machine_name"];
 
