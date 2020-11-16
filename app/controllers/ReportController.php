@@ -555,8 +555,10 @@ P1
 		}else if ($department == "micro"){
 			$data =  array();
 			$counter = 0 ;
-			foreach($months AS $month){		
+			foreach($months AS $month){	
+				// dd($month);	
 				$sql = $this->extractMicrobiologyMohDiagnonisticStats($indicator,$month,$year);
+				
 			
 				$org = DB::select(DB::raw($sql));
 				array_push($data,[$month,$org[0]->test_count]);			
@@ -950,12 +952,18 @@ P1
 	public function extractMicrobiologyMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-				"Number of AFB sputum examined" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'TB Microscopic Exam' AND 
-										(substr(time_created,1,7) = '$period')",
+				// "Number of AFB sputum examined" => "SELECT count(*) AS test_count FROM 
+				// 						tests 
+				// 						INNER JOIN test_types ON test_types.id = tests.test_type_id
+				// 						WHERE test_types.name = 'TB Microscopic Exam' AND 
+				// 						(substr(time_created,1,7) = '$period')",
 
+
+
+				"Number of AFB sputum examined" => "SELECT count(*) AS test_count FROM tests 
+										INNER JOIN specimens ON tests.specimen_id = specimens.id
+										INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+										WHERE (substr(tests.time_created,1,7) = '$period') AND specimen_types.name = 'sputum'",
 
 				"Number of  new TB cases examined" => "SELECT count(*) AS test_count FROM 
 								tests 
