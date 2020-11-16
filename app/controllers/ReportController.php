@@ -1217,8 +1217,8 @@ P1
 		$indicators = array(			
 			"Full Blood Count",
 			"Heamoglobin only (blood donors excluded)",
-			"Patients with Hb ≤ 6.0g/dl",
-			"Patients with Hb ≤ 6.0g/dl who were transfused",
+			"Patients with Hb <= 6.0g/dl",
+			"Patients with Hb <= 6.0g/dl who were transfused",
 			"Patients with Hb > 6.0g/dl",
 			"Patients with Hb >6.0g/dl who were transfused",
 			"WBC manual count",
@@ -1261,11 +1261,11 @@ P1
 										(substr(tests.time_created,1,7) = '$period' )
 										",
 
-				"Patients with Hb ≤ 6.0g/dl" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+				"Patients with Hb <= 6.0g/dl" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
 											INNER JOIN visits ON visits.id = tests.visit_id 
 											WHERE (test_results.measure_id = 148 AND test_results.result <= 6) AND (substr(tests.time_created,1,7) = '$period')",
 
-				"Patients with Hb ≤ 6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM 
+				"Patients with Hb <= 6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM 
 										tests INNER JOIN test_results ON test_results.test_id = tests.id 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN measures ON measures.id = test_results.measure_id	
