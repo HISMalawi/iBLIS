@@ -635,7 +635,7 @@ P1
 					INNER JOIN test_types ON test_types.id = tests.test_type_id
 					INNER JOIN visits ON visits.id = tests.visit_id	
 					WHERE test_types.name = 'Cross-match' AND 
-					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'CWA' OR visits.ward_or_location = 'CWB' OR visits.ward_or_location = 'CWC' OR visits.ward_or_location ='EM Nursery' OR visits.ward_or_location ='Under 5 Clinic')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
+					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'CWA' OR visits.ward_or_location = 'CWB' OR visits.ward_or_location = 'CWC' OR visits.ward_or_location ='EM Nursery' OR visits.ward_or_location = 'Nursery' OR visits.ward_or_location ='Ward 9' OR visits.ward_or_location ='Under 5 Clinic')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
                     ",
 
 		
