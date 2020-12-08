@@ -1,5 +1,5 @@
 <?php
-use App\Nlims\NlimsService;
+use Nlims\Service\NlimsService;
 class Sender
 {
     /**
@@ -121,7 +121,7 @@ class Sender
             $tests = Test::where('specimen_id', $specimen->id)->get();
         }
         //check token
-        
+       // var_dump($nlims_pass);exit;
         $ch = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
