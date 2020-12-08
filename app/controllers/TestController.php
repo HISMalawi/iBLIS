@@ -3,6 +3,7 @@
 use Illuminate\Database\QueryException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Nlims\NlimsService;
 
 /**
  * Contains test resources  
@@ -698,7 +699,8 @@ P1
 	 */
 	public function rejectAction()
 	{
-		//Reject justifying why.
+                
+		/* Reject justifying why.
 		$rules = array(
 			'rejectionReason' => 'required|non_zero_key',
 			'reject_explained_to' => 'required',
@@ -725,6 +727,91 @@ P1
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
 						->with('activeTest', array($specimen->test->id));
 		}
+
+
+		*/
+
+
+			
+		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        	$nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+		
+		//Reject justifying why.
+		$rules = array(
+			'rejectionReason' => 'required|non_zero_key',
+			'reject_explained_to' => 'required',
+		);
+		$validator = Validator::make(Input::all(), $rules);
+
+		if ($validator->fails()) {
+			return Redirect::route('test.reject', array(Input::get('specimen_id')))
+				->withInput()
+				->withErrors($validator);
+		} else {
+			$specimen = Specimen::find(Input::get('specimen_id'));
+			$specimen->rejection_reason_id = Input::get('rejectionReason');
+			$specimen->specimen_status_id = Specimen::REJECTED;
+			$specimen->rejected_by = Auth::user()->id;
+			$specimen->time_rejected = date('Y-m-d H:i:s');
+			$specimen->reject_explained_to = Input::get('reject_explained_to');
+			$specimen->save();
+			Test::where('specimen_id',Input::get('specimen_id'))->update(array('test_status_id' => Test::TEST_REJECTED));
+
+
+			// update nlims
+
+			$user = Auth::user();
+			$id = $user->id;
+
+			$tempName = explode(" ", $user->name);
+			$firstName = $tempName[0];
+			$secondName = $tempName[1];
+			$trackingNumber = $specimen->tracking_number;
+			/*
+			$rejectData = "{
+				'tracking_number: '".$trackingNumber.",
+				'who_updated': {
+					'id': '".$id.",
+					'first_name': '". $firstName."',
+					'last_name': '".$lastName."'
+				},
+				'status': 'specimen_rejected'
+			}";
+			*/
+			$update_specimen = array();
+			$update_specimen["tracking_number"] = $trackingNumber;
+			$update_specimen["who_updated"] = array();
+			$update_specimen["who_updated"]["id"] = $id;
+			$update_specimen["who_updated"]["first_name"] = $firstName;
+			$update_specimen["who_updated"]["last_name"] = $secondName;
+			$update_specimen["status"] = 'specimen_rejected';
+
+
+			$su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+			curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
+			curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
+			$result = json_decode(curl_exec($su));
+			$token = $result->data->token;
+			Session::put('nlims_token', $token);
+
+
+
+			$nlims =  new NlimsService();
+			$nlims->reject($update_specimen, $token);
+
+			$url = Session::get('SOURCE_URL');
+			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
+						->with('activeTest', array($specimen->test->id));
+		}
+
+
+
+
+
+
+
+
 	}
 
 	/**
@@ -734,14 +821,70 @@ P1
 	 * @return
 	 */
 	public function accept()
-	{
+	{     /*
 		$specimen = Specimen::find(Input::get('id'));
 		$specimen->specimen_status_id = Specimen::ACCEPTED;
 		$specimen->accepted_by = Auth::user()->id;
 		$specimen->time_accepted = date('Y-m-d H:i:s');
 		$specimen->save();
-		//Sender::send_data($specimen->test->visit->patient, $specimen);
+		Sender::send_data($specimen->test->visit->patient, $specimen);
 		return $specimen->specimen_status_id;
+
+		*/
+
+		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        	$nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+	
+		$specimen = Specimen::find(Input::get('id'));
+		$specimen->specimen_status_id = Specimen::ACCEPTED;
+		$specimen->accepted_by = Auth::user()->id;
+		$specimen->time_accepted = date('Y-m-d H:i:s');
+		$specimen->save();
+
+		$user = Auth::user();
+		$id = $user->id;
+
+		$tempName = explode(" ", $user->name);
+		$firstName = $tempName[0];
+		$secondName = $tempName[1];
+
+		$trackingNumber = $specimen->tracking_number;
+		/*
+		$accept_data = "{
+			'tracking_number: '" + $trackingNumber + ",
+			'who_updated': {
+				'id': '" + Auth::user()->id + ",
+				'first_name': '" + Auth::user()->name + "',
+				'last_name': '" + Auth::user()->name + "'
+			},
+			'status': 'specimen_accepted'
+		}";
+		*/
+
+		$update_specimen = array();
+		$update_specimen["tracking_number"] = $trackingNumber;
+		$update_specimen["who_updated"] = array();
+		$update_specimen["who_updated"]["id"] = $id;
+		$update_specimen["who_updated"]["first_name"] = $firstName;
+		$update_specimen["who_updated"]["last_name"] = $secondName;
+		$update_specimen["status"] = 'specimen_accepted';
+
+
+		$su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+		curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
+		curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
+		$result = json_decode(curl_exec($su));
+		$token = $result->data->token;
+		Session::put('nlims_token', $token);
+
+		$nlims =  new NlimsService();
+		$nlims->accept($update_specimen, $token);
+
+		
+		return $specimen->specimen_status_id;
+		
+
 	}
 
 	/**
@@ -778,14 +921,25 @@ P1
 	 * @return
 	 */
 	public function start()
-	{
+	{   /**
+		$test = Test::find(Input::get('id'));
+		$test->test_status_id = Test::STARTED;
+		$test->time_started = date('Y-m-d H:i:s');
+		$test->save();
+		**/
+
+		//Sender::send_data($test->visit->patient, $test->specimen, Array($test));
+		//Session::set('activeTest', array($test->id));
+		return $test->testType->instruments->count();
+
+
 		$test = Test::find(Input::get('id'));
 		$test->test_status_id = Test::STARTED;
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
 
-		//Sender::send_data($test->visit->patient, $test->specimen, Array($test));
-		//Session::set('activeTest', array($test->id));
+		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
+		Session::set('activeTest', array($test->id));
 
 		return $test->testType->instruments->count();
 	}
@@ -827,6 +981,7 @@ P1
 		return Redirect::action('TestController@index')
 			->with('activeTest', array($test->id))
 			->withInput($input);
+
 	}
 
 	/**
@@ -1107,7 +1262,14 @@ P1
 	 * @return view
 	 */
 	public function saveResults($testID)
-	{       $isCrossMatch = false;
+	{       
+		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
+        	$nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+		
+
+
+		$isCrossMatch = false;
 		$test = Test::find($testID);
 		if ($test->test_type_id == 30)
 		{
@@ -1166,15 +1328,10 @@ P1
 			}
 		}
 		else
-		{	//$colums = array('test_id','measure_id','result','device_name');
-			//$sql = "INSERT INTO test_results ({$colums}) VALUES {$details}";
-			//DB::statement($sql);	
+		{	
 			 TestResult::insert($details);
 		}
 		
-		//DB::table('test_results')->saveMany($details);
-		//var_dump($details);exit;
-		//Fire of entry saved/edited event
 		
 		Event::fire('test.saved', array($testID));
 
@@ -1309,7 +1466,7 @@ P1
 		}
 
 		Sender::send_data($test->visit->patient, $test->specimen);
-
+		
 		//Fire of entry verified event
 		foreach($testIds As $id) {
 			Event::fire('test.verified', array($id));
