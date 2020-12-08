@@ -3,7 +3,7 @@
 use Illuminate\Database\QueryException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use App\Nlims\NlimsService;
+use Nlims\Service\NlimsService;
 
 /**
  * Contains test resources  
@@ -921,17 +921,8 @@ P1
 	 * @return
 	 */
 	public function start()
-	{   /**
-		$test = Test::find(Input::get('id'));
-		$test->test_status_id = Test::STARTED;
-		$test->time_started = date('Y-m-d H:i:s');
-		$test->save();
-		**/
-
-		//Sender::send_data($test->visit->patient, $test->specimen, Array($test));
-		//Session::set('activeTest', array($test->id));
-		return $test->testType->instruments->count();
-
+	{   		
+		//var_dump("hello");exit();
 
 		$test = Test::find(Input::get('id'));
 		$test->test_status_id = Test::STARTED;
