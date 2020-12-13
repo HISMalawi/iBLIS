@@ -435,6 +435,7 @@
 												@endif
 											</td>
 											<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
+											@if($test->tested_by !=0)
 											<td style="width: 20%;">{{ $test->testedBy->name}}<br />
 												On {{ $test->time_completed }}
 												@if($test->resultDevices())
@@ -443,6 +444,7 @@
 													<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
 												@endif
 											</td>
+											@endif
 
 										</tr>
 									@empty

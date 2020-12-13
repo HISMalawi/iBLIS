@@ -1101,7 +1101,7 @@ $(function(){
 	function showSpinner(action, clickOnClose, shieldOn) {
 
 		
-		if(window.location.href.match(/viewdetails|checkResult|serologyMohReport|bloodBankMohReport|biochemistryMohReport|haematologyMohReport|patientreport|verify/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)) {
+		if(window.location.href.match(/viewdetails|checkResult|serologyMohReport|microbiologyMohReport|bloodBankMohReport|biochemistryMohReport|haematologyMohReport|patientreport|verify/i) || window.location.href.match(/print|machine\_test\_id\=\d+$/)) {
 			hideSpinner();
 			if ($('.modal')){
 				$('.modal').modal('hide');

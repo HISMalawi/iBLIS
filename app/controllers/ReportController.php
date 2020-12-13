@@ -1063,6 +1063,20 @@ P1
 								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
 
+	"Number of tests on microscopy" => "SELECT count(*) AS test_count FROM 
+                                                                                test_results 
+                                                                                INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+                                                                                WHERE (measures.name= 'Smear microscopy result') AND
+                                                                                (substr(tests.time_created,1,7) = '$period' AND (test_results.result IS NOT NULL))",
+
+				"Number of tests on GeneXpert" => "SELECT count(*) AS test_count FROM 
+                                                                                test_results 
+                                                                                INNER JOIN measures ON measures.id = test_results.measure_id
+                                        INNER JOIN tests ON tests.id = test_results.test_id
+                                                                                WHERE (measures.name= 'Gene Xpert MTB' OR measures.name = 'Gene Xpert RIF Resistance') AND
+                                                                                (substr(tests.time_created,1,7) = '$period' AND (test_results.result IS NOT NULL))",
+
 
 				"MTB Detected" => "SELECT count(*) AS test_count FROM 
 										test_results 

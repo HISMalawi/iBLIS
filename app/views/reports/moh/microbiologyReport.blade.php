@@ -79,7 +79,7 @@
                             <th>Jun</th>
                             <th style="background-color:skyblue";>Total <br/>Q2</th>
                             <th>Jul</th>
-                            <th>August</th>
+                            <th>Aug</th>
                             <th>Sep</th>
                             <th style="background-color:skyblue";>Total <br/> Q3</th>
                             <th>Oct</th>
