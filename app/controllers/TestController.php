@@ -18,8 +18,9 @@ class TestController extends \BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{
-
+	{  
+	
+			
 		$fromRedirect = Session::pull('fromRedirect');
 
 		if($fromRedirect){
@@ -779,26 +780,16 @@ P1
 				'status': 'specimen_rejected'
 			}";
 			*/
-			$update_specimen = array();
-			$update_specimen["tracking_number"] = $trackingNumber;
-			$update_specimen["who_updated"] = array();
-			$update_specimen["who_updated"]["id"] = $id;
-			$update_specimen["who_updated"]["first_name"] = $firstName;
-			$update_specimen["who_updated"]["last_name"] = $secondName;
-			$update_specimen["status"] = 'specimen_rejected';
+			
 
-
-			$su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
-			curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
-			curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
-			$result = json_decode(curl_exec($su));
-			$token = $result->data->token;
-			Session::put('nlims_token', $token);
-
-
-
-			$nlims =  new NlimsService();
-			$nlims->reject($update_specimen, $token);
+			$dat = new UnsyncOrder;
+			$dat->specimen_id = Input::get('specimen_id');
+			$dat->data_not_synced = "specimen-rejected";
+			$dat->data_level = "specimen";
+			$dat->sync_status = "not-synced";
+			$dat->updated_by_name = "";
+			$dat->updated_by_id = "" ;
+			$dat->save();
 
 			$url = Session::get('SOURCE_URL');
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
@@ -862,28 +853,16 @@ P1
 		}";
 		*/
 
-		$update_specimen = array();
-		$update_specimen["tracking_number"] = $trackingNumber;
-		$update_specimen["who_updated"] = array();
-		$update_specimen["who_updated"]["id"] = $id;
-		$update_specimen["who_updated"]["first_name"] = $firstName;
-		$update_specimen["who_updated"]["last_name"] = $secondName;
-		$update_specimen["status"] = 'specimen_accepted';
+		$dat = new UnsyncOrder;
+		$dat->specimen_id = Input::get('id');
+		$dat->data_not_synced = "specimen-accepted";
+		$dat->data_level = "specimen";
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = "" ;
+		$dat->save();
 
-
-		$su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
-		curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
-		curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
-		$result = json_decode(curl_exec($su));
-		$token = $result->data->token;
-		Session::put('nlims_token', $token);
-
-		$nlims =  new NlimsService();
-		$nlims->accept($update_specimen, $token);
-
-		
-		return $specimen->specimen_status_id;
-		
+		return $specimen->specimen_status_id;		
 
 	}
 
@@ -922,15 +901,21 @@ P1
 	 */
 	public function start()
 	{   		
-		//var_dump("hello");exit();
-
+		$test_id = 0;
 		$test = Test::find(Input::get('id'));
 		$test->test_status_id = Test::STARTED;
+		$test_id = $test->id;
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
-
-		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
-		Session::set('activeTest', array($test->id));
+		
+		$dat = new UnsyncOrder;
+		$dat->specimen_id = $test_id;
+		$dat->data_not_synced = "started";
+		$dat->data_level = "test";
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = "" ;
+		$dat->save();
 
 		return $test->testType->instruments->count();
 	}
@@ -968,7 +953,16 @@ P1
 			$input['page'] = $pageParts[1];
 		}
 		// redirect
-		Sender::send_data($tests[0]->visit->patient, $tests[0]->specimen, $tests);
+		
+		$dat = new UnsyncOrder;
+		$dat->specimen_id = $tid;
+		$dat->data_not_synced = "voided";
+		$dat->data_level = "test";
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = "" ;
+		$dat->save();
+
 		return Redirect::action('TestController@index')
 			->with('activeTest', array($test->id))
 			->withInput($input);
@@ -1270,6 +1264,25 @@ P1
 		$test->test_status_id = Test::COMPLETED;
 		$test->interpretation = Input::get('interpretation');
 		$test->tested_by = Auth::user()->id;
+
+		$dat = new UnsyncOrder;
+		$dat->specimen_id = $testID;
+		$dat->data_not_synced = "completed";
+		$dat->data_level = "test";
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = "" ;
+		$dat->save();
+
+		$dat = new UnsyncOrder;
+		$dat->specimen_id = $testID;
+		$dat->data_not_synced = "result";
+		$dat->data_level = "test";
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = "" ;
+		$dat->save();
+
 		if(empty($test->time_completed) || $test->time_completed == null) {
 			$test->time_completed = date('Y-m-d H:i:s');
 		}
@@ -1349,7 +1362,7 @@ P1
 		}
 		// redirect
 	
-		Sender::send_data($test->visit->patient, $test->specimen, Array($test));
+
 
 		return Redirect::action('TestController@index')
 					->with('message', trans('messages.success-saving-results'))
@@ -1425,6 +1438,16 @@ P1
 			$test->time_verified = date('Y-m-d H:i:s');
 			$test->verified_by = Auth::user()->id;
 			$test->save();
+
+				$dat = new UnsyncOrder;
+				$dat->specimen_id = $testID;
+				$dat->data_not_synced = "verified";
+				$dat->data_level = "test";
+				$dat->sync_status = "not-synced";
+				$dat->updated_by_name = "";
+				$dat->updated_by_id = "" ;
+				$dat->save();
+
 			$testIds = array($testID);
 		
 			$count = DB::select(DB::raw("SELECT tests.specimen_id AS specimen_id FROM tests WHERE tests.id=$testID"));
@@ -1439,8 +1462,19 @@ P1
 										WHERE tests.specimen_id='$id'
 										AND
 										tests.test_type_id ='29'"));
-				}
+
+						$dat = new UnsyncOrder;
+						$dat->specimen_id = $id;
+						$dat->data_not_synced = "verified";
+						$dat->data_level = "specimen";
+						$dat->sync_status = "not-synced";
+						$dat->updated_by_name = "";
+						$dat->updated_by_id = "" ;
+						$dat->save();
+
+				}				
 			}			
+
 
 		}else{
 
@@ -1456,11 +1490,19 @@ P1
 
 		}
 
-		Sender::send_data($test->visit->patient, $test->specimen);
+		
 		
 		//Fire of entry verified event
 		foreach($testIds As $id) {
 			Event::fire('test.verified', array($id));
+				$dat = new UnsyncOrder;
+				$dat->specimen_id = $id;
+				$dat->data_not_synced = "verified";
+				$dat->data_level = "test";
+				$dat->sync_status = "not-synced";
+				$dat->updated_by_name = "";
+				$dat->updated_by_id = "" ;
+				$dat->save();
 		}
 
 		return View::make('test.viewDetails')
