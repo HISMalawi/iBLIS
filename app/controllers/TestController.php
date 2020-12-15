@@ -844,10 +844,10 @@ P1
 
 		$user = Auth::user();
 		$id = $user->id;
-
+		//var_dump($user);exit();
 		$tempName = explode(" ", $user->name);
-		$firstName = $tempName[0];
-		$secondName = $tempName[1];
+		$firstName = $tempName;
+		$secondName = $tempName;
 
 		$trackingNumber = $specimen->tracking_number;
 		/*
