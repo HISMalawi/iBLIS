@@ -846,8 +846,6 @@ P1
 		$trackingNumber = $specimen->tracking_number;
 		/*
 		$accept_data = "{
-			'tracking_number: '" + $trackingNumber + ",
-			'who_updated': {
 				'id': '" + Auth::user()->id + ",
 				'first_name': '" + Auth::user()->name + "',
 				'last_name': '" + Auth::user()->name + "'
