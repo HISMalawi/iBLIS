@@ -34,6 +34,8 @@
 					<strong>
 						<p>
 							{{trans('messages.patient-report').' - '.date('d-m-Y')}}
+							<b style="padding-left: 10%;"> {{ 'No. Printed:  '. $print_status }}</b> 
+		        				<b style="padding-left: 10%;"> Date Sample Collected: {{$date_sample_collected}} </b>
 						</p>
 					</strong>
 					<table class="table table-bordered">
