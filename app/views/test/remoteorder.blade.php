@@ -18,7 +18,7 @@
 						@if(Auth::user()->can('request_test'))
 							<div class="panel-btn pull-right">
 								<a class="btn btn-sm btn-success"
-								   href="{{URL::route('test.mergeorupdate', array($test->_id))}}"
+								   href="{{URL::route('test.mergeorupdate', array($tracking_number))}}"
 								   data-toggle="modal" >
 									<span class="glyphicon glyphicon-next"></span>
 									Proceed
@@ -45,22 +45,30 @@
 							</h3>
 
 							<p class="view"><strong>{{trans('messages.date-ordered')}}</strong>
-								{{ $test->date_drawn }}</p>
+								{{ $test->data->other->date_created }}</p>
 
 							<p class="view"><strong>{{trans('messages.lab-receipt-date')}}</strong>
-								{{$test->date_received}}</p>
+								{{ $test->data->other->date_created  }}</p>
 
 							<p class="view"><strong>Sending Facility</strong>
-								{{ $test->sending_facility }}</p>
+								{{ $test->data->other->sending_lab }}</p>
 
 							<p class="view"><strong>Receiving Facility</strong>
-								{{ $test->receiving_facility }}</p>
+								{{ $test->data->other->receiving_lab }}</p>
 
 							<p class="view"><strong>{{trans('messages.ward')}}</strong>
-								{{$test->order_location}}</p>
+								<?php if(!isset($test->data->other->order_location))
+										{
+										 echo "OPD"; 
+										}
+									else{
+										 echo $test->data->other->order_location; 
+									}
+								?>
+								
 
 							<p class="view-striped"><strong>Ordered By</strong>
-								{{$test->who_order_test->first_name.' '.$test->who_order_test->last_name}}</p>
+								{{$test->data->other->sample_created_by->name}}</p>
 
 						</div>
 					</div>
@@ -75,26 +83,26 @@
 										<div class="col-md-3">
 											<p><strong>{{trans("messages.patient-number")}}</strong></p></div>
 										<div class="col-md-9">
-											{{$test->patient->national_patient_id}}</div></div>
+											{{$test->data->other->patient->id}}</div></div>
 									<div class="row">
 										<div class="col-md-3">
 											<p><strong>{{ Lang::choice('messages.name',1) }}</strong></p></div>
 										<div class="col-md-9">
-											{{$test->patient->first_name.' '.$test->patient->middle_name.' '.$test->patient->last_name}}
+											{{$test->data->other->patient->name}}
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-md-3">
 											<p><strong> Date of Birth </strong></p></div>
 										<div class="col-md-9">
-											{{date_format(date_create($test->patient->date_of_birth), "d-M-Y")}}
+											{{date_format(date_create($test->data->other->patient->dob), "d-M-Y")}}
 										</div>
 									</div>
 									<div class="row">
 										<div class="col-md-3">
 											<p><strong>{{trans("messages.gender")}}</strong></p></div>
 										<div class="col-md-9">
-											{{$test->patient->gender}}
+											{{$test->data->other->patient->gender}}
 										</div>
 									</div>
 								</div>
@@ -111,7 +119,7 @@
 											<p><strong>{{ Lang::choice('messages.specimen-type',1) }}</strong></p>
 										</div>
 										<div class="col-md-8">
-											{{$test->sample_type }}
+											{{$test->data->other->sample_type}}
 										</div>
 									</div>
 									<div class="row">
@@ -119,7 +127,7 @@
 											<p><strong>Tracking Number</strong></p>
 										</div>
 										<div class="col-md-8">
-											{{$test->_id }}
+											{{$tracking_number }}
 										</div>
 									</div>
 									<div class="row">
@@ -129,7 +137,7 @@
 										<div class="col-md-8">
 											<?php
 												try{
-													$acc_num = Specimen::where('tracking_number', $test->_id)->first()->accession_number;
+													$acc_num = Specimen::where('tracking_number', $tracking_number)->first()->accession_number;
 												}catch(Exception $e){$acc_num = '';}
 											?>
 											{{$acc_num}}
@@ -140,7 +148,7 @@
 											<p><strong>{{trans('messages.specimen-status')}}</strong></p>
 										</div>
 										<div class="col-md-8">
-											{{$test->status }}
+											{{$test->data->other->specimen_status }}
 										</div>
 									</div>
 
@@ -161,52 +169,48 @@
 		</div>
 		<div class="panel-body">
 			<div class="container-fluid">
+			@if($order_results->message == "results not available")
+				<div class="col-md-6">
+						<table class="table table-bordered">
+							<tbody>
+								<tr> 
+								  <td style="font-weight:bold"> order has no results !!!!</td>
+								</tr>
+							</tbody>
+						</table>	
+				</div>		
+			@else
 
-				@foreach($test->results as $testName => $results)
+				@foreach($order_results->data->results as $testName => $results)
 
-					@if(count(PanelType::where('name', $testName)->first()) > 0)
-						<?php
-							continue;
-						?>
-					@endif
-
+				
 					<div class="col-md-6">
 						<table class="table table-bordered">
 							<tbody>
-							<tr>
-								<th>{{ $testName }}</th>
-								<th>
+								<tr>
+									<th>{{ $testName }}</th>
+									<th>
 									&nbsp;
-								</th>
-							</tr>
-							<tr>
-								<th width="50%">{{ Lang::choice('messages.measure-type',1) }}</th>
-								<th>{{ trans('messages.result-name')}}</th>
-							</tr>
+									</th>
+								</tr>
+								<tr>
+									<th width="50%">{{ Lang::choice('messages.measure-type',1) }}</th>
+									<th>{{ trans('messages.result-name')}}</th>
+								</tr>
 
-								@foreach($results as $timestamp => $measures)
+								@foreach($results as $measureName => $resultValue)
 
-									@if(isset($measures->results))
-										@foreach($measures->results as $resultName => $resultVal)
-											<tr>
-												<td>{{ $resultName }}</td>
-												<td> {{$resultVal}} </td>
-											</tr>
-										@endforeach
-									@endif
-
-									@if(isset($measures->remarks) && $measures->remarks)
 										<tr>
-											<td>{{ trans('messages.test-remarks').'/'.trans('messages.interpretation') }}</td>
-											<td>{{$measures->remarks}}</td>
-										</tr>
-									@endif
+												<td>{{ $measureName }}</td>
+												<td> {{$resultValue}} </td>
+											</tr>								
 								@endforeach
 							</tbody>
 						</table>
 					</div>
-
 				@endforeach
+			@endif
+				
 			</div>
 		</div> <!-- ./ panel-body -->
 	</div>  <!-- ./ panel -->

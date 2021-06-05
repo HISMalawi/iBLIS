@@ -12,10 +12,13 @@ class Sender
         $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
         $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
 
-        $token = Session::get('nlims_token');
-        if(!isset($token)){
-            $token = "ddssc";            
-        }
+       
+        $ch = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($ch));
+       
+        $token = $result->data->token;
 
         // $ch = curl_init("http://localhost:7070/api/v1/query_order_by_tracking_number/".$trackingNumber);
 
@@ -23,22 +26,7 @@ class Sender
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
-        $result = json_decode(curl_exec($ch));    
-       
-        if($result->error == true && $result->message == "token expired"){
-            $ch = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result = json_decode(curl_exec($ch));
-            $token = $result->data->token;
-            Session::put('nlims_token', $token);
-
-            $ch = curl_init($nlims_url."/api/v1/query_order_by_tracking_number/".$trackingNumber);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
-            $result = json_decode(curl_exec($ch));
-        }      
+        $result = json_decode(curl_exec($ch));
         // if(Config::get('kblis.nlims_controller') == true){
           
         // }else{
@@ -55,8 +43,14 @@ class Sender
         /* XLLH196N051 */
         // $token = "tsg9WCiGgthO";
         $nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
-        $token = strval(File::get(storage_path('token/nlims_token')));
-
+        $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
+        $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
+       
+        $ch = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($ch));
+        $token = $result->data->token;
 
         $ch = curl_init($nlims_url."/api/v1/query_results_by_tracking_number/".$trackingNumber);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
@@ -242,25 +236,6 @@ class Sender
         };
         */
 
-        $update_specimen = array();
-        $update_specimen["tracking_number"] = $specimen->tracking_number;
-        $update_specimen["who_updated"] = array();
-        $update_specimen["who_updated"]["id"] = Auth::user()->id;
-        $update_specimen["who_updated"]["first_name"] = $fname ? $fname : '';
-        $update_specimen["who_updated"]["last_name"] = $sname ? $sname : '';
-        $update_specimen["status"] = 'specimen_accepted';
-        
-        $su = curl_init($nlims_url."/api/v1/re_authenticate/".$nlims_user."/".$nlims_pass);
-        curl_setopt($su, CURLOPT_CUSTOMREQUEST, "GET");
-        curl_setopt($su, CURLOPT_RETURNTRANSFER, true);
-        $result = json_decode(curl_exec($su));
-        $token = $result->data->token;
-        Session::put('nlims_token', $token);
-
-        $updater = New NlimsService();
-        $resp_ = $updater->update_order($update_specimen, $token);
-        //var_dump($resp_); exit;
-
         $panels_available = Sender::get_name($order, true);
         $testPanel = new TestPanel;
         $panel = array();
@@ -299,24 +274,16 @@ class Sender
             if (!$visit->visit_type) {
                 $visit->visit_type = VisitType::where('name', 'Referral')->first()->id;
             }
-            $visit->ward_or_location = $order->data->other->order_location;
+            $ward = $order->data->other->order_location;
+            if(!isset($order->data->other->order_location)){
+                $ward = "OPD";
+            }          
+
+            $visit->ward_or_location = $ward;
             $visit->save();
 
             $test->visit_id = $visit->id;
             $test->save();
-
-            $update_test = array();
-            $update_test["tracking_number"] = $specimen->tracking_number;
-            $update_test["test_name"] = $name;
-            $update_test["time_updated"] = $test->updated_at;
-            $update_test["who_updated"] = array();
-            $update_test["who_updated"]["id"] = Auth::user()->id;
-            $update_test["who_updated"]["first_name"] = $fname ? $fname : '';
-            $update_test["who_updated"]["last_name"] = $sname ? $sname : '';
-            $update_test["test_status"] = 'pending';
-
-            $test_updater = New NlimsService();
-            $resp_ = $test_updater->update_test($update_test, $token);
                 
         }
 

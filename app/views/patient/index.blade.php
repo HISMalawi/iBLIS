@@ -37,12 +37,24 @@
 		<span class="glyphicon glyphicon-user"></span>
 		{{trans('messages.list-patients')}}
 		<?php $new_patient = false;?>
-		@if($new_patient == true)
+		@if($new_patient == false)
 			<div class="panel-btn">
 				<a class="btn btn-sm btn-info" href="{{ URL::route('patient.create') }}">
 					<span class="glyphicon glyphicon-plus-sign"></span>
 					{{trans('messages.new-patient')}}
 				</a>
+			</div>
+
+			<div class="panel-btn">
+		
+			@if(Input::get('printTracking') != null)
+				<a class="btn btn-sm btn-success"
+				    href="{{URL::route('test.print_tracking_number', array(Input::get('printTracking')))}}"
+						   data-toggle="modal" >
+					<span class="glyphicon glyphicon-print"></span>
+								Print Specimen Label
+				</a>
+			@endif
 			</div>
 		 @endif
 	</div>
@@ -74,7 +86,7 @@
 
 					<td> {{ $request_test = false}}
 						@if(Auth::user()->can('request_test'))
-						  @if($request_test == true)		
+						  @if($request_test == false)		
 							<a class="btn btn-sm btn-info" 
 								href="{{ URL::route('test.create', array('patient_id' => $patient->id)) }}">
 								<span class="glyphicon glyphicon-edit"></span>
@@ -82,6 +94,7 @@
 							</a>
 						  @endif
 						@endif
+						
 						<!-- show the patient (uses the show method found at GET /patient/{id} -->
 						<a class="btn btn-sm btn-success" href="{{ URL::route('patient.show', array($patient->id)) }}" >
 							<span class="glyphicon glyphicon-eye-open"></span>
@@ -98,6 +111,7 @@
 					</td>
 				</tr>
 			@endforeach
+				
 			</tbody>
 		</table>
 		<?php echo $patients->links(); 

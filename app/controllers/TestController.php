@@ -47,14 +47,19 @@ class TestController extends \BaseController {
 			$searchString = Session::get('search_string');
 			$search_remote = false;
 		}
-
+		
+		
 		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
-
+			
 			$remoteResults = Sender::search_from_remote($searchString);
-			if(!empty($remoteResults) && isset($remoteResults->_id)) {
+			$orderResults  = Sender::search_results_from_remote($searchString);
+			
+			if(!empty($remoteResults)) {
 				// Load the view and pass it the tests
 				return View::make('test.remoteorder')
 					->with('test', $remoteResults)
+					->with('tracking_number', $searchString)
+					->with('order_results',$orderResults)
 					->with('searchString', $searchString);
 			}
 		}
@@ -117,7 +122,7 @@ class TestController extends \BaseController {
 
 			$testIds = array_merge($missingPanelTests->lists('id'), $testIds);
 		}
-
+		
 		if(count($tests) == 0 && Session::has('search_string')){
 			Session::set('message', 'Test does not belong to current lab section');
 		}
@@ -443,7 +448,7 @@ P1
 				'date_received'  => date('Y-m-d'),
 				'return_json' => 'true'
 			);
-
+			/*
 			$data_string = json_encode($json);
 			$ch = curl_init( Config::get('kblis.national-repo-node')."/create_hl7_order");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -456,15 +461,29 @@ P1
 			);
 			$specimen = null;
 			$response = json_decode(curl_exec($ch));
+			*/
+						
+			$track = new NlimsService();
+			$track->generateTrackingNumber();
+
 			if(is_array($testTypes) && count($testTypes) > 0){
 
 				// Create Specimen - specimen_type_id, accepted_by, referred_from, referred_to
 				$specimen = new Specimen;
 				$specimen->specimen_type_id = Input::get('specimen_type');
 				$specimen->accepted_by = Auth::user()->id;
-				$specimen->tracking_number = $response->tracking_number;
+				$specimen->tracking_number = "XTRACKING NUMBER";
 				$specimen->accession_number = Specimen::assignAccessionNumber();
 				$specimen->save();
+
+				$dat = new UnsyncOrder;
+				$dat->specimen_id = $specimen->id;
+				$dat->data_not_synced = "new order";
+				$dat->data_level = "specimen";
+				$dat->sync_status = "not-synced";
+				$dat->updated_by_name = "";
+				$dat->updated_by_id = Auth::user()->id ;
+				$dat->save();
 
 				foreach ($testTypes as $value) {
 					$testTypeID = (int)$value;
@@ -518,7 +537,7 @@ P1
 							$test->specimen_id = $specimen->id;
 							$test->test_status_id = Test::PENDING;
 							$test->not_done_reasons = "null";
-                        				$test->person_talked_to_for_not_done = "null";
+                        	$test->person_talked_to_for_not_done = "null";
 							$test->created_by = Auth::user()->id;
 							$test->requested_by = Input::get('physician');
 							$test->save();
@@ -529,8 +548,8 @@ P1
 				}
 			}
 
-			Sender::send_data($patient, Specimen::find($specimen->id));
-			$url = Session::get('SOURCE_URL');
+			//Sender::send_data($patient, Specimen::find($specimen->id));
+			$url = Session::get('SOURCE_URL')."?printTracking=".$specimen->id;
 
 			return Redirect::to($url)->with('message', 'messages.success-creating-test')
 					->with('activeTest', $activeTest);
@@ -1212,11 +1231,11 @@ P1
 
 	public function mergeRemoteResults($tracking_number){
 		$specimen = Sender::merge_or_create($tracking_number);
+
 		Session::set('search_string', $specimen->tracking_number);
 		return Redirect::action('TestController@index')
 			->with('message', 'Successfuly merged remote results')
 			->with('activeTest', array($specimen->test->id));
-
 	}
 
 	/**

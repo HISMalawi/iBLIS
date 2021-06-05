@@ -174,6 +174,10 @@ class NlimsService{
         }
     }
 
+    public function generateTrackingNumber(){
+
+    }   
+
     public function update_test($order_update_data, $token){
         // $token_ = File::get(storage_path('token/nlims_token'));
         // var_dump($order_update_data); exit;
