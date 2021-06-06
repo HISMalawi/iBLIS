@@ -14,12 +14,13 @@
                     <div class="col-md-11">
                         <span class="glyphicon glyphicon-user"></span> {{ trans('messages.test-results') }}
                         @if($test->testType->instruments->count() > 0)
-                        <div class="panel-btn">
+                        <div class="panel-btn">             
                             <a id="fetch-link"
                                 class="btn btn-sm btn-default fetch-test-data" href="javascript:void(0)"
                                 title="{{trans('messages.fetch-test-data-title')}}"
                                 data-test-type-id="{{$test->testType->id}}"
                                 data-accession-number="{{$test->getSpecimenId()}}"
+                                data-tracking-number="{{$test->getTrackingNumber()}}"
                                 data-url="{{URL::route('instrument.getResult')}}"
                                 data-instrument-count="{{$test->testType->instruments->count()}}">
                                 <span class="glyphicon glyphicon-plus-sign"></span>

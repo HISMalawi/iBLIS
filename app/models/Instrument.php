@@ -177,10 +177,10 @@ class Instrument extends Eloquent
 	 * @return Response json
 	 */
 
- 	public function fetchResult($testType, $accessionNumber){
-
+ 	public function fetchResult($testType, $accessionNumber,$tracking_number){
+		
                 // Invoke the Instrument Class to get the results
-                $result = (new $this->driver_name($this->ip))->getResult($accessionNumber);
+                $result = (new $this->driver_name($this->ip))->getResult($accessionNumber,$tracking_number);
 
                 // Change measure names to measure_ids in the returned array
                 $resultWithIDs = array();

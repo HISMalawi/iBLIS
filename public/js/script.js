@@ -195,8 +195,9 @@ $(function(){
 	$('.fetch-test-data').click(function(){
 		var testTypeID = $(this).data('test-type-id');
 		var specimenId = $(this).data('accession-number');
+		var track_number = $(this).data('tracking-number');
 		var url = $(this).data('url');
-		$.post(url, { test_type_id: testTypeID, accession_number: specimenId}).done(function(data){
+		$.post(url, { test_type_id: testTypeID, accession_number: specimenId, tracking_number: track_number}).done(function(data){
 			$.each($.parseJSON(data), function (index, obj) {
 
 				$('#'+index).val(obj);
@@ -1300,7 +1301,7 @@ $(function(){
 				{	var va = info[counter]; 
 					
 					splited_data = va.split('_');
-					id_number = splited_data[0]+".json";
+					id_number = splited_data[0]+".json";				
 					if(availableResults.includes(id_number))
 					{	
 						var elmnt = __$(va);
@@ -1350,8 +1351,9 @@ $(function(){
 	function checkMachineOutput(){
 		var button = __$('fetch-link');
 		var accessionNumber = button.getAttribute('data-accession-number');
+		var trackingNumber = button.getAttribute('data-tracking-number');
 		if(accessionNumber){
-			$.get("/instrument/checkresult?accession_number="+accessionNumber).done(function(result){
+			$.get("/instrument/checkresult?accession_number="+accessionNumber+"&tracking_number="+trackingNumber).done(function(result){
 
 					if(result.match(/true/i)) {
 						button.className = "btn btn-sm btn-success fetch-test-data";

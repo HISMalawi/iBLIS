@@ -286,6 +286,13 @@ class Test extends Eloquent
 		return $this->specimen->accession_number;
     }
 
+	public function getTrackingNumber()
+    {
+    	#$testCategoryName = $this->testType->testCategory->name;
+    	#return substr($testCategoryName, 0 , 3).'-'.$this->specimen->id;
+		return $this->specimen->tracking_number;
+    }
+
 	/**
 	 * Wait Time: Time difference from test reception to start
 	 */

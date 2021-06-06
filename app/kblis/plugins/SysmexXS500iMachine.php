@@ -32,28 +32,48 @@ class SysmexXS500iMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
         * 2. Parse the data
         * 3. Return an array of key-value pairs: measure_name => value
         */
-
         $base = realpath(".");
 
         $remote_ip = ''; //$this->ip . '/';
 
         $DUMP_URL = "$base/data/$remote_ip$specimen_id.json";
-
-        $RESULTS_STRING = file_get_contents($DUMP_URL);
-        if ($RESULTS_STRING === FALSE){
-            print "Something went wrong with getting the File";
-
-            return;
-        };
-
         $results = array();
+        $RESULTS_STRING = TRUE;
+        try {
+            $RESULTS_STRING = file_get_contents($DUMP_URL);                 
+        } catch (\Exception $e) {
+            $RESULTS_STRING = FALSE;
+        }
 
-        $json = json_decode($RESULTS_STRING, true);
+        if ($RESULTS_STRING === FALSE){
 
-        foreach($json[$specimen_id] as $key => $RESULT) {
+            $DUMP_URL_ = "$base/data/$remote_ip$tracking_number.json";
+            $RESULTS_STRING = file_get_contents($DUMP_URL_);
 
-            $results[$key] = $RESULT;
+            if ($RESULTS_STRING === FALSE){
+                print "Something went wrong with getting the File";
+                return;
+            }else{
+                $json = json_decode($RESULTS_STRING, true);
 
+                foreach($json[$tracking_number] as $key => $RESULT) {
+        
+                    $results[$key] = $RESULT;
+        
+                }
+            }
+        }else
+        {
+            $json = json_decode($RESULTS_STRING, true);
+
+            foreach($json[$specimen_id] as $key => $RESULT) {
+    
+                $results[$key] = $RESULT;
+    
+            }
+        };
+        if (!empty($json["machine_name"])){
+            $results["machine_name"] = $json["machine_name"];
         }
 
         return $results;

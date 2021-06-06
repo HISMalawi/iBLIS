@@ -16,5 +16,5 @@ interface InstrumentorInterface
 	* @param int testTypeIdentifier
 	* @return array('SAMPLE_ID' => id, measureName => measureValue, ...)
 	*/
-    public function getResult($testTypeID = 0);
+    public function getResult($testTypeID = 0,$tracking_number = 0);
 }

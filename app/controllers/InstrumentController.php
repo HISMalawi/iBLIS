@@ -179,10 +179,12 @@ class InstrumentController extends \BaseController {
 		$instrument = $testType->instruments->first();
 
 		$accession_number = Input::get("accession_number");
+		$tracking_number = Input::get("tracking_number");
+	
 
  		// Fetch the results
 		
-		return $instrument->fetchResult($testType, $accession_number);
+		return $instrument->fetchResult($testType, $accession_number,$tracking_number);
 	}
 
 	/**
@@ -216,12 +218,20 @@ class InstrumentController extends \BaseController {
 	public function checkResult(){
 
 		$specimen_id = Input::get('accession_number');
+		$tracking_number = Input::get('tracking_number');		
 		$base = realpath(".");
 		$DUMP_URL = "$base/data/$specimen_id.json";
 
 		$file_avail = file_exists($DUMP_URL);
 		if ($file_avail == FALSE){
-			return 'false';
+			$DUMP_URL = "$base/data/$tracking_number.json";
+			$file_avail = file_exists($DUMP_URL);
+			if ($file_avail == FALSE){
+				return 'false';
+			}else
+			{
+				return 'true';
+			}
 		}else{
 			return 'true';
 		}
