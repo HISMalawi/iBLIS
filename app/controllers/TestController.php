@@ -472,7 +472,7 @@ P1
 				$specimen = new Specimen;
 				$specimen->specimen_type_id = Input::get('specimen_type');
 				$specimen->accepted_by = Auth::user()->id;
-				$specimen->tracking_number = "XTRACKING NUMBER";
+				$specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 				$specimen->accession_number = Specimen::assignAccessionNumber();
 				$specimen->save();
 
@@ -1229,8 +1229,9 @@ P1
 		exit;
 	}
 
-	public function mergeRemoteResults($tracking_number){
-		$specimen = Sender::merge_or_create($tracking_number);
+	public function mergeRemoteResults($tracking_number,$test){
+		var_dump($test);exit;
+		$specimen = Sender::merge_or_create($tracking_number);	
 
 		Session::set('search_string', $specimen->tracking_number);
 		return Redirect::action('TestController@index')
