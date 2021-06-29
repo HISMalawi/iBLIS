@@ -194,6 +194,7 @@ class Sender
         $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
 
         $order = Sender::search_from_remote($tracking_number);
+      
         $specimen = Specimen::where('tracking_number', $tracking_number)->first();
         $patient = Patient::where('external_patient_number', $order->data->other->patient->id)->first();
 
@@ -207,7 +208,7 @@ class Sender
             $patient->patient_number = DB::table('patients')->max('id')+1;
             $patient->save();
         }
-
+  
         if(!$specimen){
             $specimen = new Specimen;
             $specimen->specimen_type_id = SpecimenType::where('name', $order->data->other->sample_type)->first()->id;

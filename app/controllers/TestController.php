@@ -54,13 +54,17 @@ class TestController extends \BaseController {
 			$remoteResults = Sender::search_from_remote($searchString);
 			$orderResults  = Sender::search_results_from_remote($searchString);
 			
-			if(!empty($remoteResults)) {
-				// Load the view and pass it the tests
-				return View::make('test.remoteorder')
-					->with('test', $remoteResults)
-					->with('tracking_number', $searchString)
-					->with('order_results',$orderResults)
-					->with('searchString', $searchString);
+			if ($remoteResults->message != "order not available" ){
+				if(!empty($remoteResults)) {
+					// Load the view and pass it the tests
+					return View::make('test.remoteorder')
+						->with('test', $remoteResults)
+						->with('tracking_number', $searchString)
+						->with('order_results',$orderResults)
+						->with('searchString', $searchString);
+				}
+			}else{
+				Session::set('message', 'Order not available from National LIMS, please wait......');
 			}
 		}
 
@@ -1229,8 +1233,8 @@ P1
 		exit;
 	}
 
-	public function mergeRemoteResults($tracking_number,$test){
-		var_dump($test);exit;
+	public function mergeRemoteResults($tracking_number){
+		
 		$specimen = Sender::merge_or_create($tracking_number);	
 
 		Session::set('search_string', $specimen->tracking_number);
