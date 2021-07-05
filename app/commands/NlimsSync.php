@@ -52,6 +52,7 @@ class NlimsSync extends Command {
 		);
 
 		$res = json_decode(curl_exec($ch));
+	//var_dump($res);exit;
 		if($res->message == "re authenticated successfuly")
 			{	$token = $res->data->token; }
 	
@@ -69,7 +70,7 @@ class NlimsSync extends Command {
 			  	$tracking_number = $order->tracking_number;
 				$priority = $order->priority;
 				$date_of_collection = $order->date_of_collection;
-				$sample_status = $order->sample_status;
+				$sample_status = str_replace("-","_",$order->sample_status);
 				$sample_type = $order->specimen_type;
 				$sample_id = $order->specimen_id;
 				$drawn_first_name = "";
@@ -168,7 +169,7 @@ class NlimsSync extends Command {
 						'Content-Length: ' . strlen($acc))
 				);
 				$res = json_decode(curl_exec($ch));		
-				
+	//var_dump($res);exit;			
 				if($res->error == false && $res->message == "order created successfuly"){				
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced','new order')->where('specimen_id',$sample_id)->first();
 					$unsync->sync_status = "synced";
