@@ -173,6 +173,7 @@ class NlimsSync extends Command {
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced','new order')->where('specimen_id',$sample_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
+					dd($res);
 				}
 			}
 	   }
@@ -249,12 +250,12 @@ class NlimsSync extends Command {
 						'Content-Length: ' . strlen($acc))
 				);
 				$res = json_decode(curl_exec($ch));
-				
+			
 				if($res->error == false && $res->message == "order updated successfuly"){				
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced',$order->sample_status)->where('specimen_id',$sample_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
-					
+					dd($res);
 				}
 
 			}
@@ -367,11 +368,13 @@ class NlimsSync extends Command {
 						'Content-Length: ' . strlen($acc))
 				);
 				$res = json_decode(curl_exec($ch));
+				
+				
 				if($res->error == false && $res->message == "test updated successfuly"){				
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced',$order->test_status)->where('specimen_id',$order->test_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
-					
+					dd($res);
 				}
 
 
