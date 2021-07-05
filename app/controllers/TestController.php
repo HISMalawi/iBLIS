@@ -53,7 +53,8 @@ class TestController extends \BaseController {
 			
 			$remoteResults = Sender::search_from_remote($searchString);
 			
-				$orderResults  = Sender::search_results_from_remote($searchString);
+			$orderResults  = Sender::search_results_from_remote($searchString);
+
 			if ($remoteResults->message != "order not available" ){
 				if(!empty($remoteResults)) {
 					// Load the view and pass it the tests
@@ -67,7 +68,7 @@ class TestController extends \BaseController {
 				Session::set('message', 'Order not available from National LIMS, please wait......');
                         }
 
-			
+
 		}
 
 		// Search Conditions
@@ -478,6 +479,7 @@ P1
 				$specimen = new Specimen;
 				$specimen->specimen_type_id = Input::get('specimen_type');
 				$specimen->accepted_by = Auth::user()->id;
+
 				$specimen->tracking_number = "X".$ace_number;
 				$specimen->accession_number = $ace_number;
 				$specimen->save();
@@ -1236,7 +1238,8 @@ P1
 	}
 
 	public function mergeRemoteResults($tracking_number){
-		$specimen = Sender::merge_or_create($tracking_number);
+		
+		$specimen = Sender::merge_or_create($tracking_number);	
 
 		Session::set('search_string', $specimen->tracking_number);
 		return Redirect::action('TestController@index')

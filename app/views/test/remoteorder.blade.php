@@ -14,7 +14,7 @@
 				<div class="row less-gutter">
 					<div class="col-md-11">
 						<span class="glyphicon glyphicon-cog"></span>{{trans('messages.test-details')}}
-
+					
 						@if(Auth::user()->can('request_test'))
 							<div class="panel-btn pull-right">
 								<a class="btn btn-sm btn-success"
