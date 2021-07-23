@@ -55,7 +55,7 @@ class NlimsSync extends Command {
 	//var_dump($res);exit;
 		if($res->message == "re authenticated successfuly")
 			{	$token = $res->data->token; }
-	var_dump($token);exit;
+	
 	   	$res = DB::select("SELECT specimens.drawn_by_id AS drawn_id, specimens.drawn_by_name AS drawn_name,specimens.id AS specimen_id,
 	   						specimens.tracking_number,specimens.priority,specimens.date_of_collection,specimen_types.name AS specimen_type ,
 							specimen_statuses.name AS sample_status FROM unsync_orders                        
