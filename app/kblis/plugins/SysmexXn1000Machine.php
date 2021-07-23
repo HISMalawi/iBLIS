@@ -24,7 +24,7 @@ class SysmexXn1000Machine extends \KBLIS\Instrumentation\AbstractInstrumentor
      *
      * @return array
      */
-    public function getResult($specimen_id = 0)
+public function getResult($specimen_id = 0,$tracking_number = 0)
     {
 
         /*

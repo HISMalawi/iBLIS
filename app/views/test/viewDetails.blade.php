@@ -170,8 +170,8 @@
 										<div class="col-md-4">
 											<p><strong>{{ Lang::choice('messages.specimen-type',1) }}</strong></p>
 										</div>
-										<div class="col-md-8">
-											{{$test->specimen->specimenType->name or trans('messages.pending') }}
+										<div class="col-md-8"> <?php //var_dump($test->specimen->specimenType->name);exit;?>
+											{{$test->specimen->specimenType->name }}
 										</div>
 									</div>
 									<div class="row">

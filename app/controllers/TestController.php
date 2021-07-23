@@ -52,8 +52,9 @@ class TestController extends \BaseController {
 		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
 			
 			$remoteResults = Sender::search_from_remote($searchString);
-			$orderResults  = Sender::search_results_from_remote($searchString);
 			
+			$orderResults  = Sender::search_results_from_remote($searchString);
+
 			if ($remoteResults->message != "order not available" ){
 				if(!empty($remoteResults)) {
 					// Load the view and pass it the tests
@@ -65,7 +66,9 @@ class TestController extends \BaseController {
 				}
 			}else{
 				Session::set('message', 'Order not available from National LIMS, please wait......');
-			}
+                        }
+
+
 		}
 
 		// Search Conditions
@@ -473,11 +476,12 @@ P1
 			$track->generateTrackingNumber();
 
 			if(is_array($testTypes) && count($testTypes) > 0){
-
+				$ace_number = Specimen::assignAccessionNumber();
 				// Create Specimen - specimen_type_id, accepted_by, referred_from, referred_to
 				$specimen = new Specimen;
 				$specimen->specimen_type_id = Input::get('specimen_type');
 				$specimen->accepted_by = Auth::user()->id;
+
 				$specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 				$specimen->accession_number = Specimen::assignAccessionNumber();
 				if ($dateSampleCreated) {$specimen->date_of_collection = $dateSampleCreated;
@@ -485,6 +489,7 @@ P1
 				}else{
 					$specimen->date_of_collection = $dateSampleCreated;
 				};
+
 				$specimen->save();
 
 				$dat = new UnsyncOrder;

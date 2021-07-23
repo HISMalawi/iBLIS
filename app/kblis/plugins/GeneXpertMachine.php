@@ -14,7 +14,7 @@ class GeneXpertMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
             'code' => 'GXPERT',
             'name' => 'Gene-Xpert',
             'description' => 'Automatic analyzer for TB ',
-            'testTypes' => array("TB Tests")
+            'testTypes' => array("TB Tests","HPV")
         );
     }
 
