@@ -37,34 +37,35 @@ class NlimsCreateUser extends Command {
 	 */
 	public function fire()
 	{			
-			$url = config::get('kblis.nlims_controller_ip');			
-			$version = config::get('kblis.nlims_api_version');
+			
+			$url = config::get('nlims_connection.nlims_controller_ip');
+                        $nlims_username = config::get('nlims_connection.nlims_custome_username');
+			$nlims_password = config::get('nlims_connection.nlims_custome_password');
 
 			$acc_details = array(
-				'partner' 	=> config::get('kblis.partner_name'),
-				'app_name' 		=> config::get('kblis.app_name'),
-				'location'		=> config::get('kblis.district'),
-				'username'		=> config::get('kblis.nlims_custome_username'),
-				'password'		=> config::get('kblis.nlims_custome_password'),
+				'partner' 	=> config::get('nlims_connection.partner_name'),
+				'app_name' 		=> config::get('nlims_connection.app_name'),
+				'location'		=> config::get('nlims_connection.district'),
+				'username'		=> config::get('nlims_connection.nlims_custome_username'),
+				'password'		=> config::get('nlims_connection.nlims_custome_password'),
 
 			);
-
+			$token= "";
 			$acc = json_encode($acc_details);
 			$token = File::get(public_path().'/token.txt');
-			$ch = curl_init($url."/api/".$version."/create_user/".$token);
+			
+			$ch = curl_init($url."/api/v1/create_user/");
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $acc);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 					'Content-Type: application/json',
 					'Accept: application/json',
+					'token: '. $token,
 					'Content-Length: ' . strlen($acc))
 			);
 		
 			$response = json_decode(curl_exec($ch));
-
-			$token = $response->data->token;
-			File::put(public_path().'/token.txt', $token);
 			var_dump($response);
 	}
 

@@ -49,29 +49,43 @@
 										{{ $patient->gender==0?trans("messages.male"):trans("messages.female") }}</span>
 								</div>
 							</div>
-							<div class="form-group">
-								{{ Form::hidden('patient_id', $patient->id) }}
-								{{ Form::label('visit_type', trans("messages.visit-type")) }}
-								{{ Form::select('visit_type', [' ' => '--- Select visit type ---'] + $visittypes, null,
-									 array('id' => 'visit_type', 'class' => 'form-control', 'onchange' => 'loadWards(this.value)')) }}
-							</div>
-							<div class="form-group">
-								{{ Form::label('ward', trans("messages.ward")) }}
-								{{ Form::select('ward', [], null,
-									 array('class' => 'form-control', 'onmousedown' => 'loadWards(document.getElementById("visit_type").value)')) }}
-							</div>
+							<div class="row">
+								<div class="col-md-7">
+									<div class="form-group">
+										{{ Form::hidden('patient_id', $patient->id) }}
+										{{ Form::label('visit_type', trans("messages.visit-type")) }}
+										{{ Form::select('visit_type', [' ' => '--- Select visit type ---'] + $visittypes, null,
+											array('id' => 'visit_type', 'class' => 'form-control', 'onchange' => 'loadWards(this.value)')) }}
+									</div>
+									<div class="form-group">
+										{{ Form::label('ward', trans("messages.ward")) }}
+										{{ Form::select('ward', [], null,
+											array('class' => 'form-control', 'onmousedown' => 'loadWards(document.getElementById("visit_type").value)')) }}
+									</div>
 
-							<div class="form-group">
-								{{ Form::label('physician', trans("messages.physician")) }}
-								{{Form::text('physician', Input::old('physician'), array('class' => 'form-control'))}}
-							</div>
+									<div class="form-group">
+										{{ Form::label('physician', trans("messages.physician")) }}
+										{{Form::text('physician', Input::old('physician'), array('class' => 'form-control'))}}
+									</div>
 
-							<div class="form-group">
-								{{ Form::label('specimen_type', trans("messages.specimen-type-title")) }}
-								{{ Form::select('specimen_type', ([' ' => '--- Select specimen type ---'] + $specimen_types), null,
-									 array('id' => 'specimen_type',
-									 'class' => 'form-control',
-									 'onchange' => 'loadTestTypes(this.value)')) }}
+									<div class="form-group">
+										{{ Form::label('specimen_type', trans("messages.specimen-type-title")) }}
+										{{ Form::select('specimen_type', ([' ' => '--- Select specimen type ---'] + $specimen_types), null,
+											array('id' => 'specimen_type',
+											'class' => 'form-control',
+											'onchange' => 'loadTestTypes(this.value)')) }}
+									</div>
+								</div>
+								<div class="col-md-5">
+										<div class='col-md-4'>
+											{{ Form::label('date_to', "Date Sample Created:") }}
+										</div>
+										<div class='col-md-6'>
+											{{ Form::text('date_created', Input::get('date_created'), 
+												array('class' => 'form-control standard-datepicker')) }}
+										</div>							
+								
+								</div>
 							</div>
 							<div class="form-group">
 								{{ Form::label('tests', trans("messages.select-tests")) }}

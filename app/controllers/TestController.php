@@ -376,6 +376,8 @@ P1
 	public function saveNewTest()
 	{	
 		//Create New Test
+		
+		$dateSampleCreated = Input::get('date_created');
 		$rules = array(
 			'visit_type' => 'required',
 			'ward' => 'required',
@@ -478,6 +480,11 @@ P1
 				$specimen->accepted_by = Auth::user()->id;
 				$specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 				$specimen->accession_number = Specimen::assignAccessionNumber();
+				if ($dateSampleCreated) {$specimen->date_of_collection = $dateSampleCreated;
+					$specimen->specimen_status_id = 2;
+				}else{
+					$specimen->date_of_collection = $dateSampleCreated;
+				};
 				$specimen->save();
 
 				$dat = new UnsyncOrder;
@@ -517,11 +524,18 @@ P1
 									$test->test_type_id = $tType->test_type_id;
 									$test->specimen_id = $specimen->id;
 									$test->not_done_reasons = "";
-                        						$test->person_talked_to_for_not_done = "";
+                        			$test->person_talked_to_for_not_done = "";
 									$test->test_status_id = Test::PENDING;
 									$test->created_by = Auth::user()->id;
 									$test->panel_id = $panel->id;
 									$test->requested_by = Input::get('physician');
+									if ($dateSampleCreated) {$test->time_created = $dateSampleCreated;
+										$test->test_status_id = Test::STARTED;
+										$test->time_started = $dateSampleCreated;
+										$test->time_completed = $dateSampleCreated;
+									}else{
+										$test->time_created =  date('Y-m-d H:i:s');
+									};
 									$test->save();
 
 									$activeTest[] = $test->id;
@@ -544,6 +558,13 @@ P1
                         	$test->person_talked_to_for_not_done = "null";
 							$test->created_by = Auth::user()->id;
 							$test->requested_by = Input::get('physician');
+							if ($dateSampleCreated) {$test->time_created = $dateSampleCreated;
+								$test->test_status_id = Test::STARTED;
+								$test->time_started = $dateSampleCreated;
+								$test->time_completed = $dateSampleCreated;
+							}else{
+								$test->time_created =  date('Y-m-d H:i:s');
+							};
 							$test->save();
 
 							$activeTest[] = $test->id;
@@ -751,6 +772,7 @@ P1
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
 						->with('activeTest', array($specimen->test->id));
 		}
+
 
 
 		*/

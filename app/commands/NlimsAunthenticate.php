@@ -37,12 +37,12 @@ class NlimsAunthenticate extends Command {
 	 */
 	public function fire()
 	{
-			$url = config::get('kblis.nlims_controller_ip');
-			$default_pass = config::get('kblis.nlims_default_password');
-			$default_user = config::get('kblis.nlims_default_username');			
-			$version = config::get('kblis.nlims_api_version');
-
-			$ch = curl_init($url."/api/".$version."/authenticate/".$default_user."/".$default_pass);
+			
+			$url = config::get('nlims_connection.nlims_controller_ip');
+                	$nlims_username = config::get('nlims_connection.nlims_default_username');
+                	$nlims_password = config::get('nlims_connection.nlims_default_password');
+			
+			$ch = curl_init($url."/api/v1/authenticate/".$nlims_username."/".$nlims_password);
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -52,6 +52,7 @@ class NlimsAunthenticate extends Command {
 			);
 		
 			$response = json_decode(curl_exec($ch));
+			//var_dump($url);exit;
 			$token = $response->data->token;
 
 			if ($response->error == false)
