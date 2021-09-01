@@ -153,7 +153,14 @@
 							<span><strong>{{Lang::choice('messages.specimen-id', 1)}}</strong>&nbsp;:&nbsp;  <strong> {{ $specimen->accession_number }}</strong></span>
 
 							<span class="pull-right"><strong>Requested By </strong>&nbsp;:&nbsp;  <strong> {{ $test->requested_by }}
-									({{$test->visit->ward_or_location or trans('messages.unknown') }})</strong></span>
+									(
+										<?php  
+												$wrd = DB::select('Select ward_or_location from visits inner join tests on tests.visit_id = visits.id where tests.id='.$test->id );
+                                                foreach($wrd AS $ward_name){
+													echo $ward_name->ward_or_location;
+												}
+                                        ?>
+									)</strong></span>
 						</div>
 				<div class="panel-body">
 
