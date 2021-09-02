@@ -30,7 +30,7 @@
 
     <footer class="footer">
         <div>
-        		{{ HTML::link('http://baobabhealth.org/', 'baobabhealth.org')}} &copy; {{date("Y")}}
+        		{{ HTML::link('http://egpaf.org/', 'EGPAF.org')}} &copy; {{date("Y")}} - BLIS v2.5.1
         </div>
     </footer>
     <!-- End footer section-->
