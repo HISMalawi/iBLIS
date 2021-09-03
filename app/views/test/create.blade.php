@@ -60,7 +60,7 @@
 									<div class="form-group">
 										{{ Form::label('ward', trans("messages.ward")) }}
 										{{ Form::select('ward', [], null,
-											array('class' => 'form-control', 'onmousedown' => 'loadWards(document.getElementById("visit_type").value)')) }}
+											array('id' => 'ward','class' => 'form-control')) }}
 									</div>
 
 									<div class="form-group">
@@ -115,7 +115,8 @@
 			{{ Form::close() }}
 		</div>
 	</div>
-	<script>
+	<script type="text/javascript">
+
 		setTimeout(function() {
 			loadWards(document.getElementById("visit_type").value);
 			loadTestTypes(document.getElementById('specimen_type').value);
