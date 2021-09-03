@@ -75,16 +75,19 @@
 											'class' => 'form-control',
 											'onchange' => 'loadTestTypes(this.value)')) }}
 									</div>
-								</div>
-								<div class="col-md-5">
-										<div class='col-md-4'>
-											{{ Form::label('date_to', "Date Sample Created:") }}
-										</div>
-										<div class='col-md-6'>
-											{{ Form::text('date_created', Input::get('date_created'), 
-												array('class' => 'form-control standard-datepicker')) }}
-										</div>							
-								
+
+									<div class="form-group">
+										{{ Form::label('specimen_type', 'Back Data Entry') }}
+										{{ Form::checkbox('back_data_entry_cb', null, null, array('id' => 'back_data_entry_cb',
+										'onchange' => 'showBackDataFields()')) }}
+									</div>
+
+									<div id="back_data_controls" style="display: none;" class="form-group">
+										{{ Form::label('date_to', "Date Sample Created") }}
+
+										{{ Form::text('date_created', Input::get('date_created'), 
+										array('class' => 'form-control standard-datepicker')) }}
+									</div>
 								</div>
 							</div>
 							<div class="form-group">
@@ -116,6 +119,16 @@
 		</div>
 	</div>
 	<script type="text/javascript">
+		 
+		function showBackDataFields() {
+			
+			if(document.getElementById('back_data_entry_cb').checked) {
+				
+				document.getElementById("back_data_controls").style.display = "block";
+			}else {
+				document.getElementById("back_data_controls").style.display = "none";
+			} 
+		}
 
 		setTimeout(function() {
 			loadWards(document.getElementById("visit_type").value);
