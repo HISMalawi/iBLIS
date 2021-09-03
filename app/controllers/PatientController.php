@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\Rule;
 
 /**
  *Contains functions for managing patient records 
@@ -51,8 +52,10 @@ class PatientController extends \BaseController {
 			'first_name' => 'required',
 			'last_name' => 'required',
 			'gender' => 'required',
-			'dob' => 'required'
+			'dob' => 'required_without_all:age',
+
 		);
+
 		$validator = Validator::make(Input::all(), $rules);
 
 		if ($validator->fails()) {
@@ -65,12 +68,29 @@ class PatientController extends \BaseController {
 
 			$first_name = Input::get('first_name');
 			$last_name = Input::get('last_name');
+			$dob = Input::get('dob');
+			$age = Input::get('age');
 			$patient->name = $first_name." ".$last_name;
 			$patient->first_name_code = isset($first_name) ? Soundex::encode($first_name)  : null;
 			$patient->last_name_code = isset($last_name) ? Soundex::encode($last_name)  : null;
 
 			$patient->gender = Input::get('gender');
-			$patient->dob = Input::get('dob');
+
+			if (trim($dob) != '') {
+				
+				$patient->dob = Input::get('dob');
+
+			} else {
+
+				if (trim($age) != '') {
+					# code...
+					# $patient->dob = date('Y-m-d', strtotime("now - ".$age." years"));
+					$patient->dob = date('Y', strtotime("now - ".$age." years")).'-07-01';
+				}
+				
+
+			}	
+
 			$patient->email = Input::get('email');
 			$patient->address = Input::get('address');
 			$patient->phone_number = Input::get('phone_number');
