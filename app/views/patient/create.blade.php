@@ -40,6 +40,11 @@
 						array('class' => 'form-control standard-datepicker')) }}
 				</div>
 				<div class="form-group">
+					{{ Form::label('age', trans('messages.age')) }}
+					{{ Form::text('age', Input::old('age'), 
+						array('class' => 'form-control', 'placeholder' => '(optional)',)) }}
+				</div>
+				<div class="form-group">
 					{{ Form::label('gender', trans('messages.gender')) }}
 					<div>{{ Form::radio('gender', '0', true) }}
 					<span class="input-tag">{{trans('messages.male')}}</span></div>
