@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\QueryException;
-use Illuminate\Validation\Rule;
 
 /**
  *Contains functions for managing patient records 
