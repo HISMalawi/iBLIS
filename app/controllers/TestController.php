@@ -481,12 +481,13 @@ P1
 				$specimen = new Specimen;
 				$specimen->specimen_type_id = Input::get('specimen_type');
 				$specimen->accepted_by = Auth::user()->id;
-
-				$specimen->tracking_number = "X".Specimen::assignAccessionNumber();
+				
 				$specimen->accession_number = Specimen::assignAccessionNumber();
 				if ($dateSampleCreated) {$specimen->date_of_collection = $dateSampleCreated;
+					$specimen->tracking_number = "X".Specimen::assignAccessionNumber()."-BDE";
 					$specimen->specimen_status_id = 2;
 				}else{
+					$specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 					$specimen->date_of_collection = $dateSampleCreated;
 				};
 
