@@ -133,6 +133,13 @@ class TestController extends \BaseController {
 		if(count($tests) == 0 && Session::has('search_string')){
 			Session::set('message', 'Test does not belong to current lab section');
 		}
+
+		$validator_remote = isset($input['validator_remote'])?$input['validator_remote']:'';
+		if($validator_remote){
+			$validator_remote_message = $input['validator_remote_message'];
+			Session::set('message', $validator_remote_message );
+		}
+
 		
 		// Load the view and pass it the tests
 		return View::make('test.index')
@@ -1264,11 +1271,22 @@ P1
 	public function mergeRemoteResults($tracking_number){
 		
 		$specimen = Sender::merge_or_create($tracking_number);	
+		
+		if($specimen[0] == true)
+		{
+			$error = $specimen[1];
+			return Redirect::action('TestController@index')
+				->with('message', $error)
+				->with('validator_remote',true)
+				->with('validator_remote_message',$error)
+				->with('activeTest', array(100));
 
-		Session::set('search_string', $specimen->tracking_number);
-		return Redirect::action('TestController@index')
-			->with('message', 'Successfuly merged remote results')
-			->with('activeTest', array($specimen->test->id));
+		}else{
+			Session::set('search_string', $specimen[1]->tracking_number);
+			return Redirect::action('TestController@index')
+				->with('message', 'Successfuly merged remote results')
+				->with('activeTest', array($specimen[1]->test->id));
+		}
 	}
 
 	/**

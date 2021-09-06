@@ -194,6 +194,23 @@ class Sender
         $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
 
         $order = Sender::search_from_remote($tracking_number);
+        $check_sample_type = SpecimenType::where('name',$order->data->other->sample_type)->first();
+       
+        if($check_sample_type == NULL)
+        {
+            return [true,"Sample Merge Failed! sample type from nationl lims not available in iblis"];
+        }
+        $check_order_location = FacilityWard::where('name',$order->data->other->order_location);
+        if($check_order_location == NULL)
+        {
+            return [true,"Sample Merge Failed! order location from nationl lims not available in iblis"];
+        }
+        foreach($order->data->tests AS $name => $status) {
+            $type = TestType::where('name', $name)->first();
+            if($type == NULL){
+                return [true,"Sample Merge Failed! test type from nationl lims not available in iblis"];
+            }
+        }
       
         $specimen = Specimen::where('tracking_number', $tracking_number)->first();
         $patient = Patient::where('external_patient_number', $order->data->other->patient->id)->first();
@@ -288,7 +305,7 @@ class Sender
                 
         }
 
-        return $specimen;
+        return [false,$specimen];
     }
     
 }
