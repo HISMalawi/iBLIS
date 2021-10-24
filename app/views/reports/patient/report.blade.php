@@ -225,8 +225,7 @@
 					<th>{{Lang::choice('messages.test-type', 1)}}</th>
 					<th>{{trans('messages.test-results')}}</th>
 					<th>{{trans('messages.test-remarks')}}</th>					
-					<th>{{trans('messages.tested-by')}}</th>
-					<th>{{"Test Status"}} </th>
+					<th>{{" "}} </th>
 				</tr>
 				<?php
 
@@ -388,7 +387,35 @@
 							
 							@if($test->tested_by !=0)
 							
-								<td style="width: 20%;">
+								<td style="width: 10;">
+							
+								<b>Test Status </b> <br />
+    							        @if ($test->test_status->name == "verified")
+                                                                        {{"Authorised"}}
+                                                                @elseif ($test->test_status->name == "completed")
+                                                                       {{"Authorization Pending"}}
+                                                                @else
+                                                                        {{"Testing Pending"}}
+                                                                @endif
+
+                                                                <br />
+
+                                                                        @if($test->test_status->name == "verified")
+                                                                                By:
+                                                                                    {{ $test->verifiedBy->name }}
+
+                                                                        @endif  
+
+                                                                  <br />
+
+                                                                        @if($test->test_status->name == "verified")
+                                                                          On: 
+                                                                           {{ $test->time_verified }}
+                                                                        @endif  
+
+                                                                  <br /> <br /> <br />
+		
+								  <b>Performed By</b> <br />
 									{{ $test->testedBy->name}}<br />
 									On {{ $test->time_completed }}
 									@if($test->resultDevices())
@@ -399,34 +426,6 @@
 
 								</td>
 							@endif
-							<td> 
-								@if ($test->test_status->name == "verified")
-									{{"Authorised"}}
-								@elseif ($test->test_status->name == "completed")
-								       {{"Authorization Pending"}}
-								@else
-									{{"Testing Pending"}}
-								@endif
-								 
-                                                                <br />
-                                                                 
-                                                                        @if($test->test_status->name == "verified")
-                                                                       		<b> By: </b>
-										    {{ $test->verifiedBy->name }}
-												
-                                                                        @endif  
-                                                    
-								  <br />
-								  
-                                                                        @if($test->test_status->name == "verified")
-                                                                          <b> On: </b>
-									   {{ $test->time_verified }}
-                                                                        @endif  
-                                                                 
-                                                                  <br />
-
-									
-							</td>
 						</tr>
 						
 				@empty

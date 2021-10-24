@@ -145,11 +145,10 @@
 </th>
 									
 									<tr>
-										<th class="col-md-2">{{Lang::choice('messages.test-type', 1)}}</th>
+										<th>{{Lang::choice('messages.test-type', 1)}}</th>
 										<th>{{trans('messages.test-results')}}</th>
 										<th >{{trans('messages.test-remarks')}}</th>
-										<th >{{trans('messages.tested-by')}}</th>
-										<th>{{"Test Status"}} </th>
+										<th>{{" "}} </th>
 									</tr>
 
 									<?php
@@ -183,8 +182,8 @@
 
 									@forelse($tests as $test)
 										<tr>
-											<td>{{ $test->testType->name }}</td>
-											<td class="col-sm-4">
+											<td width="160px">{{ $test->testType->name }}</td>
+											<td width="370px">
 												@if(count($test->testResults) <= 1)
 													@foreach($test->testResults as $result)
 
@@ -223,7 +222,7 @@
 															<td><b>Result</b></td>
 															@if($test->testType->instruments->count() > 0)
 
-																<td style="width: 20%"><b>Range</b></td>
+																<td width="120px"><b>Range</b></td>
 															@endif
 														</tr>
 														@foreach($test->testResults as $result)
@@ -303,18 +302,11 @@
 													</table>
 												@endif
 											</td>
-											<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
+											<td width="10px">{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
 											@if($test->tested_by !=0)
-											<td style="width: 20%;">{{ $test->testedBy->name}}<br />
-												On {{ $test->time_completed }}
-												@if($test->resultDevices())
-													<br /><br />
+												    <td style="width: 100px;">
 
-													<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
-												@endif
-											</td>
- 											@endif
-											  <td>
+                                                                <b>Test Status </b> <br />
                                                                 @if ($test->test_status->name == "verified")
                                                                         {{"Authorised"}}
                                                                 @elseif ($test->test_status->name == "completed")
@@ -326,7 +318,7 @@
                                                                 <br />
 
                                                                         @if($test->test_status->name == "verified")
-                                                                                <b> By: </b>
+                                                                                By:
                                                                                     {{ $test->verifiedBy->name }}
 
                                                                         @endif  
@@ -334,15 +326,23 @@
                                                                   <br />
 
                                                                         @if($test->test_status->name == "verified")
-                                                                          <b> On: </b>
+                                                                          On:
                                                                            {{ $test->time_verified }}
                                                                         @endif  
 
-                                                                  <br />
+                                                                  <br /> <br /> <br />
 
+                                                                  <b>Performed By</b> <br />
+                                                                        {{ $test->testedBy->name}}<br />
+                                                                        On {{ $test->time_completed }}
+                                                                        @if($test->resultDevices())
+                                                                                <br /><br />
+                                                                                <b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+                                                                        @endif
+                                                                        <br /><br />
 
-                                                        </td>
-										
+                                                                </td>
+ 											@endif
 
 										</tr>
 									@empty
