@@ -62,7 +62,7 @@
 				</tr>
 			@empty
 				<tr>
-					<td colspan="5">{{trans('messages.no-records-found')}}</td>
+					<td colspan="5">{{"".trans('messages.no-records-found')}}</td>
 				</tr>
 			@endforelse
 			</tbody>
