@@ -7,11 +7,10 @@ return array(
     'nlims_controller_ip' => 'http://localhost:3009',
     'nlims_default_password' => 'knock_knock',
     'nlims_default_username' => 'admin',
-    'app_name' => 'iblis_1',
+    'app_name' => 'ufc',
     'partner_name' => 'EGPAF',
-    'nlims_custome_password' => 'iblis_lims',
-    'nlims_custome_username' => 'iblis_lims',
+    'nlims_custome_password' => 'ufc_iblis_lims',
+    'nlims_custome_username' => 'ufc_iblis_lims',
     'nlims_api_version' => 'v1', 
-    'district' => 'Lilongwe'
-
+    'district' => 'Blantyre'
 );

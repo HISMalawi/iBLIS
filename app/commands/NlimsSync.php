@@ -94,6 +94,7 @@ class NlimsSync extends Command {
 									INNER JOIN test_types ON test_types.id = tests.test_type_id
 									WHERE tests.specimen_id =".$sample_id                      
 								);
+				//var_dump($tests);exit;
 				if($tests){
 					foreach($tests as $test){
 						$test_name = $test->test_name;
@@ -123,7 +124,7 @@ class NlimsSync extends Command {
 						$ward = $visit->ward;
 					}
 				}
-				
+
 				$json = array(
 					'tracking_number' 						=> $tracking_number,
 					'district' 								=> config::get('kblis.district'),
@@ -195,6 +196,7 @@ class NlimsSync extends Command {
 	   	if($res->message == "re authenticated successfuly")
 		   {	$token = $res->data->token; }
 
+//var_dump($res);exit;
 		   	   
 		
 		$res = DB::select("SELECT specimens.id AS sample_id, specimens.tracking_number, unsync_orders.data_not_synced AS sample_status, 
@@ -264,7 +266,7 @@ class NlimsSync extends Command {
 
 
 
-
+//var_dump("hello");exit;
 
 
 
@@ -291,13 +293,17 @@ class NlimsSync extends Command {
 					INNER JOIN tests ON tests.id = unsync_orders.specimen_id                     
 					INNER JOIN specimens ON specimens.id = tests.specimen_id          
 					WHERE unsync_orders.data_level='test' AND unsync_orders.sync_status='not-synced'");
-
+//var_dump($res);exit;
 		if($res){
+		
 			foreach ($res AS $order){
-				$tst_name = DB::select("SELECT test_types.name AS test_name FROM tests INNER JOIN test_types ON test_types.id = tests.test_type_id WHERE tests.id=".$order->test_id);
+		//var_dump($order);exit;		
+		$tst_name = DB::select("SELECT test_types.name AS test_name FROM tests INNER JOIN test_types ON test_types.id = tests.test_type_id WHERE tests.id=".$order->test_id);
+		//var_dump($tst_name);exit;
 				if ($tst_name != null) {$tst_name = $tst_name[0]->test_name;};
-				if (array_key_exists($tst_name,$testMapping) == true){$tst_name = $testMapping[$test->test_name];};
-				
+	//var_dump($tst_name);exit;	
+			if (array_key_exists($tst_name,$testMapping) == true){$tst_name = $testMapping[$tst_name];};
+		//var_dump($tst_name);exit;		
 				$updater_f_name  = "";
 				$updater_l_name  = "";
 				$xm = "";
@@ -311,7 +317,7 @@ class NlimsSync extends Command {
 				if ($test_status == "result") {$xm = "verified";};
 				if ($test_status == "result") {$test_status = "verified";};
 				if ($test_status != "result") {$result_date = "";};
-				
+//var_dump($tst_name);exit;				
 				$json = array(
 					"tracking_number" => $tracking_number,
 					"test_status" => $test_status,
@@ -324,7 +330,7 @@ class NlimsSync extends Command {
 					)
 				);
 
-
+//var_dump($json);exit;
 
 				if ($order->test_status == "result"){
 					
@@ -356,7 +362,7 @@ class NlimsSync extends Command {
 				}   
 				
 				if ($xm  == "verified") {$test_status = "result";};
-				
+				//var_dump($xm);exit;
 				$acc = json_encode($json);
 				$ch = curl_init($url."/api/v1/update_test/");
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -369,9 +375,9 @@ class NlimsSync extends Command {
 						'Content-Length: ' . strlen($acc))
 				);
 				$res = json_decode(curl_exec($ch));
+			//var_dump($res);exit;
 				
-				
-				if($res->error == false && $res->message == "test updated successfuly"){				
+				if($res->error == false && ($res->message == "test updated successfuly" || $res->message == "order not available")){				
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced',$order->test_status)->where('specimen_id',$order->test_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
