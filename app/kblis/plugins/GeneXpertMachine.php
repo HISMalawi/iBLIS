@@ -14,7 +14,7 @@ class GeneXpertMachine extends \KBLIS\Instrumentation\AbstractInstrumentor
             'code' => 'GXPERT',
             'name' => 'Gene-Xpert',
             'description' => 'Automatic analyzer',
-            'testTypes' => array("TB Tests","HPV","Viral Load","Early Infant Diagnosis","SARS Cov 2)
+            'testTypes' => array("TB Tests","HPV","Viral Load","Early Infant Diagnosis","SARS Cov 2")
         );
     }
 
