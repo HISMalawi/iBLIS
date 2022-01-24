@@ -605,38 +605,37 @@ P1
 	public function extractBloodBankMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-		"blood grouping done on Patients" => "SELECT count(*) AS test_count FROM 
-								tests INNER JOIN test_results ON test_results.test_id = tests.id 
+		"blood grouping done on Patients" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON test_results.test_id = tests.id 
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								INNER JOIN measures ON measures.id = test_results.measure_id	
 								WHERE test_types.name = 'ABO Blood Grouping' AND 
 								(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Grouping' AND test_results.result IS NOT NULL ))",
 		
-		"Total X-matched" => "SELECT count(*) AS test_count FROM 
-								tests INNER JOIN test_results ON test_results.test_id = tests.id 
+		"Total X-matched" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON test_results.test_id = tests.id 
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								INNER JOIN measures ON measures.id = test_results.measure_id	
 								WHERE test_types.name = 'Cross-match' AND 
 								(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))",
 
-		"X- matched for matenity" => "SELECT count(*) AS test_count FROM 
-					tests INNER JOIN test_results ON test_results.test_id = tests.id 
+		"X-matched for matenity" => "SELECT count(*) AS test_count FROM tests 
+					INNER JOIN test_results ON test_results.test_id = tests.id 
 					INNER JOIN measures ON measures.id = test_results.measure_id
 					INNER JOIN test_types ON test_types.id = tests.test_type_id
 					INNER JOIN visits ON visits.id = tests.visit_id	
 					WHERE test_types.name = 'Cross-match' AND 
-					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
-                    
-                    ",
+						((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW')) 
+						AND (measures.name = 'Pack ABO Group' AND test_results.result<>''))",
 
-		"X-macthed for peads" => "SELECT count(*) AS test_count FROM 
-					tests INNER JOIN test_results ON test_results.test_id = tests.id 
+		"X-matched for peads" => "SELECT count(*) AS test_count FROM tests 
+					INNER JOIN test_results ON test_results.test_id = tests.id 
 					INNER JOIN measures ON measures.id = test_results.measure_id
 					INNER JOIN test_types ON test_types.id = tests.test_type_id
 					INNER JOIN visits ON visits.id = tests.visit_id	
-					WHERE test_types.name = 'Cross-match' AND 
-					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'CWA' OR visits.ward_or_location = 'CWB' OR visits.ward_or_location = 'CWC' OR visits.ward_or_location ='EM Nursery' OR visits.ward_or_location = 'Nursery' OR visits.ward_or_location ='Ward 9' OR visits.ward_or_location ='Under 5 Clinic')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
-                    ",
+					WHERE test_types.name = 'Cross-match' AND ((substr(tests.time_created,1,7) = '$period' 
+						AND (visits.ward_or_location = 'CWA' OR visits.ward_or_location = 'CWB' OR visits.ward_or_location = 'CWC' OR visits.ward_or_location ='EM Nursery' OR visits.ward_or_location = 'Nursery' OR visits.ward_or_location ='Ward 9' OR visits.ward_or_location ='Under 5 Clinic')) 
+						AND (measures.name = 'Pack ABO Group' AND test_results.result<>''))",
 
 		
 		"X-matched for others" => "SELECT count(*) AS test_count FROM 
@@ -645,32 +644,33 @@ P1
 					INNER JOIN test_types ON test_types.id = tests.test_type_id
 					INNER JOIN visits ON visits.id = tests.visit_id	
 					WHERE test_types.name = 'Cross-match' AND 
-					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'Other')) AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
+					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'Other')) AND (measures.name = 'Pack ABO Group' AND test_results.result<>''))
                     ",
 
 		
-		"X-matches done on patients with Hb ≤ 6.0g/dl" => "SELECT count(*) AS test_count FROM 
-										tests INNER JOIN test_results ON test_results.test_id = tests.id 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN measures ON measures.id = test_results.measure_id	
-										INNER JOIN visits ON visits.id = tests.visit_id	
-										WHERE test_types.name = 'Cross-match' AND 
-										(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ) 
-										) AND visits.patient_id  IN (SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-											INNER JOIN visits ON visits.id = tests.visit_id 
-											WHERE test_results.measure_id = 148 AND test_results.result <= 6)",
+		"X-matches done on patients with Hb ≤ 6.0g/dl" => "SELECT count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+					INNER JOIN test_types ON test_types.id = tests.test_type_id
+					INNER JOIN measures ON measures.id = test_results.measure_id	
+					INNER JOIN visits ON visits.id = tests.visit_id	
+					WHERE test_types.name = 'Cross-match' AND 
+					(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result<>'')) 
+						AND visits.patient_id  IN 
+					(SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+						INNER JOIN visits ON visits.id = tests.visit_id 
+						WHERE test_results.measure_id = 148 AND (test_results.result <= 6 AND test_results.result<>''))",
 
 
-		"X-matches done on patients with Hb > 6.0g/dl" => "SELECT count(*) AS test_count FROM 
-										tests INNER JOIN test_results ON test_results.test_id = tests.id 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN measures ON measures.id = test_results.measure_id	
-										INNER JOIN visits ON visits.id = tests.visit_id	
-										WHERE test_types.name = 'Cross-match' AND 
-										(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ) 
-										) AND visits.patient_id  IN (SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-											INNER JOIN visits ON visits.id = tests.visit_id 
-											WHERE test_results.measure_id = 148 AND test_results.result > 6)"
+		"X-matches done on patients with Hb > 6.0g/dl" => "SELECT count(*) AS test_count FROM tests 
+					INNER JOIN test_results ON test_results.test_id = tests.id 
+					INNER JOIN test_types ON test_types.id = tests.test_type_id
+					INNER JOIN measures ON measures.id = test_results.measure_id	
+					INNER JOIN visits ON visits.id = tests.visit_id	
+					WHERE test_types.name = 'Cross-match' AND 
+					(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
+						AND visits.patient_id  IN 
+					(SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+						INNER JOIN visits ON visits.id = tests.visit_id 
+						WHERE test_results.measure_id = 148 AND test_results.result > 6 AND test_results.result<>'')"
 								
 		);
 	
@@ -1393,8 +1393,9 @@ P1
 
 		$indicators = array(
 				"blood grouping done on Patients",
-				"Total X-matched","X- matched for matenity",
-				"X-macthed for peads",
+				"Total X-matched",
+				"X-matched for matenity",
+				"X-matched for peads",
 				"X-matched for others",
 				"X-matches done on patients with Hb ≤ 6.0g/dl",
 				"X-matches done on patients with Hb > 6.0g/dl"
