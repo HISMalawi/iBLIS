@@ -1343,7 +1343,7 @@ P1
 				"Bleeding/ cloting time" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Bleeding/ cloting time' AND 
+										WHERE test_types.name = 'Bleeding Time' AND 
 										(substr(time_created,1,7) = '$period')",
 
 				"CD4 absolute count" => "SELECT count(*) AS test_count FROM 
@@ -1352,11 +1352,12 @@ P1
 										WHERE test_types.name = 'CD4 absolute count' AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"CD4 percentage" => "SELECT count(*) AS test_count FROM 
-										tests 
+				"CD4 percentage" => "SELECT count(*) AS test_count FROM tests 
+										INNER JOIN test_results on test_results.test_id = tests.id
+										INNER JOIN measures on test_results.measure_id = measures.id
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'CD4 percentage' AND 
-										(substr(time_created,1,7) = '$period')",
+										WHERE test_types.name = 'CD4' AND measures.name='CD4 %' AND 
+											(substr(time_created,1,7) = '$period')",
 				
 
 				"Blood film for red cell morphology" => "SELECT count(*) AS test_count FROM 
