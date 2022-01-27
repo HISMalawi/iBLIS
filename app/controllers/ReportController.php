@@ -1308,11 +1308,12 @@ P1
 										WHERE (test_types.name = 'Sickling Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
 										(substr(time_created,1,7) = '$period')",
 
-				"Reticulocyte count" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Reticulocyte count' AND 
-										(substr(time_created,1,7) = '$period')",
+				"Reticulocyte count" => "SELECT count(*) AS test_count FROM tests 
+											INNER JOIN test_types ON test_types.id = tests.test_type_id
+											INNER JOIN test_results ON test_results.test_id=tests.id
+											INNER JOIN measures ON test_results.measure_id=measures.id
+											WHERE test_types.name = 'FBC' AND measures.name='RET#' AND 
+												(substr(time_created,1,7) = '$period')",
 
 
 				"Prothrombin time (PT)" => "SELECT count(*) AS test_count FROM 
