@@ -1217,8 +1217,7 @@ P1
 			"Bleeding/ cloting time",
 			"CD4 absolute count",
 			"CD4 percentage",
-			"Blood film for red cell morphology",
-			"Bleeding/clotting time");
+			"Blood film for red cell morphology");
 	
 		return View::make('reports.moh.haematologyReport')
 						->with('quarterPeriod',$quarter)
@@ -1340,7 +1339,6 @@ P1
 										(substr(time_created,1,7) = '$period')",
 
 
-
 				"Bleeding/ cloting time" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
@@ -1365,15 +1363,7 @@ P1
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
-										(substr(time_created,1,7) = '$period')",
-
-				
-				"Bleeding/clotting time" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Bleeding/clotting time' AND 
-										(substr(time_created,1,7) = '$period')",
-
+										(substr(time_created,1,7) = '$period')"
 				
 		);
 
