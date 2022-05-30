@@ -36,7 +36,7 @@ return array(
 	|-------------------------------------------------------------------------
 	|
 	*/
-	'district' => 'Lilongwe',
+	'district' => 'Mulanje',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -45,11 +45,11 @@ return array(
 	|
 	*/
 
-	'organization' => 'Kamuzu Central Hospital',
+	'organization' => 'Mulanje District Hospital',
 
-	'facility_name' => 'Kamuzu Central Hospital Laboratory',
+	'facility_name' => 'Mulanje District Hospital Laboratory',
 	
-	'facility-code' => 'KCH',
+	'facility-code' => 'MJD',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -58,9 +58,9 @@ return array(
 	|
 	*/
 	'address-info' => '<p>
-                    P.O. BOX 11,<br>
-                    Lilongwe<br>
-                    Phone: +265 1 943 873</p>',
+                    P.O. BOX 227,<br>
+                    Mulanje<br>
+                    Phone: +265 997 493 782/ +265 881 954 074</p>',
 	
 	/*
 	|--------------------------------------------------------------------------
@@ -107,7 +107,7 @@ return array(
         |--------------------------------------------------------------------------
         |
         */
-	'A4_printers' => array('Heamatology Printer','Blood Bank Printer','Biochemistry Printer'),
+	'A4_printers' => array('Lab-Printer'),
 	'reception-server' => 'http://0.0.0.0:8002',
 
 	/*
@@ -116,6 +116,6 @@ return array(
 		|--------------------------------------------------------------------------
 		|
 		*/
-	'central-repo' => 'http://localhost:3004',
-	'national-repo-node' => 'http://localhost:3014'
+	'central-repo' => 'http://10.44.0.46:3010',
+	'national-repo-node' => 'http://10.44.0.46:3010'
 );

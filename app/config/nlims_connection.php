@@ -9,9 +9,9 @@ return array(
     'nlims_default_username' => 'admin',
     'app_name' => 'iblis_1',
     'partner_name' => 'EGPAF',
-    'nlims_custome_password' => 'iblis_lims',
-    'nlims_custome_username' => 'iblis_lims',
+    'nlims_custome_password' => 'mulanje__iblis_lims',
+    'nlims_custome_username' => 'mulanje_iblis_lims',
     'nlims_api_version' => 'v1', 
-    'district' => 'Lilongwe'
+    'district' => 'Mulanje'
 
 );
