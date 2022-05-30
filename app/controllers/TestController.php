@@ -893,10 +893,10 @@ P1
 
 		$user = Auth::user();
 		$id = $user->id;
-
+		//var_dump($user);exit();
 		$tempName = explode(" ", $user->name);
-		$firstName = $tempName[0];
-		$secondName = $tempName[1];
+		$firstName = $tempName;
+		$secondName = $tempName;
 
 		$trackingNumber = $specimen->tracking_number;
 		/*
@@ -1531,7 +1531,7 @@ P1
 					DB::update(DB::raw("UPDATE tests SET tests.test_status_id ='$ver'
 										WHERE tests.specimen_id='$id'
 										AND
-										tests.test_type_id ='29'"));
+										(tests.test_type_id ='29'AND tests.test_type_id ='30')"));
 
 						$dat = new UnsyncOrder;
 						$dat->specimen_id = $id;

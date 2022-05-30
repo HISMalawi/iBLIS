@@ -71,6 +71,9 @@
 						$specimen = Specimen::where('accession_number', '=', $accession_number)->first();
 						$test = $tests[0];
 						?>
+
+
+@if(count($rej_status)==0)
 						<div class="panel panel-success">
 							<div class="panel-heading ">
 								<span class="glyphicon glyphicon-tint"></span>
@@ -137,15 +140,20 @@
 								</table>
 								<table class="table table-bordered rtest">
 									<tbody>
+									<tr>				
+							  <th colspan="8"><span class="col-sm-7"> {{trans('messages.test-results')}} </span>
+                                            <?php  $co = count($tests) - count($verified)   ?>
+                                                @if (count($verified) >0) <span class="col-sm-2"><i>{{"Test Authorised"." (". count($verified).")"}} </i></span> @endif
+
+                                                @if (count($verified) != count($tests)) <span class="col-sm-2"><i>{{"Test Pending Authorisation" ." (". $co.")"}} </i></span> @endif
+                                        
+</th>
+									
 									<tr>
-										<th colspan="8">{{trans('messages.test-results')}}
-											{{(count($verified) != count($tests)) ?	('<span class="pull-right"><i>'.trans('messages.verification-pending')).'</i></span>' : ''}}</th>
-									</tr>
-									<tr>
-										<th class="col-md-2">{{Lang::choice('messages.test-type', 1)}}</th>
+										<th>{{Lang::choice('messages.test-type', 1)}}</th>
 										<th>{{trans('messages.test-results')}}</th>
 										<th >{{trans('messages.test-remarks')}}</th>
-										<th >{{trans('messages.tested-by')}}</th>
+										<th>{{" "}} </th>
 									</tr>
 
 									<?php
@@ -179,8 +187,8 @@
 
 									@forelse($tests as $test)
 										<tr>
-											<td>{{ $test->testType->name }}</td>
-											<td>
+											<td width="160px">{{ $test->testType->name }}</td>
+											<td width="370px">
 												@if(count($test->testResults) <= 1)
 													@foreach($test->testResults as $result)
 
@@ -219,7 +227,7 @@
 															<td><b>Result</b></td>
 															@if($test->testType->instruments->count() > 0)
 
-																<td style="width: 20%"><b>Range</b></td>
+																<td width="120px"><b>Range</b></td>
 															@endif
 														</tr>
 														@foreach($test->testResults as $result)
@@ -299,17 +307,47 @@
 													</table>
 												@endif
 											</td>
-											<td>{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
+											<td width="10px">{{ $test->interpretation == '' ? 'N/A' : $test->interpretation }}</td>
 											@if($test->tested_by !=0)
-											<td style="width: 20%;">{{ $test->testedBy->name}}<br />
-												On {{ $test->time_completed }}
-												@if($test->resultDevices())
-													<br /><br />
+												    <td style="width: 100px;">
 
-													<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
-												@endif
-											</td>
-											@endif
+                                                                <b>Test Status </b> <br />
+                                                                @if ($test->test_status->name == "verified")
+                                                                        {{"Authorised"}}
+                                                                @elseif ($test->test_status->name == "completed")
+                                                                       {{"Authorization Pending"}}
+                                                                @else
+                                                                        {{"Testing Pending"}}
+                                                                @endif
+
+                                                                <br />
+
+                                                                        @if($test->test_status->name == "verified")
+                                                                                By:
+                                                                                    {{ $test->verifiedBy->name }}
+
+                                                                        @endif  
+
+                                                                  <br />
+
+                                                                        @if($test->test_status->name == "verified")
+                                                                          On:
+                                                                           {{ $test->time_verified }}
+                                                                        @endif  
+
+                                                                  <br /> <br /> <br />
+
+                                                                  <b>Performed By</b> <br />
+                                                                        {{ $test->testedBy->name}}<br />
+                                                                        On {{ $test->time_completed }}
+                                                                        @if($test->resultDevices())
+                                                                                <br /><br />
+                                                                                <b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+                                                                        @endif
+                                                                        <br /><br />
+
+                                                                </td>
+ 											@endif
 
 										</tr>
 									@empty
@@ -319,6 +357,91 @@
 									@endforelse
 									</tbody>
 								</table>
+
+@else
+         <?php $test_data =  $test; ?>
+                <div class="panel panel-success">
+                                                <div class="panel-heading ">
+                                                        <span class="glyphicon glyphicon-tint"></span>
+                                                        <span><strong>{{Lang::choice('messages.specimen-id', 1)}}</strong>&nbsp;:&nbsp;  <strong> {{ $specimen->accession_number }}</strong></span>
+
+                                                        <span class="pull-right"><strong>Requested By </strong>&nbsp;:&nbsp;  <strong> {{ $test->requested_by }}
+                                                                        ({{$test->visit->ward_or_location or trans('messages.unknown') }})</strong></span>
+                                                </div>
+                                <div class="panel-body">
+
+                        <table class="table table-bordered rspecimen">
+                                <tbody>
+                                           <tr>
+                                                <td><strong>{{Lang::choice('messages.specimen-type', 1)}}</strong></td>
+                                                <td>{{ $specimen->specimenType->name }}</td>
+
+                                                <td><strong>{{Lang::choice('messages.date-ordered', 1)}}</strong></td>
+                                                <td>{{  $test ? $test->isExternal()?$test->external()->request_date:$test->time_created : ''}}</td>
+                                        </tr>
+
+                                        <tr>
+                                                <td><strong>{{Lang::choice('messages.specimen-tests-ordered', 1)}}</strong></td>
+                                                <td>{{ $specimen->testTypes() }}</td>
+
+                                                <td><strong>{{Lang::choice('messages.test-category', 2)}}</strong></td>
+                                                <td>{{ $specimen->labSections() }}</td>
+                                        </tr>
+
+                                        <tr>
+                                                <td><strong>{{trans('messages.ordered-specimen-status')}}</strong></td>
+                                                @if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+                                                        <td>{{trans('messages.specimen-not-collected')}}</td>
+                                                @elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+                                                        <td>{{trans('messages.specimen-accepted')}}</td>
+                                                @elseif($specimen->specimen_status_id == Specimen::REJECTED)
+                                                        <td style="background: red;color:white;">{{trans('messages.specimen-rejected')}}</td>
+                                                @endif
+
+                                                @if($specimen->specimen_status_id == Specimen::ACCEPTED)
+                                                        <td><strong>{{ trans('messages.collected-by') }}</strong></td>
+
+                                                @elseif($specimen->specimen_status_id == Specimen::REJECTED)
+                                                        <td><strong>{{ trans('messages.rejected-by') }}</strong></td>
+                                                @endif
+
+                                                @if($specimen->specimen_status_id == Specimen::NOT_COLLECTED)
+                                                        <td></td>
+                                                @elseif($specimen->specimen_status_id == Specimen::ACCEPTED)
+                                                        <td>{{collected_by}}</td>
+                                                @elseif($specimen->specimen_status_id == Specimen::REJECTED)
+                                                        <td>{{$specimen->rejectedBy->name}}</td>
+                                                @endif  
+                                        </tr>
+
+
+                                </tbody>
+                        </table>
+
+
+
+ <?php
+                                                $number = $specimen->accession_number;
+                                                        $rej_reason = DB::select(DB::raw("SELECT rejection_reasons.reason AS reason FROM rejection_reasons INNER JOIN specimens ON specimens.rejection_reason_id = rejection_reasons.id WHERE specimens.accession_number='$number'"));
+                                        ?>
+                        <table class="table table-bordered rtest">
+                                <tbody>
+                                        <tr>
+                                                <th colspan="8">{{trans('messages.specimenrejected')}}
+                                                </th>
+                                        </tr>
+
+                                        <tr>
+                                                <td>{{$rej_reason[0]->reason}}</td>
+                                        </tr>
+                                </tbody>
+                        </table>
+
+
+@endif
+
+
+
 
 								<?php  
 									$susc_available = false;
@@ -376,7 +499,9 @@
 														@endforeach
 														</tbody>
 													</table>
-													</td>
+
+ </td>
+
 														{{($i % 2 == 1) ? ('</tr>') : ""}}
 													<?php $i = $i + 1 ?>
 											@endforeach
