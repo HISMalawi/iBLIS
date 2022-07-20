@@ -169,13 +169,15 @@ class NlimsSync extends Command {
 						'Content-Length: ' . strlen($acc))
 				);
 				$res = json_decode(curl_exec($ch));		
-	//var_dump($res);exit;			
+        //var_dump($res != NULL);exit;	
+			if ($res != NULL){		
 				if($res->error == false && $res->message == "order created successfuly"){				
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced','new order')->where('specimen_id',$sample_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
 					dd($res);
 				}
+			    }
 			}
 	   }
 

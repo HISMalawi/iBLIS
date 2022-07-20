@@ -209,12 +209,7 @@
 					</tr>
 
 					@if(count($verified) == count($tests))
-						<tr>
-							<td><strong>{{trans('messages.verified-by')}}</strong></td>
-							<td>{{ $test->verifiedBy->name or trans('messages.verification-pending')}}</td>
-							<td><strong> {{trans('messages.date-verified')}}</strong></td>
-							<td>{{ $test->time_verified }}</td>
-						</tr>
+
 					@endif
 				</tbody>
 			</table>
