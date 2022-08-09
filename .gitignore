@@ -15,6 +15,7 @@ app/config/remote.php
 public/i/users/*
 public/patientreport*
 public/data
+log/*.log
 *.lbl
 labstatreport*
 app/config/key
