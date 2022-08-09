@@ -630,6 +630,14 @@ Route::group(array("before" => "auth"), function()
             "as"   => "reports.inventory",
             "uses" => "ReportController@stockLevel"
         ));
+        Route::get("/malariamicroscopy", array(
+            "as"   => "reports.malariaMicroscopy",
+            "uses" => "ReportController@malariaMicroscopy"
+        ));
+        Route::post("/malariamicroscopy", array(
+            "as"   => "reports.malariaMicroscopy",
+            "uses" => "ReportController@malariaMicroscopyResults"
+        ));
 
        /* Route::match(['get', 'post'], "/departments_summary_report", array(
             "as"   => "reports.departments_summary",

@@ -2560,6 +2560,118 @@ P1
 		}
 	}
 
+	// MALARIA MACROSCOPY REPORT
+	public function malariaMicroscopy()
+	{
+		return View::make('reports.malariamicroscopy.index');
+	}
+	public function malariaWardCount($arry){
+		$default_ward_totals = array(
+			'OPD' => 0,
+			'Male Ward' => 0,
+			'Female Ward' => 0,
+			'Paediatric' => 0
+		);
+		foreach ($arry as $wards_count){
+			if ($wards_count->ward_or_location =='OPD 1' || $wards_count->ward_or_location =='OPD 2' || $wards_count->ward_or_location =='OPD' ||
+				 $wards_count->ward_or_location =='OPD OPD' || $wards_count->ward_or_location =='ART OPD'){
+				$default_ward_totals['OPD'] = $default_ward_totals['OPD'] + $wards_count->total;
+			}
+			elseif ($wards_count->ward_or_location =='Male Ward'){
+				$default_ward_totals['Male Ward'] = $default_ward_totals['Male Ward'] + $wards_count->total;
+			}
+			elseif ($wards_count->ward_or_location =='Female Ward'){
+				$default_ward_totals['Female Ward'] = $default_ward_totals['Female Ward'] + $wards_count->total;
+			}
+			elseif ($wards_count->ward_or_location =='Paediatric' || $wards_count->ward_or_location =='Peads Isolation Centre'){
+				$default_ward_totals['Paediatric'] = $default_ward_totals['Paediatric'] + $wards_count->total;
+			}
+		}
+		return $default_ward_totals;
+
+	}
+	public function malariaMicroscopyResults()
+	{
+		$rules = array('start_date' => 'date|required',
+					'end_date' => 'date|required');
+		$validator = Validator::make(Input::all(), $rules);
+
+		if($validator->fails()){
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+		else{
+			$start_date = Input::get('start_date');
+			$end_date = Input::get('end_date');
+			$total_tests_under5 = DB::select(DB::raw("
+				SELECT COUNT(*) AS total_tests FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id
+				WHERE tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film'
+				AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
+			"))[0];
+			$total_tests_over5 = DB::select(DB::raw("
+				SELECT COUNT(*) AS total_tests FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id
+				WHERE tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film' AND
+				(DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
+			"))[0];
+			$microscopy_under5 = DB::select(DB::raw("
+				SELECT v.ward_or_location, COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
+				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film' 
+				AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date') GROUP BY v.ward_or_location
+			"));
+			$microscopy_over5 = DB::select(DB::raw("
+				SELECT v.ward_or_location, COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
+				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film'
+				AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date') GROUP BY v.ward_or_location
+			"));
+			$total_positives_over5 = DB::select(DB::raw("
+				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
+				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film'	
+				AND tr.result<>'No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
+			"))[0];
+			$total_negatives_over5 = DB::select(DB::raw("
+				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
+				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film'	
+				AND tr.result='No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
+			"))[0];
+			$total_positives_under5 = DB::select(DB::raw("
+				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
+				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film'	
+				AND tr.result<>'No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
+			"))[0];
+			$total_negatives_under5 = DB::select(DB::raw("
+				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
+				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
+				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
+				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film'	
+				AND tr.result='No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
+			"))[0];
+			$totals_per_ward_under5= $this->malariaWardCount($microscopy_under5);
+			$totals_per_ward_over5= $this->malariaWardCount($microscopy_over5);
+			return View::make('reports.malariamicroscopy.results')
+			->with('total_tests_under5',$total_tests_under5)
+			->with('total_tests_over5',$total_tests_over5)
+			->with('totals_per_ward_over5',$totals_per_ward_over5)
+			->with('totals_per_ward_under5', $totals_per_ward_under5)
+			->with('total_positives_over5',$total_positives_over5)
+			->with('total_positives_under5',$total_positives_under5)
+			->with('total_negatives_over5',$total_negatives_over5)
+			->with('total_negatives_under5',$total_negatives_under5);
+		}
+	}
+
 	/**
 	 * Displays Surveillance
 	 * @param string $from, string $to, array() $testTypeIds
