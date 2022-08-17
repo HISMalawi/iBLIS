@@ -1202,6 +1202,7 @@ P1
 		$indicators = array(			
 			"Full Blood Count",
 			"Heamoglobin only (blood donors excluded)",
+			"Heamoglobin only (Hemacue)",
 			"Patients with Hb ≤ 6.0g/dl",
 			"Patients with Hb ≤ 6.0g/dl who were transfused",
 			"Patients with Hb > 6.0g/dl",
@@ -1229,21 +1230,26 @@ P1
 	public function extracthaematologyMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-				"Full Blood Count" => "SELECT count(*) AS test_count FROM 
-										tests 
+				"Full Blood Count" => "SELECT count(*) AS test_count FROM tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
 										WHERE (test_types.name = 'FBC' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"Heamoglobin only (blood donors excluded)" => "SELECT count(*) AS test_count FROM 
-										test_results 
+				"Heamoglobin only (blood donors excluded)" => "SELECT count(*) AS test_count FROM test_results 
 										INNER JOIN measures ON measures.id = test_results.measure_id
 										INNER JOIN tests ON tests.id = test_results.test_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id                                        
 										WHERE (measures.name= 'HGB' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
 										(substr(tests.time_created,1,7) = '$period' )
 										",
+				"Heamoglobin only (Hemacue)" => "SELECT COUNT(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN testtype_measures ttm ON ttm.test_type_id = tt.id
+										INNER JOIN measures m ON m.id = ttm.measure_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE m.name = 'HGB' AND tt.name = 'Haemoglobin' AND (ts.name = 'completed' OR ts.name = 'verified')
+										AND (substr(t.time_created,1,7) = '$period')",
 
 				"Patients with Hb ≤ 6.0g/dl" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
 											INNER JOIN visits ON visits.id = tests.visit_id 
