@@ -1271,21 +1271,26 @@ P1
 											INNER JOIN measures m on m.id = tr.measure_id
 											WHERE m.name = 'HGB' AND tr.result <= 6 AND tr.result<>'')",
 				
-				"Patients with Hb > 6.0g/dl" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-											INNER JOIN visits ON visits.id = tests.visit_id 
-											WHERE (test_results.measure_id = 148 AND test_results.result > 6) AND (substr(tests.time_created,1,7) = '$period')",
+				"Patients with Hb > 6.0g/dl" => "SELECT DISTINCT count(*) AS test_count FROM tests t
+										INNER JOIN test_results tr ON tr.test_id = t.id
+										INNER JOIN measures m ON m.id = tr.measure_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE m.name = 'HGB' AND (ts.name = 'completed' OR ts.name = 'verified')
+										AND (tr.result > 6 AND tr.result <> '') AND (SUBSTR(t.time_created, 1, 7) = '$period')",
 
 
-				"Patients with Hb >6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM 
-										tests INNER JOIN test_results ON test_results.test_id = tests.id 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN measures ON measures.id = test_results.measure_id	
-										INNER JOIN visits ON visits.id = tests.visit_id	
-										WHERE test_types.name = 'Cross-match' AND 
-										(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ) 
-										) AND visits.patient_id  IN (SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-											INNER JOIN visits ON visits.id = tests.visit_id 
-											WHERE test_results.measure_id = 148 AND test_results.result > 6)",
+				"Patients with Hb >6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM tests ot
+										INNER JOIN test_results otr ON otr.test_id = ot.id
+										INNER JOIN test_types ott ON ott.id = ot.test_type_id
+										INNER JOIN measures om ON om.id = otr.measure_id
+										INNER JOIN visits ov ON ov.id = ot.visit_id
+										WHERE ott.name = 'Cross-match' AND (SUBSTR(ot.time_created, 1, 7) = '$period')
+										AND (om.name = 'Pack ABO Group' AND otr.result IS NOT NULL) AND ov.patient_id 
+										IN (SELECT DISTINCT v.patient_id FROM tests t
+											INNER JOIN test_results tr ON tr.test_id = t.id
+											INNER JOIN visits v ON v.id = t.visit_id
+											INNER JOIN measures m on m.id = tr.measure_id
+											WHERE m.name = 'HGB' AND tr.result > 6 AND tr.result<>'')",
 
 
 				"WBC manual count" => "SELECT count(*) AS test_count FROM 
