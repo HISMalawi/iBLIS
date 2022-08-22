@@ -1208,7 +1208,7 @@ P1
 			"Patients with Hb > 6.0g/dl",
 			"Patients with Hb >6.0g/dl who were transfused",
 			"WBC manual count",
-			"WBC differential",
+			"Manual WBC differential",
 			"Erythrocyte Sedimentation Rate (ESR)",
 			"Sickling Test",
 			"Reticulocyte count",
@@ -1301,7 +1301,7 @@ P1
 
 
 
-				"WBC differential" => "SELECT count(*) AS test_count FROM 
+				"Manual WBC differential" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
@@ -1316,19 +1316,15 @@ P1
 
 
 
-				"Sickling Test" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE (test_types.name = 'Sickling Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
-										(substr(time_created,1,7) = '$period')",
+				"Sickling Test" => "SELECT count(*) AS test_count FROM tests 
+									INNER JOIN test_types ON test_types.id = tests.test_type_id
+									INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+									WHERE (test_types.name = 'Sickling Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
+									(substr(time_created,1,7) = '$period')",
 
 				"Reticulocyte count" => "SELECT count(*) AS test_count FROM tests 
-											INNER JOIN test_types ON test_types.id = tests.test_type_id
-											INNER JOIN test_results ON test_results.test_id=tests.id
-											INNER JOIN measures ON test_results.measure_id=measures.id
-											WHERE test_types.name = 'FBC' AND measures.name='RET#' AND 
-												(substr(time_created,1,7) = '$period')",
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE test_types.name = 'Reticulocyte Count' AND (substr(time_created,1,7) = '$period')",
 
 
 				"Prothrombin time (PT)" => "SELECT count(*) AS test_count FROM 
