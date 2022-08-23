@@ -605,19 +605,18 @@ P1
 	public function extractBloodBankMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-		"blood grouping done on Patients" => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON test_results.test_id = tests.id 
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								INNER JOIN measures ON measures.id = test_results.measure_id	
-								WHERE test_types.name = 'ABO Blood Grouping' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Grouping' AND test_results.result IS NOT NULL ))",
+		// "blood grouping done on Patients" => "SELECT count(*) AS test_count FROM tests 
+		// 						INNER JOIN test_results ON test_results.test_id = tests.id 
+		// 						INNER JOIN test_types ON test_types.id = tests.test_type_id
+		// 						INNER JOIN measures ON measures.id = test_results.measure_id	
+		// 						WHERE test_types.name = 'ABO Blood Grouping' AND 
+		// 						(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Grouping' AND test_results.result IS NOT NULL ))",
 		
-		"Total X-matched" => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON test_results.test_id = tests.id 
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								INNER JOIN measures ON measures.id = test_results.measure_id	
-								WHERE test_types.name = 'Cross-match' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))",
+		"Total X-matched" => "SELECT count(*) AS test_count FROM tests t
+								INNER JOIN test_statuses ts ON ts.id=t.test_status_id 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id	
+								WHERE tt.name = 'Cross-match' AND (ts.name='completed' OR ts.name='verified')
+								AND substr(t.time_created,1,7) = '$period'",
 
 		"X-matched for matenity" => "SELECT count(*) AS test_count FROM tests 
 					INNER JOIN test_results ON test_results.test_id = tests.id 
@@ -1390,7 +1389,7 @@ P1
 
 
 		$indicators = array(
-				"blood grouping done on Patients",
+				// "blood grouping done on Patients",
 				"Total X-matched",
 				"X-matched for matenity",
 				"X-matched for peads",
