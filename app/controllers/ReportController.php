@@ -635,14 +635,12 @@ P1
 				OR v.ward_or_location = 'Paediatric') AND (ts.name='completed' OR ts.name='verified') AND substr(t.time_created,1,7) = '$period'",
 
 		
-		"X-matched for others" => "SELECT count(*) AS test_count FROM 
-					tests INNER JOIN test_results ON test_results.test_id = tests.id 
-					INNER JOIN measures ON measures.id = test_results.measure_id
-					INNER JOIN test_types ON test_types.id = tests.test_type_id
-					INNER JOIN visits ON visits.id = tests.visit_id	
-					WHERE test_types.name = 'Cross-match' AND 
-					((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'Other')) AND (measures.name = 'Pack ABO Group' AND test_results.result<>''))
-                    ",
+		"X-matched for others" =>"SELECT COUNT(*) AS test_count FROM tests t
+			INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+			INNER JOIN test_types tt ON tt.id = t.test_type_id
+			INNER JOIN visits v ON v.id = t.visit_id
+			WHERE tt.name = 'Cross-match' AND v.ward_or_location = 'Other' AND (ts.name='completed' OR ts.name='verified') AND substr(t.time_created,1,7) = '$period'",
+
 
 		
 		"X-matches done on patients with Hb ≤ 6.0g/dl" => "SELECT count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
