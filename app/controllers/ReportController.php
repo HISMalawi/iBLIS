@@ -626,14 +626,13 @@ P1
 				OR v.ward_or_location = 'PNW' OR v.ward_or_location = '2A' OR v.ward_or_location = '2B' OR v.ward_or_location = '3A'
 				OR v.ward_or_location = '3B') AND (ts.name='completed' OR ts.name='verified') AND substr(t.time_created,1,7) = '$period'",
 
-		"X-matched for peads" => "SELECT count(*) AS test_count FROM tests 
-					INNER JOIN test_results ON test_results.test_id = tests.id 
-					INNER JOIN measures ON measures.id = test_results.measure_id
-					INNER JOIN test_types ON test_types.id = tests.test_type_id
-					INNER JOIN visits ON visits.id = tests.visit_id	
-					WHERE test_types.name = 'Cross-match' AND ((substr(tests.time_created,1,7) = '$period' 
-						AND (visits.ward_or_location = 'CWA' OR visits.ward_or_location = 'CWB' OR visits.ward_or_location = 'CWC' OR visits.ward_or_location ='EM Nursery' OR visits.ward_or_location = 'Nursery' OR visits.ward_or_location ='Ward 9' OR visits.ward_or_location ='Under 5 Clinic')) 
-						AND (measures.name = 'Pack ABO Group' AND test_results.result<>''))",
+		"X-matched for peads" => "SELECT COUNT(*) AS test_count FROM tests t
+			INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+			INNER JOIN test_types tt ON tt.id = t.test_type_id
+			INNER JOIN visits v ON v.id = t.visit_id
+			WHERE tt.name = 'Cross-match' AND (v.ward_or_location = 'CWA' OR v.ward_or_location = 'CWB' OR v.ward_or_location = 'CWC'
+				OR v.ward_or_location = 'EM Nursery' OR v.ward_or_location = 'Under 5 Clinic' OR v.ward_or_location = 'ward 9' OR v.ward_or_location = 'Nursery'
+				OR v.ward_or_location = 'Paediatric') AND (ts.name='completed' OR ts.name='verified') AND substr(t.time_created,1,7) = '$period'",
 
 		
 		"X-matched for others" => "SELECT count(*) AS test_count FROM 
