@@ -674,13 +674,24 @@ P1
 					INNER JOIN visits v ON v.id = t.visit_id	
 					WHERE tt.name = 'Cross-match' AND m.name='Product Type' AND tr.result='Whole Blood'
 					AND substr(t.time_created,1,7) = '$period'",
+
 		"Total Number Transfused with Packed Cells" =>"SELECT count(*) AS test_count FROM tests t
 					INNER JOIN test_results tr ON tr.test_id = t.id 
 					INNER JOIN test_types tt ON tt.id = t.test_type_id
 					INNER JOIN measures m ON m.id = tr.measure_id	
 					INNER JOIN visits v ON v.id = t.visit_id	
 					WHERE tt.name = 'Cross-match' AND m.name='Product Type' AND tr.result='Packed Red Cells'
+					AND substr(t.time_created,1,7) = '$period'",
+
+		"Total Number Transfused with Platelets" =>"SELECT count(*) AS test_count FROM tests t
+					INNER JOIN test_results tr ON tr.test_id = t.id 
+					INNER JOIN test_types tt ON tt.id = t.test_type_id
+					INNER JOIN measures m ON m.id = tr.measure_id	
+					INNER JOIN visits v ON v.id = t.visit_id	
+					WHERE tt.name = 'Cross-match' AND m.name='Product Type' AND tr.result='Platelets'
 					AND substr(t.time_created,1,7) = '$period'"
+		// "Total Number Transfused with FFP" =>,
+		// "Total Number Transfused with Cryo precipitate" =>
 								
 		);
 	
