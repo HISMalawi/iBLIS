@@ -665,7 +665,15 @@ P1
 						AND visits.patient_id  IN 
 					(SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
 						INNER JOIN visits ON visits.id = tests.visit_id 
-						WHERE test_results.measure_id = 148 AND test_results.result > 6 AND test_results.result<>'')"
+						WHERE test_results.measure_id = 148 AND test_results.result > 6 AND test_results.result<>'')",
+
+		"Total Number Transfused with Whole blood" => "SELECT count(*) AS test_count FROM tests t
+					INNER JOIN test_results tr ON tr.test_id = t.id 
+					INNER JOIN test_types tt ON tt.id = t.test_type_id
+					INNER JOIN measures m ON m.id = tr.measure_id	
+					INNER JOIN visits v ON v.id = t.visit_id	
+					WHERE tt.name = 'Cross-match' AND m.name='Product Type' AND tr.result='Whole Blood'
+					AND substr(t.time_created,1,7) = '$period'"
 								
 		);
 	
