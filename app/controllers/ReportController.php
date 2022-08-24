@@ -1391,7 +1391,13 @@ P1
 				"X-matched for peads",
 				"X-matched for others",
 				"X-matches done on patients with Hb ≤ 6.0g/dl",
-				"X-matches done on patients with Hb > 6.0g/dl"
+				"X-matches done on patients with Hb > 6.0g/dl",
+				"Total Number Transfused with Whole blood",
+				"Total Number Transfused with Packed Cells",
+				"Total Number Transfused with Platelets",
+				"Total Number Transfused with FFP",
+				"Total Number Transfused with Cryo precipitate"
+
 			);
 	
 		return View::make('reports.moh.bloodBankReport')
