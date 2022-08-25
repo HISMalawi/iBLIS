@@ -1460,8 +1460,8 @@ P1
 
 
 		$indicators = array(
-				"Syphilis Test",
-				"Syphilis screening on patients (by depart_option)",
+				// "Syphilis Test",
+				"Syphilis screening on patients",
 				"Positive tests^",
 				"Syphilis screening on antenatal mothers",
 				"Positive tests ^",
@@ -1485,14 +1485,14 @@ P1
 	public function extractserologyMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-				"Syphilis Test" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE (test_types.name = 'Syphilis Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
-										(substr(time_created,1,7) = '$period')",
+				// "Syphilis Test" => "SELECT count(*) AS test_count FROM 
+				// 						tests 
+				// 						INNER JOIN test_types ON test_types.id = tests.test_type_id
+				// 						INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+				// 						WHERE (test_types.name = 'Syphilis Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
+				// 						(substr(time_created,1,7) = '$period')",
 
-				"Syphilis screening on patients (by depart_option)" => "SELECT count(*) AS test_count FROM 
+				"Syphilis screening on patients" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
@@ -1500,21 +1500,19 @@ P1
 										(substr(time_created,1,7) = '$period')",
 
 				"Positive tests^" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-											INNER JOIN visits ON visits.id = tests.visit_id 
-											INNER JOIN measures ON measures.id = test_results.measure_id
-											INNER JOIN test_types ON test_types.id = tests.test_type_id
-											WHERE (test_results.measure_id = 112 OR test_results.measure_id = 113 OR test_results.measure_id = 114) AND (test_results.result = 'REACTIVE')
-											AND (substr(tests.time_created,1,7) = '$period' AND test_types.name = 'Syphilis Test')",
+									INNER JOIN visits ON visits.id = tests.visit_id 
+									INNER JOIN measures ON measures.id = test_results.measure_id
+									INNER JOIN test_types ON test_types.id = tests.test_type_id
+									WHERE (measures.name = 'RPR' OR measures.name = 'VDRL' OR measures.name = 'TPHA') AND (test_results.result = 'REACTIVE')
+									AND (substr(tests.time_created,1,7) = '$period' AND test_types.name = 'Syphilis Test')",
 
 				
-				"Syphilis screening on antenatal mothers" => "SELECT count(*) AS test_count FROM 
-							tests INNER JOIN test_results ON test_results.test_id = tests.id 
-							INNER JOIN measures ON measures.id = test_results.measure_id
-							INNER JOIN test_types ON test_types.id = tests.test_type_id
-							INNER JOIN visits ON visits.id = tests.visit_id	
-							WHERE test_types.name = 'Syphilis Test' AND 
-							((substr(tests.time_created,1,7) = '$period' AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW')) )
-							",
+				"Syphilis screening on antenatal mothers" => "SELECT count(*) AS test_count FROM  tests t INNER JOIN test_results tr ON tr.test_id = t.id 
+									INNER JOIN measures m ON m.id = tr.measure_id INNER JOIN test_types tt ON tt.id = t.test_type_id
+									INNER JOIN visits v ON v.id = t.visit_id	WHERE tt.name = 'Syphilis Test' AND ((substr(t.time_created,1,7) = '$period' 
+									AND (v.ward_or_location = 'EM THEATRE' OR v.ward_or_location = 'Labour' OR v.ward_or_location = 'OPD' 
+									OR v.ward_or_location ='PNW' OR v.ward_or_location ='LW')) )
+									",
 
 				"Positive tests ^" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
 											INNER JOIN visits ON visits.id = tests.visit_id 
