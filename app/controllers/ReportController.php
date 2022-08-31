@@ -1472,7 +1472,13 @@ P1
 				"Hcg  Pregnacy tests done",
 				"Positive tests   ^",
 				"HIV tests on PEP",
-				"positives tests    ^",
+				"positives tests ^",
+				"Prostate Specific Antigen (PSA) tests",
+				"PSA Positive",
+				"SARs- COVID-19 rapid antigen tests",
+				"SARs-COVID 19 Positive",
+				"Serum Crag",
+				"Serum Crag Positive"
 			);
 	
 		return View::make('reports.moh.serologyReport')
@@ -1519,14 +1525,15 @@ P1
 											INNER JOIN measures ON measures.id = test_results.measure_id
 											INNER JOIN test_types ON test_types.id = tests.test_type_id
 											WHERE ((test_results.measure_id = 112 OR test_results.measure_id = 113 OR test_results.measure_id = 114) AND test_results.result = 'REACTIVE')
-											AND ((substr(tests.time_created,1,7) = '$period' AND test_types.name = 'Syphilis Test') AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW'))",
+											AND ((substr(tests.time_created,1,7) = '$period' AND test_types.name = 'Syphilis Test') AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' 
+											OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW' OR visits.ward_or_location ='LW'))",
 
 				"HepBs test done on patients" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE (test_types.name = 'Hepatitis B Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
-										(substr(time_created,1,7) = '$period')",
+										WHERE (test_types.name = 'Hepatitis B Test' AND test_statuses.name ='verified') AND 
+										substr(time_created,1,7) = '$period'",
 
 				"Positive_tests  ^" => "SELECT count(*) AS test_count FROM 
 										tests 
@@ -1574,15 +1581,36 @@ P1
 										WHERE (test_types.name = 'HIV' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"positives tests    ^" => "SELECT count(*) AS test_count FROM 
+				"positives tests ^" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_results ON test_results.test_id = tests.id 
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
 										WHERE (test_types.name = 'HIV' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
-										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))"
+										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))",
 
-	
+				"Prostate Specific Antigen (PSA) tests" => "SELECT count(*) AS test_count FROM tests t INNER JOIN test_types tt ON t.test_type_id=tt.id
+										WHERE tt.name='PSA'  AND substr(time_created,1,7) = '$period'",
+
+				"PSA Positive"  => "SELECT count(*) AS test_count FROM tests t INNER JOIN test_types tt ON t.test_type_id=tt.id
+									INNER JOIN test_results tr ON tr.test_id=t.id 
+									WHERE tt.name='PSA' AND tr.result > 4 AND substr(t.time_created,1,7) = '$period'",
+
+				"SARs- COVID-19 rapid antigen tests" => "SELECT count(*) AS test_count FROM tests t INNER JOIN test_types tt ON tt.id=t.test_type_id
+									WHERE tt.name='SARS COV-2 Rapid Antigen' AND substr(t.time_created,1,7) = '$period'",
+
+				"SARs-COVID 19 Positive"	=> 	"SELECT count(*) AS test_count FROM tests t INNER JOIN test_types tt ON tt.id=t.test_type_id
+									INNER JOIN test_results tr ON tr.test_id = t.id
+									WHERE tt.name='SARS COV-2 Rapid Antigen' AND tr.result='Positive' AND substr(t.time_created,1,7) = '$period'",
+									
+				"Serum Crag"				=> "SELECT count(*) AS test_count FROM tests t INNER JOIN test_types tt ON tt.id=t.test_type_id
+									WHERE tt.name='Cryptococcus Antigen Test' AND substr(t.time_created,1,7) = '$period'",					
+
+				"Serum Crag Positive" => "SELECT count(*) AS test_count FROM tests t
+									INNER JOIN test_types tt ON tt.id = t.test_type_id
+									INNER JOIN test_results tr ON tr.test_id = t.id 
+									WHERE tt.name = 'Cryptococcus Antigen Test' AND 
+									substr(t.time_created,1,7) = '$period' AND tr.result ='Positive'"
 		);
 		
 		return $data[$indicator];
