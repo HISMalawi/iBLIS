@@ -727,11 +727,11 @@ class Test extends Eloquent
 				->where('time_created','<=',$date_to);
 			}
 			if($location){
-				$tests =$tests->whereHas('testType',  function($q) use ($location, $test_ids)
+				$tests =$tests->whereHas('testType',  function($q) use ($location)
 				{
-					$q->where(function($q) use ($location,$test_ids){
-						$q->where('test_category_id', '=', $location )
-						->whereIn('tests.id',$test_ids);//Filter by lab section
+					$q->where(function($q) use ($location){
+						$q->where('test_category_id', '=', $location);
+						// ->whereIn('tests.id',$test_ids);//Filter by lab section
 					});
 				});
 			}
