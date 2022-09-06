@@ -697,6 +697,28 @@ class Test extends Eloquent
 								]
 							],
 							[
+								'match' => [
+									'location' => [
+										'query' => $q,
+									]
+								]
+							],
+							[
+								'match' => [
+									'test_name' => [
+										'query' => $q,
+										'fuzziness' => 2
+									]
+								]
+							],
+							[
+								'match' => [
+									'patient_number' => [
+										'query' => $q
+									]
+								]
+							],
+							[
 								'match' =>[
 									'accession_number' => [
 										'query' => Config::get('kblis.facility-code').$q

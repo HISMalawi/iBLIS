@@ -56,6 +56,7 @@ class UpdateElasticIndex extends Command {
 					'body' => [
 						'test_id' => $test->id,
 						'patient_name' => $test->visit->patient->name,
+						'patient_number' => $test->visit->patient->patient_number,
 						'accession_number' => $test->getSpecimenId(),
 						'tracking_number' => $test->getTrackingNumber(),
 						'test_name' => $test->testType->name,
@@ -65,7 +66,7 @@ class UpdateElasticIndex extends Command {
 						'test_time_created' => $test->time_created
 					]
 				]);
-				echo "Updating doc for tracking: {$test->getTrackingNumber()}\n";
+				echo "Updating index document ----> tracking: {$test->getTrackingNumber()}\n";
 			} catch (Exception $e) {
 				$this->info($e->getMessage());
 			}

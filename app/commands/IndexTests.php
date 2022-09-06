@@ -50,6 +50,7 @@ class IndexTests extends Command {
 					'body' => [
 						'test_id' => $test->id,
 						'patient_name' => $test->visit->patient->name,
+						'patient_number' => $test->visit->patient->patient_number,
 						'accession_number' => $test->getSpecimenId(),
 						'tracking_number' => $test->getTrackingNumber(),
 						'test_name' => $test->testType->name,
@@ -59,7 +60,7 @@ class IndexTests extends Command {
 						'test_time_created' => $test->time_created
 					]
 				]);
-				echo "indexing tracking_number: {$test->getTrackingNumber()}\n";
+				echo "Indexing record---> tracking_number: {$test->getTrackingNumber()}\n";
 			} catch (Exception $e) {
 				$this->info($e->getMessage());
 			}
