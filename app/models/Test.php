@@ -1,5 +1,5 @@
 <?php
-
+use Shift31\LaravelElasticsearch\Facades\Es;
 class Test extends Eloquent
 {
 	/**
@@ -677,6 +677,99 @@ class Test extends Eloquent
 
 		return $tests;
 	}
+
+	
+
+	public static function eSearch($q='', $date_from=NULL, $date_to=NULL, $test_status_id=0, $location=NULL){
+		$params = [
+			'index' => 'tests',
+			'size' => 50,
+			'body' => [
+				'query' => [
+					'bool' => [
+						'should' => [
+							[
+								'match' => [
+									'patient_name' => [
+										'query' => $q,
+										'fuzziness' => 2
+									]
+								]
+							],
+							[
+								'match' =>[
+									'accession_number' => [
+										'query' => Config::get('kblis.facility-code').$q
+									]
+								]	
+							],
+							[
+								'match' =>[
+									'tracking_number' => [
+										'query' => $q
+									]
+								]	
+							]
+						]
+					]
+				]
+			]
+		];
+		$test_ids = [];
+		if($q){
+				$result = Es::search($params)['hits']['hits'];
+			foreach ($result as $r){
+				array_push($test_ids,$r["_source"]['test_id']);
+			}
+			$tests = Test::whereIn('id',$test_ids);
+			if($date_to||$date_from){
+				$tests = $tests->where('time_created', '>=',$date_from)
+				->where('time_created','<=',$date_to);
+			}
+			if($location){
+				$tests =$tests->whereHas('testType',  function($q) use ($location, $test_ids)
+				{
+					$q->where(function($q) use ($location,$test_ids){
+						$q->where('test_category_id', '=', $location )
+						->whereIn('tests.id',$test_ids);//Filter by lab section
+					});
+				});
+			}
+			if($test_status_id > 0){
+				$tests = $tests->where(function($q) use ($test_status_id)
+				{
+					$q->whereHas('testStatus', function($q) use ($test_status_id){
+						$q->where('id','=', $test_status_id);//Filter by test status
+					});
+				});
+			}
+		}else{
+			$tests = Test::orderBy('time_created','desc');
+			if($date_to||$date_from){
+				$tests = $tests->where('time_created', '>=',$date_from)
+				->where('time_created','<=',$date_to);
+			}
+			if($location){
+				$tests =$tests->whereHas('testType',  function($q) use ($location)
+				{
+					$q->where(function($q) use ($location){
+						$q->where('test_category_id', '=', $location );
+					});
+				});
+			}
+			if($test_status_id > 0){
+				$tests = $tests->where(function($q) use ($test_status_id)
+				{
+					$q->whereHas('testStatus', function($q) use ($test_status_id){
+						$q->where('id','=', $test_status_id);//Filter by test status
+					});
+				});
+			}
+		}
+		return $tests->orderBy('time_created', 'DESC');
+
+	}
+	
 
 	/**
 	 * Get the Surveillance Data

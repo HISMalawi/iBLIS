@@ -14,4 +14,6 @@ Artisan::add(new NlimsSync); //for syncing to national lims
 | the console gets access to each of the command object instances.
 |
 */
+Artisan::add(new IndexTests);
+Artisan::add(new UpdateElasticIndex);
 
