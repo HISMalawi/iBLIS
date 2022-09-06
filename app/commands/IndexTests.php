@@ -12,7 +12,7 @@ class IndexTests extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'index:tests';
+	protected $name = 'create_index:tests';
 
 	/**
 	 * The console command description.

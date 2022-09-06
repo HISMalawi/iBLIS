@@ -12,7 +12,7 @@ class UpdateElasticIndex extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'update:tests';
+	protected $name = 'update_index:tests';
 
 	/**
 	 * The console command description.
