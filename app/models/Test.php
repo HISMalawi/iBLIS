@@ -727,6 +727,13 @@ class Test extends Eloquent
 							],
 							[
 								'match' =>[
+									'accession_number' => [
+										'query' => $q
+									]
+								]	
+							],
+							[
+								'match' =>[
 									'tracking_number' => [
 										'query' => $q
 									]
