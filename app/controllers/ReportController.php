@@ -735,7 +735,7 @@ P1
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								INNER JOIN measures on measures.id= test_results.measure_id
 								WHERE (test_types.name='Liver Function Tests' AND measures.name='Total Protein(PRO)') AND 
-									substr(tests.time_created,1,7) = '$period' AND test_results.result<>'' ",
+									substr(tests.time_created,1,7) = '$period' AND test_results.result<>''",
 
 		"Albumin" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
@@ -763,7 +763,7 @@ P1
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								INNER JOIN measures on measures.id= test_results.measure_id
 								WHERE (test_types.name='Pancreatic Function Test' AND measures.name='Amylase') AND 
-									substr(tests.time_created,1,7) = '$period' AND test_results.result<>'' ",
+									substr(tests.time_created,1,7) = '$period' AND test_results.result<>''",
 								
 	    "Antistreptolysin O (ASO)" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
@@ -867,7 +867,7 @@ P1
 								WHERE test_types.name = 'HbA1c' AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result <> '')",
 
-
+		// TODO: Check if it should be Iron or Serum Iron
 		"Iron" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
@@ -898,19 +898,6 @@ P1
 								WHERE (test_types.name='Minerals' AND measures.name='Magnesium (MGXB)') AND 
 									substr(tests.time_created,1,7) = '$period' AND test_results.result<>'' ",
 
-		"Micro-protein" => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'Microprotein' AND 
-								(substr(tests.time_created,1,7) = '$period' AND test_results.result <> '')",
-
-		"Micro-albumin" => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'Microalbumin' AND 
-								(substr(tests.time_created,1,7) = '$period' AND test_results.result <> '')",
-
-
 		"Phosphorus" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
@@ -930,22 +917,20 @@ P1
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								WHERE test_types.name = 'Rheumatoid Factor Test' AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result <> '')",
-
-
+		
 		"Sodium" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								INNER JOIN measures on measures.id= test_results.measure_id
 								WHERE ((test_types.name='Minerals' AND measures.name='Sodium (NA)') OR test_types.name='Sodium') AND 
 									substr(tests.time_created,1,7) = '$period' AND test_results.result<>'' ",
-
+		
 		"Triglycerides" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								INNER JOIN measures on measures.id= test_results.measure_id
 								WHERE (test_types.name='Lipogram' AND measures.name='Triglycerides(TG)') AND 
 									substr(tests.time_created,1,7) = '$period' AND test_results.result<>'' ",
-
 		
 		"Urea" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
@@ -959,6 +944,20 @@ P1
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								WHERE test_types.name = 'Uric Acid' AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result <>'')",
+		
+		// The following two are not on the MOH Temp
+
+		"Micro-protein" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'Microprotein' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result <> '')",
+
+		"Micro-albumin" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'Microalbumin' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result <> '')",
 
 		);
 
