@@ -12,6 +12,7 @@ app/config/app.php
 app/config/kblis.php
 app/config/mail.php
 app/config/remote.php
+app/config/nlims_*
 public/i/users/*
 public/patientreport*
 public/data
