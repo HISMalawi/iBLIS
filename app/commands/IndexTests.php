@@ -39,7 +39,7 @@ class IndexTests extends Command {
 	public function fire()
 	{
 		
-		$tests = Test::where('time_created','>','2021-12-31')->get();
+		$tests = Test::where('time_created','>','2020-12-31')->get();
 
 		foreach ($tests as $test) {
 			try {
