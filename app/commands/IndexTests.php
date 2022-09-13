@@ -38,8 +38,8 @@ class IndexTests extends Command {
 	 */
 	public function fire()
 	{
-		
-		$tests = Test::where('time_created','>','2020-12-31')->get();
+		$start_indexing_from = Config::get('kblis.start_indexing_from') ? Config::get('kblis.start_indexing_from') : '2021-01-01'; 
+		$tests = Test::where('time_created','>=', $start_indexing_from)->get();
 
 		foreach ($tests as $test) {
 			try {
