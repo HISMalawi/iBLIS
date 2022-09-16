@@ -970,14 +970,11 @@ P1
 		$period = $year."-".$month;
 		$data = array(
 				"Number of AFB sputum examined" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'TB Microscopic Exam' AND 
-										(substr(time_created,1,7) = '$period')",
+										tests t INNER JOIN test_types tt ON tt.id = t.test_type_id WHERE tt.name = 'TB Microscopic Exam' AND 
+										(substr(t.time_created,1,7) = '$period')",
 
 
-				"Number of  new TB cases examined" => "SELECT count(*) AS test_count FROM 
-								tests 
+				"Number of  new TB cases examined" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								WHERE test_types.name = 'TB Tests' AND 
@@ -991,12 +988,19 @@ P1
 										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '++' OR test_results.result = '+++' OR test_results.result = '+' OR test_results.result = 'positive' OR test_results.result LIKE '%scanty%'))
 										",
 
+				// "TB LAM Total" => ,
+				// "TB LAM Positive" =>,
 				"MTB Not Detected" => "SELECT count(*) AS test_count FROM 
 										test_results 
 										INNER JOIN measures ON measures.id = test_results.measure_id
                                         INNER JOIN tests ON tests.id = test_results.test_id
 										WHERE measures.name= 'Gene Xpert MTB' AND
-										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'MTB NOT DETECTED' OR test_results.result = 'MTB Not Detected' OR test_results.result = 'NOT DETECTED'))",
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'MTB NOT DETECTED' OR test_results.result = 'NOT DETECTED'))",
+				"MTB Detected" => "SELECT count(*) AS test_count FROM test_results 
+							INNER JOIN measures ON measures.id = test_results.measure_id
+							INNER JOIN tests ON tests.id = test_results.test_id
+							WHERE measures.name= 'Gene Xpert MTB' AND
+							(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'MTB DETECTED' OR test_results.result = 'DETECTED'))",
 
 				"RIF Resistant Detected" => "SELECT count(*) AS test_count FROM 
 										test_results 
@@ -1011,9 +1015,8 @@ P1
 										INNER JOIN measures ON measures.id = test_results.measure_id
                                         INNER JOIN tests ON tests.id = test_results.test_id
 										WHERE measures.name= 'Gene Xpert RIF Resistance' AND
-										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'RIF Resistant not detected' OR test_results.result = 'Rif Resistance NOT DETECTED' OR test_results.result = 'NOT DETECTED'
-										OR test_results.result = 'RIF NOT DETECTED' OR test_results.result = 'not detected' OR test_results.result = 'RIF RESISTANT NOT DETECTED'
-										OR test_results.result = 'Rif RESISTANCE NOT DETECTED'))",
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'NOT DETECTED' OR test_results.result = 'RIF NOT DETECTED' 
+										OR test_results.result = 'RIF RESISTANT NOT DETECTED' OR test_results.result = 'Rif RESISTANCE NOT DETECTED'))",
 
 
 				"RIF Resistant Indeterminate" => "SELECT count(*) AS test_count FROM 
@@ -1021,19 +1024,20 @@ P1
 										INNER JOIN measures ON measures.id = test_results.measure_id
                                         INNER JOIN tests ON tests.id = test_results.test_id
 										WHERE measures.name= 'Gene Xpert RIF Resistance' AND
-										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'indeterminate' OR test_results.result = 'RIF Indeterminant' OR test_results.result = 'INDETERMINATE' OR test_results.result = 'indeterminant' ))",
+										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'RIF Indeterminant' OR test_results.result = 'INDETERMINATE' OR test_results.result = 'indeterminant' ))",
 				
 				"Invalid" => "SELECT count(*) AS test_count FROM 
 								tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								WHERE test_types.name = 'TB Tests' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'INVALID' OR test_results.result = 'invalid' OR test_results.result = 'Invalid'))",
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'INVALID'))",
 
 				"No results" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
 								INNER JOIN test_types ON test_types.id = tests.test_type_id
 								WHERE test_types.name = 'TB Tests' AND 
-								(substr(tests.time_created,1,7) = '$period' AND tests.test_status_id =3)",
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
 
 				"Number of CSF samples analysed" => "SELECT count(*) AS test_count FROM 
 								specimens 
@@ -1137,7 +1141,13 @@ P1
 			"Number of AFB sputum examined",
 			"Number of  new TB cases examined",
 			"New cases with positive smear",
+			"Pick Up rate",
+			"Number of TB follow-Up patients",
+			"Number of uncategorised AFB sputum examined",
+			"TB LAM Total",
+			"TB LAM Positive",
 			"MTB Not Detected",
+			"MTB Detected",
 			"RIF Resistant Detected",
 			"RIF Resistant Not Detected",
 			"RIF Resistant Indeterminate",
