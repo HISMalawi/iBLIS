@@ -1039,6 +1039,50 @@ P1
 								WHERE test_types.name = 'TB Tests' AND 
 								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
 
+				"Total number of COVID-19 tests performed" => "SELECT count(*) AS test_count FROM tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								WHERE tt.name='SARS COV 2' AND (t.test_status_id<>1 OR t.test_status_id<>2 OR t.test_status_id<>3) AND substr(t.time_created,1,7) = '$period'",
+				
+				"Total number of SARS-COV2 Positive" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'SARS COV 2' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'POSITIVE'))",
+
+				"Total number of INVALID SARS-COV2 results" =>  "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'SARS COV 2' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'INVALID'))",
+
+				"Total number of NO RESULTS"  => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'SARS COV 2' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
+				
+				"Total number of COVID-19 Rapid Antigen tests performed" => "SELECT count(*) AS test_count FROM tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								WHERE tt.name='SARS COV-2 Rapid Antigen' AND (t.test_status_id<>1 OR t.test_status_id<>2 OR t.test_status_id<>3) AND substr(t.time_created,1,7) = '$period'",
+				
+				"Total number of SARS-COV2 Rapid Antigen Positive" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'SARS COV-2 Rapid Antigen' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'POSITIVE'))",
+
+				"Total number of INVALID SARS-COV2 Rapid Antigen results" =>  "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'SARS COV-2 Rapid Antigen' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'INVALID'))",
+
+				"Total number of NO RESULTS"  => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'SARS COV-2 Rapid Antigen' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
+
 				"Number of CSF samples analysed" => "SELECT count(*) AS test_count FROM 
 								specimens 
 								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
@@ -1153,6 +1197,14 @@ P1
 			"RIF Resistant Indeterminate",
 			"Invalid",
 			"No results",
+			"Total number of COVID-19 tests performed",
+			"Total number of SARS-COV2 Positive",
+			"Total number of INVALID SARS-COV2 results",
+			"Total number of NO RESULTS",
+			"Total number of COVID-19 Rapid Antigen tests performed",
+			"Total number of SARS-COV2 Rapid Antigen Positive",
+			"Total number of INVALID SARS-COV2 Rapid Antigen results",
+			"Total number of NO RESULTS",
 			"Number of CSF samples analysed",
 			"Number of CSF samples analysed for AFB",
 			"Number of CSF samples with Organism",
