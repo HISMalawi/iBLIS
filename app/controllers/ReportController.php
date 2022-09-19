@@ -1061,7 +1061,38 @@ P1
 								WHERE test_types.name = 'SARS COV 2' AND 
 								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
 
-				"Number of CSF samples analysed" => "SELECT count(*) AS test_count FROM 
+				"DNA-EID samples received" => "SELECT count(*) AS test_count FROM tests t  
+							INNER JOIN test_types tt ON tt.id = t.test_type_id
+							WHERE tt.name = 'Early Infant Diagnosis' AND 
+							(substr(t.time_created,1,7) = '$period' AND t.test_status_id<>1)",
+
+				"DNA-EID tests done" =>  "SELECT count(*) AS test_count FROM tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								WHERE tt.name = 'Early Infant Diagnosis' AND (t.test_status_id<>1 OR t.test_status_id<>2 OR t.test_status_id<>3) 
+								AND substr(t.time_created,1,7) = '$period'",
+
+				"Number with positive results"  => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'Early Infant Diagnosis' AND 
+								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
+									
+				"VL samples received" =>"SELECT count(*) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									WHERE tt.name='Viral Load' AND substr(t.time_created,1,7) = '$period' AND t.test_status_id<>1",
+
+				"VL tests done" => "SELECT count(*) AS test_count FROM tests t
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									WHERE tt.name='Viral Load' AND substr(t.time_created,1,7) = '$period' 
+									AND (t.test_status_id<>1 OR t.test_status_id<>2 OR t.test_status_id<>3)",
+
+				"VL results with less than 1000 copies per ml" =>"SELECT count(*) AS test_count FROM tests t
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									INNER JOIN test_results tr ON t.id = tr.test_id
+									WHERE tt.name='Viral Load' AND substr(t.time_created,1,7) = '$period' 
+									AND tr.result < 1000",
+
+				"Number of CSF samples analysed" => "SELECT count(*) AS test_count FROM    
 								specimens 
 								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
 								WHERE specimen_types.name = 'CSF' AND 
@@ -1179,6 +1210,12 @@ P1
 			"Total number of SARS-COV2 Positive",
 			"Total number of INVALID SARS-COV2 results",
 			"Total number of NO RESULTS",
+			"DNA-EID samples received",
+			"DNA-EID tests done", 
+			"Number with positive results",
+			"VL samples received",
+			"VL tests done",
+			"VL results with less than 1000 copies per ml",
 			"Number of CSF samples analysed",
 			"Number of CSF samples analysed for AFB",
 			"Number of CSF samples with Organism",
