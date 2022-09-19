@@ -1114,6 +1114,33 @@ P1
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
 				
 
+				"Number of CSF cultures done" => "SELECT count(*) AS test_count FROM   tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								WHERE tt.name = 'CSF' AND (t.test_status_id<>1 OR t.test_status_id<>2) AND
+								(substr(t.time_created,1,7) = '$period' )",
+
+				"Total India ink done" => "SELECT count(*) AS test_count FROM   tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								WHERE tt.name = 'India Ink' AND (t.test_status_id<>1 OR t.test_status_id<>2) AND
+								(substr(t.time_created,1,7) = '$period' )",								
+				
+				"India ink positive" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								WHERE test_types.name = 'India Ink' AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'POSITIVE')", 
+
+				"Total Gram stain done" =>"SELECT count(*) AS test_count FROM   tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								WHERE tt.name = 'Gram Stain' AND (t.test_status_id<>1 OR t.test_status_id<>2) AND
+								(substr(t.time_created,1,7) = '$period' )",
+
+				"Gram stain positive" => "SELECT count(*) AS test_count FROM tests 
+							INNER JOIN test_results ON tests.id = test_results.test_id
+							INNER JOIN test_types ON test_types.id = tests.test_type_id
+							WHERE test_types.name = 'Gram Stain' AND 
+							(substr(tests.time_created,1,7) = '$period' AND ((test_results.result = 'yes' OR test_results.result = 'organism seen' OR test_results.result = 'Yeast cells seen') AND test_results.result IS NOT NULL))",
+
 				"HVS analysed" => "SELECT count(*) AS test_count FROM 
 								specimens 
 								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
@@ -1138,41 +1165,6 @@ P1
 								INNER JOIN test_types ON test_types.id  = tests.test_type_id
 								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
-
-
-				"Number of tests on microscopy" => "SELECT count(*) AS test_count FROM test_results 
-                                        INNER JOIN measures ON measures.id = test_results.measure_id
-                                        INNER JOIN tests ON tests.id = test_results.test_id
-										WHERE (measures.name= 'Smear microscopy result') AND
-										(substr(tests.time_created,1,7) = '$period' AND (test_results.result IS NOT NULL))",
-
-				"Number of tests on GeneXpert" => "SELECT count(*) AS test_count FROM test_results 
-										INNER JOIN measures ON measures.id = test_results.measure_id
-                                        INNER JOIN tests ON tests.id = test_results.test_id
-										WHERE (measures.name= 'Gene Xpert MTB' OR measures.name = 'Gene Xpert RIF Resistance') AND
-										(substr(tests.time_created,1,7) = '$period' AND (test_results.result IS NOT NULL))",
-
-				"MTB Detected" => "SELECT count(*) AS test_count FROM test_results 
-										INNER JOIN measures ON measures.id = test_results.measure_id
-                                        INNER JOIN tests ON tests.id = test_results.test_id
-										WHERE measures.name= 'Gene Xpert MTB' AND
-										(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'MTB DETECTED' OR test_results.result = 'MTB DETECTED LOW' 
-											OR test_results.result = 'MTB DETECTED HIGH' OR test_results.result = 'MTB DETECTED MEDIUM' OR test_results.result = 'MTB DETECTED VERY LOW'
-											OR test_results.result = 'MTB Detected Medium' OR test_results.result = 'MTB Detected Low' OR test_results.result = 'MTB Detected High'))",
-				
-				"India ink positive" => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'India Ink' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'POSITIVE' OR test_results.result = 'positive' OR test_results.result = 'Positive'))", 
-				
-				
-				"Gram stain positive" => "SELECT count(*) AS test_count FROM 
-								tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'Gram Stain' AND 
-								(substr(tests.time_created,1,7) = '$period' AND ((test_results.result = 'yes' OR test_results.result = 'organism seen' OR test_results.result = 'Yeast cells seen') AND test_results.result IS NOT NULL))",
 				
 		);
 
@@ -1219,14 +1211,15 @@ P1
 			"Number of CSF samples analysed",
 			"Number of CSF samples analysed for AFB",
 			"Number of CSF samples with Organism",
+			"Number of CSF cultures done",
+			"Total India ink done",
+			"India ink positive",
+			"Total Gram stain done",
+			"Gram stain positive",
 			"HVS analysed",
 			"Number of Blood Cultures done",
-			"Positive blood Cultures",
-			"Number of tests on microscopy",
-			"Number of tests on GeneXpert",
-			"MTB Detected",
-			"India ink positive",
-			"Gram stain positive");
+			"Positive blood Cultures"
+		);
 
 		return View::make('reports.moh.microbiologyReport')
 						->with('quarterPeriod',$quarter)
