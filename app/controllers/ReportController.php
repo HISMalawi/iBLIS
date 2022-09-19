@@ -1739,13 +1739,22 @@ P1
 		$period = $year."-".$month;
 		$data = array(
 			"Total malaria microscopy tests done" => "SELECT count(*) AS test_count FROM 
-									tests 
-									INNER JOIN test_types ON test_types.id = tests.test_type_id
-									INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-									INNER JOIN test_results ON test_results.test_id = tests.id 
-									INNER JOIN measures ON measures.id = test_results.measure_id
-									WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
-									((substr(tests.time_created,1,7) = '$period' AND measures.id = 96 ) AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)' OR test_results.result = 'No parasite seen'))",
+								tests 
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+								INNER JOIN test_results ON test_results.test_id = tests.id 
+								INNER JOIN measures ON measures.id = test_results.measure_id
+								WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+								((substr(tests.time_created,1,7) = '$period' AND measures.id = 96 ) AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)' OR test_results.result = 'No parasite seen' OR test_results.result REGEXP '^-?[0-9]+$'))",
+
+			"Total positive malaria microscopy tests done" => "SELECT count(*) AS test_count FROM 
+								tests 
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+								INNER JOIN test_results ON test_results.test_id = tests.id 
+								INNER JOIN measures ON measures.id = test_results.measure_id
+								WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
+								((substr(tests.time_created,1,7) = '$period' AND measures.id = 96 ) AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)' OR test_results.result REGEXP '^-?[0-9]+$'))",
 
 			"Malaria microscopy in <= 5yrs (by species)?" => "SELECT count(*) AS test_count FROM 
 								tests 
