@@ -1718,6 +1718,7 @@ P1
 
 		$indicators = array(
 				"Total malaria microscopy tests done",
+				"Total positive malaria microscopy tests done",
 				"Malaria microscopy in <= 5yrs (by species)?",
 				"Positive malaria slides in < 5yrs",
 				"Malaria microscopy in unknown age",
