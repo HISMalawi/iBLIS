@@ -1139,7 +1139,9 @@ P1
 							INNER JOIN test_results ON tests.id = test_results.test_id
 							INNER JOIN test_types ON test_types.id = tests.test_type_id
 							WHERE test_types.name = 'Gram Stain' AND 
-							(substr(tests.time_created,1,7) = '$period' AND ((test_results.result = 'yes' OR test_results.result = 'organism seen' OR test_results.result = 'Yeast cells seen') AND test_results.result IS NOT NULL))",
+							(substr(tests.time_created,1,7) = '$period' AND 
+							((test_results.result = 'yes' OR test_results.result = 'organism seen' OR test_results.result = 'Yeast cells seen') 
+							AND test_results.result IS NOT NULL))",
 
 				"HVS analysed" => "SELECT count(*) AS test_count FROM 
 								specimens 
@@ -1147,9 +1149,15 @@ P1
 								WHERE specimen_types.name = 'HVS' AND 
 								(substr(specimens.time_accepted,1,7) = '$period' )",
 
-				
-				"Number of Blood Cultures done" => "SELECT count(*) AS test_count FROM 
-								specimens 
+				"HVS with organism" => "SELECT count(*) AS test_count FROM specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'HVS' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth')",
+
+				"Number of Blood Cultures done" => "SELECT count(*) AS test_count FROM specimens 
 								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
 								INNER JOIN tests ON tests.specimen_id = specimens.id
 								INNER JOIN test_results ON tests.id = test_results.test_id
@@ -1165,7 +1173,18 @@ P1
 								INNER JOIN test_types ON test_types.id  = tests.test_type_id
 								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
+
+				"Total number of fluids analysed" => "SELECT count(*) AS test_count FROM specimens s
+								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
+								WHERE st.name LIKE '%Fluid%' AND substr(s.time_accepted,1,7) = '$period'",
 				
+				"Fluids with organisms" =>"SELECT count(*) AS test_count FROM specimens s
+								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=s.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								WHERE st.name LIKE '%Fluid%' AND substr(s.time_accepted,1,7) = '$period'
+								AND tt.name='Culture & Sensitivity' AND tr.result='Growth'",	
 		);
 
 		
@@ -1186,11 +1205,11 @@ P1
 			"Number of AFB sputum examined",
 			"Number of  new TB cases examined",
 			"New cases with positive smear",
-			"Pick Up rate",
-			"Number of TB follow-Up patients",
-			"Number of uncategorised AFB sputum examined",
-			"TB LAM Total",
-			"TB LAM Positive",
+			// "Pick Up rate",
+			// "Number of TB follow-Up patients",
+			// "Number of uncategorised AFB sputum examined",
+			// "TB LAM Total",
+			// "TB LAM Positive",
 			"MTB Not Detected",
 			"MTB Detected",
 			"RIF Resistant Detected",
@@ -1217,8 +1236,11 @@ P1
 			"Total Gram stain done",
 			"Gram stain positive",
 			"HVS analysed",
+			"HVS with organism",
 			"Number of Blood Cultures done",
-			"Positive blood Cultures"
+			"Positive blood Cultures",
+			"Total number of fluids analysed",
+			"Fluids with organisms"
 		);
 
 		return View::make('reports.moh.microbiologyReport')
