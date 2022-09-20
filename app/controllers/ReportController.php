@@ -1156,6 +1156,51 @@ P1
 								INNER JOIN test_types ON test_types.id  = tests.test_type_id
 								WHERE (specimen_types.name = 'HVS' AND test_types.name = 'Culture & Sensitivity') AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth')",
+								
+				"HVS Culture" => "SELECT count(*) AS test_count FROM specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'HVS' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period')",
+
+				"HVS Culture Positive" => "SELECT count(*) AS test_count FROM specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'HVS' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth')",
+				
+				"Other swabs analysed"=>"SELECT count(*) AS test_count FROM specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								WHERE specimen_types.name = 'Swabs' AND 
+								(substr(specimens.time_accepted,1,7) = '$period' )",
+
+				"Other swabs with organism" => "SELECT count(*) AS test_count FROM specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'Swabs' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth')",
+				
+				"Other swabs culture" => "SELECT count(*) AS test_count FROM specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'Swabs' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period')",
+								
+				"Other swabs culture Positive"=>"SELECT count(*) AS test_count FROM specimens 
+								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
+								INNER JOIN tests ON tests.specimen_id = specimens.id
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id  = tests.test_type_id
+								WHERE (specimen_types.name = 'Swabs' AND test_types.name = 'Culture & Sensitivity') AND 
+								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth')",
 
 				"Number of Blood Cultures done" => "SELECT count(*) AS test_count FROM specimens 
 								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
@@ -1302,6 +1347,12 @@ P1
 			"Gram stain positive",
 			"HVS analysed",
 			"HVS with organism",
+			"HVS Culture" ,
+			"HVS Culture Positive", 
+			"Other swabs analysed",
+			"Other swabs with organism",
+			"Other swabs culture",
+			"Other swabs culture Positive",
 			"Number of Blood Cultures done",
 			"Positive blood Cultures",
 			"Cryptococcal antigen test",
