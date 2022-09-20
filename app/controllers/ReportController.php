@@ -1174,6 +1174,15 @@ P1
 								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
 
+				"Cryptococcal antigen test" => "SELECT count(*) AS test_count FROM tests t INNER JOIN test_types tt ON tt.id=t.test_type_id
+								WHERE tt.name='Cryptococcus Antigen Test' AND substr(t.time_created,1,7) = '$period'",					
+
+				"Cryptococcal antigen test Positive" => "SELECT count(*) AS test_count FROM tests t
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id = t.id 
+								WHERE tt.name = 'Cryptococcus Antigen Test' AND 
+								substr(t.time_created,1,7) = '$period' AND tr.result ='Positive'",
+
 				"Total number of fluids analysed" => "SELECT count(*) AS test_count FROM specimens s
 								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
 								WHERE st.name LIKE '%Fluid%' AND substr(s.time_accepted,1,7) = '$period'",
@@ -1295,6 +1304,8 @@ P1
 			"HVS with organism",
 			"Number of Blood Cultures done",
 			"Positive blood Cultures",
+			"Cryptococcal antigen test",
+			"Cryptococcal antigen test Positive",
 			"Total number of fluids analysed",
 			"Fluids with organisms",
 			"Cholera Rapid Diagnostic test done",
