@@ -1185,6 +1185,62 @@ P1
 								INNER JOIN test_results tr ON tr.test_id=t.id
 								WHERE st.name LIKE '%Fluid%' AND substr(s.time_accepted,1,7) = '$period'
 								AND tt.name='Culture & Sensitivity' AND tr.result='Growth'",	
+
+				"Cholera Rapid Diagnostic test done" => "SELECT count(*) AS test_count FROM tests t
+								INNER JOIN test_types tt ON t.test_type_id=tt.id
+								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN measures m ON m.id=tr.measure_id
+								WHERE tt.name='Cholera' AND m.name='Rapid Test' AND substr(t.time_created,1,7) = '$period'",
+				
+				"Positive Cholera Rapid Diagnostic test" => "SELECT count(*) AS test_count FROM tests t
+								INNER JOIN test_types tt ON t.test_type_id=tt.id
+								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN measures m ON m.id=tr.measure_id
+								WHERE tt.name='Cholera' AND m.name='Rapid Test' AND substr(t.time_created,1,7) = '$period' AND tr.result='Positive'",
+
+				"Cholera cultures done" => "SELECT count(*) AS test_count FROM tests t
+								INNER JOIN test_types tt ON t.test_type_id=tt.id
+								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN measures m ON m.id=tr.measure_id
+								WHERE tt.name='Cholera' AND m.name='Culture' AND substr(t.time_created,1,7) = '$period'",
+				
+				"Positive cholera samples" => "SELECT count(*) AS test_count FROM tests t
+								INNER JOIN test_types tt ON t.test_type_id=tt.id
+								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN measures m ON m.id=tr.measure_id
+								WHERE tt.name='Cholera' AND m.name='Culture' AND substr(t.time_created,1,7) = '$period' AND tr.result='Growth'",
+				
+				"Other stool cultures" =>"SELECT count(*) AS test_count FROM specimens s
+								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=s.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								WHERE st.name = 'Stool' AND substr(s.time_accepted,1,7) = '$period'
+								AND tt.name='Culture & Sensitivity'",	
+
+				"Stool samples with organisms isolated on culture" =>"SELECT count(*) AS test_count FROM specimens s
+							INNER JOIN specimen_types st ON st.id=s.specimen_type_id
+							INNER JOIN tests t ON t.specimen_id=s.id
+							INNER JOIN test_types tt ON tt.id = t.test_type_id
+							INNER JOIN test_results tr ON tr.test_id=t.id
+							WHERE st.name = 'Stool' AND substr(s.time_accepted,1,7) = '$period'
+							AND tt.name='Culture & Sensitivity' AND tr.result='Growth'",	
+
+				"Urine culture"=>"SELECT count(*) AS test_count FROM specimens s
+							INNER JOIN specimen_types st ON st.id=s.specimen_type_id
+							INNER JOIN tests t ON t.specimen_id=s.id
+							INNER JOIN test_types tt ON tt.id = t.test_type_id
+							INNER JOIN test_results tr ON tr.test_id=t.id
+							WHERE st.name = 'Urine' AND substr(s.time_accepted,1,7) = '$period'
+							AND tt.name='Culture & Sensitivity'",	
+
+				"Urine culture Positive" => "SELECT count(*) AS test_count FROM specimens s
+							INNER JOIN specimen_types st ON st.id=s.specimen_type_id
+							INNER JOIN tests t ON t.specimen_id=s.id
+							INNER JOIN test_types tt ON tt.id = t.test_type_id
+							INNER JOIN test_results tr ON tr.test_id=t.id
+							WHERE st.name = 'Urine' AND substr(s.time_accepted,1,7) = '$period'
+							AND tt.name='Culture & Sensitivity' AND tr.result='Growth'",
 		);
 
 		
@@ -1240,7 +1296,15 @@ P1
 			"Number of Blood Cultures done",
 			"Positive blood Cultures",
 			"Total number of fluids analysed",
-			"Fluids with organisms"
+			"Fluids with organisms",
+			"Cholera Rapid Diagnostic test done",
+			"Positive Cholera Rapid Diagnostic test",
+			"Cholera cultures done",
+			"Positive cholera samples",
+			"Other stool cultures",
+			"Stool samples with organisms isolated on culture",
+			"Urine culture",
+			"Urine culture Positive"
 		);
 
 		return View::make('reports.moh.microbiologyReport')
