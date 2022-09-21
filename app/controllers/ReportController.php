@@ -1675,17 +1675,17 @@ P1
 		$indicators = array(
 				// "Syphilis Test",
 				"Syphilis screening on patients",
-				"Positive tests^",
+				"Positive tests",
 				"Syphilis screening on antenatal mothers",
-				"Positive tests ^",
-				"HepBs test done on patients",
-				"Positive_tests  ^",
-				"HepC test done on patients",
-				"Positive tests  ^",
+				"Positive tests",
+				"HepBsAg test done on patients",
+				"Positive tests",
+				"HepCcAg test done on patients",
+				"Positive tests",
 				"Hcg  Pregnacy tests done",
-				"Positive tests   ^",
-				"HIV tests on PEP",
-				"positives tests ^",
+				"Positive tests",
+				"HIV tests on PEP patients",
+				"positives tests",
 				"Prostate Specific Antigen (PSA) tests",
 				"PSA Positive",
 				"SARs- COVID-19 rapid antigen tests",
@@ -1718,7 +1718,7 @@ P1
 										WHERE (test_types.name = 'Syphilis Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"Positive tests^" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+				"Positive tests" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
 									INNER JOIN visits ON visits.id = tests.visit_id 
 									INNER JOIN measures ON measures.id = test_results.measure_id
 									INNER JOIN test_types ON test_types.id = tests.test_type_id
@@ -1733,7 +1733,7 @@ P1
 									OR v.ward_or_location ='PNW' OR v.ward_or_location ='LW')) )
 									",
 
-				"Positive tests ^" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
+				"Positive tests" => "SELECT distinct  count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
 											INNER JOIN visits ON visits.id = tests.visit_id 
 											INNER JOIN measures ON measures.id = test_results.measure_id
 											INNER JOIN test_types ON test_types.id = tests.test_type_id
@@ -1741,14 +1741,14 @@ P1
 											AND ((substr(tests.time_created,1,7) = '$period' AND test_types.name = 'Syphilis Test') AND (visits.ward_or_location = 'EM THEATRE' OR visits.ward_or_location = 'Labour' 
 											OR visits.ward_or_location = 'OPD' OR visits.ward_or_location ='PNW' OR visits.ward_or_location ='LW'))",
 
-				"HepBs test done on patients" => "SELECT count(*) AS test_count FROM 
+				"HepBsAg test done on patients" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
 										WHERE (test_types.name = 'Hepatitis B Test' AND test_statuses.name ='verified') AND 
 										substr(time_created,1,7) = '$period'",
 
-				"Positive_tests  ^" => "SELECT count(*) AS test_count FROM 
+				"Positive tests" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_results ON test_results.test_id = tests.id 
@@ -1756,14 +1756,14 @@ P1
 										WHERE (test_types.name = 'Hepatitis B Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
 										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))",
 
-				"HepC test done on patients" => "SELECT count(*) AS test_count FROM 
+				"HepCcAg test done on patients" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
 										WHERE (test_types.name = 'Hepatitis C Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"Positive tests  ^" => "SELECT count(*) AS test_count FROM 
+				"Positive tests" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_results ON test_results.test_id = tests.id 
@@ -1779,7 +1779,7 @@ P1
 										WHERE (test_types.name = 'Pregnancy Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"Positive tests   ^" => "SELECT count(*) AS test_count FROM 
+				"Positive tests" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_results ON test_results.test_id = tests.id 
@@ -1787,14 +1787,14 @@ P1
 										WHERE (test_types.name = 'Pregnancy Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
 										((substr(time_created,1,7) = '$period') AND (test_results.result ='positive'))",
 
-				"HIV tests on PEP" => "SELECT count(*) AS test_count FROM 
+				"HIV tests on PEP patients" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
 										WHERE (test_types.name = 'HIV' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"positives tests ^" => "SELECT count(*) AS test_count FROM 
+				"positives tests" => "SELECT count(*) AS test_count FROM 
 										tests 
 										INNER JOIN test_types ON test_types.id = tests.test_type_id
 										INNER JOIN test_results ON test_results.test_id = tests.id 
