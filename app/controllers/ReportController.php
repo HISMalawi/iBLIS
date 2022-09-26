@@ -2866,6 +2866,158 @@ P1
 	{
 		return View::make('reports.malariamicroscopy.index');
 	}
+	public function getMalariaData($start_date, $end_date){
+		$sql_query = "SELECT t.id, TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) AS age, CASE WHEN p.gender=0 THEN 'M' ELSE 'F' END AS gender,
+		v.ward_or_location, t.time_completed, tt.name AS test_name, m.name AS measure_name, tr.result
+		FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id INNER JOIN test_results tr ON t.id = tr.test_id
+		INNER JOIN measures m ON tr.measure_id = m.id INNER JOIN visits v ON v.id = t.visit_id
+		INNER JOIN patients p ON p.id = v.patient_id WHERE tt.name = 'Malaria Screening' AND (DATE(t.time_completed) BETWEEN '$start_date' AND '$end_date')
+		AND tr.result<>'0' AND tr.result<>'' AND (m.name='blood film' OR m.name='mrdt')";
+		$data = DB::select(DB::raw($sql_query));
+		return $data;
+	}
+
+	public function getMalariaCounts($data){
+		if(count($data) > 0){
+			$pos_mrdt_u5 = [];
+			$pos_mrdt_o5 =[];
+			$neg_mrdt_u5 = [];
+			$neg_mrdt_o5 =[];
+			$inv_mrdt_u5 = [];
+			$inv_mrdt_o5 =[];
+			$pos_micro_o5 = [];
+			$pos_micro_u5 = [];
+			$neg_micro_o5 = [];
+			$neg_micro_u5 = [];
+			$wards = [];
+
+			foreach($data as $d){
+				array_push($wards, $d->ward_or_location);
+				if($d->measure_name == 'MRDT' && $d->result == 'Positive'){
+					if($d->age <= 5){
+						array_push($pos_mrdt_u5, $d->ward_or_location);
+					}
+					else{
+						array_push($pos_mrdt_o5, $d->ward_or_location);
+					}
+				}
+				elseif($d->measure_name == 'MRDT' && $d->result == 'Negative'){
+					if($d->age <= 5){
+						array_push($neg_mrdt_u5, $d->ward_or_location);
+					}
+					else{
+						array_push($neg_mrdt_o5, $d->ward_or_location);
+					}
+				}
+				elseif($d->measure_name == 'MRDT' && $d->result == 'Invalid'){
+					if($d->age <= 5){
+						array_push($inv_mrdt_u5, $d->ward_or_location);
+					}
+					else{
+						array_push($inv_mrdt_o5, $d->ward_or_location);
+					}
+				}
+				elseif(strtoupper($d->measure_name) == strtoupper('Blood film') && strtoupper($d->result) == strtoupper('Malaria Parasites seen')){
+					if($d->age <= 5){
+						array_push($pos_micro_u5, $d->ward_or_location);
+					}
+					else{
+						array_push($pos_micro_o5, $d->ward_or_location);
+					}
+				}
+				elseif(strtoupper($d->measure_name) == strtoupper('Blood film') && strtoupper($d->result) == strtoupper('No parasite seen')){
+					if($d->age <= 5){
+						array_push($neg_micro_u5, $d->ward_or_location);
+					}
+					else{
+						array_push($neg_micro_o5, $d->ward_or_location);
+					}	
+				}
+			}
+
+			$POS_MRDT_O5 = array_count_values($pos_mrdt_o5);
+			$POS_MRDT_U5 = array_count_values($pos_mrdt_u5);
+			$NEG_MRDT_U5 = array_count_values($neg_mrdt_u5);
+			$NEG_MRDT_O5 = array_count_values($neg_mrdt_o5);
+			$INV_MRDT_U5 = array_count_values($inv_mrdt_u5);
+			$INV_MRDT_O5 = array_count_values($inv_mrdt_o5);
+			$POS_MICRO_O5 = array_count_values($pos_micro_o5);
+			$POS_MICRO_U5 = array_count_values($pos_micro_u5);
+			$NEG_MICRO_O5 = array_count_values($neg_micro_o5);
+			$NEG_MICRO_U5 = array_count_values($neg_micro_u5);
+
+			foreach($wards as $ward){
+				if(!array_key_exists($ward, $POS_MRDT_O5)){
+					$POS_MRDT_O5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $POS_MRDT_U5)){
+					$POS_MRDT_U5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $NEG_MRDT_U5)){
+					$NEG_MRDT_U5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $NEG_MRDT_O5)){
+					$NEG_MRDT_O5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $INV_MRDT_U5)){
+					$INV_MRDT_U5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $INV_MRDT_O5)){
+					$INV_MRDT_O5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $POS_MICRO_O5)){
+					$POS_MICRO_O5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $POS_MICRO_U5)){
+					$POS_MICRO_U5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $NEG_MICRO_O5)){
+					$NEG_MICRO_O5[$ward] = 0;
+				}
+				if(!array_key_exists($ward, $NEG_MICRO_U5)){
+					$NEG_MICRO_U5[$ward] = 0;
+				}
+			}
+
+			$arr['MRDT'] = [ 
+				'POS_O5'=> $POS_MRDT_O5, 
+				'POS_U5' => $POS_MRDT_U5, 
+				'NEG_U5' => $NEG_MRDT_U5,
+				'NEG_O5' => $NEG_MRDT_O5,
+				'INV_U5' => $INV_MRDT_U5,
+				'INV_O5' => $INV_MRDT_O5
+			];
+			$arr['MICRO'] = [ 
+				'POS_O5'=> $POS_MICRO_O5, 
+				'POS_U5' => $POS_MICRO_U5, 
+				'NEG_U5' => $NEG_MICRO_U5,
+				'NEG_O5' => $NEG_MICRO_O5
+			];
+			$arr['WARDS'] = array_unique($wards);
+			$arr['size'] = count($data);
+			$arr['total_tested'] = [
+				'micro_o5' => count($pos_micro_o5) + count($neg_micro_o5),
+				'micro_u5' => count($pos_micro_u5) + count($neg_micro_u5),
+				'mrdt_o5' => count($pos_mrdt_o5) + count($neg_mrdt_o5),
+				'mrdt_u5' => count($neg_mrdt_u5) + count($neg_mrdt_u5)
+			];
+			$arr['total_positives'] = [
+				'micro_o5' => count($pos_micro_o5),
+				'micro_u5' => count($pos_micro_u5),
+				'mrdt_o5' => count($pos_mrdt_o5),
+				'mrdt_u5' => count($pos_mrdt_u5)
+			];
+			$arr['total_negatives'] = [
+				'micro_u5' => count($neg_micro_u5),
+				'micro_o5' => count($neg_micro_o5),
+				'mrdt_o5' => count($neg_mrdt_o5),
+				'mrdt_u5' => count($neg_mrdt_u5)
+			];
+		}else{
+			$arr['size'] = 0;
+		}
+		return $arr;
+	}
 	public function malariaWardCount($arry){
 		$default_ward_totals = array(
 			'OPD' => 0,
@@ -2903,6 +3055,8 @@ P1
 		else{
 			$start_date = Input::get('start_date');
 			$end_date = Input::get('end_date');
+			$mData = $this->getMalariaCounts($this->getMalariaData($start_date, $end_date));
+			// dd($this->getMalariaCounts($this->getMalariaData($start_date, $end_date)));
 			$total_tests_under5 = DB::select(DB::raw("
 				SELECT COUNT(*) AS total_tests FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
 				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
@@ -2969,7 +3123,10 @@ P1
 			->with('total_positives_over5',$total_positives_over5)
 			->with('total_positives_under5',$total_positives_under5)
 			->with('total_negatives_over5',$total_negatives_over5)
-			->with('total_negatives_under5',$total_negatives_under5);
+			->with('total_negatives_under5',$total_negatives_under5)
+			->with('malariaData', $mData)
+			->with('startDate', $start_date)
+			->with('endDate', $end_date);
 		}
 	}
 

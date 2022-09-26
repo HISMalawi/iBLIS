@@ -55,7 +55,7 @@
 			<div class="row less-gutter">
 				<div class="col-md-8">
 					<span class="glyphicon glyphicon-user"></span>
-					{{ trans('messages.malaria-microscopy') }}
+					{{ trans('messages.malaria-report') }}
 				</div>
 			</div>
 		</div>
@@ -64,8 +64,8 @@
 		@include("reportHeader")
 	</div>
 
-    <div id="test_records_div">
-            <table class="table table-bordered" id="tableData">
+    {{-- <div id="tablleData">
+            <table class="table table-bordered" id="tabbleData">
                 <tbody>
                     <tr>
                         <th></th>
@@ -99,7 +99,115 @@
                     </tr>
                 </tbody>
             </table>
+    </div> --}}
+
+    @if($malariaData['size'] > 0)
+    <div id=tableData>
+        <table class="table table-bordered text-center" id="ttableData">
+            <caption class="font-weight-bold"><strong>Malaria Report for a period of {{$startDate}} to {{$endDate}}</strong></caption>
+            <tbody>
+              <tr>
+                <td colspan="2" rowspan="2"></td>
+                <th colspan="2" scope="colgroup" class='text-center'>MRDT</th>
+                <th colspan="2" scope="colgroup" class='text-center'>Microscopy</th>
+              </tr>
+              <tr>
+                <th scope="col" class='text-center'>Under 5 years</th>
+                <th scope="col" class='text-center'>Over 5 years</th>
+                <th scope="col" class='text-center'>Under 5 years</th>
+                <th scope="col" class='text-center'>Over 5 years</th>
+              </tr>
+              @foreach($malariaData['WARDS'] as $ward)
+                <tr>
+                    <th rowspan="3" scope="rowgroup" class='text-center'>{{$ward}}</th>
+                    <th scope="row" class='text-center'>Positive</th>
+                    <td>{{$malariaData['MRDT']['POS_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['POS_O5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['POS_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['POS_O5'][$ward]}}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class='text-center'>Negative</th>
+                    <td>{{$malariaData['MRDT']['NEG_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['NEG_O5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['NEG_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['NEG_O5'][$ward]}}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class='text-center'>Invalid</th>
+                    <td>{{$malariaData['MRDT']['INV_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['INV_O5'][$ward]}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+          <table class="table table-bordered text-center">
+            <h1>Summary</h1>
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th>Total Tested</th>
+                    <th>Total Positive</th>
+                    <th>Total Negative</th>
+                    <th>In Patients</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Female Pregnant</th>
+                </tr>
+                <tr>
+                    <th>Microscopy Over 5yrs</th>
+                    <td>{{$malariaData['total_tested']['micro_o5']}}</td>
+                    <td>{{$malariaData['total_positives']['micro_o5']}}</td>
+                    <td>{{$malariaData['total_negatives']['micro_o5']}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+
+                </tr>
+                <tr>
+                    <th>Microscopy Under 5yrs</th>
+                    <td>{{$malariaData['total_tested']['micro_u5']}}</td>
+                    <td>{{$malariaData['total_positives']['micro_u5']}}</td>
+                    <td>{{$malariaData['total_negatives']['micro_u5']}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+
+                </tr>
+                <tr>
+                    <th>MRDT Over 5yrs</th>
+                    <td>{{$malariaData['total_tested']['mrdt_o5']}}</td>
+                    <td>{{$malariaData['total_positives']['mrdt_o5']}}</td>
+                    <td>{{$malariaData['total_negatives']['mrdt_o5']}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+
+                </tr>
+                <tr>
+                    <th>MRDT Under 5yrs</th>
+                    <td>{{$malariaData['total_tested']['mrdt_u5']}}</td>
+                    <td>{{$malariaData['total_positives']['mrdt_u5']}}</td>
+                    <td>{{$malariaData['total_negatives']['mrdt_u5']}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+
+                </tr>
+            </tbody>
+          </table>
     </div>
+    @else
+    <h1>NO DATA FOUND</h1>
+    @endif
+
+
 </div>
 <script type="text/javascript">
 

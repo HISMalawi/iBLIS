@@ -51,7 +51,7 @@
 			<div class="row less-gutter">
 				<div class="col-md-8">
 					<span class="glyphicon glyphicon-user"></span>
-					{{ trans('messages.malaria-microscopy') }}
+					{{ trans('messages.malaria-report') }}
 				</div>
 			</div>
 		</div>
@@ -59,5 +59,7 @@
 	<div class="panel-body">
 		@include("reportHeader")
 	</div>
+    
+</div>
 </div>
 @stop
