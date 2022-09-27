@@ -64,43 +64,6 @@
 		@include("reportHeader")
 	</div>
 
-    {{-- <div id="tablleData">
-            <table class="table table-bordered" id="tabbleData">
-                <tbody>
-                    <tr>
-                        <th></th>
-                        <td>Total Tested</td>
-                        <td>Total Positive</td>
-                        <td>Total Negative</td>
-                        <td>OPD</td>
-                        <td>Female Ward</td>
-                        <td>Male Ward</td>
-                        <td>Paediatric Ward</td>
-                    </tr>
-                    <tr>
-                        <th>Malaria Microscopy under 5yrs</th>
-                        <td>{{ $total_tests_under5->total_tests}}</td>
-                        <td>{{ $total_positives_under5->total}}</td>
-                        <td>{{ $total_negatives_under5->total}}</td>
-                        <td>{{ $totals_per_ward_under5['OPD'] }}</td>
-                        <td>{{ $totals_per_ward_under5['Female Ward'] }}</td>
-                        <td>{{ $totals_per_ward_under5['Male Ward'] }}</td>
-                        <td>{{ $totals_per_ward_under5['Paediatric'] }}</td>
-                    </tr>
-                    <tr>
-                        <th>Malaria Microscopy over 5yrs</th>
-                        <td>{{ $total_tests_over5->total_tests}}</td>
-                        <td>{{ $total_positives_over5->total}}</td>
-                        <td>{{ $total_negatives_over5->total}}</td>
-                        <td>{{ $totals_per_ward_over5['OPD'] }}</td>
-                        <td>{{ $totals_per_ward_over5['Female Ward'] }}</td>
-                        <td>{{ $totals_per_ward_over5['Male Ward'] }}</td>
-                        <td>{{ $totals_per_ward_over5['Paediatric'] }}</td>
-                    </tr>
-                </tbody>
-            </table>
-    </div> --}}
-
     @if($malariaData['size'] > 0)
     <div id=tableData>
         <table class="table table-bordered text-center" id="ttableData">
@@ -141,6 +104,22 @@
                     <td>0</td>
                 </tr>
               @endforeach
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr>
+                <th rowspan="2" scope="rowgroup" class='text-center'>IN PATIENT</th>
+                <th scope="row" class='text-center'>Positive</th>
+                <td>{{$malariaData['MRDT']['visit']['POS_U5']}}</td>
+                <td>{{$malariaData['MRDT']['visit']['POS_O5']}}</td>
+                <td>{{$malariaData['MICRO']['visit']['POS_U5']}}</td>
+                <td>{{$malariaData['MICRO']['visit']['POS_O5']}}</td>
+            </tr>
+            <tr>
+                <th scope="row" class='text-center'>Negative</th>
+                <td>{{$malariaData['MRDT']['visit']['NEG_U5']}}</td>
+                <td>{{$malariaData['MRDT']['visit']['NEG_O5']}}</td>
+                <td>{{$malariaData['MICRO']['visit']['NEG_U5']}}</td>
+                <td>{{$malariaData['MICRO']['visit']['NEG_O5']}}</td>
+            </tr>
              @foreach($malariaData['gList'] as $gender)
                 <tr>
                     <th rowspan="2" scope="rowgroup" class='text-center'>{{strtoupper($gender)}}</th>
@@ -157,14 +136,22 @@
                     <td>{{$malariaData['MICRO']['gender'][$gender]['NEG_U5']}}</td>
                     <td>{{$malariaData['MICRO']['gender'][$gender]['NEG_O5']}}</td>
                 </tr>
-                {{-- <tr>
-                    <th scope="row" class='text-center'>Invalid</th>
-                    <td>{{$malariaData['MRDT']['gender'][$gender]['INV_U5']}}</td>
-                    <td>{{$malariaData['MRDT']['gender'][$gender]['INV_O5']}}</td>
-                    <td>0</td>
-                    <td>0</td>
-                </tr> --}}
             @endforeach
+            <tr>
+                <th rowspan="2" scope="rowgroup" class='text-center'>FEMALE PREGNANT</th>
+                <th scope="row" class='text-center'>Positive</th>
+                <td></td>
+                <td>{{$malariaData['MRDT']['pregnant']['POS_O5']}}</td>
+                <td></td>
+                <td>{{$malariaData['MICRO']['pregnant']['POS_O5']}}</td>
+            </tr>
+            <tr>
+                <th scope="row" class='text-center'>Negative</th>
+                <td></td>
+                <td>{{$malariaData['MRDT']['pregnant']['NEG_O5']}}</td>
+                <td></td>
+                <td>{{$malariaData['MICRO']['pregnant']['NEG_O5']}}</td>
+            </tr>
             </tbody>
           </table>
           <table class="table table-bordered text-center">

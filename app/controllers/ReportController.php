@@ -2908,15 +2908,19 @@ P1
 			$nf_mrdt_o5 = [];
 			$nf_mrdt_u5 = [];
 
-			$inp_micro_o5 = [];
-			$inp_micro_u5 = [];
-			$inp_mrdt_o5 = [];
-			$inp_mrdt_u5 = [];
+			$pinp_micro_o5 = [];
+			$ninp_micro_o5 = [];
+			$pinp_micro_u5 = [];
+			$ninp_micro_u5 = [];
+			$pinp_mrdt_o5 = [];
+			$ninp_mrdt_o5 = [];
+			$pinp_mrdt_u5 = [];
+			$ninp_mrdt_u5 = [];
 
-			$fp_micro_o5 = [];
-			$fp_micro_u5 = [];
-			$fp_mrdt_o5 = [];
-			$fp_mrdt_u5 = [];
+			$pfp_micro_o5 = [];
+			$nfp_micro_o5 = [];
+			$pfp_mrdt_o5 = [];
+			$nfp_mrdt_o5 = [];
 			
 
 
@@ -2926,7 +2930,7 @@ P1
 					if($d->age <= 5){
 						array_push($pos_mrdt_u5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_mrdt_u5, $d->id);
+							array_push($pinp_mrdt_u5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($pf_mrdt_u5, $d->id);
@@ -2937,12 +2941,12 @@ P1
 					else{
 						array_push($pos_mrdt_o5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_mrdt_o5, $d->id);
+							array_push($pinp_mrdt_o5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($pf_mrdt_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
-								array_push($fp_mrdt_o5, $d->id);
+								array_push($pfp_mrdt_o5, $d->id);
 							}
 						}else{
 							array_push($pm_mrdt_o5, $d->id);
@@ -2953,7 +2957,7 @@ P1
 					if($d->age <= 5){
 						array_push($neg_mrdt_u5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_mrdt_u5, $d->id);
+							array_push($ninp_mrdt_u5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($nf_mrdt_u5, $d->id);
@@ -2964,12 +2968,12 @@ P1
 					else{
 						array_push($neg_mrdt_o5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_mrdt_o5, $d->id);
+							array_push($ninp_mrdt_o5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($nf_mrdt_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
-								array_push($fp_mrdt_o5, $d->id);
+								array_push($nfp_mrdt_o5, $d->id);
 							}
 						}else{
 							array_push($nm_mrdt_o5, $d->id);
@@ -2988,13 +2992,10 @@ P1
 					if($d->age <= 5){
 						array_push($pos_micro_u5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_micro_u5, $d->id);
+							array_push($pinp_micro_u5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($pf_micro_u5, $d->id);
-							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
-								array_push($fp_micro_o5, $d->id);
-							}
 						}else{
 							array_push($pm_micro_u5, $d->id);
 						}
@@ -3002,12 +3003,12 @@ P1
 					else{
 						array_push($pos_micro_o5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_micro_o5, $d->id);
+							array_push($pinp_micro_o5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($pf_micro_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
-								array_push($fp_micro_o5, $d->id);
+								array_push($pfp_micro_o5, $d->id);
 							}
 						}else{
 							array_push($pm_micro_o5, $d->id);
@@ -3018,7 +3019,7 @@ P1
 					if($d->age <= 5){
 						array_push($neg_micro_u5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_micro_u5, $d->id);
+							array_push($ninp_micro_u5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($nf_micro_u5, $d->id);
@@ -3029,12 +3030,12 @@ P1
 					else{
 						array_push($neg_micro_o5, $d->ward_or_location);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
-							array_push($inp_micro_o5, $d->id);
+							array_push($ninp_micro_o5, $d->id);
 						}
 						if($d->gender == 'F'){
 							array_push($nf_micro_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
-								array_push($fp_micro_o5, $d->id);
+								array_push($nfp_micro_o5, $d->id);
 							}
 						}else{
 							array_push($nm_micro_o5, $d->id);
@@ -3109,6 +3110,16 @@ P1
 						'NEG_O5' => count(array_unique($nf_mrdt_o5)),
 						'NEG_U5' => count(array_unique($nf_mrdt_u5))
 					]
+				],
+				'pregnant' => [
+					'POS_O5' => count(array_unique($pfp_mrdt_o5)),
+					'NEG_O5' => count(array_unique($nfp_mrdt_o5))
+				],
+				'visit' => [
+					'POS_O5' => count(array_unique($pinp_mrdt_o5)),
+					'POS_U5' => count(array_unique($pinp_mrdt_u5)),
+					'NEG_O5' => count(array_unique($ninp_mrdt_o5)),
+					'NEG_U5' => count(array_unique($ninp_mrdt_u5))
 				]
 			];
 			$arr['MICRO'] = [ 
@@ -3131,6 +3142,16 @@ P1
 						'NEG_O5' => count(array_unique($nf_micro_o5)),
 						'NEG_U5' => count(array_unique($nf_micro_u5))
 					]
+				],
+				'pregnant' => [
+					'POS_O5' => count(array_unique($pfp_micro_o5)),
+					'NEG_O5' => count(array_unique($nfp_micro_o5))
+				],
+				'visit' => [
+					'POS_O5' => count(array_unique($pinp_micro_o5)),
+					'POS_U5' => count(array_unique($pinp_micro_u5)),
+					'NEG_O5' => count(array_unique($ninp_micro_o5)),
+					'NEG_U5' => count(array_unique($ninp_micro_u5))
 				]
 			];
 			$arr['WARDS'] = array_unique($wards);
@@ -3170,45 +3191,20 @@ P1
 			];
 			$arr['visit_type'] = [
 				'in_patient' => [
-					'micro_u5' => count(array_unique($inp_micro_u5)),
-					'micro_o5' => count(array_unique($inp_micro_o5)),
-					'mrdt_u5' => count(array_unique($inp_mrdt_u5)),
-					'mrdt_o5' => count(array_unique($inp_mrdt_o5))
+					'micro_u5' => count(array_unique($pinp_micro_u5)) + count(array_unique($ninp_micro_u5)),
+					'micro_o5' => count(array_unique($pinp_micro_o5)) + count(array_unique($ninp_micro_o5)),
+					'mrdt_u5' => count(array_unique($pinp_mrdt_u5)) + count(array_unique($ninp_mrdt_u5)),
+					'mrdt_o5' => count(array_unique($pinp_mrdt_o5)) + count(array_unique($ninp_mrdt_o5))
 				]
 			];
 			$arr['pregnant'] = [
-				'micro_o5' => count(array_unique($fp_micro_o5)),
-				'mrdt_o5' => count(array_unique($fp_mrdt_o5))
+				'micro_o5' => count(array_unique($pfp_micro_o5)) + count(array_unique($nfp_micro_o5)),
+				'mrdt_o5' => count(array_unique($pfp_mrdt_o5)) + count(array_unique($nfp_mrdt_o5))
 			];
 		}else{
 			$arr['size'] = 0;
 		}
 		return $arr;
-	}
-	public function malariaWardCount($arry){
-		$default_ward_totals = array(
-			'OPD' => 0,
-			'Male Ward' => 0,
-			'Female Ward' => 0,
-			'Paediatric' => 0
-		);
-		foreach ($arry as $wards_count){
-			if ($wards_count->ward_or_location =='OPD 1' || $wards_count->ward_or_location =='OPD 2' || $wards_count->ward_or_location =='OPD' ||
-				 $wards_count->ward_or_location =='OPD OPD' || $wards_count->ward_or_location =='ART OPD'){
-				$default_ward_totals['OPD'] = $default_ward_totals['OPD'] + $wards_count->total;
-			}
-			elseif ($wards_count->ward_or_location =='Male Ward'){
-				$default_ward_totals['Male Ward'] = $default_ward_totals['Male Ward'] + $wards_count->total;
-			}
-			elseif ($wards_count->ward_or_location =='Female Ward'){
-				$default_ward_totals['Female Ward'] = $default_ward_totals['Female Ward'] + $wards_count->total;
-			}
-			elseif ($wards_count->ward_or_location =='Paediatric' || $wards_count->ward_or_location =='Peads Isolation Centre'){
-				$default_ward_totals['Paediatric'] = $default_ward_totals['Paediatric'] + $wards_count->total;
-			}
-		}
-		return $default_ward_totals;
-
 	}
 	public function malariaMicroscopyResults()
 	{
@@ -3223,74 +3219,7 @@ P1
 			$start_date = Input::get('start_date');
 			$end_date = Input::get('end_date');
 			$mData = $this->getMalariaCounts($this->getMalariaData($start_date, $end_date));
-			// dd($this->getMalariaCounts($this->getMalariaData($start_date, $end_date)));
-			$total_tests_under5 = DB::select(DB::raw("
-				SELECT COUNT(*) AS total_tests FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id
-				WHERE tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film'
-				AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
-			"))[0];
-			$total_tests_over5 = DB::select(DB::raw("
-				SELECT COUNT(*) AS total_tests FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id
-				WHERE tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film' AND
-				(DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
-			"))[0];
-			$microscopy_under5 = DB::select(DB::raw("
-				SELECT v.ward_or_location, COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
-				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film' 
-				AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date') GROUP BY v.ward_or_location
-			"));
-			$microscopy_over5 = DB::select(DB::raw("
-				SELECT v.ward_or_location, COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
-				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film'
-				AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date') GROUP BY v.ward_or_location
-			"));
-			$total_positives_over5 = DB::select(DB::raw("
-				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
-				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film'	
-				AND tr.result<>'No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
-			"))[0];
-			$total_negatives_over5 = DB::select(DB::raw("
-				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
-				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) > 5 AND m.name='Blood film'	
-				AND tr.result='No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
-			"))[0];
-			$total_positives_under5 = DB::select(DB::raw("
-				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
-				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film'	
-				AND tr.result<>'No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
-			"))[0];
-			$total_negatives_under5 = DB::select(DB::raw("
-				SELECT COUNT(*) AS total FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id
-				INNER JOIN test_results tr ON t.id = tr.test_id INNER JOIN measures m ON tr.measure_id = m.id
-				INNER JOIN visits v ON v.id = t.visit_id INNER JOIN patients p ON p.id = v.patient_id WHERE
-				tt.name = 'Malaria Screening' AND TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) <= 5 AND m.name='Blood film'	
-				AND tr.result='No parasite seen' AND (DATE(t.time_created) BETWEEN '$start_date' AND '$end_date')
-			"))[0];
-			$totals_per_ward_under5= $this->malariaWardCount($microscopy_under5);
-			$totals_per_ward_over5= $this->malariaWardCount($microscopy_over5);
 			return View::make('reports.malariamicroscopy.results')
-			->with('total_tests_under5',$total_tests_under5)
-			->with('total_tests_over5',$total_tests_over5)
-			->with('totals_per_ward_over5',$totals_per_ward_over5)
-			->with('totals_per_ward_under5', $totals_per_ward_under5)
-			->with('total_positives_over5',$total_positives_over5)
-			->with('total_positives_under5',$total_positives_under5)
-			->with('total_negatives_over5',$total_negatives_over5)
-			->with('total_negatives_under5',$total_negatives_under5)
 			->with('malariaData', $mData)
 			->with('startDate', $start_date)
 			->with('endDate', $end_date);
