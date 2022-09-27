@@ -2867,7 +2867,7 @@ P1
 		return View::make('reports.malariamicroscopy.index');
 	}
 	public function getMalariaData($start_date, $end_date){
-		$sql_query = "SELECT t.id, TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) AS age, CASE WHEN p.gender=0 THEN 'M' ELSE 'F' END AS gender,
+		$sql_query = "SELECT t.id, v.visit_type, TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) AS age, CASE WHEN p.gender=0 THEN 'M' ELSE 'F' END AS gender,
 		v.ward_or_location, t.time_completed, tt.name AS test_name, m.name AS measure_name, tr.result
 		FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id INNER JOIN test_results tr ON t.id = tr.test_id
 		INNER JOIN measures m ON tr.measure_id = m.id INNER JOIN visits v ON v.id = t.visit_id
@@ -2891,22 +2891,81 @@ P1
 			$neg_micro_u5 = [];
 			$wards = [];
 
+			$m_micro_o5 = [];
+			$m_micro_u5 = [];
+			$f_micro_o5 = [];
+			$f_micro_u5 = [];
+			$m_mrdt_o5 = [];
+			$m_mrdt_u5 = [];
+			$f_mrdt_o5 = [];
+			$f_mrdt_u5 = [];
+
+			$inp_micro_o5 = [];
+			$inp_micro_u5 = [];
+			$inp_mrdt_o5 = [];
+			$inp_mrdt_u5 = [];
+
+			$fp_micro_o5 = [];
+			$fp_micro_u5 = [];
+			$fp_mrdt_o5 = [];
+			$fp_mrdt_u5 = [];
+			
+
+
 			foreach($data as $d){
 				array_push($wards, $d->ward_or_location);
 				if($d->measure_name == 'MRDT' && $d->result == 'Positive'){
 					if($d->age <= 5){
 						array_push($pos_mrdt_u5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_mrdt_u5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_mrdt_u5, $d->id);
+						}else{
+							array_push($m_mrdt_u5, $d->id);
+						}
 					}
 					else{
 						array_push($pos_mrdt_o5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_mrdt_o5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_mrdt_o5, $d->id);
+							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
+								array_push($fp_mrdt_o5, $d->id);
+							}
+						}else{
+							array_push($m_mrdt_o5, $d->id);
+						}
 					}
 				}
 				elseif($d->measure_name == 'MRDT' && $d->result == 'Negative'){
 					if($d->age <= 5){
 						array_push($neg_mrdt_u5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_mrdt_u5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_mrdt_u5, $d->id);
+						}else{
+							array_push($m_mrdt_u5, $d->id);
+						}
 					}
 					else{
 						array_push($neg_mrdt_o5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_mrdt_o5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_mrdt_o5, $d->id);
+							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
+								array_push($fp_mrdt_o5, $d->id);
+							}
+						}else{
+							array_push($m_mrdt_o5, $d->id);
+						}
 					}
 				}
 				elseif($d->measure_name == 'MRDT' && $d->result == 'Invalid'){
@@ -2920,17 +2979,58 @@ P1
 				elseif(strtoupper($d->measure_name) == strtoupper('Blood film') && strtoupper($d->result) == strtoupper('Malaria Parasites seen')){
 					if($d->age <= 5){
 						array_push($pos_micro_u5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_micro_u5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_micro_u5, $d->id);
+							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
+								array_push($fp_micro_o5, $d->id);
+							}
+						}else{
+							array_push($m_micro_u5, $d->id);
+						}
 					}
 					else{
 						array_push($pos_micro_o5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_micro_o5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_micro_o5, $d->id);
+							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
+								array_push($fp_micro_o5, $d->id);
+							}
+						}else{
+							array_push($m_micro_o5, $d->id);
+						}
 					}
 				}
 				elseif(strtoupper($d->measure_name) == strtoupper('Blood film') && strtoupper($d->result) == strtoupper('No parasite seen')){
 					if($d->age <= 5){
 						array_push($neg_micro_u5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_micro_u5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_micro_u5, $d->id);
+						}else{
+							array_push($m_micro_u5, $d->id);
+						}
 					}
 					else{
 						array_push($neg_micro_o5, $d->ward_or_location);
+						if(strtoupper($d->visit_type) == 'IN PATIENT'){
+							array_push($inp_micro_o5, $d->id);
+						}
+						if($d->gender == 'F'){
+							array_push($f_micro_o5, $d->id);
+							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
+								array_push($fp_micro_o5, $d->id);
+							}
+						}else{
+							array_push($m_micro_o5, $d->id);
+						}
 					}	
 				}
 			}
@@ -3012,6 +3112,32 @@ P1
 				'micro_o5' => count($neg_micro_o5),
 				'mrdt_o5' => count($neg_mrdt_o5),
 				'mrdt_u5' => count($neg_mrdt_u5)
+			];
+			$arr['gender'] = [
+				'male' => [
+					'micro_u5' => count(array_unique($m_micro_u5)),
+					'micro_o5' => count(array_unique($m_micro_o5)),
+					'mrdt_u5' => count(array_unique($m_mrdt_u5)),
+					'mrdt_o5' => count(array_unique($m_mrdt_o5))
+				],
+				'female' => [
+					'micro_u5' => count(array_unique($f_micro_u5)),
+					'micro_o5' => count(array_unique($f_micro_o5)),
+					'mrdt_u5' => count(array_unique($f_mrdt_u5)),
+					'mrdt_o5' => count(array_unique($f_mrdt_o5))
+				]
+			];
+			$arr['visit_type'] = [
+				'in_patient' => [
+					'micro_u5' => count(array_unique($inp_micro_u5)),
+					'micro_o5' => count(array_unique($inp_micro_o5)),
+					'mrdt_u5' => count(array_unique($inp_mrdt_u5)),
+					'mrdt_o5' => count(array_unique($inp_mrdt_o5))
+				]
+			];
+			$arr['pregnant'] = [
+				'micro_o5' => count(array_unique($fp_micro_o5)),
+				'mrdt_o5' => count(array_unique($fp_mrdt_o5))
 			];
 		}else{
 			$arr['size'] = 0;

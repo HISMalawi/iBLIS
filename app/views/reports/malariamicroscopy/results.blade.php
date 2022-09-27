@@ -151,20 +151,20 @@
                     <th>Total Tested</th>
                     <th>Total Positive</th>
                     <th>Total Negative</th>
-                    <th>In Patients</th>
                     <th>Male</th>
                     <th>Female</th>
                     <th>Female Pregnant</th>
+                    <th>In Patients</th>
                 </tr>
                 <tr>
                     <th>Microscopy Over 5yrs</th>
                     <td>{{$malariaData['total_tested']['micro_o5']}}</td>
                     <td>{{$malariaData['total_positives']['micro_o5']}}</td>
                     <td>{{$malariaData['total_negatives']['micro_o5']}}</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>{{$malariaData['gender']['male']['micro_o5']}}</td>
+                    <td>{{$malariaData['gender']['female']['micro_o5']}}</td>
+                    <td>{{$malariaData['pregnant']['micro_o5']}}</td>
+                    <td>{{$malariaData['visit_type']['in_patient']['micro_o5']}}</td>
 
                 </tr>
                 <tr>
@@ -172,10 +172,10 @@
                     <td>{{$malariaData['total_tested']['micro_u5']}}</td>
                     <td>{{$malariaData['total_positives']['micro_u5']}}</td>
                     <td>{{$malariaData['total_negatives']['micro_u5']}}</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>{{$malariaData['gender']['male']['micro_u5']}}</td>
+                    <td>{{$malariaData['gender']['female']['micro_u5']}}</td>
+                    <td></td>
+                    <td>{{$malariaData['visit_type']['in_patient']['micro_u5']}}</td>
 
                 </tr>
                 <tr>
@@ -183,10 +183,10 @@
                     <td>{{$malariaData['total_tested']['mrdt_o5']}}</td>
                     <td>{{$malariaData['total_positives']['mrdt_o5']}}</td>
                     <td>{{$malariaData['total_negatives']['mrdt_o5']}}</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>{{$malariaData['gender']['male']['mrdt_o5']}}</td>
+                    <td>{{$malariaData['gender']['female']['mrdt_o5']}}</td>
+                    <td>{{$malariaData['pregnant']['mrdt_o5']}}</td>
+                    <td>{{$malariaData['visit_type']['in_patient']['mrdt_o5']}}</td>
 
                 </tr>
                 <tr>
@@ -194,10 +194,10 @@
                     <td>{{$malariaData['total_tested']['mrdt_u5']}}</td>
                     <td>{{$malariaData['total_positives']['mrdt_u5']}}</td>
                     <td>{{$malariaData['total_negatives']['mrdt_u5']}}</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>{{$malariaData['gender']['male']['mrdt_u5']}}</td>
+                    <td>{{$malariaData['gender']['female']['mrdt_u5']}}</td>
+                    <td></td>
+                    <td>{{$malariaData['visit_type']['in_patient']['mrdt_u5']}}</td>
 
                 </tr>
             </tbody>
