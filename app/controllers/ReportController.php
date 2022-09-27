@@ -2891,14 +2891,22 @@ P1
 			$neg_micro_u5 = [];
 			$wards = [];
 
-			$m_micro_o5 = [];
-			$m_micro_u5 = [];
-			$f_micro_o5 = [];
-			$f_micro_u5 = [];
-			$m_mrdt_o5 = [];
-			$m_mrdt_u5 = [];
-			$f_mrdt_o5 = [];
-			$f_mrdt_u5 = [];
+			$pm_micro_o5 = [];
+			$pm_micro_u5 = [];
+			$pf_micro_o5 = [];
+			$pf_micro_u5 = [];
+			$pm_mrdt_o5 = [];
+			$pm_mrdt_u5 = [];
+			$pf_mrdt_o5 = [];
+			$pf_mrdt_u5 = [];
+			$nm_micro_o5 = [];
+			$nm_micro_u5 = [];
+			$nf_micro_o5 = [];
+			$nf_micro_u5 = [];
+			$nm_mrdt_o5 = [];
+			$nm_mrdt_u5 = [];
+			$nf_mrdt_o5 = [];
+			$nf_mrdt_u5 = [];
 
 			$inp_micro_o5 = [];
 			$inp_micro_u5 = [];
@@ -2921,9 +2929,9 @@ P1
 							array_push($inp_mrdt_u5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_mrdt_u5, $d->id);
+							array_push($pf_mrdt_u5, $d->id);
 						}else{
-							array_push($m_mrdt_u5, $d->id);
+							array_push($pm_mrdt_u5, $d->id);
 						}
 					}
 					else{
@@ -2932,12 +2940,12 @@ P1
 							array_push($inp_mrdt_o5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_mrdt_o5, $d->id);
+							array_push($pf_mrdt_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
 								array_push($fp_mrdt_o5, $d->id);
 							}
 						}else{
-							array_push($m_mrdt_o5, $d->id);
+							array_push($pm_mrdt_o5, $d->id);
 						}
 					}
 				}
@@ -2948,9 +2956,9 @@ P1
 							array_push($inp_mrdt_u5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_mrdt_u5, $d->id);
+							array_push($nf_mrdt_u5, $d->id);
 						}else{
-							array_push($m_mrdt_u5, $d->id);
+							array_push($nm_mrdt_u5, $d->id);
 						}
 					}
 					else{
@@ -2959,12 +2967,12 @@ P1
 							array_push($inp_mrdt_o5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_mrdt_o5, $d->id);
+							array_push($nf_mrdt_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
 								array_push($fp_mrdt_o5, $d->id);
 							}
 						}else{
-							array_push($m_mrdt_o5, $d->id);
+							array_push($nm_mrdt_o5, $d->id);
 						}
 					}
 				}
@@ -2983,12 +2991,12 @@ P1
 							array_push($inp_micro_u5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_micro_u5, $d->id);
+							array_push($pf_micro_u5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
 								array_push($fp_micro_o5, $d->id);
 							}
 						}else{
-							array_push($m_micro_u5, $d->id);
+							array_push($pm_micro_u5, $d->id);
 						}
 					}
 					else{
@@ -2997,12 +3005,12 @@ P1
 							array_push($inp_micro_o5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_micro_o5, $d->id);
+							array_push($pf_micro_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
 								array_push($fp_micro_o5, $d->id);
 							}
 						}else{
-							array_push($m_micro_o5, $d->id);
+							array_push($pm_micro_o5, $d->id);
 						}
 					}
 				}
@@ -3013,9 +3021,9 @@ P1
 							array_push($inp_micro_u5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_micro_u5, $d->id);
+							array_push($nf_micro_u5, $d->id);
 						}else{
-							array_push($m_micro_u5, $d->id);
+							array_push($nm_micro_u5, $d->id);
 						}
 					}
 					else{
@@ -3024,12 +3032,12 @@ P1
 							array_push($inp_micro_o5, $d->id);
 						}
 						if($d->gender == 'F'){
-							array_push($f_micro_o5, $d->id);
+							array_push($nf_micro_o5, $d->id);
 							if(strtoupper($d->ward_or_location) == 'LABOUR WARD' || strtoupper($d->ward_or_location) == 'LW' || strtoupper($d->ward_or_location) == 'EM LW' || strtoupper($d->ward_or_location) == 'ANTENATAL' || strtoupper($d->ward_or_location) == 'LABOUR'){
 								array_push($fp_micro_o5, $d->id);
 							}
 						}else{
-							array_push($m_micro_o5, $d->id);
+							array_push($nm_micro_o5, $d->id);
 						}
 					}	
 				}
@@ -3080,20 +3088,53 @@ P1
 			}
 
 			$arr['MRDT'] = [ 
-				'POS_O5'=> $POS_MRDT_O5, 
-				'POS_U5' => $POS_MRDT_U5, 
-				'NEG_U5' => $NEG_MRDT_U5,
-				'NEG_O5' => $NEG_MRDT_O5,
-				'INV_U5' => $INV_MRDT_U5,
-				'INV_O5' => $INV_MRDT_O5
+				'wards' => [
+					'POS_O5'=> $POS_MRDT_O5, 
+					'POS_U5' => $POS_MRDT_U5, 
+					'NEG_U5' => $NEG_MRDT_U5,
+					'NEG_O5' => $NEG_MRDT_O5,
+					'INV_U5' => $INV_MRDT_U5,
+					'INV_O5' => $INV_MRDT_O5
+				],
+				'gender' => [
+					'male' =>[
+						'POS_O5' => count(array_unique($pm_mrdt_o5)),
+						'POS_U5' => count(array_unique($pm_mrdt_u5)),
+						'NEG_O5' => count(array_unique($nm_mrdt_o5)),
+						'NEG_U5' => count(array_unique($nm_mrdt_u5))
+					],
+					'female' => [
+						'POS_O5' => count(array_unique($pf_mrdt_o5)),
+						'POS_U5' => count(array_unique($pf_mrdt_u5)),
+						'NEG_O5' => count(array_unique($nf_mrdt_o5)),
+						'NEG_U5' => count(array_unique($nf_mrdt_u5))
+					]
+				]
 			];
 			$arr['MICRO'] = [ 
-				'POS_O5'=> $POS_MICRO_O5, 
-				'POS_U5' => $POS_MICRO_U5, 
-				'NEG_U5' => $NEG_MICRO_U5,
-				'NEG_O5' => $NEG_MICRO_O5
+				'wards' => [
+					'POS_O5'=> $POS_MICRO_O5, 
+					'POS_U5' => $POS_MICRO_U5, 
+					'NEG_U5' => $NEG_MICRO_U5,
+					'NEG_O5' => $NEG_MICRO_O5
+				],
+				'gender' => [
+					'male' =>[
+						'POS_O5' => count(array_unique($pm_micro_o5)),
+						'POS_U5' => count(array_unique($pm_micro_u5)),
+						'NEG_O5' => count(array_unique($nm_micro_o5)),
+						'NEG_U5' => count(array_unique($nm_micro_u5))
+					],
+					'female' => [
+						'POS_O5' => count(array_unique($pf_micro_o5)),
+						'POS_U5' => count(array_unique($pf_micro_u5)),
+						'NEG_O5' => count(array_unique($nf_micro_o5)),
+						'NEG_U5' => count(array_unique($nf_micro_u5))
+					]
+				]
 			];
 			$arr['WARDS'] = array_unique($wards);
+			$arr['gList'] = ['male', 'female'];
 			$arr['size'] = count($data);
 			$arr['total_tested'] = [
 				'micro_o5' => count($pos_micro_o5) + count($neg_micro_o5),
@@ -3115,16 +3156,16 @@ P1
 			];
 			$arr['gender'] = [
 				'male' => [
-					'micro_u5' => count(array_unique($m_micro_u5)),
-					'micro_o5' => count(array_unique($m_micro_o5)),
-					'mrdt_u5' => count(array_unique($m_mrdt_u5)),
-					'mrdt_o5' => count(array_unique($m_mrdt_o5))
+					'micro_u5' => count(array_unique($pm_micro_u5))+ count(array_unique($nm_micro_u5)),
+					'micro_o5' => count(array_unique($pm_micro_o5)) + count(array_unique($nm_micro_o5)),
+					'mrdt_u5' => count(array_unique($pm_mrdt_u5)) + count(array_unique($nm_mrdt_u5)),
+					'mrdt_o5' => count(array_unique($pm_mrdt_o5)) + count(array_unique($nm_mrdt_o5)),
 				],
 				'female' => [
-					'micro_u5' => count(array_unique($f_micro_u5)),
-					'micro_o5' => count(array_unique($f_micro_o5)),
-					'mrdt_u5' => count(array_unique($f_mrdt_u5)),
-					'mrdt_o5' => count(array_unique($f_mrdt_o5))
+					'micro_u5' => count(array_unique($pf_micro_u5)) + count(array_unique($nf_micro_u5)),
+					'micro_o5' => count(array_unique($pf_micro_o5)) + count(array_unique($nf_micro_o5)),
+					'mrdt_u5' => count(array_unique($pf_mrdt_u5)) + count(array_unique($nf_mrdt_u5)),
+					'mrdt_o5' => count(array_unique($pf_mrdt_o5)) + count(array_unique($nf_mrdt_o5)),
 				]
 			];
 			$arr['visit_type'] = [

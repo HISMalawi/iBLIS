@@ -121,26 +121,50 @@
                 <tr>
                     <th rowspan="3" scope="rowgroup" class='text-center'>{{$ward}}</th>
                     <th scope="row" class='text-center'>Positive</th>
-                    <td>{{$malariaData['MRDT']['POS_U5'][$ward]}}</td>
-                    <td>{{$malariaData['MRDT']['POS_O5'][$ward]}}</td>
-                    <td>{{$malariaData['MICRO']['POS_U5'][$ward]}}</td>
-                    <td>{{$malariaData['MICRO']['POS_O5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['wards']['POS_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['wards']['POS_O5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['wards']['POS_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['wards']['POS_O5'][$ward]}}</td>
                 </tr>
                 <tr>
                     <th scope="row" class='text-center'>Negative</th>
-                    <td>{{$malariaData['MRDT']['NEG_U5'][$ward]}}</td>
-                    <td>{{$malariaData['MRDT']['NEG_O5'][$ward]}}</td>
-                    <td>{{$malariaData['MICRO']['NEG_U5'][$ward]}}</td>
-                    <td>{{$malariaData['MICRO']['NEG_O5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['wards']['NEG_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['wards']['NEG_O5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['wards']['NEG_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MICRO']['wards']['NEG_O5'][$ward]}}</td>
                 </tr>
                 <tr>
                     <th scope="row" class='text-center'>Invalid</th>
-                    <td>{{$malariaData['MRDT']['INV_U5'][$ward]}}</td>
-                    <td>{{$malariaData['MRDT']['INV_O5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['wards']['INV_U5'][$ward]}}</td>
+                    <td>{{$malariaData['MRDT']['wards']['INV_O5'][$ward]}}</td>
                     <td>0</td>
                     <td>0</td>
                 </tr>
               @endforeach
+             @foreach($malariaData['gList'] as $gender)
+                <tr>
+                    <th rowspan="2" scope="rowgroup" class='text-center'>{{strtoupper($gender)}}</th>
+                    <th scope="row" class='text-center'>Positive</th>
+                    <td>{{$malariaData['MRDT']['gender'][$gender]['POS_U5']}}</td>
+                    <td>{{$malariaData['MRDT']['gender'][$gender]['POS_O5']}}</td>
+                    <td>{{$malariaData['MICRO']['gender'][$gender]['POS_U5']}}</td>
+                    <td>{{$malariaData['MICRO']['gender'][$gender]['POS_O5']}}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class='text-center'>Negative</th>
+                    <td>{{$malariaData['MRDT']['gender'][$gender]['NEG_U5']}}</td>
+                    <td>{{$malariaData['MRDT']['gender'][$gender]['NEG_O5']}}</td>
+                    <td>{{$malariaData['MICRO']['gender'][$gender]['NEG_U5']}}</td>
+                    <td>{{$malariaData['MICRO']['gender'][$gender]['NEG_O5']}}</td>
+                </tr>
+                {{-- <tr>
+                    <th scope="row" class='text-center'>Invalid</th>
+                    <td>{{$malariaData['MRDT']['gender'][$gender]['INV_U5']}}</td>
+                    <td>{{$malariaData['MRDT']['gender'][$gender]['INV_O5']}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr> --}}
+            @endforeach
             </tbody>
           </table>
           <table class="table table-bordered text-center">
