@@ -225,7 +225,8 @@
 	$("#btnExport1").click(function(e) {
     let table = document.getElementById('tableData');
     let html = table.outerHTML;
-    window.open('data:application/vnd.ms-excel;base64,' + btoa(html));
+    // window.open('data:application/vnd.ms-excel;base64,' + btoa(html));
+    window.open('data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + btoa(html));
     e.preventDefault();
 })
 </script>
