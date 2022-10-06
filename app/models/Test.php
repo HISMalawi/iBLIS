@@ -678,7 +678,68 @@ class Test extends Eloquent
 		return $tests;
 	}
 
-	
+	// SEARCH UTILITY FUNCTIONS
+	public static function processResultsIds($sql, $result_ids){
+		$results = DB::select(DB::raw($sql));
+		foreach ($results as $result){
+			array_push($result_ids, $result->id);
+		}
+		return $result_ids;
+	}
+
+	public static function getTestIDsOnSearchString($q){
+		$accession_number = Config::get('kblis.facility-code').$q;
+		$sql = "SELECT t.id FROM tests t WHERE visit_id IN (
+			SELECT DISTINCT v.id FROM visits v WHERE (v.patient_id IN (
+			SELECT id FROM patients p WHERE p.name LIKE '%$q%'
+			OR p.patient_number = '$q' OR p.external_patient_number = '$q'))
+			OR (v.ward_or_location LIKE  '%$q%')
+		) OR t.specimen_id IN (
+			SELECT DISTINCT sp.id FROM specimens sp WHERE sp.accession_number='$accession_number'
+		)
+		OR t.test_type_id IN (
+			SELECT DISTINCT tt.id FROM test_types tt WHERE tt.name LIKE '%$q%') ORDER BY t.time_created DESC LIMIT 20000";
+		$result_ids = [];
+		return Test::processResultsIds($sql, $result_ids);
+	}
+
+	public static function dateFilter($date_to, $date_from, $tests){
+		if($date_to||$date_from){
+			$tests = $tests->where('time_created', '>=',$date_from)
+			->where('time_created','<=',$date_to);
+		}
+	}
+
+	public static function locationFilter($location, $tests){
+		if($location){
+			$tests =$tests->whereHas('testType',  function($q) use ($location){
+				$q->where(function($q) use ($location){
+					$q->where('test_category_id', '=', $location);
+				});
+			});
+		}
+	}
+
+	public static function testStatusFilter($test_status_id, $tests){
+		if($test_status_id > 0){
+			$tests = $tests->where('test_status_id','=', $test_status_id);
+		}
+	}
+	// SEARCH FUNCTION
+	public static function searchOn($q='', $date_from=NULL, $date_to=NULL, $test_status_id=0, $location=NULL){
+		if($q){
+			$tests = Test::whereIn('id', Test::getTestIDsOnSearchString($q));
+			Test::dateFilter($date_to, $date_from, $tests);
+			Test::locationFilter($location, $tests);
+			Test::testStatusFilter($test_status_id, $tests);
+		}else{
+			$tests = Test::orderBy('time_created','desc');
+			Test::dateFilter($date_to, $date_from, $tests);
+			Test::locationFilter($location, $tests);
+			Test::testStatusFilter($test_status_id, $tests);
+		}
+		return $tests->orderBy('time_created', 'DESC');
+	}
 
 	public static function eSearch($q='', $date_from=NULL, $date_to=NULL, $test_status_id=0, $location=NULL){
 		$params = [
@@ -693,6 +754,7 @@ class Test extends Eloquent
 									'patient_name' => [
 										'query' => $q,
 										'fuzziness' => 2
+
 									]
 								]
 							],
@@ -746,54 +808,19 @@ class Test extends Eloquent
 		];
 		$test_ids = [];
 		if($q){
-				$result = Es::search($params)['hits']['hits'];
+			$result = Es::search($params)['hits']['hits'];
 			foreach ($result as $r){
 				array_push($test_ids,$r["_source"]['test_id']);
 			}
-			$tests = Test::whereIn('id',$test_ids);
-			if($date_to||$date_from){
-				$tests = $tests->where('time_created', '>=',$date_from)
-				->where('time_created','<=',$date_to);
-			}
-			if($location){
-				$tests =$tests->whereHas('testType',  function($q) use ($location)
-				{
-					$q->where(function($q) use ($location){
-						$q->where('test_category_id', '=', $location);
-						// ->whereIn('tests.id',$test_ids);//Filter by lab section
-					});
-				});
-			}
-			if($test_status_id > 0){
-				$tests = $tests->where(function($q) use ($test_status_id)
-				{
-					$q->whereHas('testStatus', function($q) use ($test_status_id){
-						$q->where('id','=', $test_status_id);//Filter by test status
-					});
-				});
-			}
+			$tests = Test::whereIn('id', $test_ids);
+			Test::dateFilter($date_to, $date_from, $tests);
+			Test::locationFilter($location, $tests);
+			Test::testStatusFilter($test_status_id, $tests);
 		}else{
 			$tests = Test::orderBy('time_created','desc');
-			if($date_to||$date_from){
-				$tests = $tests->where('time_created', '>=',$date_from)
-				->where('time_created','<=',$date_to);
-			}
-			if($location){
-				$tests =$tests->whereHas('testType',  function($q) use ($location)
-				{
-					$q->where(function($q) use ($location){
-						$q->where('test_category_id', '=', $location );
-					});
-				});
-			}
-			if($test_status_id > 0){
-				$tests = $tests->where(function($q) use ($test_status_id)
-				{
-					$q->whereHas('testStatus', function($q) use ($test_status_id){
-						$q->where('id','=', $test_status_id);//Filter by test status
-					});
-				});
-			}
+			Test::dateFilter($date_to, $date_from, $tests);
+			Test::locationFilter($location, $tests);
+			Test::testStatusFilter($test_status_id, $tests);
 		}
 		return $tests->orderBy('time_created', 'DESC');
 

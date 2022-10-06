@@ -80,23 +80,23 @@ class TestController extends \BaseController {
 
 			//$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
 			if (str_is('*ARCHIVES*', strtoupper($location))) {
-				$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+				// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+				$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
 			}elseif (str_is('*RECEPTION*', strtoupper($location))) {
 				if(ES::ping()){
 					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId);
 				}else{
-					$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+					// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+					$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
 				}
 			}else{
 				if(ES::ping()){
 					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId,Session::get('location_id'));
 				}else{
-					$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
+					// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
+					$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId, Session::get('location_id'));
 				}
 			}
-			// dd($tests);exit;
-			// var_dump($tests);exit;
-			
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
 			}
