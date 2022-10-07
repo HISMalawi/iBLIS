@@ -689,12 +689,12 @@ class Test extends Eloquent
 
 	public static function getTestIDsOnSearchString($q){
 		$accession_number = Config::get('kblis.facility-code').$q;
-		$sql = "SELECT t.id FROM tests t WHERE visit_id IN (
+		$sql = "SELECT DISTINCT t.id FROM tests t WHERE visit_id IN (
 			SELECT DISTINCT v.id FROM visits v WHERE (v.patient_id IN (
 			SELECT id FROM patients p WHERE p.name LIKE '%$q%'
 			OR p.patient_number = '$q' OR p.external_patient_number = '$q'))
 			OR (v.ward_or_location LIKE  '%$q%')
-		) OR t.specimen_id IN (
+		) OR t.specimen_id = (
 			SELECT DISTINCT sp.id FROM specimens sp WHERE sp.accession_number='$accession_number'
 		)
 		OR t.test_type_id IN (
