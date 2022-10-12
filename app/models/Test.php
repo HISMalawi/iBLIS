@@ -674,7 +674,7 @@ class Test extends Eloquent
 		}
 
 		$tests = $tests->orderBy('time_created', 'DESC');
-
+		#var_dump($tests);exit;
 		return $tests;
 	}
 

@@ -111,10 +111,12 @@
 
                 ?>
                 @foreach($testIds as $key)
-
+                        
                         <?php
+                            
                             $testName = '';
                             $test = Test::find($key);
+                           
                         ?>
 
                         @if($test->panel_id > 0 && in_array($test->panel_id, $panels))
@@ -333,7 +335,7 @@
                                                 Not Done</span>
                                         
 					
-					@else
+					                    @else
                                             @if($test->isNotReceived())
                                                 @if(!$test->isPaid())
                                                     <span class='label'>

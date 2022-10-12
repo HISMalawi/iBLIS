@@ -35,6 +35,7 @@
 				</div>
 			</div>
 		</div> <!-- ./ panel-heading -->
+
 		<div class="panel-body">
 			<div class="container-fluid">
 				<div class="row">
@@ -53,9 +54,9 @@
 							<p class="view"><strong>Sending Facility</strong>
 								{{ $test->data->other->sending_lab }}</p>
 
-							<p class="view"><strong>Receiving Facility</strong>
+							<!-- <p class="view"><strong>Receiving Facility</strong>
 								{{ $test->data->other->receiving_lab }}</p>
-
+							-->
 							<p class="view"><strong>{{trans('messages.ward')}}</strong>
 								<?php if(!isset($test->data->other->order_location))
 										{
@@ -79,34 +80,65 @@
 							</div>
 							<div class="panel-body">
 								<div class="container-fluid">
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong>{{trans("messages.patient-number")}}</strong></p></div>
-										<div class="col-md-9">
-											{{$test->data->other->patient->id}}</div></div>
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong>{{ Lang::choice('messages.name',1) }}</strong></p></div>
-										<div class="col-md-9">
-											{{$test->data->other->patient->name}}
+									
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="col-md-5">
+												<p><strong>{{trans("messages.patient-number")}}</strong></p></div>
+											<div class="col-md-7">
+												{{$test->data->other->patient->id}}</div></div>
+										<div class="row">
+											<div class="col-md-5">
+												<p><strong>{{ Lang::choice('messages.name',1) }}</strong></p></div>
+											<div class="col-md-7">
+												{{$test->data->other->patient->name}}
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-5">
+												<p><strong> Date of Birth </strong></p></div>
+											<div class="col-md-7">
+												{{date_format(date_create($test->data->other->patient->dob), "d-M-Y")}}
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-5">
+												<p><strong>{{trans("messages.gender")}}</strong></p></div>
+											<div class="col-md-7">
+												{{$test->data->other->patient->gender}}
+											</div>
 										</div>
 									</div>
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong> Date of Birth </strong></p></div>
-										<div class="col-md-9">
-											{{date_format(date_create($test->data->other->patient->dob), "d-M-Y")}}
+
+
+									<div class="col-sm-6" style="border: 1px solid skyblue; padding:7px">
+										<div class="row">
+											<div class="col-md-5">
+												<p><strong>{{"Arv Number"}}</strong></p></div>
+											<div class="col-md-7">
+												{{$test->data->other->arv_number}}</div></div>
+										<div class="row">
+											<div class="col-md-5">
+												<p><strong>{{ "Art Start Date" }}</strong></p></div>
+											<div class="col-md-7">
+												{{date('d-m-Y', strtotime($test->data->other->art_start_date))}}
+											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong>{{trans("messages.gender")}}</strong></p></div>
-										<div class="col-md-9">
-											{{$test->data->other->patient->gender}}
+										<div class="row">
+											<div class="col-md-5">
+												<p><strong> Art Regimen </strong></p></div>
+											<div class="col-md-7">
+												{{ $test->data->other->art_regimen }}
+											</div>
 										</div>
+									
 									</div>
-								</div>
+
+								</div>							
+
 							</div> <!-- ./ panel-body -->
+
+						
 						</div> <!-- ./ panel -->
 						<div class="panel panel-info"> <!-- Specimen Details -->
 							<div class="panel-heading">

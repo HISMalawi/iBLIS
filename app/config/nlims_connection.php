@@ -4,7 +4,7 @@
 return array(
 
     'nlims_controller' => true,
-    'nlims_controller_ip' => 'http://localhost:3009',
+    'nlims_controller_ip' => 'http://localhost:3010',
     'nlims_default_password' => 'knock_knock',
     'nlims_default_username' => 'admin',
     'app_name' => 'iblis_1',

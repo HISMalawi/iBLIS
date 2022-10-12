@@ -238,6 +238,7 @@ class TestController extends \BaseController {
 		$specimen_type =  $specimen->specimen_type;
 
 		//Load Test Create View
+		//var_dump($specimen->specimen_type->id);exit;
 		return View::make('test.append')
 			->with('testtypes', $testTypes)
 			->with('visittype', $visit)

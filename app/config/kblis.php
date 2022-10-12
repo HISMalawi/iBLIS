@@ -107,7 +107,7 @@ return array(
         |--------------------------------------------------------------------------
         |
         */
-	'A4_printers' => array('Heamatology Printer','Blood Bank Printer','Biochemistry Printer'),
+	'A4_printers' => array('lims_office'),
 	'reception-server' => 'http://0.0.0.0:8002',
 
 	/*
