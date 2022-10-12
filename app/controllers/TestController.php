@@ -4,8 +4,6 @@ use Illuminate\Database\QueryException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Nlims\Service\NlimsService;
-use Illuminate\Support\Facades\Response;
-use Shift31\LaravelElasticsearch\Facades\Es;
 
 /**
  * Contains test resources  
@@ -79,23 +77,11 @@ class TestController extends \BaseController {
 		if($searchString||$testStatusId||$dateFrom||$dateTo){
 
 			//$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
-			if (str_is('*ARCHIVES*', strtoupper($location))) {
+			if (str_is('*RECEPTION*', strtoupper($location))) {
 				$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
-			}elseif (str_is('*RECEPTION*', strtoupper($location))) {
-				if(ES::ping()){
-					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId);
-				}else{
-					$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
-				}
 			}else{
-				if(ES::ping()){
-					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId,Session::get('location_id'));
-				}else{
-					$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
-				}
+				$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
 			}
-			// dd($tests);exit;
-			// var_dump($tests);exit;
 			
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -104,34 +90,14 @@ class TestController extends \BaseController {
 		else
 		{
 			// List all the active tests
-			if (str_is('*ARCHIVES*', strtoupper($location))) {
-				$tests = Test::orderBy('time_created', 'DESC');	
-			}else if (str_is('*RECEPTION*', strtoupper($location))) {
-				if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
-					$date_today= date_create()->format('Y-m-d');
-					$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
-					$tests = Test::orderBy('time_created', 'DESC')->where('time_created', '>', $date_limit);
-				}else{
-					$tests = Test::orderBy('time_created', 'DESC');
-				}		
+			if (str_is('*RECEPTION*', strtoupper($location))) {
+				$tests = Test::orderBy('time_created', 'DESC');
 			}else {
-				if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
-					$date_today= date_create()->format('Y-m-d');
-					$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
-					$tests = DB::table('tests')
-					->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
-					->select('tests.*')
-					->where('test_types.test_category_id', '=', Session::get("location_id"))
-					->where('tests.time_created', '>', $date_limit)
-					->orderBy('time_created', 'DESC');
-				}else {
-					$tests = DB::table('tests')
+				$tests = DB::table('tests')
 					->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
 					->select('tests.*')
 					->where('test_types.test_category_id', '=', Session::get("location_id"))
 					->orderBy('time_created', 'DESC');
-				}
-				
 			}
 		}
 		// Create Test Statuses array. Include a first entry for ALL
@@ -272,6 +238,7 @@ class TestController extends \BaseController {
 		$specimen_type =  $specimen->specimen_type;
 
 		//Load Test Create View
+		//var_dump($specimen->specimen_type->id);exit;
 		return View::make('test.append')
 			->with('testtypes', $testTypes)
 			->with('visittype', $visit)
@@ -345,6 +312,54 @@ P1
 		header("Stream", false);
 		echo $s;
 		exit;
+	}
+
+
+	public function createOrderRetrospective(){
+		$sampleType = Input::get('sample_type');
+		$patientSurname = Input::get('patient_surname');
+		$patientFirstname = Input::get('patient_firstname');
+		$patientDOB = Input::get('patient_dob');
+		$patientID =  Input::get('patientId');
+		$patientGender =  Input::get('patient_gender');
+		$patientNumber =  Input::get('patient_number');
+		$dateSampleDrawn = Input::get('sample_drawn');
+
+		$facilityName = Input::get('facility');
+		$district = Input::get('district');
+		
+		$sampleCollectorFirstName = Input::get('sample_collector_first_name');
+		$sampleCollectorLastName = Input::get('sample_collector_last_name');
+		$sampleCollectorPhone = Input::get('sample_collector_phone');
+		$sampleCollectorHTCProviderID = Input::get('sample_collector_provider_id');
+
+
+		$test = new Test;
+		$test->visit_id = $visit->id;
+		$test->test_type_id = $tType->test_type_id;
+		$test->specimen_id = $specimen->id;
+		$test->not_done_reasons = "";
+		$test->person_talked_to_for_not_done = "";
+		$test->test_status_id = Test::PENDING;
+		$test->created_by = Auth::user()->id;
+		$test->panel_id = $panel->id;
+		$test->requested_by = Input::get('physician');
+		if ($dateSampleCreated) {$test->time_created = $dateSampleCreated;
+			$test->test_status_id = Test::STARTED;
+			$test->time_started = $dateSampleCreated;
+			$test->time_completed = $dateSampleCreated;
+		}else{
+			$test->time_created =  date('Y-m-d H:i:s');
+		};
+		$test->save();
+
+
+		if($sampleType == "Viral Load"){
+
+		}else{
+
+		}
+		
 	}
 
 	public function printTrackingNumber($sid){
@@ -918,7 +933,7 @@ P1
 		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
         	$nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
 		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
-		
+	
 		$specimen = Specimen::find(Input::get('id'));
 		$specimen->specimen_status_id = Specimen::ACCEPTED;
 		$specimen->accepted_by = Auth::user()->id;
@@ -954,14 +969,11 @@ P1
 		$dat->updated_by_id = "" ;
 		$dat->save();
 
-		return $specimen->specimen_status_id;
-
-
-
+		return $specimen->specimen_status_id;		
 
 	}
 
-	/**specimen_status_id
+	/**
 	 * Display Change specimenType form fragment to be loaded in a modal via AJAX
 	 *
 	 * @param
