@@ -161,7 +161,7 @@
                         <div class="form-group col-lg-6">
                             <fieldset class="row mb-4">
                                 <label class="d-block mb-3" for="dob">Sample Type :</label>
-        
+                                
                                 <div class="form-check d-block">
                                     <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios9"
                                         value="DBS (using capillary tube)">
@@ -179,6 +179,34 @@
         
                             </fieldset>
                         </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-lg-6">
+                            <fieldset class="row mb-4">
+                                <label class="d-block mb-3">Current ART regimen :</label>
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios9"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios9">
+                                            0P
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios10"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios10">
+                                            5A
+                                        </label>
+                                    </div>
+                                </div>
+                                
+        
+                            </fieldset>
+                        </div>
+
                     </div>
                 </div>
                 <!--end: Step 3-->
