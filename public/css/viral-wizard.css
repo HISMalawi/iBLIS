@@ -1,0 +1,104 @@
+
+.wizard { opacity: 0; position: relative; width: 100%; overflow: hidden; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-transition: opacity .3s linear; transition: opacity .3s linear; -webkit-transition-delay: .2s; transition-delay: .2s; }
+
+.wizard > .steps { position: relative; display: block; width: 100%; margin-bottom: 1rem; }
+
+.wizard > .steps ul { position: relative; z-index: 1; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; }
+
+.wizard > .steps ul li { display: inline; margin-right: 6px; }
+
+.wizard > .steps ul li:last-child { margin-right: 0; }
+
+.wizard > .steps ul li > a { background: #fbfbfb; color: #1e2022; border-radius: 0.42rem; display: inline-block; padding: 1rem; }
+
+.wizard > .steps ul li > a .number { margin-right: 4px; font-size: 1.429rem; }
+
+.wizard > .steps ul li > a .number::after { content: "."; right: 0; }
+
+.wizard > .steps ul li > a:hover, .wizard > .steps ul li > a:active { background: #2250fc; color: #fff; }
+
+.wizard > .steps ul li.current a, .wizard > .steps ul li.current a:hover, .wizard > .steps ul li.current a:active { background: #2250fc; color: #fff; }
+
+.wizard > .steps ul li.error a, .wizard > .steps ul li.error a:hover, .wizard > .steps ul li.error a:active { background: #dc3545; color: #fff; }
+
+.wizard > .steps ul li.disabled a, .wizard > .steps ul li.disabled a:hover, .wizard > .steps ul li.disabled a:active { background: #fbfbfb; color: #1e2022; cursor: not-allowed; opacity: .7; }
+
+.wizard .content { min-height: 320px; padding-top: 30px; }
+
+.wizard .content > .body { width: 100%; height: auto; position: absolute; }
+
+.wizard .content > .body.current { position: relative; }
+
+.wizard .actions { border-top: 1px solid #e4e6ef; padding-top: 20px; }
+
+.wizard .actions > ul { display: inline-block; float: right; }
+
+.wizard .actions > ul > li { display: inline; float: left; margin-left: 1rem; }
+
+.wizard[data-style="1"] > .steps ul { -webkit-box-orient: horizontal; -webkit-box-direction: normal; -webkit-flex-direction: row; -ms-flex-direction: row; flex-direction: row; -webkit-box-pack: justify; -webkit-justify-content: space-between; -ms-flex-pack: justify; justify-content: space-between; margin: 0 5rem; }
+
+.wizard[data-style="1"] > .steps ul li::after { content: ""; position: absolute; top: 2.1rem; left: 0; right: 0; z-index: -1; border: 1px dashed #e4e6ef; }
+
+.wizard[data-style="1"] > .steps ul li > a { text-align: center; width: 4rem; height: 4rem; border-radius: 50%; padding: 1.2rem; }
+
+.wizard[data-style="1"] > .steps ul li > a .title { display: none; }
+
+.wizard[data-style="1"] > .steps ul li > a .number { margin-right: 0; }
+
+.wizard[data-style="1"] > .steps ul li > a .number::after { content: ""; }
+
+.wizard[data-style="2"] > .steps ul { padding-top: 26px; }
+
+.wizard[data-style="2"] > .steps ul li > a { width: 100px; height: 7px; border-radius: 3.5px; padding: 0; }
+
+.wizard[data-style="2"] > .steps ul li > a .title, .wizard[data-style="2"] > .steps ul li > a .number { display: none; position: absolute; top: 0; left: 0; color: #1e2022; font-weight: 600; }
+
+.wizard[data-style="2"] > .steps ul li:not(.current) a { background-color: #e9ecef; }
+
+.wizard[data-style="2"] > .steps ul li.current a .title { font-size: 20px; display: block; }
+
+.wizard[data-orientation="vertical"] { -webkit-box-orient: horizontal; -webkit-box-direction: normal; -webkit-flex-direction: row; -ms-flex-direction: row; flex-direction: row; -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; }
+
+.wizard[data-orientation="vertical"] > .steps { -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1; width: 30%; padding-right: 30px; }
+
+.wizard[data-orientation="vertical"] > .steps ul { display: block; }
+
+.wizard[data-orientation="vertical"] > .steps ul li { width: 100%; margin-right: 0; }
+
+.wizard[data-orientation="vertical"] > .steps ul li > a { width: 100%; margin-bottom: 10px; }
+
+.wizard[data-orientation="vertical"] .content { padding-top: 0; width: 70%; }
+
+.wizard[data-orientation="vertical"] .actions { width: 100%; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul { margin: 0; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li { position: relative; padding-bottom: 20px; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li::after { height: 100%; left: 1.8rem; top: 0; bottom: 0; border: 0; border-left: 1px dashed #e4e6ef; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li > a { padding: 0; text-align: left; width: 100%; height: auto; border-radius: none; background-color: transparent; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li > a .title { display: block; color: #1e2022; padding: 1.2rem 0; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li > a .number { text-align: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; padding: .6em; background: #fbfbfb; color: #1e2022; margin-right: 10px; float: left; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li > a .number::after { content: ""; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li:hover a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li:active a .number { background: #2250fc; color: #fff; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a:hover .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a:active .number { background: #2250fc; color: #fff; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.error a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.error a:hover .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.error a:active .number { background: #dc3545; color: #fff; }
+
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.disabled a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.disabled a:hover .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.disabled a:active .number { background: #fbfbfb; color: #1e2022; cursor: not-allowed; opacity: .7; }
+
+.wizard.clearfix { opacity: 1; }
+
+/* Accessibility */
+.wizard > .steps .current-info, .tabcontrol > .steps .current-info, .wizard > .content > .title, .tabcontrol > .content > .title { position: absolute; left: -999em; }
+
+@media (max-width: 575.98px) { .wizard > .steps ul { -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+  .wizard > .steps ul li { -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1; margin-bottom: 10px; } }
+
+.card .card-body .wizard { padding: 1rem; }

@@ -124,6 +124,12 @@ Route::group(array("before" => "auth"), function()
         "as" => "user.home",
         "uses" => "UserController@homeAction"
         ));
+
+    Route::get("/viralload", array(
+        "as"   => "viralload.index",
+        "uses" => "ViralLoadController@index"
+    ));
+    
     Route::group(array("before" => "checkPerms:manage_users"), function() {
         Route::resource('user', 'UserController');
         Route::get("/user/{id}/delete", array(
