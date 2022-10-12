@@ -8,6 +8,8 @@
         <div class="card-body">
             <!--Wizard-->
             <form id="wizard7" class="wizard needs-validation" data-style="1" novalidate>
+
+
                 <!--Step 1-->
                 <h3>Health Facility Information</h3>
                 <div class="wizard-content">
@@ -94,6 +96,8 @@
 
                 </div>
                 <!--end: Step 1-->
+
+
                 <!--Step 2-->
                 <h3>Test Type</h3>
                 <div class="wizard-content">
@@ -141,54 +145,45 @@
 
                 </div>
                 <!--end: Step 2-->
+
+
                 <!--Step 3-->
-                <h3>Mailing Address</h3>
+                <h3>Patient and Sample Details</h3>
                 <div class="wizard-content">
-                    <div class="h5 mb-4">Mailing Address</div>
+                    <h3><strong>Section 5:</strong> Patient and Sample Details</h3>
+                    <hr>
+                    
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="address">Address</label>
-                            <input type="text" class="form-control" name="address"
-                                placeholder="Enter your Street Address">
+                        <div class="form-group col-lg-6">
+                            <label for="art-init-date">ART Initiation Date :</label>
+                            <input type="date" class="form-control" name="art-init-date">
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="address2">Address 2</label>
-                            <input type="text" class="form-control" name="address2"
-                                placeholder="Enter your Apartment, studio, or floor">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="city">City</label>
-                            <input type="text" class="form-control" name="city" placeholder="Enter your City">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Zip Code:</label>
-                            <input type="number" class="form-control" name="zip" placeholder="Enter Zip Code">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="state">State</label>
-                            <select name="state" class="form-select">
-                                <option>Australia</option>
-                                <option>Option 1</option>
-                                <option>Option 2</option>
-                                <option>Option 3</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="country">Country</label>
-                            <select name="country" class="form-select">
-                                <option>United States</option>
-                                <option>Option 1</option>
-                                <option>Option 2</option>
-                                <option>Option 3</option>
-                            </select>
+                        <div class="form-group col-lg-6">
+                            <fieldset class="row mb-4">
+                                <label class="d-block mb-3" for="dob">Sample Type :</label>
+        
+                                <div class="form-check d-block">
+                                    <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios9"
+                                        value="DBS (using capillary tube)">
+                                    <label class="form-check-label" for="gridRadios9">
+                                        DBS (using capillary tube)
+                                    </label>
+                                </div>
+                                <div class="form-check d-block">
+                                    <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios10"
+                                        value="Plasma">
+                                    <label class="form-check-label" for="gridRadios10">
+                                        Plasma
+                                    </label>
+                                </div>
+        
+                            </fieldset>
                         </div>
                     </div>
                 </div>
                 <!--end: Step 3-->
+
+
                 <!--Step 4-->
                 <h3>Confirmation</h3>
                 <div class="wizard-content">
