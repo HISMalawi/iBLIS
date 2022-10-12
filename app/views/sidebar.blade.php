@@ -304,6 +304,12 @@
 								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.tab_label')}}</a>
 						</div>
 					</li>
+					<li>
+						<div><a href="{{ URL::route('reports.malariaMicroscopy')}}">
+							<span class="glyphicon glyphicon-tag"></span>
+							{{Lang::choice('messages.malaria-report', 2)}}</a>
+						</div>
+					</li>
 					
 				</ul>
 				<div class="sub-menu {{$active[5]}}">

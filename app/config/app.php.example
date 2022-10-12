@@ -39,7 +39,7 @@ return array(
 	|
 	*/
 
-	'timezone' => 'Africa/Nairobi',
+	'timezone' => 'Africa/Blantyre',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -107,6 +107,7 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Zizaco\Entrust\EntrustServiceProvider',
+		'Shift31\LaravelElasticsearch\ElasticsearchServiceProvider'
 
 	),
 

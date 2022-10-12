@@ -4,6 +4,8 @@ use Illuminate\Database\QueryException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Nlims\Service\NlimsService;
+use Illuminate\Support\Facades\Response;
+use Shift31\LaravelElasticsearch\Facades\Es;
 
 /**
  * Contains test resources  
@@ -77,11 +79,23 @@ class TestController extends \BaseController {
 		if($searchString||$testStatusId||$dateFrom||$dateTo){
 
 			//$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
-			if (str_is('*RECEPTION*', strtoupper($location))) {
+			if (str_is('*ARCHIVES*', strtoupper($location))) {
 				$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+			}elseif (str_is('*RECEPTION*', strtoupper($location))) {
+				if(ES::ping()){
+					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId);
+				}else{
+					$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+				}
 			}else{
-				$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
+				if(ES::ping()){
+					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId,Session::get('location_id'));
+				}else{
+					$tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
+				}
 			}
+			// dd($tests);exit;
+			// var_dump($tests);exit;
 			
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -90,14 +104,34 @@ class TestController extends \BaseController {
 		else
 		{
 			// List all the active tests
-			if (str_is('*RECEPTION*', strtoupper($location))) {
-				$tests = Test::orderBy('time_created', 'DESC');
+			if (str_is('*ARCHIVES*', strtoupper($location))) {
+				$tests = Test::orderBy('time_created', 'DESC');	
+			}else if (str_is('*RECEPTION*', strtoupper($location))) {
+				if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
+					$date_today= date_create()->format('Y-m-d');
+					$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
+					$tests = Test::orderBy('time_created', 'DESC')->where('time_created', '>', $date_limit);
+				}else{
+					$tests = Test::orderBy('time_created', 'DESC');
+				}		
 			}else {
-				$tests = DB::table('tests')
+				if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
+					$date_today= date_create()->format('Y-m-d');
+					$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
+					$tests = DB::table('tests')
+					->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+					->select('tests.*')
+					->where('test_types.test_category_id', '=', Session::get("location_id"))
+					->where('tests.time_created', '>', $date_limit)
+					->orderBy('time_created', 'DESC');
+				}else {
+					$tests = DB::table('tests')
 					->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
 					->select('tests.*')
 					->where('test_types.test_category_id', '=', Session::get("location_id"))
 					->orderBy('time_created', 'DESC');
+				}
+				
 			}
 		}
 		// Create Test Statuses array. Include a first entry for ALL
@@ -885,7 +919,7 @@ P1
 		$nlims_url =  \Config::get('nlims_connection.nlims_controller_ip');
         	$nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
 		$nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
-	
+		
 		$specimen = Specimen::find(Input::get('id'));
 		$specimen->specimen_status_id = Specimen::ACCEPTED;
 		$specimen->accepted_by = Auth::user()->id;
@@ -921,11 +955,14 @@ P1
 		$dat->updated_by_id = "" ;
 		$dat->save();
 
-		return $specimen->specimen_status_id;		
+		return $specimen->specimen_status_id;
+
+
+
 
 	}
 
-	/**
+	/**specimen_status_id
 	 * Display Change specimenType form fragment to be loaded in a modal via AJAX
 	 *
 	 * @param

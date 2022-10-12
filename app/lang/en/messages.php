@@ -510,6 +510,7 @@ return array(
     'General-count-header' => 'Total Culture & Sensitivity Tests:',
     'tab-label'  => 'Antibiotic Susceptibility Test (AST)',
     'csv' => 'Export',
+    'malaria-report' => 'Malaria Report',
 
     /* culture and sensitivity */
     'tab_label' => 'Culture & sensitivity Tests',
