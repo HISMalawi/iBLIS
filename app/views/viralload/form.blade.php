@@ -97,50 +97,48 @@
                 <!--Step 2-->
                 <h3>Test Type</h3>
                 <div class="wizard-content">
-                    <h3><strong>Section 3:</strong>Test Type (Selection of ONE test type is MANDATORY for sample to be processed)</h3>
+                    <h3><strong>Section 3: </strong>Reason for Test</h3>
                     <hr>
                     <div class="row">
                         <div class="form-group col-lg-6">
-                            <label for="district">District :</label>
-                            <input type="text" class="form-control" name="district">
-                        </div>
-                        <div class="form-group col-lg-6">
-                            <label for="facility">Facility Name :</label>
-                            <input type="text" class="form-control" name="facility">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" name="name" placeholder="Enter your Name">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="surname">Surname</label>
-                            <input type="text" class="form-control" name="surname" placeholder="Enter your Surname">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="gender">Gender</label>
-                            <select class="form-select" name="gender">
-                                <option>Select your gender</option>
-                                <option>Female</option>
-                                <option>Male</option>
-                                <option>Rather not say</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="gender">Date of Birth</label>
-                            <input class="form-control" type="date" name="dateofbirth">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="telephone">Telephone</label>
-                            <input class="form-control" type="tel" name="telephone"
-                                placeholder="Enter your Telephone number">
+                            <fieldset class="row mb-4">
+                                <label class="d-block mb-3" for="dob">Select reason :</label>
+
+                                <div class="form-check d-block">
+                                    <input class="form-check-input mx-3" type="radio" name="reason" id="gridRadios5"
+                                        value="Routine">
+                                    <label class="form-check-label" for="gridRadios5">
+                                        Routine
+                                    </label>
+                                </div>
+                                <div class="form-check d-block">
+                                    <input class="form-check-input mx-3" type="radio" name="reason" id="gridRadios6"
+                                        value="Targeted">
+                                    <label class="form-check-label" for="gridRadios6">
+                                        Targeted
+                                    </label>
+                                </div>
+
+                                <div class="form-check d-block">
+                                    <input class="form-check-input mx-3" type="radio" name="reason" id="gridRadios7"
+                                        value="Follow-up after high VL">
+                                    <label class="form-check-label" for="gridRadios7">
+                                        Follow-up after high VL
+                                    </label>
+                                </div>
+
+                                <div class="form-check d-block">
+                                    <input class="form-check-input mx-3" type="radio" name="reason" id="gridRadios8"
+                                        value="Repeat (reject / lost / missing)">
+                                    <label class="form-check-label" for="gridRadios8">
+                                        Repeat (reject / lost / missing)
+                                    </label>
+                                </div>
+
+                            </fieldset>
                         </div>
                     </div>
+
                 </div>
                 <!--end: Step 2-->
                 <!--Step 3-->
