@@ -18,11 +18,11 @@
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="district">District :</label>
-                            <input type="text" class="form-control" name="district">
+                            <input type="text" class="form-control" name="district" id="district">
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="facility">Facility Name :</label>
-                            <input type="text" class="form-control" name="facility">
+                            <input type="text" class="form-control" name="facility" id="facility">
                         </div>
                     </div>
                     <h3><strong>Section 2:</strong> Patient Information</h3>
@@ -30,21 +30,21 @@
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="surname">Patient Surname :</label>
-                            <input type="text" class="form-control" name="surname">
+                            <input type="text" class="form-control" name="surname" id="p_surname">
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="firstname">Patient First Name :</label>
-                            <input type="text" class="form-control" name="firstname">
+                            <input type="text" class="form-control" name="firstname" id="p_first_name">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="id">Patient ID :</label>
-                            <input type="text" class="form-control" name="id">
+                            <input type="text" class="form-control" name="id" id="p_id">
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="dob">Date of Birth :</label>
-                            <input type="date" class="form-control" name="dob">
+                            <input type="date" class="form-control" name="dob" id="p_dob">
                         </div>
                     </div>
                     <fieldset class="row mb-4">
@@ -152,7 +152,7 @@
                 <div class="wizard-content">
                     <h3><strong>Section 5:</strong> Patient and Sample Details</h3>
                     <hr>
-                    
+
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="art-init-date">ART Initiation Date :</label>
@@ -161,22 +161,22 @@
                         <div class="form-group col-lg-6">
                             <fieldset class="row mb-4">
                                 <label class="d-block mb-3" for="dob">Sample Type :</label>
-                                
+
                                 <div class="form-check d-block">
-                                    <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios9"
-                                        value="DBS (using capillary tube)">
+                                    <input class="form-check-input mx-3" type="radio" name="sample-type"
+                                        id="gridRadios9" value="DBS (using capillary tube)">
                                     <label class="form-check-label" for="gridRadios9">
                                         DBS (using capillary tube)
                                     </label>
                                 </div>
                                 <div class="form-check d-block">
-                                    <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios10"
-                                        value="Plasma">
+                                    <input class="form-check-input mx-3" type="radio" name="sample-type"
+                                        id="gridRadios10" value="Plasma">
                                     <label class="form-check-label" for="gridRadios10">
                                         Plasma
                                     </label>
                                 </div>
-        
+
                             </fieldset>
                         </div>
                     </div>
@@ -188,169 +188,169 @@
                                 <label class="d-block mb-3">Current ART regimen :</label>
                                 <div class="col cus-col">
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios11"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios11" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios11">
                                             0P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios12"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios12" value="Plasma">
                                         <label class="form-check-label" for="gridRadios12">
                                             2P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios13"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios13" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios13">
                                             4P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios14"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios14" value="Plasma">
                                         <label class="form-check-label" for="gridRadios14">
                                             9P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios15"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios15" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios15">
                                             11P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios16"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios16" value="Plasma">
                                         <label class="form-check-label" for="gridRadios16">
                                             14P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios17"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios17" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios17">
                                             15P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check purple">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios18"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios18" value="Plasma">
                                         <label class="form-check-label" for="gridRadios18">
                                             16P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios19"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios19" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios19">
                                             0A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios20"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios20" value="Plasma">
                                         <label class="form-check-label" for="gridRadios20">
                                             2A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios21"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios21" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios21">
                                             4A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios22"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios22" value="Plasma">
                                         <label class="form-check-label" for="gridRadios22">
                                             5A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios23"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios23" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios23">
                                             6A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios24"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios24" value="Plasma">
                                         <label class="form-check-label" for="gridRadios24">
                                             7A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios25"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios25" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios25">
                                             8A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios26"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios26" value="Plasma">
                                         <label class="form-check-label" for="gridRadios26">
                                             9A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios27"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios27" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios27">
                                             10P
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios28"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios28" value="Plasma">
                                         <label class="form-check-label" for="gridRadios28">
                                             11A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios29"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios29" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios29">
                                             12A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios30"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios30" value="Plasma">
                                         <label class="form-check-label" for="gridRadios30">
                                             13A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios31"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios31" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios31">
                                             14A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios32"
-                                            value="Plasma">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios32" value="Plasma">
                                         <label class="form-check-label" for="gridRadios32">
                                             15A
                                         </label>
                                     </div>
                                     <div class="form-check cus-check">
-                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios33"
-                                            value="DBS (using capillary tube)">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen"
+                                            id="gridRadios33" value="DBS (using capillary tube)">
                                         <label class="form-check-label" for="gridRadios33">
                                             NS
                                         </label>
                                     </div>
                                 </div>
-                                
-        
+
+
                             </fieldset>
                         </div>
 
@@ -384,7 +384,74 @@
                             <input type="text" class="form-control" name="htc-provider-id">
                         </div>
                     </div>
-                    <!--end: Step 4-->
+
+                </div>
+                <!--end: Step 4-->
+
+
+                <!--Step 5-->
+                <h3>Confirmation</h3>
+                <div class="wizard-content">
+                    <h3><strong>Confirmation</strong></h3>
+                    <hr>
+                    <h4><strong>Section 1:</strong> Health Facility Information</h4>
+                    <br>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="district">District :</label>
+                            <label id="confi-district-name">--</label>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="facility">Facility Name :</label>
+                            <label id="confi-facility-name">--</label>
+                        </div>
+                    </div>
+                    <h4><strong>Section 2:</strong> Patient Information</h4>
+                    <br>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="surname">Patient Surname :</label>
+                            <label id="confi-patient-surname">--</label>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="firstname">Patient First Name :</label>
+                            <label id="confi-patient-firstname">--</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="id">Patient ID :</label>
+                            <label id="confi-patient-id">--</label>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="dob">Date of Birth :</label>
+                            <label id="confi-patient-dob">--</label>
+                        </div>
+                    </div>
+                    {{-- <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="surname">Surname :</label>
+                            <input type="text" class="form-control" name="pcs-surname">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="firstname">First Name :</label>
+                            <input type="text" class="form-control" name="pcs-firstname">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="phone">Phone Number :</label>
+                            <input type="text" class="form-control" name="pcs-phone">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="id">HTC Provider ID :</label>
+                            <input type="text" class="form-control" name="htc-provider-id">
+                        </div>
+                    </div> --}}
+
+                </div>
+                <!--end: Step 5-->
+
             </form>
             <!--end:Wizard-->
         </div>
@@ -408,7 +475,30 @@
                 }
                 return wizard7.valid();
             },
-            onStepChanged: function(event, currentIndex, priorIndex) {},
+            onStepChanged: function(event, currentIndex, priorIndex) {
+                
+                if (currentIndex == 4) {
+
+                  var district =   $('#district').val();
+                  var facility =   $('#facility').val();
+
+                  var p_surname =   $('#p_surname').val();
+                  var p_first_name =   $('#p_first_name').val();
+
+                  var p_id =   $('#p_id').val();
+                  var p_dob =   $('#p_dob').val();
+
+                  $('#confi-district-name').text(district);
+                  $('#confi-facility-name').text(facility);
+
+                  $('#confi-patient-surname').text(p_surname);
+                  $('#confi-patient-firstname').text(p_first_name);
+
+                  $('#confi-patient-id').text(p_id);
+                  $('#confi-patient-dob').text(p_dob);
+
+                }
+            },
             onFinishing: function(event, currentIndex) {
                 return wizard7.valid();
             },
