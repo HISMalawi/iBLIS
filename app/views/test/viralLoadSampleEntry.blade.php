@@ -4,6 +4,12 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/jquery-steps/jquery.steps.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/plugins.css') }}" />
 
+    <div>
+        <ol class="breadcrumb">
+          <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
+          <li class="active">{{ Lang::choice('messages.test',2) }}</li>
+        </ol>
+    </div>
     <div class="card">
         <div class="card-body">
             <!--Wizard-->

@@ -1,18 +1,21 @@
 @section("sidebar")
 <?php
-	$active = array("","","","","","", "", "", "");
+	$active = array("","","","","","", "", "", "","");
 	$key = explode("?",str_replace("/", "?", Request::path()));
+	//var_dump($key);exit;
 	switch ($key[0]) {
 		case 'home': $active[0] = "active"; break;
 		case 'patient': $active[1] = "active"; break;
-		case 'test': $active[2] = "active"; break;
+		case 'test 3':	
+			case 'test 2': $active[2] = "active"; break;
+		case 'test': $active[3] = "active"; break;			
 		case 'labconfig': 
 		case 'instrument':
 		case 'reportconfig':
 		case 'facility':
 		case 'facilityward':
 		case 'visittype':
-		$active[3] = "active"; break;
+		$active[4] = "active"; break;
 		case 'testcategory': 
 		case 'testtype':
 		case 'testpanel':
@@ -21,7 +24,7 @@
 		case 'specimenrejection': 
 		case 'drug':
 		case 'organism':
-			$active[4] = "active"; break;
+			$active[5] = "active"; break;
 		case 'patientreport':
 		case 'departments_summary_report':
 		case 'departmentreport': 
@@ -38,23 +41,26 @@
 		case 'moh706':
 		case 'cd4':
 		case 'qualitycontrol':
-			$active[5] = "active"; break;
+			$active[6] = "active"; break;
 		case 'permission': 
 		case 'assign':
 		case 'user': 
 		case 'role': 
-			$active[6] = "active"; break;
+			$active[7] = "active"; break;
 		case 'issue': 
 		case 'receipt': 
 		case 'topup': 
 		case 'metric':
 		case 'supplier':
 		case 'commodity':
-			$active[7] = "active"; break;
+			$active[8] = "active"; break;
 		case 'controlresults':
 		case 'control':
 		case 'lot': $active[8] = "active"; break;
+		
 	}
+
+	//var_dump($active[0]);exit;
 ?>
 	<ul class="nav nav-sidebar">
 		<li>
@@ -71,18 +77,44 @@
 		</li>
 		<li>
 			<div class="main-menu {{$active[2]}}">
+				<a>
+					<span class="glyphicon glyphicon-filter"></span> {{"Sample Entry"}}</a>
+			</div>
+			<div class="sub-menu {{$active[2]}}">
+				<ul class="sub-menu-items">
+					<li>
+						<div>
+							<a href="{{ URL::route('test.viralLoadSampleEntry')}}">
+								<span class="glyphicon glyphicon-tag"></span>
+								{{"Viral Load Samples"}}</a>
+						</div>
+					</li>
+					<li>
+						<div>
+							<a href="{{ URL::route('test.viralLoadSampleEntry')}}">
+								<span class="glyphicon glyphicon-tag"></span>
+								{{"EID Samples"}}</a>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</li>
+		<li>
+			<div class="main-menu {{$active[3]}}">
 				<a href="{{ URL::route('test.index')}}">
 					<span class="glyphicon glyphicon-filter"></span> {{Lang::choice('messages.test', 2)}}</a>
 			</div>
 		</li>
 
+		
+
 		@if(Entrust::can('manage_lab_configurations'))
 		<li>
-			<div class="main-menu {{$active[3]}}">
+			<div class="main-menu {{$active[4]}}">
 				<a href="{{ URL::route('instrument.index') }}">
 					<span class="glyphicon glyphicon-wrench"></span> {{trans('messages.lab-configuration')}}</a>
 			</div>
-			<div class="sub-menu {{$active[3]}}">
+			<div class="sub-menu {{$active[4]}}">
 				<ul class="sub-menu-items">
 					<li>
 						<div>
@@ -135,11 +167,11 @@
 		@endif
 		@if(Entrust::can('manage_test_catalog'))
 		<li>
-			<div class="main-menu {{$active[4]}}">
+			<div class="main-menu {{$active[5]}}">
 				<a href="{{ URL::route("testcategory.index")}}">
 					<span class="glyphicon glyphicon-cog"></span> {{trans('messages.test-catalog')}}</a>
 			</div>
-			<div class="sub-menu {{$active[4]}}">
+			<div class="sub-menu {{$active[5]}}">
 				<ul class="sub-menu-items">
 					<li>
 						<div>
@@ -201,11 +233,11 @@
 		@endif
 		@if(Entrust::can('view_reports'))
 		<li>
-			<div class="main-menu {{$active[5]}}">
+			<div class="main-menu {{$active[6]}}">
 				<a href="{{ URL::route('reports.patient.index')}}">
 					<span class="glyphicon glyphicon-stats"></span> {{ Lang::choice('messages.report', 2)}}</a>
 			</div>
-			<div class="sub-menu {{$active[5]}}">
+			<div class="sub-menu {{$active[6]}}">
 				<div class="sub-menu-title">{{trans('messages.daily-reports')}}</div>
 				<ul class="sub-menu-items">
 					<li>
@@ -312,7 +344,7 @@
 					</li>
 					
 				</ul>
-				<div class="sub-menu {{$active[5]}}">
+				<div class="sub-menu {{$active[6]}}">
 						<div class="sub-menu-title">{{trans('messages.moh-report')}}</div>
 						<ul class="sub-menu-items">
 							<li>
@@ -371,11 +403,11 @@
 		</li>
 		@endif
 		<li>
-			<div class="main-menu {{$active[6]}}">
+			<div class="main-menu {{$active[7]}}">
 				<a href="{{ (Entrust::can('manage_users')) ? URL::route('user.index') : URL::to('user/'.Auth::user()->id.'/edit') }}">
 					<span class="glyphicon glyphicon-cog"></span> {{trans('messages.access-controls')}}</a>
 			</div>
-			<div class="sub-menu {{$active[6]}}">
+			<div class="sub-menu {{$active[7]}}">
 				<ul class="sub-menu-items">
 					<li>
 						<div>
@@ -408,11 +440,11 @@
 		</li>
 		@if(Entrust::can('manage_inventory') || Entrust::can('request_topup'))
 		<li>
-			<div class="main-menu {{$active[7]}}">
+			<div class="main-menu {{$active[8]}}">
 				<a href="#">
 					<span class="glyphicon glyphicon-download-alt"></span> {{ Lang::choice('messages.inventory', 2)}}</a>
 			</div>
-			<div class="sub-menu {{$active[7]}}">
+			<div class="sub-menu {{$active[8]}}">
 				<ul class="sub-menu-items">
 					@if(Entrust::can('request_topup'))
 					<li>
@@ -462,11 +494,11 @@
 		@endif
 		@if(Entrust::can('manage_qc'))
 		<li>
-			<div class="main-menu {{$active[8]}}">
+			<div class="main-menu {{$active[9]}}">
 				<a href="{{ URL::route('control.index') }}" title="{{Lang::choice('messages.quality-control', 2)}}">
 					<span class="glyphicon glyphicon-eye-open"></span> {{ Lang::choice('messages.quality-control', 2)}}</a>
 			</div>
-			<div class="sub-menu {{$active[8]}}">
+			<div class="sub-menu {{$active[9]}}">
 				<ul class="sub-menu-items">
 						<li>
 							<div>

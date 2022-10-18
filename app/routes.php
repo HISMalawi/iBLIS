@@ -130,6 +130,10 @@ Route::group(array("before" => "auth"), function()
         "uses" => "ViralLoadController@index"
     ));
     
+     Route::get("viralLoadSampleEntry",array(
+        "as" => "test.viralLoadSampleEntry",
+        "uses" => "TestController@viralLoadSampleEntry"
+    ));
     Route::group(array("before" => "checkPerms:manage_users"), function() {
         Route::resource('user', 'UserController');
         Route::get("/user/{id}/delete", array(
@@ -259,6 +263,8 @@ Route::group(array("before" => "auth"), function()
         "as"   => "reports.print_zebra_report",
         "uses" => "ReportController@printZebraReport"
     ));
+
+   
 
     Route::any("/test", array(
         "as"   => "test.index",
@@ -569,6 +575,8 @@ Route::group(array("before" => "auth"), function()
             "uses" => "ReportController@mohDiagnosticStats"
 
         ));
+
+    
         Route::any("/positivenegativecounts",array(
             "as" => "reports.aggregate.positiveNegativeCounts",
             "uses" => "ReportController@positiveNegativeCounts"

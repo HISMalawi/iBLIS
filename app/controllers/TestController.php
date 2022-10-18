@@ -314,6 +314,10 @@ P1
 		exit;
 	}
 
+	public function viralLoadSampleEntry(){
+		return View::make('test.viralLoadSampleEntry');
+	}
+
 
 	public function createOrderRetrospective(){
 		$sampleType = Input::get('sample_type');
@@ -385,6 +389,10 @@ P1
 
 		}
 		
+		$url = Session::get('SOURCE_URL');
+
+			return Redirect::to($url)->with('message', 'messages.success-creating-test')
+				->with('activeTest', $activeTest);
 	}
 
 	public function printTrackingNumber($sid){
