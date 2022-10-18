@@ -324,6 +324,9 @@ P1
 		$patientGender =  Input::get('patient_gender');
 		$patientNumber =  Input::get('patient_number');
 		$dateSampleDrawn = Input::get('sample_drawn');
+		$testType = Input::get('test_type');
+
+		$reasonForTest = Input::get('reason_for_test');
 
 		$facilityName = Input::get('facility');
 		$district = Input::get('district');
@@ -333,29 +336,51 @@ P1
 		$sampleCollectorPhone = Input::get('sample_collector_phone');
 		$sampleCollectorHTCProviderID = Input::get('sample_collector_provider_id');
 
+		$visit = new Visit;
+		$visit->patient_id = $patientID;
+		$visit->visit_type = VisitType::find('Out Patient')->name;
+		$visit->ward_or_location = "Other";
+		$visit->save();
+
+		$testId = TestType::find($testType)->id;
+
+		$specimen = new Specimen;
+		$specimen->specimen_type_id = $sampleType;
+		$specimen->accepted_by = Auth::user()->id;		
+		$specimen->accession_number = Specimen::assignAccessionNumber();
+	    $specimen->tracking_number = "X".Specimen::assignAccessionNumber();
+		$specimen->priority = $reasonForTest;
+		$specimen->draw_by_id = $sampleCollectorHTCProviderID;
+		$specimen->draw_by_name = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
+		$specimen->specimen_status_id = Specimen::COLLECTED;
+		$specimen->date_of_collection = $dateSampleDrawn;
+		$specimen->save();
 
 		$test = new Test;
 		$test->visit_id = $visit->id;
-		$test->test_type_id = $tType->test_type_id;
+		$test->test_type_id = $testId;
 		$test->specimen_id = $specimen->id;
 		$test->not_done_reasons = "";
 		$test->person_talked_to_for_not_done = "";
 		$test->test_status_id = Test::PENDING;
 		$test->created_by = Auth::user()->id;
 		$test->panel_id = $panel->id;
-		$test->requested_by = Input::get('physician');
-		if ($dateSampleCreated) {$test->time_created = $dateSampleCreated;
-			$test->test_status_id = Test::STARTED;
-			$test->time_started = $dateSampleCreated;
-			$test->time_completed = $dateSampleCreated;
-		}else{
-			$test->time_created =  date('Y-m-d H:i:s');
-		};
+		$test->requested_by = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
+		$test->time_created =  $dateSampleDrawn;
 		$test->save();
 
-
-		if($sampleType == "Viral Load"){
-
+		$lasecBarcode =  Input::get('lasec_barcode');
+		if($testType == "Viral Load"){
+			$artInitiationDate = Input::get('art_start_date');
+			$artCurrentRegimen = Input::get('current_regimen');	
+				
+			$patientOnArt = new PatientOnArt;
+			$patientOnArt->specimen_id = $specimen->id;
+			$patientOnArt->art_initiation_date = $artInitiationDate;
+			$patientOnArt->art_current_regimen = $artCurrentRegimen;
+			$patientOnArt->HTC_provider = $sampleCollectorHTCProviderID;
+			$patientOnArt->lasecBarcode = $lasecBarcode;
+			$patientOnArt.save();
 		}else{
 
 		}
