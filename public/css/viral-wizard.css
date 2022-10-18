@@ -33,9 +33,9 @@
 
 .wizard > .steps ul li > a .number::after { content: "."; right: 0; }
 
-.wizard > .steps ul li > a:hover, .wizard > .steps ul li > a:active { background: #2250fc; color: #fff; }
+.wizard > .steps ul li > a:hover, .wizard > .steps ul li > a:active { background: #0f73a1; color: #fff; }
 
-.wizard > .steps ul li.current a, .wizard > .steps ul li.current a:hover, .wizard > .steps ul li.current a:active { background: #2250fc; color: #fff; }
+.wizard > .steps ul li.current a, .wizard > .steps ul li.current a:hover, .wizard > .steps ul li.current a:active { background: #0f73a1; color: #fff; }
 
 .wizard > .steps ul li.error a, .wizard > .steps ul li.error a:hover, .wizard > .steps ul li.error a:active { background: #dc3545; color: #fff; }
 
@@ -103,9 +103,9 @@
 
 .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li > a .number::after { content: ""; }
 
-.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li:hover a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li:active a .number { background: #2250fc; color: #fff; }
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li:hover a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li:active a .number { background: #0f73a1; color: #fff; }
 
-.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a:hover .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a:active .number { background: #2250fc; color: #fff; }
+.wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a:hover .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.current a:active .number { background: #0f73a1; color: #fff; }
 
 .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.error a .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.error a:hover .number, .wizard[data-orientation="vertical"][data-style="1"] > .steps ul li.error a:active .number { background: #dc3545; color: #fff; }
 
