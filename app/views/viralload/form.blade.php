@@ -360,25 +360,29 @@
 
 
                 <!--Step 4-->
-                <h3>Confirmation</h3>
+                <h3>Details of Person Collecting Sample</h3>
                 <div class="wizard-content">
-                    <div class="h5 mb-4">Confimration</div>
-                    <p>Customize your experience by confirming your personalization settings and the data stored with your
-                        account. You can always learn more about these options, adjust them, and review your activity in
-                        your Account</p>
-                    <p>These settings apply wherever you are signed in to your new Account.</p>
-                    <div class="form-check mb-1 mt-5">
-                        <input type="checkbox" name="reminders" id="reminders" class="form-check-input">
-                        <label class="custom-control-label" for="reminders">Send me occasional
-                            reminders
-                            about these settings</a></label>
+                    <h3><strong>Section 6:</strong> Details of Person Collecting Sample</h3>
+                    <hr>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="surname">Surname :</label>
+                            <input type="text" class="form-control" name="pcs-surname">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="firstname">First Name :</label>
+                            <input type="text" class="form-control" name="pcs-firstname">
+                        </div>
                     </div>
-                    <div class="form-check">
-                        <input type="checkbox" name="terms_conditions" id="terms_conditions" class="form-check-input">
-                        <label class="custom-control-label" for="terms_conditions">By checking
-                            this
-                            option, you agree to acceot with the <a href="#">Terms and
-                                Conditions</a>.</label>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="phone">Phone Number :</label>
+                            <input type="text" class="form-control" name="pcs-phone">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="id">HTC Provider ID :</label>
+                            <input type="text" class="form-control" name="htc-provider-id">
+                        </div>
                     </div>
                     <!--end: Step 4-->
             </form>
