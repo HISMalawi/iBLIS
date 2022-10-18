@@ -1,3 +1,21 @@
+.cus-col {
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.cus-check{
+  background-color: #edf1a948;
+  height: 50px;
+  width: 75px;
+  border: 1px solid black; 
+  text-align: center;
+  vertical-align: center !important;
+  padding-top: 15px;
+}
+
+.purple {
+  background-color: rgba(147, 161, 226, 0.616) !important;
+}
 
 .wizard { opacity: 0; position: relative; width: 100%; overflow: hidden; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-transition: opacity .3s linear; transition: opacity .3s linear; -webkit-transition-delay: .2s; transition-delay: .2s; }
 

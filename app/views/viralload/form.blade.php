@@ -184,21 +184,168 @@
                     <div class="row">
 
                         <div class="form-group col-lg-6">
-                            <fieldset class="row mb-4">
+                            <fieldset class="row">
                                 <label class="d-block mb-3">Current ART regimen :</label>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios9"
+                                <div class="col cus-col">
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios11"
                                             value="DBS (using capillary tube)">
-                                        <label class="form-check-label" for="gridRadios9">
+                                        <label class="form-check-label" for="gridRadios11">
                                             0P
                                         </label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input mx-3" type="radio" name="sample-type" id="gridRadios10"
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios12"
                                             value="Plasma">
-                                        <label class="form-check-label" for="gridRadios10">
+                                        <label class="form-check-label" for="gridRadios12">
+                                            2P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios13"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios13">
+                                            4P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios14"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios14">
+                                            9P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios15"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios15">
+                                            11P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios16"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios16">
+                                            14P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios17"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios17">
+                                            15P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check purple">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios18"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios18">
+                                            16P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios19"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios19">
+                                            0A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios20"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios20">
+                                            2A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios21"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios21">
+                                            4A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios22"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios22">
                                             5A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios23"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios23">
+                                            6A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios24"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios24">
+                                            7A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios25"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios25">
+                                            8A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios26"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios26">
+                                            9A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios27"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios27">
+                                            10P
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios28"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios28">
+                                            11A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios29"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios29">
+                                            12A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios30"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios30">
+                                            13A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios31"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios31">
+                                            14A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios32"
+                                            value="Plasma">
+                                        <label class="form-check-label" for="gridRadios32">
+                                            15A
+                                        </label>
+                                    </div>
+                                    <div class="form-check cus-check">
+                                        <input class="form-check-input mx-3" type="radio" name="regimen" id="gridRadios33"
+                                            value="DBS (using capillary tube)">
+                                        <label class="form-check-label" for="gridRadios33">
+                                            NS
                                         </label>
                                     </div>
                                 </div>
