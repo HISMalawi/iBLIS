@@ -75,6 +75,8 @@
 					<span class="glyphicon glyphicon-download-alt"></span> {{ Lang::choice('messages.patient', 2)}}</a>
 			</div>
 		</li>
+
+		@if (TestCategory::find(Session::get('location_id'))->name == "DNA/PCR")
 		<li>
 			<div class="main-menu {{$active[2]}}">
 				<a>
@@ -99,6 +101,7 @@
 				</ul>
 			</div>
 		</li>
+		@endif
 		<li>
 			<div class="main-menu {{$active[3]}}">
 				<a href="{{ URL::route('test.index')}}">
