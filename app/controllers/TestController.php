@@ -379,7 +379,7 @@ P1
 			$patientOnArt->art_initiation_date = $artInitiationDate;
 			$patientOnArt->art_current_regimen = $artCurrentRegimen;
 			$patientOnArt->HTC_provider = $sampleCollectorHTCProviderID;
-			$patientOnArt->lasecBarcode = $lasecBarcode;
+			$patientOnArt->lasec_barcode = $lasecBarcode;
 			$patientOnArt.save();
 		}else{
 
