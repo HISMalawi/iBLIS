@@ -86,11 +86,11 @@
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="phone">Patient/Guardian Phone Number :</label>
-                            <input type="text" class="form-control" name="phone">
+                            <input type="text" class="form-control" name="phone" id="p_phone">
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="sample-date">Date Sample Drawn :</label>
-                            <input type="date" class="form-control" name="sample-date">
+                            <input type="date" class="form-control" name="sample-date" id="sample_date">
                         </div>
                     </div>
 
@@ -399,11 +399,11 @@
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="district">District :</label>
-                            <label id="confi-district-name">--</label>
+                            <p id="confi-district-name">--</p>
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="facility">Facility Name :</label>
-                            <label id="confi-facility-name">--</label>
+                            <p id="confi-facility-name">--</p>
                         </div>
                     </div>
                     <h4><strong>Section 2:</strong> Patient Information</h4>
@@ -411,43 +411,35 @@
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="surname">Patient Surname :</label>
-                            <label id="confi-patient-surname">--</label>
+                            <p id="confi-patient-surname">--</p>
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="firstname">Patient First Name :</label>
-                            <label id="confi-patient-firstname">--</label>
+                            <p id="confi-patient-firstname">--</p>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="id">Patient ID :</label>
-                            <label id="confi-patient-id">--</label>
+                            <p id="confi-patient-id">--</p>
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="dob">Date of Birth :</label>
-                            <label id="confi-patient-dob">--</label>
+                            <p id="confi-patient-dob">--</p>
                         </div>
                     </div>
-                    {{-- <div class="row">
-                        <div class="form-group col-lg-6">
-                            <label for="surname">Surname :</label>
-                            <input type="text" class="form-control" name="pcs-surname">
-                        </div>
-                        <div class="form-group col-lg-6">
-                            <label for="firstname">First Name :</label>
-                            <input type="text" class="form-control" name="pcs-firstname">
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="form-group col-lg-6">
-                            <label for="phone">Phone Number :</label>
-                            <input type="text" class="form-control" name="pcs-phone">
+                            <label for="id">Gender / Preg / Bf :</label>
+                            <p id="confi-patient-gender">--</p>
                         </div>
                         <div class="form-group col-lg-6">
-                            <label for="id">HTC Provider ID :</label>
-                            <input type="text" class="form-control" name="htc-provider-id">
+                            <label for="id">Patient/Guardian Phone Number :</label>
+                            <p id="confi-patient-phone">--</p>
                         </div>
-                    </div> --}}
+                    </div>
 
                 </div>
                 <!--end: Step 5-->
@@ -477,7 +469,7 @@
             },
             onStepChanged: function(event, currentIndex, priorIndex) {
                 
-                if (currentIndex == 4) {
+                if (currentIndex == 4 || currentIndex == 5 ) {
 
                   var district =   $('#district').val();
                   var facility =   $('#facility').val();
@@ -488,6 +480,11 @@
                   var p_id =   $('#p_id').val();
                   var p_dob =   $('#p_dob').val();
 
+                  var p_gender = $("input[name='gender']:checked").val();
+
+                  var p_phone =   $('#p_phone').val();
+                  var sample_date =   $('#sample_date').val();
+
                   $('#confi-district-name').text(district);
                   $('#confi-facility-name').text(facility);
 
@@ -496,6 +493,11 @@
 
                   $('#confi-patient-id').text(p_id);
                   $('#confi-patient-dob').text(p_dob);
+
+                  $('#confi-patient-gender').text(p_gender);
+
+                  $('#confi-patient-phone').text(p_phone);
+                  $('#confi-sample-date').text(sample_date);
 
                 }
             },
