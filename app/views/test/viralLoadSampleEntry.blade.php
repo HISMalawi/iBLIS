@@ -473,7 +473,16 @@
                 <!--Step 5-->
                 <h3>Confirmation</h3>
                 <div class="wizard-content">
-                    <h3><strong>Confirmation</strong></h3>
+                    
+                    <div class="row px-0 mx-0">
+                        <div class="col-lg-9">
+                            <h3><strong>Confirmation</strong></h3>
+                        </div>
+                        <div class="col-lg-3 barcont">
+                            <label class="bar-item" for="small-barcode">Scan Barcode : &nbsp; </label>
+                            <input  type="text" class="form-control bar-item" name="small-barcode" id="small_barcode">
+                        </div>
+                    </div>
                     <hr>
 
                     <div class="row">

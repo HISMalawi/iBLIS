@@ -13,6 +13,20 @@
   padding-top: 15px;
 }
 
+.barcont {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.bar-item{
+  flex: 1;
+}
+
+.barcont label {
+  text-align: right;
+}
+
 .purple {
   background-color: rgba(147, 161, 226, 0.616) !important;
 }
