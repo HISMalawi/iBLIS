@@ -685,6 +685,12 @@
             onFinishing: function(event, currentIndex) {
                 return wizard7.valid();
             },
+            onCanceled: function(event, currentIndex){
+                console.log("Cancel");
+            },
+            onReject: function(event, currentIndex){
+                console.log("Cancel");
+            },
             onFinished: function(event, currentIndex) {
                 console.log("done");
             }
