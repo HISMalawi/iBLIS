@@ -1,5 +1,5 @@
 <?php
-use Shift31\LaravelElasticsearch\Facades\Es;
+// use Shift31\LaravelElasticsearch\Facades\Es;
 class Test extends Eloquent
 {
 	/**

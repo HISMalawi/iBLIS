@@ -5,7 +5,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Nlims\Service\NlimsService;
 use Illuminate\Support\Facades\Response;
-use Shift31\LaravelElasticsearch\Facades\Es;
+// use Shift31\LaravelElasticsearch\Facades\Es;
 
 /**
  * Contains test resources  
@@ -83,19 +83,21 @@ class TestController extends \BaseController {
 				// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
 				$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
 			}elseif (str_is('*RECEPTION*', strtoupper($location))) {
-				if(ES::ping()){
-					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId);
-				}else{
-					// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
-					$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
-				}
+				$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
+				// if(ES::ping()){
+				// 	$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId);
+				// }else{
+				// 	// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo);
+				// 	$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
+				// }
 			}else{
-				if(ES::ping()){
-					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId,Session::get('location_id'));
-				}else{
-					// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
-					$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId, Session::get('location_id'));
-				}
+			$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId, Session::get('location_id'));
+				// if(ES::ping()){
+				// 	$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId,Session::get('location_id'));
+				// }else{
+				// 	// $tests = Test::search($searchString, $testStatusId, $dateFrom, $dateTo, Session::get('location_id'));
+				// 	$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId, Session::get('location_id'));
+				// }
 			}
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
