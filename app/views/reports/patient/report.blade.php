@@ -404,7 +404,7 @@
 
                                                                         @if($test->test_status->name == "verified")
                                                                                 By:
-                                                                                    {{ $test->verifiedBy->name }}
+                                                                                    {{ $test->verifiedBy["name"] }}
 
                                                                         @endif  
 
