@@ -1,0 +1,554 @@
+@extends('layout')
+@section('content')
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/viral-wizard.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/jquery-steps/jquery.steps.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/plugins.css') }}" />
+
+    <div>
+        <ol class="breadcrumb">
+          <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
+          <li class="active">{{ Lang::choice('messages.test',2) }}</li>
+        </ol>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <!--Wizard-->
+            <form id="wizard7" class="wizard needs-validation" data-style="1" novalidate>
+
+
+                <!--Step 1-->
+                <h3>Health Facility Information</h3>
+                <div class="wizard-content">
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 1:</strong> Health Facility Information
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="district">District : &nbsp; </label>
+                                            <input type="text" class="form-control" name="district" id="district">
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="facility">Facility Name : &nbsp;</label>
+                                            <input type="text" class="form-control" name="facility" id="facility">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 2:</strong> Patient Information
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="surname">Patient Surname : &nbsp; </label>
+                                            <input type="text" class="form-control" name="surname" id="p_surname">
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="firstname">Patient First Name : &nbsp; </label>
+                                            <input type="text" class="form-control" name="firstname" id="p_first_name">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="id">Patient ID : &nbsp; </label>
+                                            <input type="text" class="form-control" name="id" id="p_id">
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="dob">Date of Birth : &nbsp; </label>
+                                            <input type="date" class="form-control" name="dob" id="p_dob">
+                                        </div>
+                                    </div>
+
+                                    <fieldset class="row mb-4">
+                                        <label class="d-block mb-3" for="dob">Gender / Preg / Bf (tick one) :</label>
+
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                                id="gridRadios1" value="Male">
+                                            <label class="form-check-label" for="gridRadios1">
+                                                Male
+                                            </label>
+                                        </div>
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                                id="gridRadios2" value="Female Non-Preg./ Bf.">
+                                            <label class="form-check-label" for="gridRadios2">
+                                                Female Non-Preg./ Bf.
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                                id="gridRadios3" value="Female Pregnant">
+                                            <label class="form-check-label" for="gridRadios3">
+                                                Female Pregnant
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                                id="gridRadios4" value="Female Breastfeeding">
+                                            <label class="form-check-label" for="gridRadios4">
+                                                Female Breastfeeding
+                                            </label>
+                                        </div>
+
+                                    </fieldset>
+
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="phone">Patient/Guardian Phone Number : &nbsp; </label>
+                                            <input type="text" class="form-control" name="phone" id="p_phone">
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="sample-date">Date Sample Drawn : &nbsp; </label>
+                                            <input type="date" class="form-control" name="sample-date"
+                                                id="sample_date">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--end: Step 1-->
+
+
+                <!--Step 2-->
+                <h3>Test Type</h3>
+                <div class="wizard-content">
+
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 3:</strong> Reason for Test
+                                </div>
+                                <div class="card-body">
+                                    <fieldset class="row mb-4">
+                                        <label class="d-block mb-3" for="dob">Select reason :</label>
+
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                                id="gridRadios5" value="EID initial (routinely at age 6 weeks & 12 months)">
+                                            <label class="form-check-label" for="gridRadios5">
+                                                EID initial (routinely at age 6 weeks & 12 months)
+                                            </label>
+                                        </div>
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                                id="gridRadios6" value="Confirmatory after initial positive DNA-PCR">
+                                            <label class="form-check-label" for="gridRadios6">
+                                                Confirmatory after initial positive DNA-PCR
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                                id="gridRadios7" value="Confirmatory after initial positive rapid test">
+                                            <label class="form-check-label" for="gridRadios7">
+                                                Confirmatory after initial positive rapid test
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check d-block">
+                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                                id="gridRadios8" value="Tie-breaker (after inconclusive rapid tests)">
+                                            <label class="form-check-label" for="gridRadios8">
+                                                Tie-breaker (after inconclusive rapid tests)
+                                            </label>
+                                        </div>
+
+                                    </fieldset>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--end: Step 2-->
+
+
+                <!--Step 3-->
+                <h3>Specimen Information</h3>
+                <div class="wizard-content">
+
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 4:</strong> Specimen Information
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="eid-caregiver-surname">Mother/Caregiver Surname : &nbsp; </label>
+                                            <input type="text" class="form-control" name="eid-caregiver-surname"
+                                                id="eid-caregiver-surname">
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="eid-caregiver-firstname">Mother/Caregiver First Name : &nbsp; </label>
+                                            <input type="text" class="form-control" name="eid-caregiver-firstname"
+                                                id="eid-caregiver-firstname">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="unique-child-id">Unique Child ID (copy from Exposed Child Under 24 Months card) : &nbsp; </label>
+                                            <input type="text" class="form-control" name="unique-child-id"
+                                                id="unique-child-id">
+                                        </div>
+
+                                    </div>
+                           
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--end: Step 3-->
+
+
+                <!--Step 4-->
+                <h3>Details of Person Collecting Sample</h3>
+                <div class="wizard-content">
+
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 6:</strong> Details of Person Collecting Sample
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="surname">Surname : &nbsp; </label>
+                                            <input type="text" class="form-control" name="pcs-surname"
+                                                id="pcs-surname">
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="firstname">First Name : &nbsp; </label>
+                                            <input type="text" class="form-control" name="pcs-firstname"
+                                                id="pcs-firstname">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="phone">Phone Number : &nbsp; </label>
+                                            <input type="text" class="form-control" name="pcs-phone" id="pcs-phone">
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="id">HTC Provider ID : &nbsp; </label>
+                                            <input type="text" class="form-control" name="htc-provider-id"
+                                                id="htc-provider-id">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--end: Step 4-->
+
+
+                <!--Step 5-->
+                <h3>Confirmation</h3>
+                <div class="wizard-content">
+                    
+                    <div class="row px-0 mx-0">
+                        <div class="col-lg-9">
+                            <h3><strong>Confirmation</strong></h3>
+                        </div>
+                        <div class="col-lg-3 barcont">
+                            <label class="bar-item" for="small-barcode">Scan Barcode : &nbsp; </label>
+                            <input  type="text" class="form-control bar-item" name="small-barcode" id="small_barcode">
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row">
+                        <div class="form-group col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 1:</strong> Health Facility Information
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><label for="district">District : &nbsp; </label>
+                                        <p id="confi-district-name">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="facility">Facility Name : &nbsp; </label>
+                                        <p id="confi-facility-name">--</p>
+                                    </li>
+
+                                </ul>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 4:</strong> Specimen Information
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><label for="id">Mother/Caregiver Surname : &nbsp;
+                                        </label>
+                                        <p id="confi-eid-caregiver-surname">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="id">Mother/Caregiver First Name: &nbsp; </label>
+                                        <p id="confi-eid-caregiver-firstname">--</p>
+                                    </li>
+
+                                    <li class="list-group-item"><label for="id">Unique Child ID : &nbsp;
+                                        </label>
+                                        <p id="confi-unique-child-id">--</p>
+                                    </li>
+                                    <li class="list-group-item">
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-lg-4">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 2:</strong> Patient Information
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><label for="surname">Patient Surname : &nbsp; </label>
+                                        <p id="confi-patient-surname">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="firstname">Patient First Name : &nbsp;
+                                        </label>
+                                        <p id="confi-patient-firstname">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="id">Patient ID : &nbsp; </label>
+                                        <p id="confi-patient-id">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="dob">Date of Birth : &nbsp; </label>
+                                        <p id="confi-patient-dob">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="id">Gender / Preg / Bf : &nbsp; </label>
+                                        <p id="confi-patient-gender">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="id">Date Sample Drawn : &nbsp; </label>
+                                        <p id="confi-sample-date">--</p>
+                                    </li>
+                                    <li class="list-group-item"><label for="id">Patient/Guardian Phone Number :
+                                            &nbsp; </label>
+                                        <p id="confi-patient-phone">--</p>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 3:</strong> Reason for Test
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><label for="id">Reason : &nbsp; </label>
+                                        <p id="confi-test-reason">--</p>
+                                    </li>
+
+                                </ul>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <strong>Section 6:</strong> Details of Person Collecting Sample
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><label for="surname">Surname : &nbsp; </label>
+                                        <p id="confi-pcs-surname">--</p>
+                                    </li>
+
+                                    <li class="list-group-item"><label for="firstname">First Name : &nbsp; </label>
+                                        <p id="confi-pcs-firstname">--</p>
+                                    </li>
+
+                                    <li class="list-group-item"><label for="phone">Phone Number : &nbsp; </label>
+                                        <p id="confi-pcs-phone">--</p>
+                                    </li>
+
+                                    <li class="list-group-item"><label for="id">HTC Provider ID : &nbsp; </label>
+                                        <p id="confi-htc-provider-id">--</p>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end: Step 5-->
+
+            </form>
+            <!--end:Wizard-->
+        </div>
+    </div>
+
+    <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>
+    <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
+    <script>
+        //Advanced - with validation
+        var wizard7 = $('#wizard7');
+        wizard7.steps({
+            headerTag: "h3",
+            bodyTag: '.wizard-content',
+            autoFocus: true,
+            enableAllSteps: true,
+            titleTemplate: '<span class="number">#index#</span><span class="title">#title#</span>',
+            onStepChanging: function(event, currentIndex, newIndex) {
+                // Allways allow previous action even if the current form is not valid!
+                if (currentIndex > newIndex) {
+                    return true;
+                }
+                return wizard7.valid();
+            },
+            onStepChanged: function(event, currentIndex, priorIndex) {
+
+                if (currentIndex == 4 || currentIndex == 5) {
+
+                    var district = $('#district').val();
+                    var facility = $('#facility').val();
+
+                    var p_surname = $('#p_surname').val();
+                    var p_first_name = $('#p_first_name').val();
+
+                    var p_id = $('#p_id').val();
+                    var p_dob = $('#p_dob').val();
+
+                    var p_gender = $("input[name='gender']:checked").val();
+
+                    var p_phone = $('#p_phone').val();
+                    var sample_date = $('#sample_date').val();
+
+                    var test_reason = $("input[name='reason']:checked").val();
+
+                    
+                    var eid_caregiver_firstname = $("#eid-caregiver-firstname").val();
+                    var eid_caregiver_surname = $("#eid-caregiver-surname").val();
+                    var unique_child_id = $("#unique-child-id").val();
+
+                    var pcs_surname = $('#pcs-surname').val();
+                    var pcs_firstname = $('#pcs-firstname').val();
+                    var pcs_phone = $('#pcs-phone').val();
+                    var htc_provider_id = $('#htc-provider-id').val();
+
+                    $('#confi-district-name').text(district);
+                    $('#confi-facility-name').text(facility);
+
+                    $('#confi-patient-surname').text(p_surname);
+                    $('#confi-patient-firstname').text(p_first_name);
+
+                    $('#confi-patient-id').text(p_id);
+                    $('#confi-patient-dob').text(p_dob);
+
+                    $('#confi-patient-gender').text(p_gender);
+
+                    $('#confi-patient-phone').text(p_phone);
+                    $('#confi-sample-date').text(sample_date);
+
+                    $('#confi-test-reason').text(test_reason);
+
+                    $('#confi-eid-caregiver-surname').text(eid_caregiver_surname);
+                    $('#confi-eid-caregiver-firstname').text(eid_caregiver_firstname);
+                    $('#confi-unique-child-id').text(unique_child_id);
+
+                    $('#confi-pcs-surname').text(pcs_surname);
+                    $('#confi-pcs-firstname').text(pcs_firstname);
+                    $('#confi-pcs-phone').text(pcs_phone);
+                    $('#confi-htc-provider-id').text(htc_provider_id);
+
+                }
+            },
+            onFinishing: function(event, currentIndex) {
+                return wizard7.valid();
+            },
+            onCanceled: function(event, currentIndex){
+                console.log("Cancel");
+            },
+            onReject: function(event, currentIndex){
+                console.log("Cancel");
+            },
+            onFinished: function(event, currentIndex) {
+                console.log("done");
+            }
+        });
+        //Validation
+        // wizard7.validate({
+        //     errorClass: 'is-invalid',
+        //     validClass: 'is-valid',
+        //     errorElement: "div",
+        //     rules: {
+        //         // Step 1 - Account information
+        //         username: {
+        //             required: true
+        //         },
+        //         email: {
+        //             required: true,
+        //             email: true,
+        //             minlength: 8
+        //         },
+        //         password: {
+        //             required: true,
+        //             minlength: 5,
+        //             maxlength: 12
+        //         },
+        //         password2: {
+        //             required: true,
+        //             minlength: 5,
+        //             maxlength: 12
+        //         },
+        //         // Step 4 - Confirmation
+        //         reminders: {
+        //             required: true
+        //         },
+        //         terms_conditions: {
+        //             required: true
+        //         },
+        //     },
+        //     errorPlacement: function(error, element) {
+        //         $(element).parents(".form-group").append(error);
+        //     }
+        // });
+        $('.wizard').find(".actions ul > li > a").addClass("btn bg-primary");
+    </script>
+@stop
