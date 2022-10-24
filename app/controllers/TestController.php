@@ -320,17 +320,19 @@ P1
 
 
 	public function createOrderRetrospective(){
-		$sampleType = Input::get('sample_type');
-		$patientSurname = Input::get('patient_surname');
-		$patientFirstname = Input::get('patient_firstname');
-		$patientDOB = Input::get('patient_dob');
-		$patientID =  Input::get('patientId');
-		$patientGender =  Input::get('patient_gender');
-		$patientNumber =  Input::get('patient_number');
-		$dateSampleDrawn = Input::get('sample_drawn');
+
+		$sampleType = Input::get('sample-type');
+		$patientSurname = Input::get('surname');
+		$patientFirstname = Input::get('firstname');
+		$patientDOB = Input::get('dob');
+		$patientID =  Input::get('id');
+		$patientGender =  Input::get('gender');
+		$patientNumber =  Input::get('phone');
+		$dateSampleDrawn = Input::get('sample-date');
 		$testType = Input::get('test_type');
 
-		$reasonForTest = Input::get('reason_for_test');
+		$patientID = 255226;
+		$reasonForTest = Input::get('reason');
 
 		$facilityName = Input::get('facility');
 		$district = Input::get('district');
@@ -339,23 +341,22 @@ P1
 		$sampleCollectorLastName = Input::get('sample_collector_last_name');
 		$sampleCollectorPhone = Input::get('sample_collector_phone');
 		$sampleCollectorHTCProviderID = Input::get('sample_collector_provider_id');
-
+	
 		$visit = new Visit;
 		$visit->patient_id = $patientID;
-		$visit->visit_type = VisitType::find('Out Patient')->name;
+		$visit->visit_type = "Out Patient";
 		$visit->ward_or_location = "Other";
 		$visit->save();
-
-		$testId = TestType::find($testType)->id;
-
+		$testType = "Viral Load";
+		$testId = TestType::where('name', '=', $testType)->first()['id'];
 		$specimen = new Specimen;
-		$specimen->specimen_type_id = $sampleType;
+		$specimen->specimen_type_id = SpecimenType::where('name', '=', $sampleType)->first()['id'];
 		$specimen->accepted_by = Auth::user()->id;		
 		$specimen->accession_number = Specimen::assignAccessionNumber();
 	    $specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 		$specimen->priority = $reasonForTest;
-		$specimen->draw_by_id = $sampleCollectorHTCProviderID;
-		$specimen->draw_by_name = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
+		$specimen->drawn_by_id = $sampleCollectorHTCProviderID;
+		$specimen->drawn_by_name = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
 		$specimen->specimen_status_id = Specimen::COLLECTED;
 		$specimen->date_of_collection = $dateSampleDrawn;
 		$specimen->save();
@@ -368,23 +369,22 @@ P1
 		$test->person_talked_to_for_not_done = "";
 		$test->test_status_id = Test::PENDING;
 		$test->created_by = Auth::user()->id;
-		$test->panel_id = $panel->id;
+		$test->panel_id = 1;
 		$test->requested_by = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
 		$test->time_created =  $dateSampleDrawn;
 		$test->save();
-
+	
 		$lasecBarcode =  Input::get('lasec_barcode');
 		if($testType == "Viral Load"){
-			$artInitiationDate = Input::get('art_start_date');
-			$artCurrentRegimen = Input::get('current_regimen');	
-				
-			$patientOnArt = new PatientOnArt;
+			$artInitiationDate = Input::get('art-init-date');
+			$artCurrentRegimen = Input::get('regimen');					
+			$patientOnArt = new Art;
 			$patientOnArt->specimen_id = $specimen->id;
 			$patientOnArt->art_initiation_date = $artInitiationDate;
 			$patientOnArt->art_current_regimen = $artCurrentRegimen;
 			$patientOnArt->HTC_provider = $sampleCollectorHTCProviderID;
 			$patientOnArt->lasec_barcode = $lasecBarcode;
-			$patientOnArt.save();
+			$patientOnArt->save();
 		}else{
 
 		}
