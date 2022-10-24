@@ -7,14 +7,19 @@
     <div>
         <ol class="breadcrumb">
           <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
-          <li class="active">{{ Lang::choice('messages.test',2) }}</li>
+          <li class="active">{{ "Sample Entry" }}</li>
+          <li class="active">{{ "Viral Load" }}</li>
         </ol>
     </div>
     <div class="card">
         <div class="card-body">
-            <!--Wizard-->
-            <form id="wizard7" class="wizard needs-validation" data-style="1" novalidate>
 
+        @if (Session::has('message'))
+            <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
+        @endif
+            <!--Wizard-->
+            <!--  form id="wizard7" class="wizard needs-validation" data-style="1" novalidate action="test.saveNewTest" method="post" -->
+            {{ Form::open(array('route' => 'test.createOrderRetrospective',  'method' => 'POST', 'id' => 'wizard7', 'class' => "wizard needs-validation", 'data-style'=>"1",'novalidate')) }}
 
                 <!--Step 1-->
                 <h3>Health Facility Information</h3>
@@ -112,7 +117,7 @@
                                         </div>
 
                                     </fieldset>
-
+                                    <?php //var_dump(Input::get('printTracking'));exit; ?>
                                     <div class="row">
 
                                         <div class="form-group col-lg-6">
@@ -130,6 +135,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div>    
+                        @if(Input::get('printTracking') != null)
+						<div class="">
+							<a class="btn btn-sm btn-success"
+							   href="{{URL::route('test.print_tracking_number', array(Input::get('printTracking')))}}"
+							   data-toggle="modal" >
+								<span class="glyphicon glyphicon-print"></span>
+								Print Tracking Number
+							</a>
+						</div>
+                        @endif
+                    </div> 
                     </div>
 
                 </div>
@@ -595,13 +612,17 @@
                                     </li>
 
                                 </ul>
+                                <input type="text" hidden  id="action_checker" name="checker">
                             </div>
                         </div>
-                    </div>
+                       
+                    </div>  
+                                   
                 </div>
                 <!--end: Step 5-->
-
-            </form>
+            
+			{{ Form::close() }}
+            <!-- /form -->
             <!--end:Wizard-->
         </div>
     </div>
@@ -674,7 +695,6 @@
                     $('#confi-sample-type').text(sample_type);
 
                     $('#confi-curr-art-regimen').text(current_art_regimen);
-
                     $('#confi-pcs-surname').text(pcs_surname);
                     $('#confi-pcs-firstname').text(pcs_firstname);
                     $('#confi-pcs-phone').text(pcs_phone);
@@ -683,16 +703,19 @@
                 }
             },
             onFinishing: function(event, currentIndex) {
-                return wizard7.valid();
+                return wizard7.valid();            
             },
             onCanceled: function(event, currentIndex){
                 console.log("Cancel");
             },
             onReject: function(event, currentIndex){
-                console.log("Cancel");
+                console.log("Cancel1");
+                document.getElementById('action_checker').value = "rejected";
             },
             onFinished: function(event, currentIndex) {
                 console.log("done");
+                document.getElementById('action_checker').value = "accepted";
+                $('#wizard7').submit();                
             }
         });
         //Validation

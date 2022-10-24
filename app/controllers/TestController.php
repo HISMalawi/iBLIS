@@ -324,7 +324,24 @@ P1
 
 
 	public function createOrderRetrospective(){
+		$actionLevel = Input::get('checker');
+		if($actionLevel=="accepted"){
+			$this->acceptSpecimenRetrospective($specimen->id);
+			Session::set('message','messages.success-creating-test');
+			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
+			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
 
+		}elseif ($actionLevel=="rejected"){
+
+			return Redirect::route('test.reject', array($test->specimen_id));
+			Session::set('message','messages.success-creating-test');
+			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
+			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
+
+		}
+
+
+		$actionLevel = Input::get('checker');
 		$sampleType = Input::get('sample-type');
 		$patientSurname = Input::get('surname');
 		$patientFirstname = Input::get('firstname');
@@ -409,10 +426,24 @@ P1
 			$patientOnArt->save();
 		}else{
 
-		}		
-		$url = Session::get('SOURCE_URL');
-		$url = "/viralLoadSampleEntry";
-			return Redirect::to($url)->with('message', 'messages.success-creating-test');
+		}	
+				
+		if($actionLevel=="accepted"){
+			$this->acceptSpecimenRetrospective($specimen->id);
+			Session::set('message','messages.success-creating-test');
+			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
+			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
+
+		}elseif ($actionLevel=="rejected"){
+
+			return Redirect::route('test.reject', array($test->specimen_id));
+			Session::set('message','messages.success-creating-test');
+			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
+			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
+
+		}
+
+		
 	}
 
 	public function printTrackingNumber($sid){
@@ -964,6 +995,36 @@ P1
 
 
 	}
+
+
+	public function acceptSpecimenRetrospective($specimenID)
+	{   
+		$specimen = Specimen::find($specimenID);
+		$specimen->specimen_status_id = Specimen::ACCEPTED;
+		$specimen->accepted_by = Auth::user()->id;
+		$specimen->time_accepted = date('Y-m-d H:i:s');
+		$specimen->save();
+
+		$user = Auth::user();
+		$id = $user->id;
+		$tempName = explode(" ", $user->name);
+		$firstName = $tempName;
+		$secondName = $tempName;
+
+		$dat = new UnsyncOrder;
+		$dat->specimen_id = Input::get('id');
+		$dat->data_not_synced = "specimen-accepted";
+		$dat->data_level = "specimen";
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = "" ;
+		$dat->save();
+
+		return $specimen->specimen_status_id;		
+
+	}
+
+
 
 	/**
 	 * Accept a Test's Specimen
