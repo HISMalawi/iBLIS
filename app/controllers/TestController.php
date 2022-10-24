@@ -329,9 +329,27 @@ P1
 		$patientGender =  Input::get('gender');
 		$patientNumber =  Input::get('phone');
 		$dateSampleDrawn = Input::get('sample-date');
-		$testType = "Viral Load";
+		$testType = "Viral Load";		
+		$patRes = Patient::where('patient_number','=',$patientID)->first()['id'];
 
-		$patientID = 255229;
+		if(!isset($patRes)){
+			$newPat = new Patient;
+			$newPat->patient_number = $patientID;
+			$newPat->name = $patientFirstname ." ". $patientSurname;
+			$newPat->dob = $patientDOB;
+			$newPat->dob_estimated = 0;
+			$newPat->gender = $patientGender;
+			$newPat->email = "";
+			$newPat->address = "";
+			$newPat->phone_number = $patientNumber;
+			$newPat->external_patient_number = "";
+			$newPat->created_by = Auth::user()->id;
+			$newPat->first_name_code = "";
+			$newPat->last_name_code = "";
+			$newPat->save();
+			$patRes = $newPat->id;
+		}
+
 		$reasonForTest = Input::get('reason');
 
 		$facilityName = Input::get('facility');
@@ -343,7 +361,7 @@ P1
 		$sampleCollectorHTCProviderID = Input::get('htc-provider-id');
 	
 		$visit = new Visit;
-		$visit->patient_id = $patientID;
+		$visit->patient_id = $patRes;
 		$visit->visit_type = "Out Patient";
 		$visit->ward_or_location = "Other";
 		$visit->save();
