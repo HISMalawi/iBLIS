@@ -405,10 +405,9 @@ P1
 			$patientOnArt->save();
 		}else{
 
-		}
-		
+		}		
 		$url = Session::get('SOURCE_URL');
-
+		$url = "/viralLoadSampleEntry";
 			return Redirect::to($url)->with('message', 'messages.success-creating-test');
 	}
 
