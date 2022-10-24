@@ -139,6 +139,11 @@ Route::group(array("before" => "auth"), function()
         "as" => "test.createOrderRetrospective",
         "uses" => "TestController@createOrderRetrospective"
     ));
+    
+    Route::get("eidSampleEntry",array(
+        "as" => "test.eidSampleEntry",
+        "uses" => "TestController@eidSampleEntry"
+    ));
 
     Route::group(array("before" => "checkPerms:manage_users"), function() {
         Route::resource('user', 'UserController');

@@ -318,6 +318,10 @@ P1
 		return View::make('test.viralLoadSampleEntry');
 	}
 
+	public function eidSampleEntry(){
+		return View::make('test.eidSampleEntry');
+	}
+
 
 	public function createOrderRetrospective(){
 

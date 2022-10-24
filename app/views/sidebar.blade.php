@@ -93,7 +93,7 @@
 					</li>
 					<li>
 						<div>
-							<a href="{{ URL::route('test.viralLoadSampleEntry')}}">
+							<a href="{{ URL::route('test.eidSampleEntry')}}">
 								<span class="glyphicon glyphicon-tag"></span>
 								{{"EID Samples"}}</a>
 						</div>
