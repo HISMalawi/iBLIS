@@ -134,6 +134,12 @@ Route::group(array("before" => "auth"), function()
         "as" => "test.viralLoadSampleEntry",
         "uses" => "TestController@viralLoadSampleEntry"
     ));
+    
+    Route::post("createOrderRetrospective",array(
+        "as" => "test.createOrderRetrospective",
+        "uses" => "TestController@createOrderRetrospective"
+    ));
+
     Route::group(array("before" => "checkPerms:manage_users"), function() {
         Route::resource('user', 'UserController');
         Route::get("/user/{id}/delete", array(

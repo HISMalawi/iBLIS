@@ -1,6 +1,6 @@
 <?php
 
-class PaitentOnEid extends Eloquent
+class Eid extends Eloquent
 {
 	/**
 	 * The database table used by the model.
@@ -8,9 +8,6 @@ class PaitentOnEid extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'patients_on_eid';
-
 	public $timestamps = true;
-
-	
 
 }

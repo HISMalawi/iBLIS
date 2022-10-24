@@ -80,7 +80,7 @@
 		<li>
 			<div class="main-menu {{$active[2]}}">
 				<a>
-					<span class="glyphicon glyphicon-filter"></span> {{"Sample Entry"}}</a>
+					<span class="glyphicon glyphicon-edit"></span> {{"Sample Entry"}}</a>
 			</div>
 			<div class="sub-menu {{$active[2]}}">
 				<ul class="sub-menu-items">
