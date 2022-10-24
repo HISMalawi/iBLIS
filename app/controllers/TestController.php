@@ -329,9 +329,9 @@ P1
 		$patientGender =  Input::get('gender');
 		$patientNumber =  Input::get('phone');
 		$dateSampleDrawn = Input::get('sample-date');
-		$testType = Input::get('test_type');
+		$testType = "Viral Load";
 
-		$patientID = 255226;
+		$patientID = 255229;
 		$reasonForTest = Input::get('reason');
 
 		$facilityName = Input::get('facility');
@@ -340,7 +340,7 @@ P1
 		$sampleCollectorFirstName = Input::get('sample_collector_first_name');
 		$sampleCollectorLastName = Input::get('sample_collector_last_name');
 		$sampleCollectorPhone = Input::get('sample_collector_phone');
-		$sampleCollectorHTCProviderID = Input::get('sample_collector_provider_id');
+		$sampleCollectorHTCProviderID = Input::get('htc-provider-id');
 	
 		$visit = new Visit;
 		$visit->patient_id = $patientID;
@@ -369,12 +369,12 @@ P1
 		$test->person_talked_to_for_not_done = "";
 		$test->test_status_id = Test::PENDING;
 		$test->created_by = Auth::user()->id;
-		$test->panel_id = 1;
+		//$test->panel_id = 1;
 		$test->requested_by = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
 		$test->time_created =  $dateSampleDrawn;
 		$test->save();
 	
-		$lasecBarcode =  Input::get('lasec_barcode');
+		$lasecBarcode =  Input::get('small-barcode');
 		if($testType == "Viral Load"){
 			$artInitiationDate = Input::get('art-init-date');
 			$artCurrentRegimen = Input::get('regimen');					
@@ -391,8 +391,7 @@ P1
 		
 		$url = Session::get('SOURCE_URL');
 
-			return Redirect::to($url)->with('message', 'messages.success-creating-test')
-				->with('activeTest', $activeTest);
+			return Redirect::to($url)->with('message', 'messages.success-creating-test');
 	}
 
 	public function printTrackingNumber($sid){

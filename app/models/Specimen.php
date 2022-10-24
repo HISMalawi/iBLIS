@@ -17,7 +17,7 @@ class Specimen extends Eloquent
 	const NOT_COLLECTED = 1;
 	const ACCEPTED = 2;
 	const REJECTED = 3;
-	const COLLECTED = 4;
+	const COLLECTED = 0;
 	
 	/**
 	 * Enabling soft deletes for specimen details.
@@ -122,6 +122,18 @@ class Specimen extends Eloquent
         }
     }
     
+
+	public function isCollected()
+    {
+        if($this->specimen_status_id == Specimen::COLLECTED)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     /**
     * Check if specimen is ACCEPTED
     *
