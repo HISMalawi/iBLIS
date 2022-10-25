@@ -136,28 +136,94 @@
 							</div>
 							<div class="panel-body">
 								<div class="container-fluid">
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong>{{trans("messages.patient-number")}}</strong></p></div>
-										<div class="col-md-9">
+									
+										<div class="row">
+											<div class="col-md-3">
+												<p><strong>{{trans("messages.patient-number")}}</strong></p></div>
+											<div class="col-md-9">
 											{{$test->visit->patient->external_patient_number}}</div></div>
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong>{{ Lang::choice('messages.name',1) }}</strong></p></div>
-										<div class="col-md-9">
+										<div class="row">
+											<div class="col-md-3">
+												<p><strong>{{ Lang::choice('messages.name',1) }}</strong></p></div>
+											<div class="col-md-9">
 											{{$test->visit->patient->name}}</div></div>
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong>{{trans("messages.age")}}</strong></p></div>
-										<div class="col-md-9">
+										<div class="row">
+											<div class="col-md-3">
+												<p><strong>{{trans("messages.age")}}</strong></p></div>
+											<div class="col-md-9">
 											{{$test->visit->patient->getAge('YY/MM')}}</div></div>
-									<div class="row">
-										<div class="col-md-3">
-											<p><strong>{{trans("messages.gender")}}</strong></p></div>
-										<div class="col-md-9">
+										<div class="row">
+											<div class="col-md-3">
+												<p><strong>{{trans("messages.gender")}}</strong></p></div>
+											<div class="col-md-9">
 											{{$test->visit->patient->gender==0?trans("messages.male"):trans("messages.female")}}
 										</div></div>
-								</div>
+									
+									<?php  
+									 	if(TestType::getById($test->id) == "Viral Load"){
+											$art = Art::where('specimen_id', '=',$test->specimen->id)->first();
+											$art_initiation_date = $art->art_initiation_date;
+											$art_regimen = $art->art_current_regimen;
+										}else if (TestType::getById($test->id) == "Early Infant Diagnosis"){
+											$eid = Eid::where('specimen_id', '=',$test->specimen->id)->first();
+											$unique_child = $eid->Unique_child_id;
+											$caregiver = $eid->caregive_surname ." ".$eid->caregiver_firstname;
+										}
+									?>
+									@if(TestType::getById($test->id) == "Viral Load")
+										<hr/>										
+
+										<div class="panel panel-info">  <!-- Patient Details -->
+											<div class="panel-heading">
+												<h3 class="panel-title">{{"Patient Is On Art Programme"}}</h3>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{"ART Initiation Date"}}</strong></p>
+													</div>
+													<div class="col-md-9">
+														{{$art_initiation_date}}
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{ "ART Regimen" }}</strong></p>
+													</div>
+													<div class="col-md-9">
+													{{$art_regimen}}</div>
+												</div>
+											</div>
+										</div>
+									
+									@elseif (TestType::getById($test->id) == "Early Infant Diagnosis")
+									<hr/>
+									
+										<div class="panel panel-info">  <!-- Patient Details -->
+											<div class="panel-heading">
+												<h3 class="panel-title">{{"Patient Is On EID Programme"}}</h3>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{"Unique Child Id"}}</strong></p>
+													</div>
+													<div class="col-md-9">
+														{{$unique_child }}
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{ "Caregiver Name" }}</strong></p>
+													</div>
+													<div class="col-md-9">
+													{{$caregiver}}</div>
+												</div>
+											</div>
+
+										</div>										
+									@endif
+									</div>
 							</div> <!-- ./ panel-body -->
 						</div> <!-- ./ panel -->
 						<div class="panel panel-info"> <!-- Specimen Details -->
