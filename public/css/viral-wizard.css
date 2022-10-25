@@ -1,3 +1,6 @@
+.ec {
+  margin-bottom: 0px !important;
+}
 .cus-col {
   display:flex;
   flex-direction: row;
