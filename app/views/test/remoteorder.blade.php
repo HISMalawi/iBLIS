@@ -83,7 +83,13 @@
 										<div class="col-md-3">
 											<p><strong>{{trans("messages.patient-number")}}</strong></p></div>
 										<div class="col-md-9">
-											{{$test->data->other->patient->id}}</div></div>
+										<?php if (isset($test->data->other->arv_number)){
+												$patID =  $test->data->other->arv_number;
+											}else{
+												$patID = $test->data->other->patient->id;	
+											}
+										?>
+											{{$patID}}</div></div>
 									<div class="row">
 										<div class="col-md-3">
 											<p><strong>{{ Lang::choice('messages.name',1) }}</strong></p></div>
@@ -105,6 +111,69 @@
 											{{$test->data->other->patient->gender}}
 										</div>
 									</div>
+
+									
+									<?php
+										$tstName = implode(', ', Sender::get_name($test));	
+																	 
+									?>
+									@if($tstName == "Viral Load")
+										<hr/>										
+										
+										<div class="panel panel-info">  <!-- Patient Details -->
+											<div class="panel-heading">
+												<h3 class="panel-title">{{"Patient Is On Art Programme"}}</h3>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{"ART Initiation Date"}}</strong></p>
+													</div>
+													<div class="col-md-9">
+														{{$test->data->other->art_start_date}}
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{ "ART Regimen" }}</strong></p>
+													</div>
+													<div class="col-md-9">
+													{{$test->data->other->art_regimen}}</div>
+												</div>
+											</div>
+										</div>
+									
+									@elseif ($tstName == "Early Infant Diagnosis")
+									<hr/>
+									
+										<div class="panel panel-info">  <!-- Patient Details -->
+											<div class="panel-heading">
+												<h3 class="panel-title">{{"Patient Is On EID Programme"}}</h3>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{"Unique Child Id"}}</strong></p>
+													</div>
+													<div class="col-md-9">
+														{{$unique_child }}
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-3">
+														<p><strong>{{ "Caregiver Name" }}</strong></p>
+													</div>
+													<div class="col-md-9">
+													{{$caregiver}}</div>
+												</div>
+											</div>
+
+										</div>										
+									@endif
+
+
+
+
 								</div>
 							</div> <!-- ./ panel-body -->
 						</div> <!-- ./ panel -->

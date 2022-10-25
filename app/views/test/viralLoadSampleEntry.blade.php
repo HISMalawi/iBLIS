@@ -17,15 +17,8 @@
         @if (Session::has('message'))
             <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
         @endif
-            <!--Wizard-->
-            <!--  form id="wizard7" class="wizard needs-validation" data-style="1" novalidate action="test.saveNewTest" method="post" -->
-            {{ Form::open(array('route' => 'test.createOrderRetrospective',  'method' => 'POST', 'id' => 'wizard7', 'class' => "wizard needs-validation", 'data-style'=>"1",'novalidate')) }}
 
-                <!--Step 1-->
-                <h3>Health Facility Information</h3>
-                <div class="wizard-content">
-
-                    
+                    {{ Form::open(array('route' => array('test.index'), 'method' => 'GET')) }}
                         <div class="row">
                             <div class="form-group col-lg-12 ">
                                 <div class="card">
@@ -33,7 +26,7 @@
                                         <div class="row">
                                             <div class="form-group col-lg-6">
                                                 <label class="mt-2" for="small-barcode-one">Scan Barcode : &nbsp; </label>
-                                            <input  type="text" class="form-control bar-item" name="small-barcode" id="small_barcode">
+                                            <input  type="text" class="form-control bar-item barcode" name="search" id="small-barcode">
     
                                             </div>
                                         </div>
@@ -45,6 +38,17 @@
                                 
                             </div>
                         </div>
+                    {{ Form::close() }}
+            <!--Wizard-->
+            <!--  form id="wizard7" class="wizard needs-validation" data-style="1" novalidate action="test.saveNewTest" method="post" -->
+            {{ Form::open(array('route' => 'test.createOrderRetrospective',  'method' => 'POST', 'id' => 'wizard7', 'class' => "wizard needs-validation", 'data-style'=>"1",'novalidate')) }}
+
+                <!--Step 1-->
+                <h3>Health Facility Information</h3>
+                <div class="wizard-content">
+
+                    
+                       
                     
                     
                     <div class="row">

@@ -20,7 +20,7 @@ class TestController extends \BaseController {
 	public function index()
 	{  
 	
-			
+		//var_dump("checking gibo");exit;
 		$fromRedirect = Session::pull('fromRedirect');
 
 		if($fromRedirect){
