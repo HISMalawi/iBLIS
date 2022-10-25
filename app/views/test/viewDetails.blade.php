@@ -160,10 +160,14 @@
 										</div></div>
 									
 									<?php  
+										
 									 	if(TestType::getById($test->id) == "Viral Load"){
+											
 											$art = Art::where('specimen_id', '=',$test->specimen->id)->first();
+											//var_dump($art);exit;
 											$art_initiation_date = $art->art_initiation_date;
 											$art_regimen = $art->art_current_regimen;
+											//var_dump($art_initiation_date);exit;
 										}else if (TestType::getById($test->id) == "Early Infant Diagnosis"){
 											$eid = Eid::where('specimen_id', '=',$test->specimen->id)->first();
 											$unique_child = $eid->Unique_child_id;

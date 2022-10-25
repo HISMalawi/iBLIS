@@ -205,27 +205,42 @@ class Sender
         {
             return [true,"Sample Merge Failed! order location from nationl lims not available in iblis"];
         }
+        $tstChecker = array();
+        $counter = 0;
         foreach($order->data->tests AS $name => $status) {
+            $tstChecker[$counter] = $name;
             $type = TestType::where('name', $name)->first();
             if($type == NULL){
                 return [true,"Sample Merge Failed! test type from nationl lims not available in iblis"];
             }
+            $counter++;
         }
       
         $specimen = Specimen::where('tracking_number', $tracking_number)->first();
         $patient = Patient::where('external_patient_number', $order->data->other->patient->id)->first();
 
         if(!$patient){
+            if (in_array("Viral Load",$tstChecker)){
+                if(isset($order->data->other->patient->arv_number)){
+                    $patId = $order->data->other->arv_number;
+                }else{
+                    $patId = $order->data->other->patient->id;
+                }
+            }else{
+                $patId = $order->data->other->patient->id;
+            }
+
             $patient = new Patient;
-            $patient->external_patient_number = $order->data->other->patient->id;
+            $patient->external_patient_number = $patId;
             $patient->name = $order->data->other->patient->name;
             $patient->dob = date_create($order->data->other->patient->dob);
             $patient->gender = preg_match("/m/i", $order->data->other->patient->gender) ? 0 : 1;
             $patient->phone_number = "";
-            $patient->patient_number = DB::table('patients')->max('id')+1;
+            $patient->patient_number = $patId;
             $patient->save();
         }
   
+        $specimenInserter = false;
         if(!$specimen){
             $specimen = new Specimen;
             $specimen->specimen_type_id = SpecimenType::where('name', $order->data->other->sample_type)->first()->id;
@@ -233,12 +248,23 @@ class Sender
             $specimen->tracking_number = $tracking_number;
             $specimen->drawn_by_name = $order->data->other->sample_created_by->name;
             $specimen->drawn_by_id = Auth::user()->id;
+            $specimenInserter = true;           
         }
 
         $specimen->specimen_status_id = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
         $specimen->accepted_by = Auth::user()->id;
         $specimen->time_accepted = time();
         $specimen->save();
+
+        if (in_array("Viral Load",$tstChecker) && $specimenInserter == true){
+            $patientOnArt = new Art;
+            $patientOnArt->specimen_id = $specimen->id;
+            $patientOnArt->art_initiation_date = $order->data->other->art_start_date;
+            $patientOnArt->art_current_regimen = $order->data->other->art_regimen;
+            $patientOnArt->HTC_provider = "0";
+            $patientOnArt->lasec_barcode = "";
+            $patientOnArt->save();
+        }
 
         $fname = explode(' ',$order->data->other->sample_created_by->name)[0];
         $sname = explode(' ',$order->data->other->sample_created_by->name)[1];
