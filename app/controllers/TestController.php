@@ -334,7 +334,7 @@ P1
 		$patientGender =  Input::get('gender');
 		$patientNumber =  Input::get('phone');
 		$dateSampleDrawn = Input::get('sample-date');
-		$testType = "Viral Load";		
+		$testType = Input::get('test_type');;		
 		$patRes = Patient::where('patient_number','=',$patientID)->first()['id'];
 
 		if(!isset($patRes)){
@@ -370,7 +370,12 @@ P1
 		$visit->visit_type = "Out Patient";
 		$visit->ward_or_location = "Other";
 		$visit->save();
-		$testType = "Viral Load";
+		
+		if ($testType == "EID"){
+			$sampleType = "Blood";
+			$testType = "Early Infant Diagnosis";
+		}
+
 		$testId = TestType::where('name', '=', $testType)->first()['id'];
 		$specimen = new Specimen;
 		$specimen->specimen_type_id = SpecimenType::where('name', '=', $sampleType)->first()['id'];
@@ -409,14 +414,29 @@ P1
 			$patientOnArt->lasec_barcode = $lasecBarcode;
 			$patientOnArt->save();
 		}else{
-
+			$careGiverSurname = Input::get('eid-caregiver-surname');
+			$careGiverFirstName = Input::get('eid-caregiver-firstname');
+			$uniqueChildId = Input::get('unique-child-id');	
+			$patientOnEid = new Eid;
+			$patientOnEid->specimen_id = $specimen->id;
+			$patientOnEid->unique_child_id = $uniqueChildId;
+			$patientOnEid->caregive_surname = $careGiverSurname;
+			$patientOnEid->caregiver_firstname = $careGiverFirstName;
+			$patientOnEid->HTC_provider = $sampleCollectorHTCProviderID;
+			$patientOnEid->lasec_barcode = $lasecBarcode;
+			$patientOnEid->save();
 		}	
 	
 		if($actionLevel=="accepted"){
 			$this->acceptSpecimenRetrospective($specimen->id);
 			Session::set('message','messages.success-creating-test');
-			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
-			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
+			if($testType =="Viral Load"){
+				$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
+				return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
+			}else{
+				$url = "/eidSampleEntry?printTracking=".$specimen->id;
+				return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
+			}
 
 		}elseif ($actionLevel=="rejected"){
 			return Redirect::route('test.reject', array($specimen->id));			

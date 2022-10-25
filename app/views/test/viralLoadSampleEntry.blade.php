@@ -613,6 +613,7 @@
 
                                 </ul>
                                 <input type="text" hidden  id="action_checker" name="checker">
+                                <input type="text" hidden  id="action_checker" name="test_type" value="Viral Load">
                             </div>
                         </div>
                        

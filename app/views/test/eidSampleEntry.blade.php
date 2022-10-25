@@ -7,15 +7,18 @@
     <div>
         <ol class="breadcrumb">
           <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
-          <li class="active">{{ Lang::choice('messages.test',2) }}</li>
+          <li class="active">{{ "Sample Entry" }}</li>
+          <li class="active">{{ "Early Infant Diagnosis (EID)" }}</li>
         </ol>
     </div>
     <div class="card">
         <div class="card-body">
+            @if (Session::has('message'))
+                <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
+            @endif
             <!--Wizard-->
-            <form id="wizard7" class="wizard needs-validation" data-style="1" novalidate>
-
-
+            <!--  form id="wizard7" class="wizard needs-validation" data-style="1" novalidate action="test.saveNewTest" method="post" -->
+            {{ Form::open(array('route' => 'test.createOrderRetrospective',  'method' => 'POST', 'id' => 'wizard7', 'class' => "wizard needs-validation", 'data-style'=>"1",'novalidate')) }}
                 <!--Step 1-->
                 <h3>Health Facility Information</h3>
                 <div class="wizard-content">
@@ -129,6 +132,16 @@
 
                                 </div>
                             </div>
+                            @if(Input::get('printTracking') != null)
+                            <div class="">
+                                <a class="btn btn-sm btn-success"
+                                href="{{URL::route('test.print_tracking_number', array(Input::get('printTracking')))}}"
+                                data-toggle="modal" >
+                                    <span class="glyphicon glyphicon-print"></span>
+                                    Print Tracking Number
+                                </a>
+                            </div>
+                            @endif
                         </div>
                     </div>
 
@@ -413,13 +426,15 @@
                                     </li>
 
                                 </ul>
+                                <input type="text" hidden  id="action_checker" name="checker">
+                                <input type="text" hidden  id="action_checker" name="test_type" value="EID">
                             </div>
                         </div>
                     </div>
                 </div>
                 <!--end: Step 5-->
-
-            </form>
+            {{ Form::close() }}
+            <!-- /form -->
             <!--end:Wizard-->
         </div>
     </div>
@@ -506,10 +521,14 @@
                 console.log("Cancel");
             },
             onReject: function(event, currentIndex){
-                console.log("Cancel");
+                console.log("Cancel1");
+                document.getElementById('action_checker').value = "rejected";
+                $('#wizard7').submit();   
             },
             onFinished: function(event, currentIndex) {
                 console.log("done");
+                document.getElementById('action_checker').value = "accepted";
+                $('#wizard7').submit(); 
             }
         });
         //Validation
