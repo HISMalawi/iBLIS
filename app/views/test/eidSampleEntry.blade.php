@@ -23,6 +23,25 @@
                 <h3>Health Facility Information</h3>
                 <div class="wizard-content">
                     <div class="row">
+                        <div class="form-group col-lg-12 ">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 ec">
+                                            <label class="mt-2" for="eid-barcode-one">Scan Barcode : &nbsp; </label>
+                                        <input  type="text" class="form-control bar-item" name="eid-barcode-one" id="eid-barcode-one">
+
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
                                 <div class="card-header bg-primary">
@@ -31,12 +50,12 @@
                                 <div class="card-body">
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="district">District : &nbsp; </label>
                                             <input type="text" class="form-control" name="district" id="district">
                                         </div>
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="facility">Facility Name : &nbsp;</label>
                                             <input type="text" class="form-control" name="facility" id="facility">
                                         </div>
@@ -118,12 +137,12 @@
 
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="phone">Patient/Guardian Phone Number : &nbsp; </label>
                                             <input type="text" class="form-control" name="phone" id="p_phone">
                                         </div>
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="sample-date">Date Sample Drawn : &nbsp; </label>
                                             <input type="date" class="form-control" name="sample-date"
                                                 id="sample_date">
@@ -234,7 +253,7 @@
 
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="unique-child-id">Unique Child ID (copy from Exposed Child Under 24 Months card) : &nbsp; </label>
                                             <input type="text" class="form-control" name="unique-child-id"
                                                 id="unique-child-id">
@@ -280,12 +299,12 @@
 
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="phone">Phone Number : &nbsp; </label>
                                             <input type="text" class="form-control" name="pcs-phone" id="pcs-phone">
                                         </div>
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="id">HTC Provider ID : &nbsp; </label>
                                             <input type="text" class="form-control" name="htc-provider-id"
                                                 id="htc-provider-id">
