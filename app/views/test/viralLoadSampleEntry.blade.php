@@ -24,9 +24,33 @@
                 <!--Step 1-->
                 <h3>Health Facility Information</h3>
                 <div class="wizard-content">
+
+                    
+                        <div class="row">
+                            <div class="form-group col-lg-12 ">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="form-group col-lg-6">
+                                                <label class="mt-2" for="small-barcode-one">Scan Barcode : &nbsp; </label>
+                                            <input  type="text" class="form-control bar-item" name="small-barcode" id="small_barcode">
+    
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    
+                    
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
+                                
                                 <div class="card-header bg-primary">
                                     <strong>Section 1:</strong> Health Facility Information
                                 </div>

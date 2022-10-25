@@ -19,6 +19,12 @@
   flex-direction: row;
 }
 
+.first-bar {
+  display: flex;
+  align-items: left;
+  flex-direction: row;
+}
+
 .bar-item{
   flex: 1;
 }
