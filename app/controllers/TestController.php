@@ -324,23 +324,7 @@ P1
 
 
 	public function createOrderRetrospective(){
-		$actionLevel = Input::get('checker');
-		if($actionLevel=="accepted"){
-			$this->acceptSpecimenRetrospective($specimen->id);
-			Session::set('message','messages.success-creating-test');
-			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
-			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
-
-		}elseif ($actionLevel=="rejected"){
-
-			return Redirect::route('test.reject', array($test->specimen_id));
-			Session::set('message','messages.success-creating-test');
-			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
-			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
-
-		}
-
-
+	
 		$actionLevel = Input::get('checker');
 		$sampleType = Input::get('sample-type');
 		$patientSurname = Input::get('surname');
@@ -427,7 +411,7 @@ P1
 		}else{
 
 		}	
-				
+	
 		if($actionLevel=="accepted"){
 			$this->acceptSpecimenRetrospective($specimen->id);
 			Session::set('message','messages.success-creating-test');
@@ -435,14 +419,8 @@ P1
 			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
 
 		}elseif ($actionLevel=="rejected"){
-
-			return Redirect::route('test.reject', array($test->specimen_id));
-			Session::set('message','messages.success-creating-test');
-			$url = "/viralLoadSampleEntry?printTracking=".$specimen->id;
-			return Redirect::to($url)->with('message', 'messages.success-creating-test')->with('specimenID',array($specimen->id));
-
+			return Redirect::route('test.reject', array($specimen->id));			
 		}
-
 		
 	}
 
@@ -875,7 +853,7 @@ P1
 	 * @return
 	 */
 	public function reject($specimenID)
-	{
+	{ 
 		$specimen = Specimen::find($specimenID);
 		$rejectionReason = RejectionReason::all();
 		return View::make('test.reject')->with('specimen', $specimen)
@@ -1140,6 +1118,9 @@ P1
 
 		return $test->testType->instruments->count();
 	}
+
+
+
 
 
 	/**

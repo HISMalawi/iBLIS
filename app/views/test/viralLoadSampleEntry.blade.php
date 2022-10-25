@@ -711,6 +711,7 @@
             onReject: function(event, currentIndex){
                 console.log("Cancel1");
                 document.getElementById('action_checker').value = "rejected";
+                $('#wizard7').submit();   
             },
             onFinished: function(event, currentIndex) {
                 console.log("done");
