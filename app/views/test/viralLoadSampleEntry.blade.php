@@ -3,6 +3,7 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/viral-wizard.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/jquery-steps/jquery.steps.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/plugins.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/select2/css/select2.css') }}" />
 
     <div>
         <ol class="breadcrumb">
@@ -54,21 +55,26 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                
                                 <div class="card-header bg-primary">
                                     <strong>Section 1:</strong> Health Facility Information
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="district">District : &nbsp; </label>
-                                            <input type="text" class="form-control" name="district" id="district">
+                                            <select  class="district-select form-control" name="district" id="district">
+                                                <option value="" selected="selected">-- Select / Search --</option>
+                                            </select>
+                                        
+
                                         </div>
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group col-lg-6 ec">
                                             <label for="facility">Facility Name : &nbsp;</label>
-                                            <input type="text" class="form-control" name="facility" id="facility">
+                                            <select class="form-control facility-select" name="facility" id="facility">
+                                                <option value="" selected="selected">-- Select / Search --</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -658,6 +664,7 @@
 
     <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
+    <script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
     <script>
         //Advanced - with validation
         var wizard7 = $('#wizard7');
@@ -786,5 +793,42 @@
         //     }
         // });
         $('.wizard').find(".actions ul > li > a").addClass("btn bg-primary");
+    </script>
+    <script>
+        $(document).ready(function() {
+
+            var data = [
+                {
+                    id: 0,
+                    text: 'enhancement'
+                },
+                {
+                    id: 1,
+                    text: 'bug'
+                },
+                {
+                    id: 2,
+                    text: 'duplicate'
+                },
+                {
+                    id: 3,
+                    text: 'invalid'
+                },
+                {
+                    id: 4,
+                    text: 'wontfix'
+                }
+            ];
+
+            $('.district-select').select2({
+                theme: 'bootstrap4',
+                data: data,
+            });
+
+            $('.facility-select').select2({
+                theme: 'bootstrap4',
+                data: data,
+            });
+        });
     </script>
 @stop
