@@ -10,6 +10,7 @@ class Worksheet extends \BaseController {
 	public function index()
 	{
 		//
+		return View::make('worksheet.index');
 	}
 
 
