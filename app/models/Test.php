@@ -698,7 +698,7 @@ class Test extends Eloquent
 			SELECT DISTINCT sp.id FROM specimens sp WHERE sp.accession_number='$accession_number'
 		)
 		OR t.test_type_id IN (
-			SELECT DISTINCT tt.id FROM test_types tt WHERE tt.name LIKE '%$q%') ORDER BY t.time_created DESC LIMIT 20000";
+			SELECT DISTINCT tt.id FROM test_types tt WHERE tt.name LIKE '%$q%') ORDER BY t.id DESC LIMIT 20000";
 		$result_ids = [];
 		return Test::processResultsIds($sql, $result_ids);
 	}
