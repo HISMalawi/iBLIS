@@ -686,13 +686,30 @@ class Test extends Eloquent
 		}
 		return $result_ids;
 	}
+	
+	public static function generatePatientsQuery($searchString){
+		$name = explode(' ', $searchString);
+		$first_name_code = isset($name[0]) ? Soundex::encode($name[0])  : null;
+		$last_name_code = isset($name[1]) ? Soundex::encode($name[sizeof($name)-1])  : null;
+		if($first_name_code && $last_name_code){
+			$subquery = " (p.first_name_code='$first_name_code' AND p.last_name_code='$last_name_code')
+				OR (p.first_name_code='$last_name_code' AND p.last_name_code='$first_name_code')
+			"; 
+		}
+		elseif($last_name_code == null){
+			$subquery = " p.name LIKE '%$searchString%' ";
+		}
+		$query = "SELECT id FROM patients p WHERE $subquery
+			OR p.patient_number = '$searchString' OR p.external_patient_number = '$searchString'";
+		return $query;
+	}
 
 	public static function getTestIDsOnSearchString($q){
+		$q = trim($q);
 		$accession_number = Config::get('kblis.facility-code').$q;
+		$patientQuery = Test::generatePatientsQuery($q);
 		$sql = "SELECT DISTINCT t.id FROM tests t WHERE visit_id IN (
-			SELECT DISTINCT v.id FROM visits v WHERE (v.patient_id IN (
-			SELECT id FROM patients p WHERE p.name LIKE '%$q%'
-			OR p.patient_number = '$q' OR p.external_patient_number = '$q'))
+			SELECT DISTINCT v.id FROM visits v WHERE (v.patient_id IN ($patientQuery))
 			OR (v.ward_or_location LIKE  '%$q%')
 		) OR t.specimen_id = (
 			SELECT DISTINCT sp.id FROM specimens sp WHERE sp.accession_number='$accession_number'
