@@ -722,6 +722,7 @@ class Test extends Eloquent
 
 	public static function dateFilter($date_to, $date_from, $tests){
 		if($date_to||$date_from){
+			$date_to = $date_to . ' 23:59:59';
 			$tests = $tests->where('time_created', '>=',$date_from)
 			->where('time_created','<=',$date_to);
 		}
