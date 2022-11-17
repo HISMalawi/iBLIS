@@ -48,7 +48,10 @@ class TestController extends \BaseController {
 			$searchString = Session::get('search_string');
 			$search_remote = false;
 		}
-		
+		$searchString = trim($searchString);
+		if(sizeof(explode(" ", $searchString)) > 1){
+			$search_remote = false;
+		}
 		
 		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
 			
