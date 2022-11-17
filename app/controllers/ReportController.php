@@ -5446,6 +5446,7 @@ P1
 					$last_date = ($count == $ranges)?$end_date:$a_date = date("Y-m-t", strtotime($dt->format('Y-m-d')));
 
     				$dt = $dt->format('Y-m');
+						$last_date = $last_date . " 23:59:59";
     				$query = "SELECT count(*) as tests_per_month FROM tests join test_types on tests.test_type_id = test_types.id WHERE test_type_id = '$test_type_id' AND test_category_id = '$test_category_id' AND tests.time_created BETWEEN '$first_date' AND '$last_date' AND tests.test_status_id = (SELECT id FROM test_statuses WHERE name = 'verified') GROUP BY test_types.id;";
     				
     				$test_per_month = DB::select(DB::raw($query)); 
