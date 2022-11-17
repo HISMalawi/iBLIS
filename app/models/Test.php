@@ -1,5 +1,5 @@
 <?php
-// use Shift31\LaravelElasticsearch\Facades\Es;
+use Shift31\LaravelElasticsearch\Facades\Es;
 class Test extends Eloquent
 {
 	/**
@@ -762,8 +762,14 @@ class Test extends Eloquent
 	public static function eSearch($q='', $date_from=NULL, $date_to=NULL, $test_status_id=0, $location=NULL){
 		$params = [
 			'index' => 'tests',
-			'size' => 50,
+			'from' => 0,
+			'size' => 10000,
+			'sort' => [
+				'_score'=>['order' => 'desc'],
+				'test_time_created' => ['order'=>'desc']
+				],
 			'body' => [
+				'min_score' => 0.05345,
 				'query' => [
 					'bool' => [
 						'should' => [
