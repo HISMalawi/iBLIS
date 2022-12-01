@@ -50,7 +50,6 @@
 						<td>{{ $patient->name }}</td>
 					@endif					
 					<td>{{ $patient->getGender() }}</td>
-					<td>{{ $patient->getGender() }}</td>
 					<td>{{ $patient->getAge() }}</td>
 					<td>
 					<!-- show the patient report(uses the show method found at GET /patient/{id} -->
