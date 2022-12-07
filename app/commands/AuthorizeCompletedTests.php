@@ -39,7 +39,7 @@ class AuthorizeCompletedTests extends Command {
 	{
 		//Date authorized == date test completed
 		// keep a log of all test authorized
-		$max_date = '2022-09-24';
+		$max_date = '2022-09-01';
 		$date_now = date('Y-m-d H:i:s');
 		$authorizerID = 1;
 		$testIDs = Test::where('time_created','<', $max_date)->where('test_status_id', '=', Test::COMPLETED)->lists('id');
