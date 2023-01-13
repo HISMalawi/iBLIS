@@ -121,7 +121,7 @@ class TestController extends \BaseController {
 
 			$testIds = array_merge($testIds, $missingPanelTests->lists('id'));
 		}
-
+		//{{ Form::label('              {{ Form::label('test_status', trans('messages.test-status')) }}test_status', trans('messages.test-status')) }}
 		if ($tests->first() && $tests->first()->panel_id){
 
 			$missingPanelTests = Test::where('panel_id', $tests->first()->panel_id)

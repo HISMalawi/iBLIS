@@ -105,7 +105,7 @@
 		
 		<li>
 			<div class="main-menu {{$active[3]}}">
-				<a href="{{ URL::route('test.index')}}">
+				<a href="{{ URL::route('worksheet.index')}}">
 					<span class="glyphicon glyphicon-filter"></span> {{"Worksheets"}}</a>
 			</div>
 		</li>

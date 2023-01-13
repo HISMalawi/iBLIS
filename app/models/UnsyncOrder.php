@@ -8,9 +8,6 @@ class UnsyncOrder extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'unsync_orders';
-
 	public $timestamps = true;
-
-	
 
 }

@@ -256,6 +256,16 @@ class Sender
         $specimen->time_accepted = time();
         $specimen->save();
 
+        $dat = new UnsyncOrder;
+		$dat->specimen_id = $specimen->id;
+		$dat->data_not_synced = "specimen-accepted";
+		$dat->data_level = "specimen";
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = Auth::user()->id;
+		$dat->save();
+
+
         if (in_array("Viral Load",$tstChecker) && $specimenInserter == true){
             $patientOnArt = new Art;
             $patientOnArt->specimen_id = $specimen->id;

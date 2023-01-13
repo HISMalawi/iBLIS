@@ -130,6 +130,7 @@
                             ?>
                         @endif
 
+                        
                         @if($testName)
                             <tr class="panel-header panel-header{{$test->panel_id}}">
                                 <td>{{ date('d-m-Y H:i', strtotime($test->time_created));}}</td>
@@ -149,7 +150,7 @@
                                     <!-- Specimen statuses -->
                                     <div class="container-fluid">
                                     <div class="row">
-
+                                    
                                     <div class="col-md-12">
                                         @if($test->isVerified())
                                             <span class='label'>
@@ -181,6 +182,10 @@
                                             @elseif($test->specimen->isRejected())
                                                 <span class='label panel-label'>
                                                         {{trans('messages.specimen-rejected-label')}}</span>
+                                            @elseif($test->specimen->isCollected()) 
+                                                <?php var_dump("hello");exit; ?>
+                                                <span class='label panel-label'>
+                                                        'Specimen Collected'</span>
                                             @endif
                                         @endif
                                     </div>
@@ -205,7 +210,7 @@
                                         {{trans('messages.view-details')}}
                                     </a>
 
-                                    @if ($test->specimen->isNotCollected())
+                                    @if ($test->specimen->isNotCollected() || $test->specimen->isCollected())
                                         @if(Auth::user()->can('accept_test_specimen'))
                                             <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
                                                data-test-id="{{$test->id}}" data-specimen-id="{{$test->specimen->id}}"
@@ -285,7 +290,7 @@
                                 </td>
                             </tr>
                         @endif
-
+                        
                         <tr class="{{($test->panel_id > 0 && in_array($test->panel_id, $panels))? 'info panel-row panel'.$test->panel_id : ''}}" >
                         <td>{{ date('d-m-Y H:i', strtotime($test->time_created));}}</td>  <!--Date Ordered-->
                         <td>{{ empty($test->visit->patient->external_patient_number)?
@@ -309,6 +314,8 @@
                                 <div class="row">
 
                                         <?php
+
+
 						$counter = 0;
 						if($test->testType){ 
 
@@ -333,7 +340,7 @@
                                                 Not Done</span>
                                         
 					
-					@else
+					                    @else
                                             @if($test->isNotReceived())
                                                 @if(!$test->isPaid())
                                                     <span class='label'>
@@ -357,6 +364,7 @@
                                             @elseif($test->isRejected())
                                                 <span class='label'>
                                                     {{trans('messages.test-rejected')}}</span>
+                                            
                                             @endif
                                         @endif
 					
@@ -412,6 +420,9 @@
                                             @elseif($test->specimen->isRejected())
                                                 <span class='label'>
                                                     {{trans('messages.specimen-rejected-label')}}</span>
+                                            @elseif($test->specimen->isCollected())
+                                                <span class='label panel-label'>
+                                                        Specimen Collected</span> 
                                             @endif
                                         @endif
                                         </div>
@@ -448,7 +459,7 @@
                                 </a>
                             @endif
 
-                        @elseif ($test->specimen->isNotCollected() && !$test->panel_id && !($test->isLocked()))
+                        @elseif (($test->specimen->isNotCollected() || $test->specimen->isCollected() ) && !$test->panel_id && !($test->isLocked()))
                             @if(Auth::user()->can('accept_test_specimen'))
                                 <a class="main-view main-view-{{$test->id}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
                                     data-test-id="{{$test->id}}" data-specimen-id="{{$test->specimen->id}}"

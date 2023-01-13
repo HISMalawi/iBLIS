@@ -129,6 +129,11 @@ Route::group(array("before" => "auth"), function()
         "as"   => "viralload.index",
         "uses" => "ViralLoadController@index"
     ));
+
+    Route::get("/worksheet", array(
+        "as"   => "worksheet.index",
+        "uses" => "WorksheetController@index"
+    ));
     
      Route::get("viralLoadSampleEntry",array(
         "as" => "test.viralLoadSampleEntry",

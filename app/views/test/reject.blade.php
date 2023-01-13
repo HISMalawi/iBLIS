@@ -30,7 +30,7 @@
 			</div>
 		@endif
 		{{ Form::open(array('route' => 'test.rejectAction')) }}
-			{{ Form::hidden('specimen_id', $specimen->id) }}
+		 			{{ Form::hidden('specimen_id', $specimen->id) }}
 			<div class="panel-body">
 				<div class="display-details">
 				    <p><strong>{{ Lang::choice('messages.test-type',1) }}</strong>
