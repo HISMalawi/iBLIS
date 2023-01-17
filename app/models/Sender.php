@@ -22,7 +22,7 @@ class Sender
 
         // $ch = curl_init("http://localhost:7070/api/v1/query_order_by_tracking_number/".$trackingNumber);
 
-        $ch = curl_init($nlims_url."/api/v1/query_order_by_tracking_number/".$trackingNumber);
+        $ch = curl_init($nlims_url."/api/v1/query_order_by_tracking_number?tracking_number=".$trackingNumber);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
@@ -52,7 +52,7 @@ class Sender
         $result = json_decode(curl_exec($ch));
         $token = $result->data->token;
 
-        $ch = curl_init($nlims_url."/api/v1/query_results_by_tracking_number/".$trackingNumber);
+        $ch = curl_init($nlims_url."/api/v1/query_results_by_tracking_number?tracking_number=".$trackingNumber);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('token:'.$token));
