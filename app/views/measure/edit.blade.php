@@ -114,17 +114,17 @@
 
                             </div>
                             <div class="col-md-2">
-                                <input class="col-md-10 interpretation" value="{{ $value->hl7_identifier }}"
+                                <input class="col-md-10 hl7_identifier" value="{{ $value->hl7_identifier }}"
                                 name="measures[{{$measure->id}}][hl7_identifier][]" type="text">
 
                             </div>
                             <div class="col-md-2">
-                                <input class="col-md-10 interpretation" value="{{ $value->hl7_text }}"
+                                <input class="col-md-10 hl7_text" value="{{ $value->hl7_text }}"
                                 name="measures[{{$measure->id}}][hl7_text][]" type="text">
 
                             </div>
                             <div class="col-md-2">
-                                <input class="col-md-10 interpretation" value="{{ $value->hl7_coding_system }}"
+                                <input class="col-md-10 hl7_coding_system" value="{{ $value->hl7_coding_system }}"
                                 name="measures[{{$measure->id}}][hl7_coding_system][]" type="text">
                                 <button class="col-md-2 close" aria-hidden="true" type="button"
                                     title="{{trans('messages.delete')}}">×</button>

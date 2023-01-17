@@ -39,8 +39,9 @@ class IndexTests extends Command {
 	public function fire()
 	{
 		$start_indexing_from = Config::get('kblis.start_indexing_from') ? Config::get('kblis.start_indexing_from') : '2021-01-01'; 
-		$tests = Test::where('time_created','>=', $start_indexing_from)->get();
-
+		$end_indexing = date('Y-m-d H:i:s');
+		$tests = Test::where('time_created','>=', $start_indexing_from)->where('time_created','<=', $end_indexing)->orderBy('time_created', 'DESC')->get();
+	
 		foreach ($tests as $test) {
 			try {
 				ES::index([

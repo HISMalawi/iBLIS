@@ -17,7 +17,7 @@
         <script type="text/javascript" src="{{ URL::asset('js/spin.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('highcharts/highcharts.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('highcharts/exporting.js') }} "></script>
-        <title>{{ Config::get('kblis.name') }} {{ Config::get('kblis.version') }}</title>
+        <title>{{ Config::get('kblis.name') }} {{ Config::get('version.iblis') }}</title>
     </head>
     <body>
         <div id="wrap" class="no-select">

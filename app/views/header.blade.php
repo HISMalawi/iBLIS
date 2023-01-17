@@ -3,7 +3,7 @@
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand">{{ Config::get('kblis.name') }} {{ Config::get('kblis.version') }}
+                <a class="navbar-brand">{{ Config::get('kblis.name') }} {{ Config::get('version.iblis') }}
                     </a>
             </div>
 

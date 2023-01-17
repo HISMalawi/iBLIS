@@ -1,5 +1,5 @@
 /bootstrap/compiled.php
-/vendor
+# /vendor
 composer.phar
 composer.lock
 .env.local.php
@@ -16,6 +16,7 @@ app/config/nlims_*
 public/i/users/*
 public/patientreport*
 public/data
+app/storage/sessions/
 log/*.log
 *.lbl
 labstatreport*
