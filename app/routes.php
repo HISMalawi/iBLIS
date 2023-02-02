@@ -350,7 +350,7 @@ Route::group(array("before" => "auth"), function()
     Route::get("/test/{id}/mergeorupdate", array(
         "as"   => "test.mergeorupdate",
         "uses" => "TestController@mergeRemoteResults"
-    ));
+    ))->where('id','.*');
 
      Route::get("/notdone", array(
         "as"   => "test.notdone",
