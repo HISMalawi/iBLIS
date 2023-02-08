@@ -1489,7 +1489,10 @@ P1
 										INNER JOIN measures ON measures.id = test_results.measure_id
 										INNER JOIN tests ON tests.id = test_results.test_id
 										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE measures.name = 'HGB' AND test_statuses.name IN ('verified', 'completed') AND
+										INNER JOIN test_types ON test_types.id = tests.test_type_id
+										WHERE measures.name = 'HGB' 
+										AND test_types.name = 'FBC'
+										AND test_statuses.name IN ('verified', 'completed') AND
 										(substr(tests.time_created,1,7) = '$period' )",
 
 				"Heamoglobin only (Hemacue)" => "SELECT COUNT(*) AS test_count
@@ -1508,6 +1511,7 @@ P1
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 										WHERE m.name IN ('Hemoglobin', 'HGB')
+										AND tt.name IN ('FBC', 'Hemoglobin')
 										AND ts.name IN ('completed', 'verified')
 										AND tr.result <= 6
 										AND tr.result <> ''
@@ -1523,10 +1527,13 @@ P1
 										WHERE ov.patient_id IN (
 											SELECT DISTINCT v.patient_id 
 											FROM tests t
+											INNER JOIN test_types tt ON tt.id = t.test_type_id
 											INNER JOIN test_results tr ON tr.test_id = t.id
 											INNER JOIN visits v ON v.id = t.visit_id
 											INNER JOIN measures m ON m.id = tr.measure_id
-											WHERE m.name IN ('Hemoglobin','HGB') AND tr.result IS NOT NULL AND tr.result <= 6 AND tr.result<>''
+											WHERE m.name IN ('Hemoglobin','HGB') 
+											AND tt.name IN ('FBC', 'Hemoglobin')
+											AND tr.result IS NOT NULL AND tr.result <= 6 AND tr.result<>''
 										)
 										AND ott.name = 'Cross-match' 
 										AND SUBSTR(ot.time_created, 1, 7) = '$period'
@@ -1540,6 +1547,7 @@ P1
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 										WHERE m.name IN ('Hemoglobin', 'HGB')
+										AND tt.name IN ('FBC', 'Hemoglobin')
 										AND ts.name IN ('completed', 'verified')
 										AND tr.result > 6
 										AND tr.result <> ''
@@ -1556,10 +1564,13 @@ P1
 										WHERE ov.patient_id IN (
 											SELECT DISTINCT v.patient_id 
 											FROM tests t
+											INNER JOIN test_types tt ON tt.id = t.test_type_id
 											INNER JOIN test_results tr ON tr.test_id = t.id
 											INNER JOIN visits v ON v.id = t.visit_id
 											INNER JOIN measures m ON m.id = tr.measure_id
-											WHERE m.name IN ('Hemoglobin','HGB') AND tr.result IS NOT NULL AND tr.result > 6 AND tr.result<>''
+											WHERE m.name IN ('Hemoglobin','HGB') 
+											AND tt.name IN ('FBC', 'Hemoglobin')
+											AND tr.result IS NOT NULL AND tr.result > 6 AND tr.result<>''
 										)
 										AND ott.name = 'Cross-match' 
 										AND SUBSTR(ot.time_created, 1, 7) = '$period'
