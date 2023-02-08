@@ -1406,13 +1406,13 @@ P1
 			"Cholesterol LDL",
 			"Cholesterol HDL",
 			"Cholinesterase",
-			"C Reactive Protein (CRP)",
+			// "C Reactive Protein (CRP)", 
 			"Creatinine",
 			"Creatine Kinase NAC",
 			"Creatine Kinase MB",
 			"Haemoglobin A1c",
 			"Iron",
-			"Lipase",
+			// "Lipase",
 			"Lactate Dehydrogenase (LDH)",
 			"Magnesium",
 			"Micro-protein",
@@ -1477,67 +1477,94 @@ P1
 	public function extracthaematologyMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-				"Full Blood Count" => "SELECT count(*) AS test_count FROM tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE (test_types.name = 'FBC' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND 
+				"Full Blood Count" => "SELECT count(distinct t.id) AS test_count
+										FROM tests t
+										INNER JOIN test_types ON test_types.id = t.test_type_id
+										INNER JOIN test_statuses ON test_statuses.id = t.test_status_id
+										WHERE test_types.name = 'FBC' AND test_statuses.name IN ('verified', 'completed') AND 
 										(substr(time_created,1,7) = '$period')",
 
-				"Heamoglobin only (blood donors excluded)" => "SELECT count(*) AS test_count FROM test_results 
+				"Heamoglobin only (blood donors excluded)" => "SELECT count(distinct tests.id) AS test_count
+										FROM test_results
 										INNER JOIN measures ON measures.id = test_results.measure_id
 										INNER JOIN tests ON tests.id = test_results.test_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id                                        
-										WHERE (measures.name= 'HGB' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
-										(substr(tests.time_created,1,7) = '$period' )
-										",
-				"Heamoglobin only (Hemacue)" => "SELECT COUNT(*) AS test_count FROM tests t
+										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
+										WHERE measures.name = 'HGB' AND test_statuses.name IN ('verified', 'completed') AND
+										(substr(tests.time_created,1,7) = '$period' )",
+
+				"Heamoglobin only (Hemacue)" => "SELECT COUNT(*) AS test_count
+										FROM tests t
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN testtype_measures ttm ON ttm.test_type_id = tt.id
 										INNER JOIN measures m ON m.id = ttm.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-										WHERE m.name = 'HGB' AND tt.name = 'Haemoglobin' AND (ts.name = 'completed' OR ts.name = 'verified')
+										WHERE m.name = 'Hemoglobin' AND tt.name = 'Hemoglobin' AND ts.name IN ('completed', 'verified')
 										AND (substr(t.time_created,1,7) = '$period')",
 
-				"Patients with Hb ≤ 6.0g/dl" => "SELECT DISTINCT count(*) AS test_count FROM tests t
-										INNER JOIN test_results tr ON tr.test_id = t.id
+				"Patients with Hb ≤ 6.0g/dl" => "SELECT COUNT(DISTINCT t.id) AS test_count
+										FROM test_results tr
+										INNER JOIN tests t ON tr.test_id = t.id
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-										WHERE m.name = 'HGB' AND (ts.name = 'completed' OR ts.name = 'verified')
-										AND (tr.result <= 6 AND tr.result <> '') AND (SUBSTR(t.time_created, 1, 7) = '$period')",
+										WHERE m.name IN ('Hemoglobin', 'HGB')
+										AND ts.name IN ('completed', 'verified')
+										AND tr.result <= 6
+										AND tr.result <> ''
+										AND tr.result IS NOT NULL
+										AND (SUBSTR(t.time_created, 1, 7) = '$period')",
 
-				"Patients with Hb ≤ 6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM tests ot
-										INNER JOIN test_results otr ON otr.test_id = ot.id
+				"Patients with Hb ≤ 6.0g/dl who were transfused" => "SELECT COUNT(DISTINCT ot.id) AS test_count 
+										FROM visits ov
+										INNER JOIN tests ot ON ov.id = ot.visit_id
 										INNER JOIN test_types ott ON ott.id = ot.test_type_id
+										INNER JOIN test_results otr ON otr.test_id = ot.id
 										INNER JOIN measures om ON om.id = otr.measure_id
-										INNER JOIN visits ov ON ov.id = ot.visit_id
-										WHERE ott.name = 'Cross-match' AND (SUBSTR(ot.time_created, 1, 7) = '$period')
-										AND (om.name = 'Pack ABO Group' AND otr.result IS NOT NULL) AND ov.patient_id 
-										IN (SELECT DISTINCT v.patient_id FROM tests t
+										WHERE ov.patient_id IN (
+											SELECT DISTINCT v.patient_id 
+											FROM tests t
 											INNER JOIN test_results tr ON tr.test_id = t.id
 											INNER JOIN visits v ON v.id = t.visit_id
-											INNER JOIN measures m on m.id = tr.measure_id
-											WHERE m.name = 'HGB' AND tr.result <= 6 AND tr.result<>'')",
+											INNER JOIN measures m ON m.id = tr.measure_id
+											WHERE m.name IN ('Hemoglobin','HGB') AND tr.result IS NOT NULL AND tr.result <= 6 AND tr.result<>''
+										)
+										AND ott.name = 'Cross-match' 
+										AND SUBSTR(ot.time_created, 1, 7) = '$period'
+										AND om.name = 'Pack ABO Group' 
+										AND otr.result IS NOT NULL",
 				
-				"Patients with Hb > 6.0g/dl" => "SELECT DISTINCT count(*) AS test_count FROM tests t
-										INNER JOIN test_results tr ON tr.test_id = t.id
+				"Patients with Hb > 6.0g/dl" => "SELECT COUNT(DISTINCT t.id) AS test_count
+										FROM test_results tr
+										INNER JOIN tests t ON tr.test_id = t.id
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-										WHERE m.name = 'HGB' AND (ts.name = 'completed' OR ts.name = 'verified')
-										AND (tr.result > 6 AND tr.result <> '') AND (SUBSTR(t.time_created, 1, 7) = '$period')",
+										WHERE m.name IN ('Hemoglobin', 'HGB')
+										AND ts.name IN ('completed', 'verified')
+										AND tr.result > 6
+										AND tr.result <> ''
+										AND tr.result IS NOT NULL
+										AND (SUBSTR(t.time_created, 1, 7) = '$period')",
 
 
-				"Patients with Hb >6.0g/dl who were transfused" => "SELECT count(*) AS test_count FROM tests ot
-										INNER JOIN test_results otr ON otr.test_id = ot.id
+				"Patients with Hb >6.0g/dl who were transfused" =>"SELECT COUNT(DISTINCT ot.id) AS test_count 
+										FROM visits ov
+										INNER JOIN tests ot ON ov.id = ot.visit_id
 										INNER JOIN test_types ott ON ott.id = ot.test_type_id
+										INNER JOIN test_results otr ON otr.test_id = ot.id
 										INNER JOIN measures om ON om.id = otr.measure_id
-										INNER JOIN visits ov ON ov.id = ot.visit_id
-										WHERE ott.name = 'Cross-match' AND (SUBSTR(ot.time_created, 1, 7) = '$period')
-										AND (om.name = 'Pack ABO Group' AND otr.result IS NOT NULL) AND ov.patient_id 
-										IN (SELECT DISTINCT v.patient_id FROM tests t
+										WHERE ov.patient_id IN (
+											SELECT DISTINCT v.patient_id 
+											FROM tests t
 											INNER JOIN test_results tr ON tr.test_id = t.id
 											INNER JOIN visits v ON v.id = t.visit_id
-											INNER JOIN measures m on m.id = tr.measure_id
-											WHERE m.name = 'HGB' AND tr.result > 6 AND tr.result<>'')",
+											INNER JOIN measures m ON m.id = tr.measure_id
+											WHERE m.name IN ('Hemoglobin','HGB') AND tr.result IS NOT NULL AND tr.result > 6 AND tr.result<>''
+										)
+										AND ott.name = 'Cross-match' 
+										AND SUBSTR(ot.time_created, 1, 7) = '$period'
+										AND om.name = 'Pack ABO Group' 
+										AND otr.result IS NOT NULL",
 
 
 				"WBC manual count" => "SELECT count(*) AS test_count FROM 
@@ -1889,7 +1916,7 @@ P1
 								INNER JOIN test_results ON test_results.test_id = tests.id 
 								INNER JOIN measures ON measures.id = test_results.measure_id
 								WHERE (test_types.name = 'Malaria Screening' AND (test_statuses.name ='verified' OR test_statuses.name ='completed'))AND  
-								((substr(tests.time_created,1,7) = '$period' AND measures.id = 96 ) AND (test_results.result = '++++ (>10 parasites/field)' OR test_results.result = '+ (1-10 parasites/100 fields)' OR test_results.result = '++ (11-99 parasites/100 field)' OR test_results.result = '+++ (1-10 parasites /field)' OR test_results.result = 'No parasite seen' OR test_results.result REGEXP '^-?[0-9]+$'))",
+								((substr(tests.time_created,1,7) = '$period' AND measures.id = 96 ) AND (test_results.result <>''))",
 
 			"Total positive malaria microscopy tests done" => "SELECT count(*) AS test_count FROM 
 								tests 
