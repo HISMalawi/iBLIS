@@ -777,6 +777,13 @@ P1
 								INNER JOIN measures on measures.id= test_results.measure_id
 								WHERE (test_types.name='Liver Function Tests' AND measures.name='AST/GOT') AND 
 									substr(tests.time_created,1,7) = '$period' AND test_results.result<>'' ",
+		
+		"Gamma Glutamyl Transferase" => "SELECT count(*) AS test_count FROM tests 
+								INNER JOIN test_results ON tests.id = test_results.test_id
+								INNER JOIN test_types ON test_types.id = tests.test_type_id
+								INNER JOIN measures on measures.id= test_results.measure_id
+								WHERE (test_types.name='Liver Function Tests' AND measures.name='GGT/r-GT') AND 
+								substr(tests.time_created,1,7) = '$period' AND test_results.result<>'' ",
 
 		"Bilirubin Total" => "SELECT count(*) AS test_count FROM tests 
 								INNER JOIN test_results ON tests.id = test_results.test_id
@@ -1398,6 +1405,7 @@ P1
 			"Amylase",
 			"Antistreptolysin O (ASO)",
 			"Aspartate aminotransferase(AST)",
+			"Gamma Glutamyl Transferase",
 			"Bilirubin Total",
 			"Bilirubin Direct",
 			"Calcium",
@@ -1406,13 +1414,13 @@ P1
 			"Cholesterol LDL",
 			"Cholesterol HDL",
 			"Cholinesterase",
-			// "C Reactive Protein (CRP)", 
+			"C Reactive Protein (CRP)", 
 			"Creatinine",
 			"Creatine Kinase NAC",
 			"Creatine Kinase MB",
 			"Haemoglobin A1c",
 			"Iron",
-			// "Lipase",
+			"Lipase",
 			"Lactate Dehydrogenase (LDH)",
 			"Magnesium",
 			"Micro-protein",
