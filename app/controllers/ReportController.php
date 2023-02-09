@@ -634,7 +634,7 @@ P1
 							AND t.test_type_id = 
 								(SELECT id FROM test_types WHERE name = 'Cross-match')
 							AND t.visit_id IN 
-								(SELECT id FROM visits WHERE ward_or_location IN ('CWA', 'CWB', 'CWC', 'EM Nursery', 'Under 5 Clinic', 'ward 9',
+								(SELECT id FROM visits WHERE ward_or_location IN ('CWA', 'CWB', 'CWC', 'EM Nursery', 'Under 5 Clinic', 'ward 9','Paediatric Ward',
 								 'Nursery', 'Paediatric', 'Peads Special Care Ward', 'Paeds Medical','Peads Isolation Centre', 'Paediatric Surgical', 'Paediatric Medical'))			
 							AND substr(t.time_created,1,7) = '$period'",
 
