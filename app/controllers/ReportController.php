@@ -605,74 +605,100 @@ P1
 	public function extractBloodBankMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-		// "blood grouping done on Patients" => "SELECT count(*) AS test_count FROM tests 
-		// 						INNER JOIN test_results ON test_results.test_id = tests.id 
-		// 						INNER JOIN test_types ON test_types.id = tests.test_type_id
-		// 						INNER JOIN measures ON measures.id = test_results.measure_id	
-		// 						WHERE test_types.name = 'ABO Blood Grouping' AND 
-		// 						(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Grouping' AND test_results.result IS NOT NULL ))",
+		"Blood grouping done on Patients" => "SELECT count(*) AS test_count FROM tests t
+								WHERE t.test_status_id IN 
+									(SELECT id FROM test_statuses WHERE name IN ('verified', 'completed'))
+								AND t.test_type_id = 
+									(SELECT id FROM test_types WHERE name = 'ABO Blood Grouping')
+								AND substr(t.time_created,1,7) = '$period'",
 		
 		"Total X-matched" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_statuses ts ON ts.id=t.test_status_id 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id	
-								WHERE tt.name = 'Cross-match' AND (ts.name='completed' OR ts.name='verified')
+								WHERE tt.name = 'Cross-match' 
+								AND ts.name IN ('completed','verified')
 								AND substr(t.time_created,1,7) = '$period'",
 
 		"X-matched for matenity" => "SELECT COUNT(*) AS test_count FROM tests t
-			INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-			INNER JOIN test_types tt ON tt.id = t.test_type_id
-			INNER JOIN visits v ON v.id = t.visit_id
-			WHERE tt.name = 'Cross-match' AND (v.ward_or_location = 'Labour' OR v.ward_or_location = 'EM LW' OR v.ward_or_location = 'Maternity'
-				OR v.ward_or_location = 'PNW' OR v.ward_or_location = '2A' OR v.ward_or_location = '2B' OR v.ward_or_location = '3A'
-				OR v.ward_or_location = '3B') AND (ts.name='completed' OR ts.name='verified') AND substr(t.time_created,1,7) = '$period'",
+							WHERE t.test_status_id IN 
+								(SELECT id FROM test_statuses WHERE name IN ('completed', 'verified'))
+							AND t.test_type_id = 
+								(SELECT id FROM test_types WHERE name = 'Cross-match')
+							AND t.visit_id IN 
+								(SELECT id FROM visits WHERE ward_or_location IN ('Labour', 'Labour Ward', 'EM LW', 'Maternity','PNW', '2A', '2B', '3A', '3B', 'LW'))			
+							AND substr(t.time_created,1,7) = '$period'",
 
 		"X-matched for peads" => "SELECT COUNT(*) AS test_count FROM tests t
-			INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-			INNER JOIN test_types tt ON tt.id = t.test_type_id
-			INNER JOIN visits v ON v.id = t.visit_id
-			WHERE tt.name = 'Cross-match' AND (v.ward_or_location = 'CWA' OR v.ward_or_location = 'CWB' OR v.ward_or_location = 'CWC'
-				OR v.ward_or_location = 'EM Nursery' OR v.ward_or_location = 'Under 5 Clinic' OR v.ward_or_location = 'ward 9' OR v.ward_or_location = 'Nursery'
-				OR v.ward_or_location = 'Paediatric') AND (ts.name='completed' OR ts.name='verified') AND substr(t.time_created,1,7) = '$period'",
+							WHERE t.test_status_id IN 
+								(SELECT id FROM test_statuses WHERE name IN ('completed', 'verified'))
+							AND t.test_type_id = 
+								(SELECT id FROM test_types WHERE name = 'Cross-match')
+							AND t.visit_id IN 
+								(SELECT id FROM visits WHERE ward_or_location IN ('CWA', 'CWB', 'CWC', 'EM Nursery', 'Under 5 Clinic', 'ward 9',
+								 'Nursery', 'Paediatric', 'Peads Special Care Ward', 'Paeds Medical','Peads Isolation Centre', 'Paediatric Surgical', 'Paediatric Medical'))			
+							AND substr(t.time_created,1,7) = '$period'",
 
-		
 		"X-matched for others" =>"SELECT COUNT(*) AS test_count FROM tests t
-			INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-			INNER JOIN test_types tt ON tt.id = t.test_type_id
-			INNER JOIN visits v ON v.id = t.visit_id
-			WHERE tt.name = 'Cross-match' AND v.ward_or_location = 'Other' AND (ts.name='completed' OR ts.name='verified') AND substr(t.time_created,1,7) = '$period'",
-
-
+							WHERE t.test_status_id IN 
+								(SELECT id FROM test_statuses WHERE name IN ('completed', 'verified'))
+							AND t.test_type_id = 
+								(SELECT id FROM test_types WHERE name = 'Cross-match')
+							AND t.visit_id IN 
+								(SELECT id FROM visits WHERE ward_or_location IN ('Others', 'Other'))			
+							AND substr(t.time_created,1,7) = '$period'",
 		
-		"X-matches done on patients with Hb ≤ 6.0g/dl" => "SELECT count(*) AS test_count FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-					INNER JOIN test_types ON test_types.id = tests.test_type_id
-					INNER JOIN measures ON measures.id = test_results.measure_id	
-					INNER JOIN visits ON visits.id = tests.visit_id	
-					WHERE test_types.name = 'Cross-match' AND 
-					(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result<>'')) 
-						AND visits.patient_id  IN 
-					(SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-						INNER JOIN visits ON visits.id = tests.visit_id 
-						WHERE test_results.measure_id = 148 AND (test_results.result <= 6 AND test_results.result<>''))",
+		"X-matches done on patients with Hb ≤ 6.0g/dl" => "SELECT COUNT(DISTINCT ot.id) AS test_count 
+							FROM visits ov
+							INNER JOIN tests ot ON ov.id = ot.visit_id
+							INNER JOIN test_types ott ON ott.id = ot.test_type_id
+							INNER JOIN test_results otr ON otr.test_id = ot.id
+							INNER JOIN measures om ON om.id = otr.measure_id
+							WHERE ov.patient_id IN (
+								SELECT DISTINCT v.patient_id 
+								FROM tests t
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id = t.id
+								INNER JOIN visits v ON v.id = t.visit_id
+								INNER JOIN measures m ON m.id = tr.measure_id
+								WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
+								AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
+								AND tr.result IS NOT NULL AND tr.result <= 6 AND tr.result<>''
+							)
+							AND ott.name = 'Cross-match' 
+							AND SUBSTR(ot.time_created, 1, 7) = '$period'
+							AND om.name = 'Pack ABO Group' 
+							AND otr.result IS NOT NULL",
 
 
-		"X-matches done on patients with Hb > 6.0g/dl" => "SELECT count(*) AS test_count FROM tests 
-					INNER JOIN test_results ON test_results.test_id = tests.id 
-					INNER JOIN test_types ON test_types.id = tests.test_type_id
-					INNER JOIN measures ON measures.id = test_results.measure_id	
-					INNER JOIN visits ON visits.id = tests.visit_id	
-					WHERE test_types.name = 'Cross-match' AND 
-					(substr(tests.time_created,1,7) = '$period' AND (measures.name = 'Pack ABO Group' AND test_results.result IS NOT NULL ))
-						AND visits.patient_id  IN 
-					(SELECT distinct visits.patient_id FROM tests INNER JOIN test_results ON test_results.test_id = tests.id 
-						INNER JOIN visits ON visits.id = tests.visit_id 
-						WHERE test_results.measure_id = 148 AND test_results.result > 6 AND test_results.result<>'')",
+		"X-matches done on patients with Hb > 6.0g/dl" => "SELECT COUNT(DISTINCT ot.id) AS test_count 
+							FROM visits ov
+							INNER JOIN tests ot ON ov.id = ot.visit_id
+							INNER JOIN test_types ott ON ott.id = ot.test_type_id
+							INNER JOIN test_results otr ON otr.test_id = ot.id
+							INNER JOIN measures om ON om.id = otr.measure_id
+							WHERE ov.patient_id IN (
+								SELECT DISTINCT v.patient_id 
+								FROM tests t
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id = t.id
+								INNER JOIN visits v ON v.id = t.visit_id
+								INNER JOIN measures m ON m.id = tr.measure_id
+								WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
+								AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
+								AND tr.result IS NOT NULL AND tr.result > 6 AND tr.result<>''
+							)
+							AND ott.name = 'Cross-match' 
+							AND SUBSTR(ot.time_created, 1, 7) = '$period'
+							AND om.name = 'Pack ABO Group' 
+							AND otr.result IS NOT NULL",
 
 		"Total Number Transfused with Whole blood" => "SELECT count(*) AS test_count FROM tests t
 					INNER JOIN test_results tr ON tr.test_id = t.id 
 					INNER JOIN test_types tt ON tt.id = t.test_type_id
 					INNER JOIN measures m ON m.id = tr.measure_id	
 					INNER JOIN visits v ON v.id = t.visit_id	
-					WHERE tt.name = 'Cross-match' AND m.name='Product Type' AND tr.result='Whole Blood'
+					WHERE tt.name = 'Cross-match' 
+					AND m.name='Product Type' AND tr.result='Whole Blood'
 					AND substr(t.time_created,1,7) = '$period'",
 
 		"Total Number Transfused with Packed Cells" =>"SELECT count(*) AS test_count FROM tests t
@@ -1725,7 +1751,7 @@ P1
 
 
 		$indicators = array(
-				// "blood grouping done on Patients",
+				"Blood grouping done on Patients",
 				"Total X-matched",
 				"X-matched for matenity",
 				"X-matched for peads",
