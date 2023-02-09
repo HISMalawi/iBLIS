@@ -85,7 +85,7 @@
                             <th>Sep</th>
                             <th style="background-color:skyblue";>Total <br/> Q3</th>
                             <th>Oct</th>
-                            <th>Nev</th>
+                            <th>Nov</th>
                             <th>Dec</th>
                             <th style="background-color:skyblue";>Total <br/> Q4</th>
                             <th style="background-color:darkgreen";>Total</th>
