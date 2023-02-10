@@ -1551,26 +1551,24 @@ P1
 	public function extracthaematologyMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-				"Full Blood Count" => "SELECT count(distinct t.id) AS test_count
-										FROM tests t
-										INNER JOIN test_types ON test_types.id = t.test_type_id
-										INNER JOIN test_statuses ON test_statuses.id = t.test_status_id
-										WHERE test_types.name = 'FBC' AND test_statuses.name IN ('verified', 'completed') AND 
-										(substr(time_created,1,7) = '$period')",
+				"Full Blood Count" => "SELECT count(distinct t.id) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name IN ('FBC', 'FBC (Paeds)') 
+										AND ts.name IN ('verified', 'completed') 
+										AND substr(t.time_created,1,7) = '$period'",
 
-				"Heamoglobin only (blood donors excluded)" => "SELECT count(distinct tests.id) AS test_count
-										FROM test_results
-										INNER JOIN measures ON measures.id = test_results.measure_id
-										INNER JOIN tests ON tests.id = test_results.test_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE measures.name = 'HGB' 
-										AND test_types.name = 'FBC'
-										AND test_statuses.name IN ('verified', 'completed') AND
-										(substr(tests.time_created,1,7) = '$period' )",
+				"Heamoglobin only (blood donors excluded)" => "SELECT count(distinct t.id) AS test_count FROM test_results tr
+										INNER JOIN measures m ON m.id = tr.measure_id
+										INNER JOIN tests t ON t.id = tr.test_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										WHERE m.name = 'HGB' 
+										AND tt.name IN ('FBC', 'FBC (Paeds)')
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period' ",
 
-				"Heamoglobin only (Hemacue)" => "SELECT COUNT(*) AS test_count
-										FROM tests t
+				"Heamoglobin only (Hemacue)" => "SELECT COUNT(*) AS test_count FROM tests t
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN testtype_measures ttm ON ttm.test_type_id = tt.id
 										INNER JOIN measures m ON m.id = ttm.measure_id
@@ -1580,14 +1578,13 @@ P1
 										AND ts.name IN ('completed', 'verified')
 										AND (substr(t.time_created,1,7) = '$period')",
 
-				"Patients with Hb ≤ 6.0g/dl" => "SELECT COUNT(DISTINCT t.id) AS test_count
-										FROM test_results tr
+				"Patients with Hb ≤ 6.0g/dl" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM test_results tr
 										INNER JOIN tests t ON tr.test_id = t.id
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
+										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
 										AND ts.name IN ('completed', 'verified')
 										AND tr.result <= 6
 										AND tr.result <> ''
@@ -1608,7 +1605,7 @@ P1
 											INNER JOIN visits v ON v.id = t.visit_id
 											INNER JOIN measures m ON m.id = tr.measure_id
 											WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
+											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
 											AND tr.result IS NOT NULL AND tr.result <= 6 AND tr.result<>''
 										)
 										AND ott.name = 'Cross-match' 
@@ -1623,13 +1620,12 @@ P1
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
+										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
 										AND ts.name IN ('completed', 'verified')
 										AND tr.result > 6
 										AND tr.result <> ''
 										AND tr.result IS NOT NULL
 										AND (SUBSTR(t.time_created, 1, 7) = '$period')",
-
 
 				"Patients with Hb >6.0g/dl who were transfused" =>"SELECT COUNT(DISTINCT ot.id) AS test_count 
 										FROM visits ov
@@ -1645,7 +1641,7 @@ P1
 											INNER JOIN visits v ON v.id = t.visit_id
 											INNER JOIN measures m ON m.id = tr.measure_id
 											WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
+											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
 											AND tr.result IS NOT NULL AND tr.result > 6 AND tr.result<>''
 										)
 										AND ott.name = 'Cross-match' 
@@ -1653,86 +1649,93 @@ P1
 										AND om.name = 'Pack ABO Group' 
 										AND otr.result IS NOT NULL",
 
+				"WBC manual count" => "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'Manual Differential & Cell Morphology'
+										AND ts.name IN ('verified', 'completed') 
+										AND substr(t.time_created,1,7) = '$period'",
 
-				"WBC manual count" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
-										(substr(time_created,1,7) = '$period')",
+				"Manual WBC differential" => "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'Manual Differential & Cell Morphology'
+										AND ts.name IN ('verified', 'completed') 
+										AND substr(t.time_created,1,7) = '$period'",
 
+				"Erythrocyte Sedimentation Rate (ESR)" => "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name IN ('ESR','ESR Peads')
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period'",
 
+				"Sickling Test" => "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'Sickling Test'
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period'",
 
-				"Manual WBC differential" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
-										(substr(time_created,1,7) = '$period')",
+				"Reticulocyte count" => "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'Reticulocyte Count' 
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period'",
 
+				"Prothrombin time (PT)" => "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'Prothrombin Time' 
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period'",
 
-				"Erythrocyte Sedimentation Rate (ESR)" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'ESR' AND 
-										(substr(time_created,1,7) = '$period')",
+				"Activated Partial Thromboplastin Time (APTT)" => "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'APTT' 
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period'",
 
+				"International Normalized Ratio (INR)" =>  "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'INR' 
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period'",
 
+				"Bleeding/ cloting time" =>  "SELECT count(*) AS test_count FROM tests t
+										INNER JOIN test_types tt ON tt.id = t.test_type_id
+										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+										WHERE tt.name = 'Bleeding Time' 
+										AND ts.name IN ('verified', 'completed')
+										AND substr(t.time_created,1,7) = '$period'",
 
-				"Sickling Test" => "SELECT count(*) AS test_count FROM tests 
-									INNER JOIN test_types ON test_types.id = tests.test_type_id
-									INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-									WHERE (test_types.name = 'Sickling Test' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
-									(substr(time_created,1,7) = '$period')",
+				"CD4 absolute count" => "SELECT COUNT(*) AS test_count FROM tests t 
+										INNER JOIN test_types tt ON tt.id = t.test_type_id 
+										INNER JOIN test_results tr ON tr.test_id = t.id 
+										INNER JOIN measures m ON m.id = tr.measure_id
+										WHERE tt.name = 'CD4' 
+										AND m.name = 'CD4 Count' 
+										AND tr.result <> '' 
+										AND (substr(time_created,1,7) = '$period')",
 
-				"Reticulocyte count" => "SELECT count(*) AS test_count FROM tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Reticulocyte Count' AND (substr(time_created,1,7) = '$period')",
-
-
-				"Prothrombin time (PT)" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE (test_types.name = 'Prothrombin Time' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND										
-										(substr(time_created,1,7) = '$period')",
-
-
-				"Activated Partial Thromboplastin Time (APTT)" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE (test_types.name = 'APTT' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
-										(substr(time_created,1,7) = '$period')",
-
-
-				"International Normalized Ratio (INR)" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										INNER JOIN test_statuses ON test_statuses.id = tests.test_status_id
-										WHERE (test_types.name = 'INR' AND (test_statuses.name ='verified' OR test_statuses.name ='completed') ) AND
-										(substr(time_created,1,7) = '$period')",
-
-
-				"Bleeding/ cloting time" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Bleeding Time' AND 
-										(substr(time_created,1,7) = '$period')",
-
-				"CD4 absolute count" => "SELECT COUNT(*) AS test_count FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id 
-										INNER JOIN test_results tr ON tr.test_id = t.id INNER JOIN measures m ON m.id = tr.measure_id
-										WHERE tt.name = 'CD4' AND m.name = 'CD4 Count' AND tr.result <> '' AND (substr(time_created,1,7) = '$period')",
-
-				"CD4 percentage" => "SELECT COUNT(*) AS test_count FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id 
-									INNER JOIN test_results tr ON tr.test_id = t.id INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name = 'CD4' AND m.name = 'CD4 %' AND tr.result <> '' AND (substr(time_created,1,7) = '$period')",
+				"CD4 percentage" => "SELECT COUNT(*) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id = t.test_type_id 
+									INNER JOIN test_results tr ON tr.test_id = t.id 
+									INNER JOIN measures m ON m.id = tr.measure_id
+									WHERE tt.name = 'CD4' 
+									AND m.name = 'CD4 %' 
+									AND tr.result <> '' 
+									AND (substr(time_created,1,7) = '$period')",
 				
-
-				"Blood film for red cell morphology" => "SELECT count(*) AS test_count FROM 
-										tests 
-										INNER JOIN test_types ON test_types.id = tests.test_type_id
-										WHERE test_types.name = 'Manual Differential & Cell Morphology' AND 
-										(substr(time_created,1,7) = '$period')"
-				
+				"Blood film for red cell morphology" => "SELECT count(*) AS test_count FROM tests t
+									INNER JOIN test_types tt ON tt.id = t.test_type_id
+									INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+									WHERE tt.name = 'Manual Differential & Cell Morphology'
+									AND ts.name IN ('verified', 'completed') 
+									AND substr(t.time_created,1,7) = '$period'"		
 		);
 
 		
