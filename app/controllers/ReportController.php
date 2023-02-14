@@ -1333,9 +1333,13 @@ P1
 								WHERE tt.name = 'Cryptococcus Antigen Test' AND 
 								substr(t.time_created,1,7) = '$period' AND tr.result ='Positive'",
 
-				"Total number of fluids analysed" => "SELECT count(*) AS test_count FROM specimens s
-								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
-								WHERE st.name LIKE '%Fluid%' AND substr(s.time_accepted,1,7) = '$period'",
+				"Total number of fluids analysed" =>"SELECT count(DISTINCT sp.id) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id = sp.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name LIKE '%Fluid%'
+								AND ts.name IN ('verified', 'completed')
+								AND substr(t.time_created,1,7) = '$period'",
 				
 				"Fluids with organisms" =>"SELECT count(*) AS test_count FROM specimens s
 								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
@@ -1409,7 +1413,7 @@ P1
 	
 	public function microbiologyMohReport(){
 
-		$quarter = ['Quarter 1','QNumber of CSF samples analysed for AFBuarter 2','Quarter 3','Quarter 4'];	
+		$quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4'];	
 		$currentYear = date("Y");
 		$years = array();
 		for($i = $currentYear; $i >= "2016"; $i = $i - 1){
