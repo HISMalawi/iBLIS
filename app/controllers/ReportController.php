@@ -1358,16 +1358,21 @@ P1
 								INNER JOIN test_results tr ON  tr.test_id=t.id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN measures m ON m.id=tr.measure_id
-								WHERE tt.name IN ('Cholera', 'cholera rapid test', 'cholera rapoid test') 
-								AND m.name IN ('Rapid Test', 'cholera test')
+								WHERE tt.name IN ('Cholera', 'cholera rapid test', 'cholera rapoid test', 'Vibrio Cholerae', 'Cholera RDT') 
+								AND m.name IN ('Rapid Test', 'cholera test', 'Cholera', 'Cholera RDT')
 								AND ts.name IN ('completed', 'verified')
 								AND substr(t.time_created,1,7) = '$period'",
 				
 				"Positive Cholera Rapid Diagnostic test" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON t.test_type_id=tt.id
 								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN measures m ON m.id=tr.measure_id
-								WHERE tt.name='Cholera' AND m.name='Rapid Test' AND substr(t.time_created,1,7) = '$period' AND tr.result='Positive'",
+								WHERE tt.name IN ('Cholera', 'cholera rapid test', 'cholera rapoid test', 'Vibrio Cholerae', 'Cholera RDT') 
+								AND m.name IN ('Rapid Test', 'cholera test', 'Cholera', 'Cholera RDT')
+								AND ts.name IN ('completed', 'verified')
+								AND (tr.result = 'Positive' OR t.interpretation LIKE '%Positive%')
+								AND substr(t.time_created,1,7) = '$period'",
 
 				"Cholera cultures done" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON t.test_type_id=tt.id
