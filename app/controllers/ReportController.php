@@ -1377,46 +1377,69 @@ P1
 				"Cholera cultures done" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON t.test_type_id=tt.id
 								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN measures m ON m.id=tr.measure_id
-								WHERE tt.name='Cholera' AND m.name='Culture' AND substr(t.time_created,1,7) = '$period'",
+								WHERE tt.name IN ('Cholera','Vibrio Cholerae') 
+								AND m.name = 'Culture'
+								AND ts.name IN ('completed', 'verified')
+								AND substr(t.time_created,1,7) = '$period'",
 				
-				"Positive cholera samples" => "SELECT count(*) AS test_count FROM tests t
-								INNER JOIN test_types tt ON t.test_type_id=tt.id
-								INNER JOIN test_results tr ON  tr.test_id=t.id
-								INNER JOIN measures m ON m.id=tr.measure_id
-								WHERE tt.name='Cholera' AND m.name='Culture' AND substr(t.time_created,1,7) = '$period' AND tr.result='Growth'",
+				"Positive cholera samples" =>"SELECT count(*) AS test_count FROM tests t
+							INNER JOIN test_types tt ON t.test_type_id=tt.id
+							INNER JOIN test_results tr ON  tr.test_id=t.id
+							INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+							INNER JOIN measures m ON m.id=tr.measure_id
+							WHERE tt.name IN ('Cholera','Vibrio Cholerae') 
+							AND m.name = 'Culture'
+							AND ts.name IN ('completed', 'verified')
+							AND tr.result = 'Growth'
+							AND substr(t.time_created,1,7) = '$period'",
 				
-				"Other stool cultures" =>"SELECT count(*) AS test_count FROM specimens s
-								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=s.id
+				"Other stool cultures" =>"SELECT count(*) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_results tr ON tr.test_id=t.id
-								WHERE st.name = 'Stool' AND substr(s.time_accepted,1,7) = '$period'
-								AND tt.name='Culture & Sensitivity'",	
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'Stool'
+								AND ts.name IN ('completed', 'verified')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND substr(t.time_created,1,7) = '$period'",
 
-				"Stool samples with organisms isolated on culture" =>"SELECT count(*) AS test_count FROM specimens s
-							INNER JOIN specimen_types st ON st.id=s.specimen_type_id
-							INNER JOIN tests t ON t.specimen_id=s.id
-							INNER JOIN test_types tt ON tt.id = t.test_type_id
-							INNER JOIN test_results tr ON tr.test_id=t.id
-							WHERE st.name = 'Stool' AND substr(s.time_accepted,1,7) = '$period'
-							AND tt.name='Culture & Sensitivity' AND tr.result='Growth'",	
+				"Stool samples with organisms isolated on culture" =>"SELECT count(*) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'Stool'
+								AND ts.name IN ('completed', 'verified')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND tr.result = 'Growth'
+								AND substr(t.time_created,1,7) = '$period'",
 
-				"Urine culture"=>"SELECT count(*) AS test_count FROM specimens s
-							INNER JOIN specimen_types st ON st.id=s.specimen_type_id
-							INNER JOIN tests t ON t.specimen_id=s.id
-							INNER JOIN test_types tt ON tt.id = t.test_type_id
-							INNER JOIN test_results tr ON tr.test_id=t.id
-							WHERE st.name = 'Urine' AND substr(s.time_accepted,1,7) = '$period'
-							AND tt.name='Culture & Sensitivity'",	
+				"Urine culture"=>"SELECT count(*) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'Urine'
+								AND ts.name IN ('completed', 'verified')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND substr(t.time_created,1,7) = '$period'",
 
-				"Urine culture Positive" => "SELECT count(*) AS test_count FROM specimens s
-							INNER JOIN specimen_types st ON st.id=s.specimen_type_id
-							INNER JOIN tests t ON t.specimen_id=s.id
-							INNER JOIN test_types tt ON tt.id = t.test_type_id
-							INNER JOIN test_results tr ON tr.test_id=t.id
-							WHERE st.name = 'Urine' AND substr(s.time_accepted,1,7) = '$period'
-							AND tt.name='Culture & Sensitivity' AND tr.result='Growth'",
+				"Urine culture Positive" => "SELECT count(*) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'Urine'
+								AND ts.name IN ('completed', 'verified')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND tr.result = 'Growth'
+								AND substr(t.time_created,1,7) = '$period'",
 		);
 
 		
