@@ -1307,22 +1307,28 @@ P1
 								WHERE (specimen_types.name = 'Swabs' AND test_types.name = 'Culture & Sensitivity') AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth')",
 
-				"Number of Blood Cultures done" => "SELECT count(*) AS test_count FROM specimens 
-								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
-								INNER JOIN tests ON tests.specimen_id = specimens.id
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id  = tests.test_type_id
-								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
-								(substr(tests.time_created,1,7) = '$period' )",
+				"Number of Blood Cultures done" => "SELECT count(*) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'Blood'
+								AND ts.name IN ('completed', 'verified')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND substr(t.time_created,1,7) = '$period'",
 
-				"Positive blood Cultures" => "SELECT count(*) AS test_count FROM 
-								specimens 
-								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
-								INNER JOIN tests ON tests.specimen_id = specimens.id
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id  = tests.test_type_id
-								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
-								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
+				"Positive blood Cultures" => "SELECT count(*) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'Blood'
+								AND ts.name IN ('completed', 'verified')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND tr.result = 'Growth'
+								AND substr(t.time_created,1,7) = '$period'",
 
 				"Cryptococcal antigen test" =>"SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
