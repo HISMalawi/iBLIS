@@ -1224,16 +1224,22 @@ P1
 								WHERE tt.name = 'CSF' AND (t.test_status_id<>1 OR t.test_status_id<>2) AND
 								(substr(t.time_created,1,7) = '$period' )",
 
-				"Total India ink done" => "SELECT count(*) AS test_count FROM   tests t 
+				"Total India ink done" => "SELECT count(distinct t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								WHERE tt.name = 'India Ink' AND (t.test_status_id<>1 OR t.test_status_id<>2) AND
-								(substr(t.time_created,1,7) = '$period' )",								
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE tt.name IN ('India Ink', 'India Ink (Paeds)')
+								AND ts.name IN ('completed', 'verified')
+								AND substr(t.time_created,1,7) = '$period'",							
 				
-				"India ink positive" => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'India Ink' AND 
-								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'POSITIVE')", 
+				"India ink positive" => "SELECT count(distinct t.id) AS test_count FROM tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE tt.name IN ('India Ink', 'India Ink (Paeds)')
+								AND ts.name IN ('completed', 'verified')
+								AND tr.result = 'Positive'
+								AND substr(t.time_created,1,7) = '$period'",
 
 				"Total Gram stain done" =>"SELECT count(distinct t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
