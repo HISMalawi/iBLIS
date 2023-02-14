@@ -1324,14 +1324,41 @@ P1
 								WHERE (specimen_types.name = 'Blood' AND test_types.name = 'Culture & Sensitivity') AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
 
-				"Cryptococcal antigen test" => "SELECT count(*) AS test_count FROM tests t INNER JOIN test_types tt ON tt.id=t.test_type_id
-								WHERE tt.name='Cryptococcus Antigen Test' AND substr(t.time_created,1,7) = '$period'",					
-
-				"Cryptococcal antigen test Positive" => "SELECT count(*) AS test_count FROM tests t
+				"Cryptococcal antigen test" =>"SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								INNER JOIN test_results tr ON tr.test_id = t.id
+								WHERE tt.name = 'Cryptococcus Antigen Test'
+								AND ts.name IN ('verified','completed')
+								AND tr.result NOT IN ('', '0')
+								AND substr(t. time_created,1,7) = '$period'", 				
+
+				"Cryptococcal antigen test Positive" => "SELECT count(*) AS test_count FROM tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
-								WHERE tt.name = 'Cryptococcus Antigen Test' AND 
-								substr(t.time_created,1,7) = '$period' AND tr.result ='Positive'",
+								WHERE tt.name = 'Cryptococcus Antigen Test'
+								AND ts.name IN ('verified','completed')
+								AND tr.result = 'Positive'
+								AND substr(t. time_created,1,7) = '$period'",
+									
+				"Serum Crag" => "SELECT count(*) AS test_count FROM tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								INNER JOIN test_results tr ON tr.test_id = t.id
+								WHERE tt.name = 'Serum CrAg'
+								AND ts.name IN ('verified','completed')
+								AND tr.result NOT IN ('', '0')
+								AND substr(t. time_created,1,7) = '$period'", 				
+
+				"Serum Crag Positive" => "SELECT count(*) AS test_count FROM tests t 
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								INNER JOIN test_results tr ON tr.test_id = t.id 
+								WHERE tt.name = 'Serum CrAg'
+								AND ts.name IN ('verified','completed')
+								AND tr.result = 'Positive'
+								AND substr(t. time_created,1,7) = '$period'",
 
 				"Total number of fluids analysed" =>"SELECT count(DISTINCT sp.id) AS test_count FROM specimens sp
 								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
@@ -1502,6 +1529,8 @@ P1
 			"Positive blood Cultures",
 			"Cryptococcal antigen test",
 			"Cryptococcal antigen test Positive",
+			"Serum Crag",
+			"Serum Crag Positive",
 			"Total number of fluids analysed",
 			"Fluids with organisms",
 			"Cholera Rapid Diagnostic test done",
@@ -2027,7 +2056,7 @@ P1
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 										INNER JOIN test_results tr ON tr.test_id = t.id
-										WHERE tt.name IN ('Serum CrAg', 'Cryptococcus Antigen Test', 'CSF CrAg LFA') 
+										WHERE tt.name = 'Serum CrAg'
 										AND ts.name IN ('verified','completed')
 										AND tr.result NOT IN ('', '0')
 										AND substr(t. time_created,1,7) = '$period'", 				
@@ -2036,7 +2065,7 @@ P1
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 										INNER JOIN test_results tr ON tr.test_id = t.id 
-										WHERE tt.name IN ('Serum CrAg', 'Cryptococcus Antigen Test', 'CSF CrAg LFA') 
+										WHERE tt.name = 'Serum CrAg'
 										AND ts.name IN ('verified','completed')
 										AND tr.result = 'Positive'
 										AND substr(t. time_created,1,7) = '$period'"
