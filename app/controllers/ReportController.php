@@ -1235,18 +1235,22 @@ P1
 								WHERE test_types.name = 'India Ink' AND 
 								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'POSITIVE')", 
 
-				"Total Gram stain done" =>"SELECT count(*) AS test_count FROM   tests t 
+				"Total Gram stain done" =>"SELECT count(distinct t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								WHERE tt.name = 'Gram Stain' AND (t.test_status_id<>1 OR t.test_status_id<>2) AND
-								(substr(t.time_created,1,7) = '$period' )",
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE tt.name IN ('Gram Stain', 'Gram Stain (Paeds)')
+								AND ts.name IN ('completed', 'verified')
+								AND substr(t.time_created,1,7) = '$period'",
 
-				"Gram stain positive" => "SELECT count(*) AS test_count FROM tests 
-							INNER JOIN test_results ON tests.id = test_results.test_id
-							INNER JOIN test_types ON test_types.id = tests.test_type_id
-							WHERE test_types.name = 'Gram Stain' AND 
-							(substr(tests.time_created,1,7) = '$period' AND 
-							((test_results.result = 'yes' OR test_results.result = 'organism seen' OR test_results.result = 'Yeast cells seen') 
-							AND test_results.result IS NOT NULL))",
+				"Gram stain positive" => "SELECT count(distinct t.id) AS test_count FROM tests t 
+							INNER JOIN test_types tt ON tt.id = t.test_type_id
+							INNER JOIN test_results tr ON tr.test_id=t.id
+							INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+							WHERE tt.name IN ('Gram Stain', 'Gram Stain (Paeds)')
+							AND ts.name IN ('completed', 'verified')
+							AND tr.result LIKE '%Positive%'
+							AND substr(t.time_created,1,7) = '$period'",
 
 				"HVS analysed" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
 								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
