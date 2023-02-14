@@ -1341,19 +1341,27 @@ P1
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period'",
 				
-				"Fluids with organisms" =>"SELECT count(*) AS test_count FROM specimens s
-								INNER JOIN specimen_types st ON st.id=s.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=s.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
+				"Fluids with organisms" =>"SELECT COUNT(DISTINCT sp.id) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id = sp.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id=t.id
-								WHERE st.name LIKE '%Fluid%' AND substr(s.time_accepted,1,7) = '$period'
-								AND tt.name='Culture & Sensitivity' AND tr.result='Growth'",	
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								WHERE spt.name LIKE '%Fluid%'
+								AND ts.name IN ('verified', 'completed')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND tr.result = 'Growth'
+								AND substr(t.time_created,1,7) = '$period'",
 
 				"Cholera Rapid Diagnostic test done" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON t.test_type_id=tt.id
 								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN measures m ON m.id=tr.measure_id
-								WHERE tt.name='Cholera' AND m.name='Rapid Test' AND substr(t.time_created,1,7) = '$period'",
+								WHERE tt.name IN ('Cholera', 'cholera rapid test', 'cholera rapoid test') 
+								AND m.name IN ('Rapid Test', 'cholera test')
+								AND ts.name IN ('completed', 'verified')
+								AND substr(t.time_created,1,7) = '$period'",
 				
 				"Positive Cholera Rapid Diagnostic test" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON t.test_type_id=tt.id
