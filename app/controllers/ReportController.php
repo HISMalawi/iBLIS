@@ -1182,47 +1182,80 @@ P1
 								WHERE test_types.name = 'Early Infant Diagnosis' AND 
 								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
 									
-				"VL samples received" =>"SELECT count(*) AS test_count FROM tests t 
+				"VL samples received" =>"SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
-									WHERE tt.name='Viral Load' AND substr(t.time_created,1,7) = '$period' AND t.test_status_id<>1",
+									WHERE tt.name='Viral Load'  
+									AND t.test_status_id<>1
+									AND substr(t.time_created,1,7) = '$period'",
 
-				"VL tests done" => "SELECT count(*) AS test_count FROM tests t
+				"VL tests done" => "SELECT count(distinct t.id) AS test_count FROM tests t
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
-									WHERE tt.name='Viral Load' AND substr(t.time_created,1,7) = '$period' 
-									AND (t.test_status_id<>1 OR t.test_status_id<>2 OR t.test_status_id<>3)",
+									WHERE tt.name='Viral Load'  
+									AND t.test_status_id NOT IN (1,2,3,7)
+									AND substr(t.time_created,1,7) = '$period'",
 
-				"VL results with less than 1000 copies per ml" =>"SELECT count(*) AS test_count FROM tests t
+				"VL results with less than 1000 copies per ml" =>"SELECT count(distinct t.id) AS test_count FROM tests t
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
-									WHERE tt.name='Viral Load' AND substr(t.time_created,1,7) = '$period' 
-									AND tr.result < 1000",
+									WHERE tt.name='Viral Load' 
+									AND tr.result < 1000
+									AND substr(t.time_created,1,7) = '$period'",
 
-				"Number of CSF samples analysed" => "SELECT count(*) AS test_count FROM    
-								specimens 
-								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
-								WHERE specimen_types.name = 'CSF' AND 
-								(substr(specimens.time_accepted,1,7) = '$period' )",
+				"Number of CSF samples analysed" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
+									INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+									INNER JOIN tests t ON t.specimen_id=sp.id
+									INNER JOIN test_types tt ON tt.id = t.test_type_id
+									INNER JOIN test_results tr ON tr.test_id=t.id
+									INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+									WHERE spt.name = 'CSF'
+									AND ts.name IN ('completed', 'verified')
+									AND substr(t.time_created,1,7) = '$period'",
 
-				"Number of CSF samples analysed for AFB" => "SELECT count(*) AS test_count FROM 
-								specimens 
-								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
-								WHERE specimen_types.name = 'CSFF' AND 
-								(substr(specimens.time_accepted,1,7) = '$period' )",
+				"Number of CSF samples analysed for AFB" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
+									INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+									INNER JOIN tests t ON t.specimen_id=sp.id
+									INNER JOIN test_types tt ON tt.id = t.test_type_id
+									INNER JOIN test_results tr ON tr.test_id=t.id
+									INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+									WHERE spt.name = 'CSF'
+									AND tt.name = 'TB Tests'
+									AND ts.name IN ('completed', 'verified')
+									AND substr(t.time_created,1,7) = '$period'",
 				
-				"Number of CSF samples with Organism" => "SELECT count(*) AS test_count FROM 
-								specimens 
-								INNER JOIN specimen_types ON specimens.specimen_type_id = specimen_types.id
-								INNER JOIN tests ON tests.specimen_id = specimens.id
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id  = tests.test_type_id
-								WHERE (specimen_types.name = 'CSF' AND test_types.name = 'Culture & Sensitivity') AND 
-								(substr(tests.time_created,1,7) = '$period' AND test_results.result = 'Growth' )",
+				"Number of CSF samples with Organism" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
+									INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+									INNER JOIN tests t ON t.specimen_id=sp.id
+									INNER JOIN test_types tt ON tt.id = t.test_type_id
+									INNER JOIN test_results tr ON tr.test_id=t.id
+									INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+									WHERE spt.name = 'CSF'
+									AND (tr.result IN ('seen', 'growth') OR tr.result LIKE '%positive%')
+									AND ts.name IN ('completed', 'verified')
+									AND substr(t.time_created,1,7) = '$period'",
 				
-
-				"Number of CSF cultures done" => "SELECT count(*) AS test_count FROM   tests t 
+				"Number of CSF cultures done" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								WHERE tt.name = 'CSF' AND (t.test_status_id<>1 OR t.test_status_id<>2) AND
-								(substr(t.time_created,1,7) = '$period' )",
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'CSF'
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND ts.name IN ('completed', 'verified')
+								AND substr(t.time_created,1,7) = '$period'",
+				
+				"Positive CSF cultures" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
+								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
+								INNER JOIN tests t ON t.specimen_id=sp.id
+								INNER JOIN test_types tt ON tt.id = t.test_type_id
+								INNER JOIN test_results tr ON tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								WHERE spt.name = 'CSF'
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND tr.result NOT LIKE '%Growth of normal%'
+								AND tr.result NOT IN ('0', 'No Growth', 'Growth of contaminants')
+								AND ts.name IN ('completed', 'verified')
+								AND substr(t.time_created,1,7) = '$period'",
 
 				"Total India ink done" => "SELECT count(distinct t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
@@ -1565,6 +1598,7 @@ P1
 			"Number of CSF samples analysed for AFB",
 			"Number of CSF samples with Organism",
 			"Number of CSF cultures done",
+			"Positive CSF cultures",
 			"Total India ink done",
 			"India ink positive",
 			"Total Gram stain done",
