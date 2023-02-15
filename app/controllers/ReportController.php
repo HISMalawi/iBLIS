@@ -1168,19 +1168,23 @@ P1
 
 				"DNA-EID samples received" => "SELECT count(*) AS test_count FROM tests t  
 							INNER JOIN test_types tt ON tt.id = t.test_type_id
-							WHERE tt.name = 'Early Infant Diagnosis' AND 
-							(substr(t.time_created,1,7) = '$period' AND t.test_status_id<>1)",
+							WHERE tt.name = 'Early Infant Diagnosis'
+							AND t.test_status_id <> 1
+							AND substr(t.time_created,1,7) = '$period'",
 
 				"DNA-EID tests done" =>  "SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								WHERE tt.name = 'Early Infant Diagnosis' AND (t.test_status_id<>1 OR t.test_status_id<>2 OR t.test_status_id<>3) 
+								WHERE tt.name = 'Early Infant Diagnosis'
+								AND t.test_status_id NOT IN (1,2,3,7)
 								AND substr(t.time_created,1,7) = '$period'",
 
-				"Number with positive results"  => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'Early Infant Diagnosis' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
+				"Number with positive results"  => "SELECT count(*) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									INNER JOIN test_results tr ON t.id = tr.test_id
+									WHERE tt.name='Early Infant Diagnosis'
+									AND tr.result NOT IN ('NO RESULT', 'ERROR', 'INVALID', 'NEGATIVE', '', '0', 'h')
+									AND tr.result NOT LIKE '%NOT%'
+									AND substr(t.time_created,1,7) = '$period'",
 									
 				"VL samples received" =>"SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
@@ -1198,7 +1202,11 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									WHERE tt.name='Viral Load' 
-									AND tr.result < 1000
+									AND REPLACE(tr.result, ',', '') < 1000
+									AND REPLACE(REPLACE(tr.result, ',', '') , ' ', '') < 1000
+									AND REPLACE(REPLACE(tr.result, '<', ''), ' ', '') < 1000
+									AND REPLACE(tr.result,' ', '') < 1000
+									AND tr.result NOT IN ('NO RESULT', 'ERROR', 'INVALID')
 									AND substr(t.time_created,1,7) = '$period'",
 
 				"Number of CSF samples analysed" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
