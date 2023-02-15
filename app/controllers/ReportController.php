@@ -1144,7 +1144,7 @@ P1
 								WHERE test_types.name = 'TB Tests' AND 
 								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
 
-				"Total number of COVID-19 tests performed" => "SELECT count(*) AS test_count FROM tests t 
+				"Total number of COVID-19 tests performed" => "SELECT count(distinct t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
 								AND t.test_status_id NOT IN (1,2,3,7)
