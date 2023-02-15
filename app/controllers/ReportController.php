@@ -1146,39 +1146,51 @@ P1
 
 				"Total number of COVID-19 tests performed" => "SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								WHERE tt.name='SARS COV 2' AND (t.test_status_id<>1 OR t.test_status_id<>2 OR t.test_status_id<>3) AND substr(t.time_created,1,7) = '$period'",
-				
-				"Total number of SARS-COV2 Positive" => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'SARS COV 2' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'POSITIVE'))",
-
-				"Total number of INVALID SARS-COV2 results" =>  "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'SARS COV 2' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = 'INVALID'))",
-
-				"Total number of NO RESULTS"  => "SELECT count(*) AS test_count FROM tests 
-								INNER JOIN test_results ON tests.id = test_results.test_id
-								INNER JOIN test_types ON test_types.id = tests.test_type_id
-								WHERE test_types.name = 'SARS COV 2' AND 
-								(substr(tests.time_created,1,7) = '$period' AND (test_results.result = '' OR test_results.result IS NULL))",
-
-				"DNA-EID samples received" => "SELECT count(*) AS test_count FROM tests t  
-							INNER JOIN test_types tt ON tt.id = t.test_type_id
-							WHERE tt.name = 'Early Infant Diagnosis'
-							AND t.test_status_id <> 1
-							AND substr(t.time_created,1,7) = '$period'",
-
-				"DNA-EID tests done" =>  "SELECT count(*) AS test_count FROM tests t 
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								WHERE tt.name = 'Early Infant Diagnosis'
+								WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
 								AND t.test_status_id NOT IN (1,2,3,7)
 								AND substr(t.time_created,1,7) = '$period'",
+				
+				"Total number of SARS-COV2 Positive" => "SELECT count(distinct t.id) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									INNER JOIN test_results tr ON t.id = tr.test_id
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									AND tr.result ='Positive'
+									AND substr(t.time_created,1,7) = '$period'",
 
-				"Number with positive results"  => "SELECT count(*) AS test_count FROM tests t 
+				"Total number of INVALID SARS-COV2 results" =>   "SELECT count(distinct t.id) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									INNER JOIN test_results tr ON t.id = tr.test_id
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									AND tr.result ='Invalid'
+									AND substr(t.time_created,1,7) = '$period'",
+
+				"Total number of NO RESULTS"  =>  "SELECT count(distinct t.id) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									INNER JOIN test_results tr ON t.id = tr.test_id
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									AND tr.result ='NO RESULTS'
+									AND substr(t.time_created,1,7) = '$period'",
+
+				"Total number of ERROR results" =>  "SELECT count(distinct t.id) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id=t.test_type_id
+									INNER JOIN test_results tr ON t.id = tr.test_id
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									AND tr.result ='ERROR'
+									AND substr(t.time_created,1,7) = '$period'",
+
+				"DNA-EID samples received" => "SELECT count(distinct t.id) AS test_count FROM tests t  
+									INNER JOIN test_types tt ON tt.id = t.test_type_id
+									WHERE tt.name = 'Early Infant Diagnosis'
+									AND t.test_status_id <> 1
+									AND substr(t.time_created,1,7) = '$period'",
+
+				"DNA-EID tests done" =>  "SELECT count(distinct t.id) AS test_count FROM tests t 
+									INNER JOIN test_types tt ON tt.id = t.test_type_id
+									WHERE tt.name = 'Early Infant Diagnosis'
+									AND t.test_status_id NOT IN (1,2,3,7)
+									AND substr(t.time_created,1,7) = '$period'",
+
+				"Number with positive results"  => "SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									WHERE tt.name='Early Infant Diagnosis'
@@ -1596,6 +1608,7 @@ P1
 			"Total number of SARS-COV2 Positive",
 			"Total number of INVALID SARS-COV2 results",
 			"Total number of NO RESULTS",
+			"Total number of ERROR results",
 			"DNA-EID samples received",
 			"DNA-EID tests done", 
 			"Number with positive results",
