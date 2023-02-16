@@ -167,133 +167,13 @@
     window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
     e.preventDefault();
     })
-
-    function retrieveData(){
-		var year =  document.getElementById("yr").value;
-		var quarter = "Quarter 1";
-        var indicators = JSON.parse('<?php echo json_encode($indicators); ?>');
+	function retrieveData(){
+		reportShowSpinerDisableBtn();
+		var year = document.getElementById("yr").value;
+		var indicators = JSON.parse('<?php echo json_encode($indicators); ?>');
 		var counter = 1;
 		var quarters = ["Quarter 1","Quarter 2","Quarter 3","Quarter 4"];
-		for(var i = 0;i <indicators.length;i++){
-			var slotCounter = 0;
-			var total =0;
-			for(var q = 0; q < quarters.length; q ++){
-				slotCounter++;
-				var quarter = quarters[q];
-				
-				var url = "/moh_diagnostic_stats?indicator=" + indicators[i] +"&department=blood" + "&year="+year + "&quarter="+quarter;
-				jQuery.ajax({
-					url: url,
-					async: false,
-					success: function(res){
-						console.log(res);
-						if (slotCounter == 1){
-							id = counter+"-1";
-							var jan = document.getElementById(id);
-							jan.innerHTML = res[0][1];
-							jan.style.color = "green";
-
-							id = counter+"-2";
-							var feb = document.getElementById(id);
-							feb.innerHTML = res[1][1];
-							feb.style.color = "green";
-
-							id = counter+"-3";
-							var mar = document.getElementById(id);
-							mar.innerHTML = res[2][1];
-							mar.style.color = "green";
-
-							id = counter+"-4";
-							var mar = document.getElementById(id);
-							mar.innerHTML = parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-							mar.style.color = "white";
-							total = parseInt(total) + parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-
-						}else if (slotCounter == 2){
-							id = counter+"-5";
-							var apr = document.getElementById(id);
-							apr.innerHTML = res[0][1];
-							apr.style.color = "green";
-
-							id = counter+"-6";
-							var may = document.getElementById(id);
-							may.innerHTML = res[1][1];
-							may.style.color = "green";
-
-							id = counter+"-7";
-							var jun = document.getElementById(id);
-							jun.innerHTML = res[2][1];
-							jun.style.color = "green";
-
-							id = counter+"-8";
-							var mar = document.getElementById(id);
-							mar.innerHTML =  parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-							mar.style.color = "white";
-
-							total = parseInt(total) + parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-						}else if (slotCounter == 3){
-							id = counter+"-9";
-							var jul = document.getElementById(id);
-							jul.innerHTML = res[0][1];
-							jul.style.color = "green";
-
-							id = counter+"-10";
-							var aug = document.getElementById(id);
-							aug.innerHTML = res[1][1];
-							aug.style.color = "green";
-
-							id = counter+"-11";
-							var sep = document.getElementById(id);
-							sep.innerHTML = res[2][1];
-							sep.style.color = "green";
-
-							id = counter+"-12";
-							var mar = document.getElementById(id);
-							mar.innerHTML =  parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-							mar.style.color = "white";
-
-							total = parseInt(total) + parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-						}else if (slotCounter == 4){
-							id = counter+"-13";
-							var oct = document.getElementById(id);
-							oct.innerHTML = res[0][1];
-							oct.style.color = "green";
-
-							id = counter+"-14";
-							var nov = document.getElementById(id);
-							nov.innerHTML = res[1][1];
-							nov.style.color = "green";
-
-							id = counter+"-15";
-							var dec = document.getElementById(id);
-							dec.innerHTML = res[2][1];
-							dec.style.color = "green";
-
-							id = counter+"-16";
-							var mar = document.getElementById(id);
-							mar.innerHTML =  parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-							mar.style.color = "white";
-
-							total = parseInt(total) + parseInt(res[0][1]) + parseInt(res[1][1]) + parseInt(res[2][1]);
-
-							id = counter+"-17";
-							var mar = document.getElementById(id);
-							mar.innerHTML =  total;
-							mar.style.color = "white";
-						}
-							
-					},
-					error: function(err){
-						console.log(err.responseText);
-					}
-				})
-
-
-			}
-			counter = counter + 1;
-		}
-	
-        
-    }
+		mohReportProcessData(year, indicators, counter, quarters, 'blood');
+	}
 </script>
 @stop
