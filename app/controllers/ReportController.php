@@ -661,7 +661,7 @@ P1
 								INNER JOIN test_results tr ON tr.test_id = t.id
 								INNER JOIN visits v ON v.id = t.visit_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
+								WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB', 'Hb')
 								AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
 								AND tr.result IS NOT NULL AND tr.result <= 6 AND tr.result<>''
 							)
@@ -684,7 +684,7 @@ P1
 								INNER JOIN test_results tr ON tr.test_id = t.id
 								INNER JOIN visits v ON v.id = t.visit_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
+								WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB', 'Hb')
 								AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin')
 								AND tr.result IS NOT NULL AND tr.result > 6 AND tr.result<>''
 							)
@@ -788,7 +788,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('ALPU', 'ALP') 
+								AND m.name IN ('ALPU', 'ALP', 'Alkaline Phosphate(ALP)') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
@@ -797,7 +797,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('ALT/GPT', 'ALT') 
+								AND m.name IN ('ALT/GPT', 'ALT','GPT/ALT') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
@@ -824,7 +824,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('AST/GOT', 'AST')  
+								AND m.name IN ('AST/GOT', 'AST', 'GOT/AST')  
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 		
@@ -833,7 +833,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('GGT/r-GT', 'GGT')  
+								AND m.name IN ('GGT/r-GT', 'GGT','GGT/a-GT')  
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
@@ -842,7 +842,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('Bilirubin Total(BIT))' 'Bilirubin Total(BIT)', 'TBIL-DSA') 
+								AND m.name IN ('Bilirubin Total(BIT))', 'Bilirubin Total(BIT)', 'TBIL-DSA') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
@@ -1078,7 +1078,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name IN ('Smear microscopy result','Smear microscopy result 1')
 									AND tr.result NOT IN ('0', '')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1086,7 +1086,7 @@ P1
 				"Number of  new TB cases examined" => "SELECT count(*) AS test_count FROM tests t
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND ts.name IN ('completed','verified')
 									AND substr(t.time_created,1,7) = '$period'",
 
@@ -1094,7 +1094,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name IN ('Smear microscopy result','Smear microscopy result 1')
 									AND (tr.result LIKE '%+%' OR tr.result LIKE '%Scanty%' OR tr.result = 'Positive')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1116,7 +1116,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name= 'Gene Xpert MTB' 
 									AND tr.result LIKE '%NOT%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1125,7 +1125,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name= 'Gene Xpert MTB' 
 									AND (tr.result LIKE '%DETECTED%' AND tr.result NOT LIKE '%NOT%')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1134,7 +1134,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name= 'Gene Xpert RIF Resistance' 
 									AND (tr.result LIKE '%DETECTED%' AND tr.result NOT LIKE '%NOT%')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1143,7 +1143,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name= 'Gene Xpert RIF Resistance' 
 									AND tr.result LIKE '%NOT%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1152,7 +1152,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name= 'Gene Xpert RIF Resistance' 
 									AND tr.result LIKE '%Indetermi%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1161,7 +1161,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name= 'Gene Xpert MTB' 
 									AND tr.result LIKE '%Invalid%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1170,7 +1170,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
 									AND m.name= 'Gene Xpert MTB' 
 									AND tr.result LIKE '%NO Result%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1807,13 +1807,13 @@ P1
 										AND ts.name IN ('verified', 'completed')
 										AND substr(t.time_created,1,7) = '$period' ",
 
-				"Heamoglobin only (Hemacue)" => "SELECT COUNT(*) AS test_count FROM tests t
+				"Heamoglobin only (Hemacue)" => "SELECT COUNT(distinct t.id) AS test_count FROM tests t
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN testtype_measures ttm ON ttm.test_type_id = tt.id
 										INNER JOIN measures m ON m.id = ttm.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB') 
-										AND tt.name IN ('Hemoglobin', 'Heamoglobin') 
+										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB', 'Hb') 
+										AND tt.name IN ('Hemoglobin', 'Heamoglobin','Haemoglobin') 
 										AND ts.name IN ('completed', 'verified')
 										AND (substr(t.time_created,1,7) = '$period')",
 
@@ -1822,8 +1822,8 @@ P1
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
+										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB', 'Hb')
+										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)','Haemoglobin')
 										AND ts.name IN ('completed', 'verified')
 										AND tr.result <= 6
 										AND tr.result <> ''
@@ -1843,8 +1843,8 @@ P1
 											INNER JOIN test_results tr ON tr.test_id = t.id
 											INNER JOIN visits v ON v.id = t.visit_id
 											INNER JOIN measures m ON m.id = tr.measure_id
-											WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
+											WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB', 'Hb')
+											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)','Haemoglobin')
 											AND tr.result IS NOT NULL AND tr.result <= 6 AND tr.result<>''
 										)
 										AND ott.name = 'Cross-match' 
@@ -1858,8 +1858,8 @@ P1
 										INNER JOIN test_types tt ON tt.id = t.test_type_id
 										INNER JOIN measures m ON m.id = tr.measure_id
 										INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
+										WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB', 'Hb')
+										AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)','Haemoglobin')
 										AND ts.name IN ('completed', 'verified')
 										AND tr.result > 6
 										AND tr.result <> ''
@@ -1879,8 +1879,8 @@ P1
 											INNER JOIN test_results tr ON tr.test_id = t.id
 											INNER JOIN visits v ON v.id = t.visit_id
 											INNER JOIN measures m ON m.id = tr.measure_id
-											WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB')
-											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)')
+											WHERE m.name IN ('Hemoglobin','Haemoglobin','HGB', 'Hb')
+											AND tt.name IN ('FBC', 'Hemoglobin', 'Heamoglobin', 'FBC (Paeds)','Haemoglobin')
 											AND tr.result IS NOT NULL AND tr.result > 6 AND tr.result<>''
 										)
 										AND ott.name = 'Cross-match' 
@@ -2273,7 +2273,7 @@ P1
 								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results')
+								AND m.name IN ('Blood film', 'Results','Malaria Species')
 								AND tr.result NOT IN ('', '0')",
 
 			"Total positive malaria microscopy tests done" => "SELECT count(*) AS test_count FROM tests t 
@@ -2284,8 +2284,9 @@ P1
 								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
 								AND ts.name  IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results')
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')",
+								AND m.name IN ('Blood film', 'Results','Malaria Species')
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT LIKE '%No parasi%'",
 
 			"Malaria microscopy in <= 5yrs" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
@@ -2298,7 +2299,7 @@ P1
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) <= 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results') 
+								AND m.name IN ('Blood film', 'Results','Malaria Species') 
 								AND tr.result NOT IN ('', '0') ",
 
 			"Malaria microscopy in > 5yrs" => "SELECT count(*) AS test_count FROM tests t
@@ -2312,7 +2313,7 @@ P1
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) > 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results') 
+								AND m.name IN ('Blood film', 'Results','Malaria Species') 
 								AND tr.result NOT IN ('', '0') ",
 
 			"Positive malaria slides in < 5yrs" => "SELECT count(*) AS test_count FROM tests t
@@ -2326,8 +2327,9 @@ P1
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) <= 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results') 
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')",
+								AND m.name IN ('Blood film', 'Results','Malaria Species') 
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT LIKE '%No parasi%'",
 
 			"Positive malaria slides in > 5yrs" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
@@ -2340,8 +2342,9 @@ P1
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) > 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results') 
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')",
+								AND m.name IN ('Blood film', 'Results','Malaria Species') 
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT LIKE '%No parasi%'",
 
 			"Malaria microscopy in unknown age" => "SELECT count(*) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
@@ -2354,7 +2357,7 @@ P1
 								AND p.dob IS NULL
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results') 
+								AND m.name IN ('Blood film', 'Results','Malaria Species') 
 								AND tr.result NOT IN ('', '0') ",
 
 			"Positive malaria slides in unknown age" => "SELECT count(*) AS test_count FROM tests t
@@ -2368,8 +2371,9 @@ P1
 								AND p.dob IS NULL
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
-								AND m.name IN ('Blood film', 'Results') 
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')",
+								AND m.name IN ('Blood film', 'Results','Malaria Species') 
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT LIKE '%No parasi%'",
 
 			"Total MRDTs Done" => "SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
