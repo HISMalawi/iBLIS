@@ -408,6 +408,7 @@ P1
 			$artCurrentRegimen = Input::get('regimen');					
 			$patientOnArt = new Art;
 			$patientOnArt->specimen_id = $specimen->id;
+			$patientOnArt->arv_number = $patientID;
 			$patientOnArt->art_initiation_date = $artInitiationDate;
 			$patientOnArt->art_current_regimen = $artCurrentRegimen;
 			$patientOnArt->HTC_provider = $sampleCollectorHTCProviderID;
