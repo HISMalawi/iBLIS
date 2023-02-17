@@ -2080,7 +2080,7 @@ P1
 										WHERE t.test_status_id IN (SELECT id FROM test_statuses WHERE name IN ('completed', 'verified'))
 										AND t.test_type_id = (SELECT id FROM test_types WHERE name = 'Syphilis Test')
 										AND t.visit_id IN (SELECT id FROM visits WHERE ward_or_location 
-												IN ('EM THEATRE','Labour', 'Labour Ward', 'EM LW', 'Maternity','PNW', '2A', '2B', '3A', '3B', 'LW', 'Maternity Ward', 'Antenatal'))	
+												IN ('EM THEATRE','Labour', 'Labour Ward', 'EM LW', 'Maternity','PNW', '2A', '2B', '3A', '3B', 'LW', 'Maternity Ward', 'Antenatal','ANC'))	
 										AND tr.result NOT IN ('', '0')		
 										AND substr(t.time_created,1,7) = '$period'",
 
@@ -2089,7 +2089,7 @@ P1
 										WHERE t.test_status_id IN (SELECT id FROM test_statuses WHERE name IN ('completed', 'verified'))
 										AND t.test_type_id = (SELECT id FROM test_types WHERE name = 'Syphilis Test')
 										AND t.visit_id IN (SELECT id FROM visits WHERE ward_or_location 
-												IN ('EM THEATRE','Labour', 'Labour Ward', 'EM LW', 'Maternity','PNW', '2A', '2B', '3A', '3B', 'LW', 'Maternity Ward','Antenatal'))	
+												IN ('EM THEATRE','Labour', 'Labour Ward', 'EM LW', 'Maternity','PNW', '2A', '2B', '3A', '3B', 'LW', 'Maternity Ward','Antenatal','ANC'))	
 										AND tr.result = 'REACTIVE'	
 										AND substr(t.time_created,1,7) = '$period'",
 
