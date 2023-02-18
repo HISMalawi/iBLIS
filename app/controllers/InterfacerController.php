@@ -176,6 +176,55 @@ class InterfacerController extends \BaseController
 
             }else{
             
+
+                $workshetChecker = Worksheet::checkWorksheet();
+                if ($workshetChecker[0] == true){
+
+                    $worksheetId = $workshetChecker[2];
+                    $asignedTests = $workshetChecker[1];
+
+                    if ($asignedTests <= Worksheet::WORKSHEET_LIMIT){
+                       
+                        $fast =  new FastTrackedViralLoadTest();
+                        $fast->tracking_number = $specimen_id;
+                        $fast->measure_id = $measure_id;
+                        $fast->result = $result;
+                        $fast->device_name = $machine_name;
+                        $fast->worksheet_number =  $worksheetId;
+                        $fast->sync_status ="false";
+                        $fast->save();
+
+
+                        $counter = $asignedTests + 1;
+
+                        $test_worksheet_s = Worksheet::find($worksheetId);
+                        $test_worksheet_s->tests_assigned = $counter;
+                        $test_worksheet_s->save();
+                    }else{
+
+                        $worksheet = new Worksheet();
+                        $worksheet->device_name = $machine_name;
+                        $worksheet->worksheet_status_id = Worksheet::COMPLETED;
+                        $worksheet->started_at = date('Y-m-d H:i:s');
+                        $worksheet->completed_at = date('Y-m-d H:i:s');
+                        $worksheet->tests_assigned = 1;
+                        $worksheet->save(); 
+                        $worksheetId = $worksheet->id;
+
+                        $fast =  new FastTrackedViralLoadTest();
+                        $fast->tracking_number = $specimen_id;
+                        $fast->measure_id = $measure_id;
+                        $fast->result = $result;
+                        $fast->device_name = $machine_name;
+                        $fast->worksheet_number =  $worksheetId;
+                        $fast->sync_status ="false";
+                        $fast->save();
+
+
+                    }
+
+                }else{
+
                     $worksheet = new Worksheet();
                     $worksheet->device_name = $machine_name;
                     $worksheet->worksheet_status_id = Worksheet::COMPLETED;
@@ -183,9 +232,19 @@ class InterfacerController extends \BaseController
                     $worksheet->completed_at = date('Y-m-d H:i:s');
                     $worksheet->tests_assigned = 1;
                     $worksheet->save(); 
-                    $worksheetId = $worksheet->id;     
-                    
-               
+                    $worksheetId = $worksheet->id;
+
+                    $fast =  new FastTrackedViralLoadTest();
+                    $fast->tracking_number = $specimen_id;
+                    $fast->measure_id = $measure_id;
+                    $fast->result = $result;
+                    $fast->device_name = $machine_name;
+                    $fast->worksheet_number =  $worksheetId;
+                    $fast->sync_status ="false";
+                    $fast->save();
+
+
+                }   
             }
         }
 
