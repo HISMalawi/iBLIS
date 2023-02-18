@@ -19,7 +19,7 @@ class Worksheet extends Eloquent
 	const NOT_DONE = 7;
 	const TEST_REJECTED = 8;
 
-	const WORKSHEET_LIMIT = 96;
+	const WORKSHEET_LIMIT = 11;
 	
 	  	public static function checkSpecimen($specimenId){
         	$res = DB::select ("SELECT * FROM specimens WHERE tracking_number='$specimenId' OR accession_number='$specimenId'");
