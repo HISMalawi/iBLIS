@@ -25,7 +25,7 @@ class InterfacerController extends \BaseController
     }
     
     public function uploadViralLoadResult(){
-
+     
         $username = null;
         $password = null;
 
@@ -33,56 +33,37 @@ class InterfacerController extends \BaseController
         if (isset($_SERVER['PHP_AUTH_USER'])) {
             $username = $_SERVER['PHP_AUTH_USER'];
             $password = $_SERVER['PHP_AUTH_PW'];
-
         // most other servers
         } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-
             if (strpos(strtolower($_SERVER['HTTP_AUTHORIZATION']), 'basic') === 0)
                 list($username, $password) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-
         }
 
         if (is_null($username)) {
-
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
             echo 'Text to send if user hits Cancel button';
-
             die();
-
         } else {
-
             $credentials = array(
                 "username" => $username,
                 "password" => $password
             );
-
             if (!Auth::attempt($credentials)) {
-
                 header('WWW-Authenticate: Basic realm="My Realm"');
                 header('HTTP/1.0 401 Unauthorized');
                 echo 'Text to send if user hits Cancel button';
-
                 die();
-
             }
         }
 
-
-
-
-
         $json = array();
-
         $base = realpath(".");
-
         if (!file_exists($base . "/data")) {
             mkdir($base . "/data", 0777, true);
         }
-
         $specimen_id = strtoupper(trim($_REQUEST["specimen_id"]));
         $code = "/^".Config::get('kblis.facility-code')."\d+$/";
-
         if (preg_match("/^\d+$/", $specimen_id)){
             $specimen_id = Config::get('kblis.facility-code').$specimen_id;
         }else if(preg_match($code, $specimen_id)){
@@ -92,7 +73,6 @@ class InterfacerController extends \BaseController
             if (!preg_match("/^X/", $specimen_id)){
                 $specimen_id = "X".$specimen_id;
             }
-
             try {
                 $s_id = DB::table("specimens")->where("tracking_number", $specimen_id)->first()->accession_number;
                 if($s_id){
@@ -111,28 +91,45 @@ class InterfacerController extends \BaseController
         $machine_name = "";
         if(!empty($_REQUEST["machine_name"])){
                 $machine_name = $_REQUEST["machine_name"];
-        }
-    
-            $measure_id = $_REQUEST["measure_id"];
-            $result = $_REQUEST["result"];
-            $remote_ip = '';    // $_SERVER["REMOTE_ADDR"] . "/";
-    
+        }    
+        $measure_id = $_REQUEST["measure_id"];
+        $result = $_REQUEST["result"]; 
          
-            if(isset($specimen_id) && isset($measure_id) && isset($result)) {
-    
-                if(!isset($json[$specimen_id])) {
-    
-                    $json[$specimen_id] = array(
-                        $measure_id => $result
-                    );
-    
-                } else {
-    
-                    $json[$specimen_id][$measure_id] = $result;
-    
-                }
-            }
+        if(isset($specimen_id) && isset($measure_id) && isset($result)) {    
+            $checkSpec = Worksheet::checkSpecimen($specimen_id);
+            
+            if ($checkSpec[0] == true){
+                
+                $worksheet = new Worksheet();
+                $worksheet->device_name = $machine_name;
+                $worksheet->worksheet_status_id = Worksheet::COMPLETED;
+                $worksheet->started_at = date('Y-m-d H:i:s');
+                $worksheet->completed_at = date('Y-m-d H:i:s');
+                $worksheet->save(); 
+                $worksheetId = $worksheet->id;     
+                
+                $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
+                $test_worksheet->worksheet_id = $worksheetId;
+                $test_worksheet->save();
 
+            }else{
+            
+                    $worksheet = new Worksheet();
+                    $worksheet->device_name = $machine_name;
+                    $worksheet->worksheet_status_id = Worksheet::COMPLETED;
+                    $worksheet->started_at = date('Y-m-d H:i:s');
+                    $worksheet->completed_at = date('Y-m-d H:i:s');
+                    $worksheet->save(); 
+                    $worksheetId = $worksheet->id;     
+                    
+                    //$order = DB::select ("SELECT * FROM specimens WHERE tracking_number='$specimenId' OR accession_number='$specimenId'");
+   
+
+                    
+
+
+            }
+        }
 
 
     }

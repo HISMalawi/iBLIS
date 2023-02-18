@@ -57,15 +57,19 @@ Route::group(array("before" => "guest"), function()
         "as" => "api.get_test_catalog",
         "uses" => "InterfacerController@getTestCatalog"
     ));
+
+
+    Route::get('/api/v1/upload_viral_load_result.php', array(
+        "as" => "api.upload_viral_load_results",
+        "uses" => "InterfacerController@uploadViralLoadResult"
+    ));
+
 });
 
 /* Routes accessible before logging in */
 Route::group(array("before" => "print"), function()
 {
-    Route::get('/api/v1/upload_viral_load_results.php', array(
-        "as" => "api.upload_viral_load_results",
-        "uses" => "InterfacerController@getTestCatalog"
-    ));
+    
 
 });
 
