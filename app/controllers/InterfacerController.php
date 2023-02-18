@@ -111,6 +111,13 @@ class InterfacerController extends \BaseController
                         $test_worksheet->worksheet_id = $worksheetId;
                         $test_worksheet->save();
 
+                        $testId = $test_worksheet->id;
+                        $rstNew = new TestResult();
+                        $rstNew->test_id = $testId;
+                        $rstNew->result = $result;
+                        $rstNew->measure_id = $measure_id;
+                        $rstNew->save();
+
                         $counter = $asignedTests + 1;
 
                         $test_worksheet_s = Worksheet::find($worksheetId);
@@ -130,6 +137,14 @@ class InterfacerController extends \BaseController
                         $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
                         $test_worksheet->worksheet_id = $worksheetId;
                         $test_worksheet->save();
+
+                        $testId = $test_worksheet->id;
+                        $rstNew = new TestResult();
+                        $rstNew->test_id = $testId;
+                        $rstNew->result = $result;
+                        $rstNew->measure_id = $measure_id;
+                        $rstNew->save();
+
                     }
                 }else{
 
@@ -145,6 +160,14 @@ class InterfacerController extends \BaseController
                     $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
                     $test_worksheet->worksheet_id = $worksheetId;
                     $test_worksheet->save();
+
+                    $testId = $test_worksheet->id;
+                    $rstNew = new TestResult();
+                    $rstNew->test_id = $testId;
+                    $rstNew->result = $result;
+                    $rstNew->measure_id = $measure_id;
+                    $rstNew->save();
+
                 }
                     
 
@@ -155,6 +178,7 @@ class InterfacerController extends \BaseController
                     $worksheet->worksheet_status_id = Worksheet::COMPLETED;
                     $worksheet->started_at = date('Y-m-d H:i:s');
                     $worksheet->completed_at = date('Y-m-d H:i:s');
+                    $worksheet->tests_assigned = 1;
                     $worksheet->save(); 
                     $worksheetId = $worksheet->id;     
                     
