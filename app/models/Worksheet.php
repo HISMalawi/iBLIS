@@ -24,15 +24,23 @@ class Worksheet extends Eloquent
 	  	public static function checkSpecimen($specimenId){
         	$res = DB::select ("SELECT * FROM specimens WHERE tracking_number='$specimenId' OR accession_number='$specimenId'");
         	if (count($res) > 0 ){
-			return [true,$res[0]->id];
+				return [true,$res[0]->id];
         	}else{
-			return [false,0];
+				return [false,0];
+			}
 		}
 
 
-		
+		public static function checkWorksheet(){
+			$res = DB::select("SELECT * FROM worksheets GROUP BY id DESC LIMIT 1");
+			if(count($res)>0){
+				return [true,$res[0]->tests_assigned,$res[0]->id];
+			}else{
+				return [false,0];
+			}
 
-		
+		}
 
-   	 }
+	
+   	 
 }

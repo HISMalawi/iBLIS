@@ -100,17 +100,53 @@ class InterfacerController extends \BaseController
             
             if ($checkSpec[0] == true){
                 
-                $worksheet = new Worksheet();
-                $worksheet->device_name = $machine_name;
-                $worksheet->worksheet_status_id = Worksheet::COMPLETED;
-                $worksheet->started_at = date('Y-m-d H:i:s');
-                $worksheet->completed_at = date('Y-m-d H:i:s');
-                $worksheet->save(); 
-                $worksheetId = $worksheet->id;     
-                
-                $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
-                $test_worksheet->worksheet_id = $worksheetId;
-                $test_worksheet->save();
+                $workshetChecker = Worksheet::checkWorksheet();
+                if ($workshetChecker[0] == true){
+                    
+                    $worksheetId = $workshetChecker[2];
+                    $asignedTests = $workshetChecker[1];
+
+                    if ($asignedTests <= Worksheet::WORKSHEET_LIMIT){
+                        $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
+                        $test_worksheet->worksheet_id = $worksheetId;
+                        $test_worksheet->save();
+
+                        $counter = $asignedTests + 1;
+
+                        $test_worksheet_s = Worksheet::find($worksheetId);
+                        $test_worksheet_s->tests_assigned = $counter;
+                        $test_worksheet_s->save();
+
+                    }else{
+                        $worksheet = new Worksheet();
+                        $worksheet->device_name = $machine_name;
+                        $worksheet->worksheet_status_id = Worksheet::COMPLETED;
+                        $worksheet->started_at = date('Y-m-d H:i:s');
+                        $worksheet->completed_at = date('Y-m-d H:i:s');
+                        $worksheet->tests_assigned = 1;
+                        $worksheet->save(); 
+                        $worksheetId = $worksheet->id;     
+                        
+                        $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
+                        $test_worksheet->worksheet_id = $worksheetId;
+                        $test_worksheet->save();
+                    }
+                }else{
+
+                    $worksheet = new Worksheet();
+                    $worksheet->device_name = $machine_name;
+                    $worksheet->worksheet_status_id = Worksheet::COMPLETED;
+                    $worksheet->started_at = date('Y-m-d H:i:s');
+                    $worksheet->completed_at = date('Y-m-d H:i:s');
+                    $worksheet->tests_assigned = 1;
+                    $worksheet->save(); 
+                    $worksheetId = $worksheet->id;     
+                    
+                    $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
+                    $test_worksheet->worksheet_id = $worksheetId;
+                    $test_worksheet->save();
+                }
+                    
 
             }else{
             
