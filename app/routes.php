@@ -143,6 +143,13 @@ Route::group(array("before" => "auth"), function()
         "as"   => "worksheet.index",
         "uses" => "WorksheetController@index"
     ));
+   
+
+    Route::get("/worksheet/{id}/tests", array(
+        "as"   => "worksheet.viewWorksheetTests",
+        "uses" => "WorksheetController@viewWorksheetTests"
+    ));
+
     
      Route::get("viralLoadSampleEntry",array(
         "as" => "test.viralLoadSampleEntry",
