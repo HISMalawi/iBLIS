@@ -116,6 +116,7 @@ class InterfacerController extends \BaseController
                         $rstNew->test_id = $testId;
                         $rstNew->result = $result;
                         $rstNew->measure_id = $measure_id;
+                        $rstNew->device_name =$machine_name;
                         $rstNew->save();
 
                         $counter = $asignedTests + 1;
@@ -143,6 +144,7 @@ class InterfacerController extends \BaseController
                         $rstNew->test_id = $testId;
                         $rstNew->result = $result;
                         $rstNew->measure_id = $measure_id;
+                        $rstNew->device_name =$machine_name;
                         $rstNew->save();
 
                     }
@@ -166,6 +168,7 @@ class InterfacerController extends \BaseController
                     $rstNew->test_id = $testId;
                     $rstNew->result = $result;
                     $rstNew->measure_id = $measure_id;
+                    $rstNew->device_name =$machine_name;
                     $rstNew->save();
 
                 }
@@ -182,12 +185,7 @@ class InterfacerController extends \BaseController
                     $worksheet->save(); 
                     $worksheetId = $worksheet->id;     
                     
-                    //$order = DB::select ("SELECT * FROM specimens WHERE tracking_number='$specimenId' OR accession_number='$specimenId'");
-   
-
-                    
-
-
+               
             }
         }
 
