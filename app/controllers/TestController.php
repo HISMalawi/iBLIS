@@ -427,7 +427,28 @@ P1
 			$patientOnEid->lasec_barcode = $lasecBarcode;
 			$patientOnEid->save();
 		}	
-	
+		
+		$tracking_number = $specimen->tracking_number;
+		$testID = $test->id;
+		$fast = FastTrackedViralLoadTest::retrieveFastTrackedTest($tracking_number);
+		if($fast[0] == true){
+			$measure_id = $fast[1];
+			$result = $fast[2];
+			$result_date = $fast[3];
+			
+			$tstResult = new TestResult();
+			$tstResult->measure_id = $measure_id;
+			$tstResult->result = $result;
+			$tstResult->time_entered = $result_date;
+			$tstResult->test_id = $testID;
+			$tstResult->save();
+
+			$tst = Test::find($testID);
+			$tst->worksheet_id = $fast[5];
+			$tst_save();
+			FastTrackedViralLoadTest::syncFastTrackedTest($fast[4]);
+		}
+		
 		if($actionLevel=="accepted"){
 			$this->acceptSpecimenRetrospective($specimen->id);
 			Session::set('message','messages.success-creating-test');

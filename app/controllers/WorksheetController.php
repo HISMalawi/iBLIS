@@ -28,11 +28,12 @@ class WorksheetController extends \BaseController {
 
 
 	public function viewWorksheetTests($worksheetId=0){
-		$worksheetId = 17;
+	
 		$tests = DB::SELECT("SELECT patients_on_art.arv_number,patients_on_art.art_initiation_date,
 						patients_on_art.art_current_regimen,patients.name,patients.gender,
 						tests.time_created,test_types.name AS test_type,
 						specimen_types.name AS specimen_type,
+						specimens.tracking_number AS trackingNumber,
 						test_results.result FROM tests 
 						INNER JOIN specimens ON specimens.id = tests.specimen_id 
 						INNER JOIN visits ON visits.id = tests.visit_id 
