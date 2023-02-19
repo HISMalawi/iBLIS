@@ -54,15 +54,37 @@ class TestController extends \BaseController {
 			$remoteResults = Sender::search_from_remote($searchString);
 			
 			$orderResults  = Sender::search_results_from_remote($searchString);
-
 			if ($remoteResults->message != "order not available" ){
 				if(!empty($remoteResults)) {
-					// Load the view and pass it the tests
-					return View::make('test.remoteorder')
-						->with('test', $remoteResults)
-						->with('tracking_number', $searchString)
-						->with('order_results',$orderResults)
-						->with('searchString', $searchString);
+					$testCounter = $remoteResults->data->tests;
+					$gotTest = $remoteResults->data->tests;
+			
+					if(count($testCounter) == 1){
+						foreach($gotTest AS $tst => $status){
+							$actName = $tst;
+						}
+						if($actName == "Viral Load"){
+							return View::make('test.remoteorderVL')
+							->with('test', $remoteResults)
+							->with('tracking_number', $searchString)
+							->with('order_results',$orderResults)
+							->with('searchString', $searchString);
+						}else{
+							return View::make('test.remoteorder')
+							->with('test', $remoteResults)
+							->with('tracking_number', $searchString)
+							->with('order_results',$orderResults)
+							->with('searchString', $searchString);
+						}
+					}else{
+						// Load the view and pass it the tests
+						return View::make('test.remoteorder')
+							->with('test', $remoteResults)
+							->with('tracking_number', $searchString)
+							->with('order_results',$orderResults)
+							->with('searchString', $searchString);
+					}				
+				
 				}
 			}else{
 				Session::set('message', 'Order not available from National LIMS, please wait......');
