@@ -35,6 +35,7 @@ class Sender
         //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         //     $result = json_decode(curl_exec($ch));
         // }
+      
         return $result;
     }
 
@@ -194,6 +195,7 @@ class Sender
         $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
 
         $order = Sender::search_from_remote($tracking_number);
+        
         $check_sample_type = SpecimenType::where('name',$order->data->other->sample_type)->first();
        
         if($check_sample_type == NULL)
@@ -273,6 +275,7 @@ class Sender
             $patientOnArt->art_current_regimen = $order->data->other->art_regimen;
             $patientOnArt->HTC_provider = "0";
             $patientOnArt->lasec_barcode = "";
+            $patientOnArt->arv_number = $order->data->other->arv_number; 
             $patientOnArt->save();
         }
 
@@ -338,6 +341,29 @@ class Sender
 
             $test->visit_id = $visit->id;
             $test->save();
+
+            if($name == "Viral Load"){
+                $tracking_number = $specimen->tracking_number;
+                $testID = $test->id;
+                $fast = FastTrackedViralLoadTest::retrieveFastTrackedTest($tracking_number);
+                if($fast[0] == true){
+                    $measure_id = $fast[1];
+                    $result = $fast[2];
+                    $result_date = $fast[3];
+                    
+                    $tstResult = new TestResult();
+                    $tstResult->measure_id = $measure_id;
+                    $tstResult->result = $result;
+                    $tstResult->time_entered = $result_date;
+                    $tstResult->test_id = $testID;
+                    $tstResult->save();
+
+                    $tst = Test::find($testID);
+			        $tst->worksheet_id = $fast[5];
+			        $tst->save();
+                    FastTrackedViralLoadTest::syncFastTrackedTest($fast[4]);
+                }
+            }
                 
         }
 

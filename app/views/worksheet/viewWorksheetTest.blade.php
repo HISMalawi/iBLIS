@@ -81,7 +81,7 @@
                 <tbody>
                     @foreach($tests as $test)
                         <tr>    
-                            <td> {{"XK"}}</td>
+                            <td> {{$test->trackingNumber}}</td>
                             <td> {{$test->name}}</td>
                             <td> {{$test->arv_number}}</td>                        
                             <td> {{$test->test_type}}</td>                            
