@@ -41,14 +41,12 @@
                     <div class="col-md-11">
                         <span class="glyphicon glyphicon-filter"></span>{{"Tests For Worksheet No: $worksheetNumber"}}
                       
-                        
-                        <a class="main-view main-view-{{$worksheetNumber}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
-                                               data-test-id="{{$worksheetNumber}}" data-specimen-id="{{$worksheetNumber}}"
-                                               title="{{trans('messages.accept-specimen-title')}}"
-                                               data-url="{{ URL::route('worksheet.worksheetVerified') }}">
-                                                <span class="glyphicon glyphicon-thumbs-up"></span>
-                                                {{"worksheet verified"}}
-                        </a>
+                        <a class="{{(!$worksheetNumber) ? 'main-view main-view-'.$worksheetNumber : ''}} btn btn-sm btn-warning start-test" href="javascript:void(0)"
+                                        data-test-id="{{$worksheetNumber}}" data-url="{{ URL::route('worksheet.worksheetVerified') }}"
+                                        title="{{trans('messages.start-test-title')}}">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                        {{trans('messages.start-test')}}
+                                    </a>
 
                         <a class="btn btn-sm btn-success" href="#" onclick="window.history.back();return false;"
                             alt="{{trans('messages.back')}}" title="{{'verified worksheet'}}">
@@ -78,6 +76,7 @@
                         <th class="col-md-1">{{"Specimen Type"}}</th>
                         <th class="col-md-1">{{"Date Created"}}</th>
                         <th class="col-md-1">{{"Sending Facility"}}</th>
+                        <th class="col-md-1">{{"Test Status"}}</th>
                         <th class="col-md-2">{{"Test Result"}}</th>
                         <th class="col-md-3">{{trans('messages.actions')}}</th>
                     </tr>
@@ -93,6 +92,7 @@
                                     $sending_facility = $rs[0]->name;
                                 }
                             }
+                            $testStatus = TestStatus::find($test->testStatus)->name;                           
                         ?>
 
                         <tr>    
@@ -103,6 +103,7 @@
                             <td> {{$test->specimen_type}}</td>
                             <td> {{$test->time_created}}</td>
                             <td> {{$sending_facility}}</td>
+                            <td> {{$testStatus }}</td>
                             <td> {{$test->result}}</td>
                             <td>
                                

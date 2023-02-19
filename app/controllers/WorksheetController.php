@@ -26,6 +26,11 @@ class WorksheetController extends \BaseController {
 		//
 	}
 
+	public function worksheetVerified(){
+		$worksheetId= Input::get('id');		
+		$res = Worksheet::verifiedWorksheet($worksheetId);
+		return $res;
+	}
 
 	public function viewWorksheetTests($worksheetId=0){
 	
@@ -35,6 +40,7 @@ class WorksheetController extends \BaseController {
 						specimen_types.name AS specimen_type,
 						specimens.tracking_number AS trackingNumber,
 						specimens.sending_facility_id AS sending_facility,
+						tests.test_status_id AS testStatus,
 						test_results.result FROM tests 
 						INNER JOIN specimens ON specimens.id = tests.specimen_id 
 						INNER JOIN visits ON visits.id = tests.visit_id 

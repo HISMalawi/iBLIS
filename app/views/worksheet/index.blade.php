@@ -118,6 +118,7 @@
                                         <span class="glyphicon glyphicon-eye-open"></span>
                                         {{'print results'}}
                                     </a>
+
                                 @endif
                                 @if(!isset($worksheet->verified_at) && isset($worksheet->completed_at))
                                     <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
@@ -127,12 +128,12 @@
                                             {{'verify results'}}
                                     </a>
                                 @else
-                                    <a class="main-view main-view-{{'1'}} btn btn-sm btn-success"
-                                       href="{{ URL::route('test.viewDetails', '1') }}"
-                                       id="view-details-{{'1'}}-link"
-                                       title="{{trans('messages.view-details-title')}}">
-                                        <span class="glyphicon glyphicon-eye-open"></span>
-                                        {{'view tests'}}
+
+                                    <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
+                                           href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
+                                           title="{{trans('messages.verify-title')}}">
+                                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                                            {{'view tests'}}
                                     </a>
                                 @endif
                             </td>

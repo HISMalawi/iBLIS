@@ -56,6 +56,15 @@ class Worksheet extends Eloquent
 						$tst->time_verified = date('Y-m-d H:i:s');
 						$tst->verified_by = "";
 						$tst->save();
+
+						$dat = new UnsyncOrder;
+						$dat->specimen_id = $test->id;
+						$dat->data_not_synced = "verified";
+						$dat->data_level = "test";
+						$dat->sync_status = "not-synced";
+						$dat->updated_by_name = "";
+						$dat->updated_by_id = "" ;
+						$dat->save();
 					}
 					return true;
 				}else{
