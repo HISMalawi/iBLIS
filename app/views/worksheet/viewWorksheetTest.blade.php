@@ -80,6 +80,17 @@
                 </thead>
                 <tbody>
                     @foreach($tests as $test)
+                        <?php 
+                            $sending_facility = $test->sending_facility;
+                            
+                            if(is_numeric($sending_facility) == true){                                
+                                $rs = DB::SELECT("SELECT * FROM facilities WHERE id='$sending_facility'");                                
+                                if(count($rs) > 0){
+                                    $sending_facility = $rs[0]->name;
+                                }
+                            }
+                        ?>
+
                         <tr>    
                             <td> {{$test->trackingNumber}}</td>
                             <td> {{$test->name}}</td>
@@ -87,7 +98,7 @@
                             <td> {{$test->test_type}}</td>                            
                             <td> {{$test->specimen_type}}</td>
                             <td> {{$test->time_created}}</td>
-                            <td> {{"Sending Facility"}}</td>
+                            <td> {{$sending_facility}}</td>
                             <td> {{$test->result}}</td>
                             <td>
                                

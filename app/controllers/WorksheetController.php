@@ -34,6 +34,7 @@ class WorksheetController extends \BaseController {
 						tests.time_created,test_types.name AS test_type,
 						specimen_types.name AS specimen_type,
 						specimens.tracking_number AS trackingNumber,
+						specimens.sending_facility_id AS sending_facility,
 						test_results.result FROM tests 
 						INNER JOIN specimens ON specimens.id = tests.specimen_id 
 						INNER JOIN visits ON visits.id = tests.visit_id 

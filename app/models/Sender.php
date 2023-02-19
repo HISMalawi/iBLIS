@@ -251,6 +251,14 @@ class Sender
             $specimen->drawn_by_name = $order->data->other->sample_created_by->name;
             $specimen->drawn_by_id = Auth::user()->id;
             $specimenInserter = true;           
+            $sending_facility = $order->data->other->sending_lab;
+            $sending_facility = DB::SELECT("SELECT * FROM facilities WHERE name='$sending_facility'");
+            if(count($sending_facility) > 0){
+                $sending_facility_id = $sending_facility[0]->id;
+            }else{
+                $sending_facility_id = $order->data->other->receiving_lab;
+            }
+            $specimen->sending_facility_id = $sending_facility_id;
         }
 
         $specimen->specimen_status_id = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
