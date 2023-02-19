@@ -445,7 +445,7 @@ P1
 
 			$tst = Test::find($testID);
 			$tst->worksheet_id = $fast[5];
-			$tst_save();
+			$tst->save();
 			FastTrackedViralLoadTest::syncFastTrackedTest($fast[4]);
 		}
 		

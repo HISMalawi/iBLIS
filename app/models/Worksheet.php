@@ -41,6 +41,29 @@ class Worksheet extends Eloquent
 
 		}
 
+		public static function verifiedWorksheet($worksheetNumber=0){
+			$res = Worksheet::find($worksheetNumber);
+			if(count($res) >0){
+				$res->worksheet_status_id = Worksheet::VERIFIED;
+				$res->verified_at =  date('Y-m-d H:i:s');
+				$res->save();
+
+				$tests = DB::SELECT("SELECT * FROM tests WHERE worksheet_id='$worksheetNumber'");
+				if(count($tests) > 0){
+					foreach($tests as $test){
+						$tst = Test::find($test->id);
+						$tst->test_status_id = Worksheet::VERIFIED;
+						$tst->time_verified = date('Y-m-d H:i:s');
+						$tst->verified_by = "";
+						$tst->save();
+					}
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
+
 	
    	 
 }

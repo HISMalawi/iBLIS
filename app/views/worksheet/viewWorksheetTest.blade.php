@@ -40,11 +40,15 @@
                 <div class="row less-gutter">
                     <div class="col-md-11">
                         <span class="glyphicon glyphicon-filter"></span>{{"Tests For Worksheet No: $worksheetNumber"}}
-                        <a class="btn btn-sm btn-success" href="#" onclick="window.history.back();return false;"
-                            alt="{{trans('messages.back')}}" title="{{'verified worksheet'}}">
-                            {{'verified worksheet'}}
+                      
+                        
+                        <a class="main-view main-view-{{$worksheetNumber}} btn btn-sm btn-info accept-specimen" href="javascript:void(0)"
+                                               data-test-id="{{$worksheetNumber}}" data-specimen-id="{{$worksheetNumber}}"
+                                               title="{{trans('messages.accept-specimen-title')}}"
+                                               data-url="{{ URL::route('worksheet.worksheetVerified') }}">
+                                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                                {{"worksheet verified"}}
                         </a>
-
 
                         <a class="btn btn-sm btn-success" href="#" onclick="window.history.back();return false;"
                             alt="{{trans('messages.back')}}" title="{{'verified worksheet'}}">
