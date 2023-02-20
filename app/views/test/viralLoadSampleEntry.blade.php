@@ -19,27 +19,26 @@
             <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
         @endif
 
-                    {{-- {{ Form::open(array('route' => array('test.index'), 'method' => 'GET')) }}
-                        <div class="row">
-                            <div class="form-group col-lg-12" style="margin-bottom: -50px;">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="form-group col-lg-6 ec">
-                                                <label class="mt-2" for="small-barcode-one">Scan Barcode : &nbsp; </label>
-                                            <input  type="text" class="form-control bar-item barcode" name="search" id="small-barcode">
-    
-                                            </div>
-                                        </div>
-                                        
-                                        
+            {{ Form::open(array('route' => array('test.index'), 'method' => 'GET', 'id' => 'barcodeForm', 'class' => 'hidden')) }}
+                <div class="row">
+                    <div class="form-group col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-lg-6 ec">
+                                        {{-- <label class="mt-2" for="small-barcode-one">Scan Barcode : &nbsp; </label> --}}
+                                        <input type="search" class=" form-control bar-item barcode" name="search" id="small-barcode">
                                     </div>
-                                    
                                 </div>
                                 
+                            
                             </div>
+                            
                         </div>
-                    {{ Form::close() }} --}}
+                        
+                    </div>
+                </div>
+            {{ Form::close() }}
             <!--Wizard-->
             <!--  form id="wizard7" class="wizard needs-validation" data-style="1" novalidate action="test.saveNewTest" method="post" -->
             {{ Form::open(array('route' => 'test.createOrderRetrospective',  'method' => 'POST', 'id' => 'wizard7', 'class' => "wizard needs-validation", 'data-style'=>"1",'novalidate')) }}
@@ -54,7 +53,7 @@
                             <div class="col-md-2 col-md-offset-10 mb-5">
                               <div class="input-group required text-right">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
-                                <input type="text" class="form-control" placeholder="Scan barcode" name="small-barcode" id="small_barcode" aria-describedby="basic-addon1">
+                                <input class="form-control bar-item barcode" type="text" type="search" class="form-control" placeholder="Scan barcode" name="search" id="smallBarcode2" aria-describedby="basic-addon1">
                               </div>
                             </div>
                         </div>
@@ -714,7 +713,7 @@
                 
                 <!--end: Step 5-->
             
-			{{ Form::close() }}
+			{{-- {{ Form::close() }} --}}
             <!-- /form -->
             <!--end:Wizard-->
             <style>
@@ -729,6 +728,20 @@
     <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
     <script>
+
+        $(document).ready(function() {
+            $('#smallBarcode2').on('keypress', function(event) {
+                if (event.which === 13) {
+
+                    var value = $(this).val();
+
+                    $('#small-barcode').val(value);
+
+                    $('#barcodeForm').submit()
+                }
+            });
+        });
+
         //Advanced - with validation
         var wizard7 = $('#wizard7');
         wizard7.steps({
