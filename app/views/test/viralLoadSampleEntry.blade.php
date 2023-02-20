@@ -119,7 +119,7 @@
                                             <label for="id">Patient ID : &nbsp; </label>
                                             <div class="row">
                                                 <div class="col-md-2" style="margin-left: -1px !important; padding: 0px !important;">
-                                                    <input type="text" style="width: 50px;" class="form-control required" name="id" id="p_id">
+                                                    <input type="text" style="width: 50px;" class="form-control required" name="side_code" id="side_code">
                                                 </div>
                                                 <div class="col-md-2 text-center" style="width: 10px;">
                                                     <p class="text-center pt-2">-</p>
@@ -286,7 +286,7 @@
                                                 id="art-init-date">
                                         </div>
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group required col-lg-6">
                                             <fieldset class="row mb-4">
                                                 <label class="d-block mb-3" for="dob">Sample Type : &nbsp; </label>
 
@@ -644,23 +644,7 @@
                             </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 4: Specimen Information for Early Infant Diagnosis ONLY</strong></h3>
-                                </div>
-                                <div>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><label for="district">District : &nbsp; </label>
-                                            <p id="confi-district-name">--</p>
-                                        </li>
-                                        <li class="list-group-item"><label for="facility">Facility Name : &nbsp; </label>
-                                            <p id="confi-facility-name">--</p>
-                                        </li>
-    
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 5: Patient and Sample Details for Viral Load ONLY</strong></h3>
+                                  <h3 class="panel-title"><strong>Section 4: Patient and Sample Details for Viral Load ONLY</strong></h3>
                                 </div>
                                 <div>
                                     <ul class="list-group list-group-flush">
@@ -684,7 +668,7 @@
                             </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 6: Details of Person Collecting Sample</strong></h3>
+                                  <h3 class="panel-title"><strong>Section 5: Details of Person Collecting Sample</strong></h3>
                                 </div>
                                 <div>
                                     <ul class="list-group list-group-flush">
@@ -730,15 +714,12 @@
     <script>
 
         $(document).ready(function() {
-            $('#smallBarcode2').on('keypress', function(event) {
-                if (event.which === 13) {
-
-                    var value = $(this).val();
+            $('#smallBarcode2').keyup(function() {
+                var value = $(this).val();
 
                     $('#small-barcode').val(value);
 
-                    $('#barcodeForm').submit()
-                }
+                    $('#small-barcode').val().endsWith('$') && $('#barcodeForm').submit()
             });
         });
 
@@ -769,6 +750,7 @@
                     var p_surname = $('#p_surname').val();
                     var p_first_name = $('#p_first_name').val();
 
+                    var side_code = $('#side_code').val();
                     var p_id = $('#p_id').val();
                     var p_dob = $('#p_dob').val();
 
@@ -795,7 +777,7 @@
                     $('#confi-patient-surname').text(p_surname);
                     $('#confi-patient-firstname').text(p_first_name);
 
-                    $('#confi-patient-id').text(p_id);
+                    $('#confi-patient-id').text(side_code+"-"+p_id);
                     $('#confi-patient-dob').text(p_dob);
 
                     $('#confi-patient-gender').text(p_gender);
