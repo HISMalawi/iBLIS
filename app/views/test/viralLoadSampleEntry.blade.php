@@ -19,9 +19,9 @@
             <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
         @endif
 
-                    {{ Form::open(array('route' => array('test.index'), 'method' => 'GET')) }}
+                    {{-- {{ Form::open(array('route' => array('test.index'), 'method' => 'GET')) }}
                         <div class="row">
-                            <div class="form-group col-lg-12 ">
+                            <div class="form-group col-lg-12" style="margin-bottom: -50px;">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row">
@@ -39,32 +39,40 @@
                                 
                             </div>
                         </div>
-                    {{ Form::close() }}
+                    {{ Form::close() }} --}}
             <!--Wizard-->
             <!--  form id="wizard7" class="wizard needs-validation" data-style="1" novalidate action="test.saveNewTest" method="post" -->
             {{ Form::open(array('route' => 'test.createOrderRetrospective',  'method' => 'POST', 'id' => 'wizard7', 'class' => "wizard needs-validation", 'data-style'=>"1",'novalidate')) }}
 
                 <!--Step 1-->
+                <!--Step 1-->
                 <h3>Health Facility Information</h3>
                 <div class="wizard-content">
 
-                    
-                       
-                    
-                    
                     <div class="row">
+                        <div class="row">
+                            <div class="col-md-2 col-md-offset-10 mb-5">
+                              <div class="input-group required text-right">
+                                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
+                                <input type="text" class="form-control" placeholder="Scan barcode" name="small-barcode" id="small_barcode" aria-describedby="basic-addon1">
+                              </div>
+                            </div>
+                        </div>
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 1:</strong> Health Facility Information
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <strong>Section 1:</strong> Health Facility Information
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
 
                                         <div class="form-group col-lg-6 ec">
                                             <label for="district">District : &nbsp; </label>
-                                            <select  class="district-select form-control" name="district" id="district">
+                                            <select  class="form-control required" name="district" id="district">
                                                 <option value="" selected="selected">-- Select / Search --</option>
+                                                <option value="Lilongwe">Lilongwe</option>
                                             </select>
                                         
 
@@ -72,8 +80,9 @@
 
                                         <div class="form-group col-lg-6 ec">
                                             <label for="facility">Facility Name : &nbsp;</label>
-                                            <select class="form-control facility-select" name="facility" id="facility">
+                                            <select class="form-control required" name="facility" id="facility">
                                                 <option value="" selected="selected">-- Select / Search --</option>
+                                                <option value="KCH" >KCH</option>
                                             </select>
                                         </div>
                                     </div>
@@ -86,33 +95,45 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 2:</strong> Patient Information
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <strong>Section 2:</strong> Patient Information
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
 
                                         <div class="form-group col-lg-6">
                                             <label for="surname">Patient Surname : &nbsp; </label>
-                                            <input type="text" class="form-control" name="surname" id="p_surname">
+                                            <input type="text" class="form-control required" name="surname" id="p_surname">
                                         </div>
 
                                         <div class="form-group col-lg-6">
                                             <label for="firstname">Patient First Name : &nbsp; </label>
-                                            <input type="text" class="form-control" name="firstname" id="p_first_name">
+                                            <input type="text" class="form-control required" name="firstname" id="p_first_name">
                                         </div>
                                     </div>
 
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="form-group required col-lg-6">
                                             <label for="id">Patient ID : &nbsp; </label>
-                                            <input type="text" class="form-control" name="id" id="p_id">
+                                            <div class="row">
+                                                <div class="col-md-2" style="margin-left: -1px !important; padding: 0px !important;">
+                                                    <input type="text" style="width: 50px;" class="form-control required" name="id" id="p_id">
+                                                </div>
+                                                <div class="col-md-2 text-center" style="width: 10px;">
+                                                    <p class="text-center pt-2">-</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input style="width: 175px;" type="text" class="form-control required" name="id" id="p_id">
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="form-group col-lg-6">
                                             <label for="dob">Date of Birth : &nbsp; </label>
-                                            <input type="date" class="form-control" name="dob" id="p_dob">
+                                            <input type="date" class="form-control required" name="dob" id="p_dob">
                                         </div>
                                     </div>
 
@@ -120,14 +141,14 @@
                                         <label class="d-block mb-3" for="dob">Gender / Preg / Bf (tick one) :</label>
 
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                            <input class="form-check-input required mx-3" type="radio" name="gender"
                                                 id="gridRadios1" value="Male">
                                             <label class="form-check-label" for="gridRadios1">
                                                 Male
                                             </label>
                                         </div>
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                            <input class="form-check-input required mx-3" type="radio" name="gender"
                                                 id="gridRadios2" value="Female Non-Preg./ Bf.">
                                             <label class="form-check-label" for="gridRadios2">
                                                 Female Non-Preg./ Bf.
@@ -135,7 +156,7 @@
                                         </div>
 
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                            <input class="form-check-input required mx-3" type="radio" name="gender"
                                                 id="gridRadios3" value="Female Pregnant">
                                             <label class="form-check-label" for="gridRadios3">
                                                 Female Pregnant
@@ -143,7 +164,7 @@
                                         </div>
 
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="gender"
+                                            <input class="form-check-input required mx-3" type="radio" name="gender"
                                                 id="gridRadios4" value="Female Breastfeeding">
                                             <label class="form-check-label" for="gridRadios4">
                                                 Female Breastfeeding
@@ -156,12 +177,12 @@
 
                                         <div class="form-group col-lg-6">
                                             <label for="phone">Patient/Guardian Phone Number : &nbsp; </label>
-                                            <input type="text" class="form-control" name="phone" id="p_phone">
+                                            <input type="text" class="form-control required" name="phone" id="p_phone">
                                         </div>
 
                                         <div class="form-group col-lg-6">
                                             <label for="sample-date">Date Sample Drawn : &nbsp; </label>
-                                            <input type="date" class="form-control" name="sample-date"
+                                            <input type="date" class="form-control required" name="sample-date"
                                                 id="sample_date">
                                         </div>
                                     </div>
@@ -194,22 +215,24 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 3:</strong> Reason for Test
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <strong>Section 3:</strong> Reason for Test
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <fieldset class="row mb-4">
                                         <label class="d-block mb-3" for="dob">Select reason :</label>
 
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                            <input class="form-check-input required mx-3" type="radio" name="reason"
                                                 id="gridRadios5" value="Routine">
                                             <label class="form-check-label" for="gridRadios5">
                                                 Routine
                                             </label>
                                         </div>
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                            <input class="form-check-input required mx-3" type="radio" name="reason"
                                                 id="gridRadios6" value="Targeted">
                                             <label class="form-check-label" for="gridRadios6">
                                                 Targeted
@@ -217,7 +240,7 @@
                                         </div>
 
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                            <input class="form-check-input mx-3 required" type="radio" name="reason"
                                                 id="gridRadios7" value="Follow-up after high VL">
                                             <label class="form-check-label" for="gridRadios7">
                                                 Follow-up after high VL
@@ -225,7 +248,7 @@
                                         </div>
 
                                         <div class="form-check d-block">
-                                            <input class="form-check-input mx-3" type="radio" name="reason"
+                                            <input class="form-check-input mx-3 required" type="radio" name="reason"
                                                 id="gridRadios8" value="Repeat (reject / lost / missing)">
                                             <label class="form-check-label" for="gridRadios8">
                                                 Repeat (reject / lost / missing)
@@ -250,15 +273,17 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 5:</strong> Patient and Sample Details
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <strong>Section 4:</strong> Patient and Sample Details
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
 
                                         <div class="form-group col-lg-6">
                                             <label for="art-init-date">ART Initiation Date : &nbsp; </label>
-                                            <input type="date" class="form-control" name="art-init-date"
+                                            <input type="date" class="form-control required" name="art-init-date"
                                                 id="art-init-date">
                                         </div>
 
@@ -479,21 +504,23 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 6:</strong> Details of Person Collecting Sample
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <strong>Section 5:</strong> Details of Person Collecting Sample
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
 
                                         <div class="form-group col-lg-6">
                                             <label for="surname">Surname : &nbsp; </label>
-                                            <input type="text" class="form-control" name="pcs-surname"
+                                            <input type="text" class="form-control required" name="pcs-surname"
                                                 id="pcs-surname">
                                         </div>
 
                                         <div class="form-group col-lg-6">
                                             <label for="firstname">First Name : &nbsp; </label>
-                                            <input type="text" class="form-control" name="pcs-firstname"
+                                            <input type="text" class="form-control required" name="pcs-firstname"
                                                 id="pcs-firstname">
                                         </div>
                                     </div>
@@ -502,12 +529,12 @@
 
                                         <div class="form-group col-lg-6">
                                             <label for="phone">Phone Number : &nbsp; </label>
-                                            <input type="text" class="form-control" name="pcs-phone" id="pcs-phone">
+                                            <input type="text" class="form-control required" name="pcs-phone" id="pcs-phone">
                                         </div>
 
                                         <div class="form-group col-lg-6">
                                             <label for="id">HTC Provider ID : &nbsp; </label>
-                                            <input type="text" class="form-control" name="htc-provider-id"
+                                            <input type="text" class="form-control required" name="htc-provider-id"
                                                 id="htc-provider-id">
                                         </div>
                                     </div>
@@ -522,143 +549,179 @@
 
 
                 <!--Step 5-->
+                <!-- Confirmation section -->
                 <h3>Confirmation</h3>
                 <div class="wizard-content">
                     
-                    <div class="row px-0 mx-0">
-                        <div class="col-lg-9">
-                            <h3><strong>Confirmation</strong></h3>
-                        </div>
-                        <div class="col-lg-3 barcont">
-                            <label class="bar-item" for="small-barcode">Scan Barcode : &nbsp; </label>
-                            <input  type="text" class="form-control bar-item" name="small-barcode" id="small_barcode">
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-10 mb-5">
+                            <div class="input-group required text-right">
+                              <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
+                              <input type="text" class="form-control" placeholder="Scan barcode" name="small-barcode" id="small_barcode" aria-describedby="basic-addon1">
+                            </div>
                         </div>
                     </div>
-                    <hr>
-
-                    <div class="row">
-                        <div class="form-group col-lg-4">
-                            <div class="card mb-4">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 1:</strong> Health Facility Information
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><label for="district">District : &nbsp; </label>
-                                        <p id="confi-district-name">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="facility">Facility Name : &nbsp; </label>
-                                        <p id="confi-facility-name">--</p>
-                                    </li>
-
-                                </ul>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 5:</strong> Patient and Sample Details
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><label for="id">ART Initiation Date : &nbsp;
-                                        </label>
-                                        <p id="confi-art-init-date">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="id">Sample Type : &nbsp; </label>
-                                        <p id="confi-sample-type">--</p>
-                                    </li>
-
-                                    <li class="list-group-item"><label for="id">Current ART Regimen : &nbsp;
-                                        </label>
-                                        <p id="confi-curr-art-regimen">--</p>
-                                    </li>
-                                    <li class="list-group-item">
-                                    </li>
-
-                                </ul>
+                    <div class="text-right">
+                        <div class="input-group" style="width: 300px; justify-self:end;">
+                            
+                        </div>
+                    </div>
+    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4><strong>Confirmation</strong></h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-info" role="alert">
+                                Please make sure you have entered the correct informationas their appear on the <strong>EID & Viral Load Request Form</strong>
                             </div>
                         </div>
-
-                        <div class="form-group col-lg-4">
-                            <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 2:</strong> Patient Information
+                        
+                    </div>
+    
+                    <div>
+                        <div class="wizard-content mt-5">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h3 class="panel-title"><strong>Section 1: Health Facility Information</strong></h3>
                                 </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><label for="surname">Patient Surname : &nbsp; </label>
-                                        <p id="confi-patient-surname">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="firstname">Patient First Name : &nbsp;
-                                        </label>
-                                        <p id="confi-patient-firstname">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="id">Patient ID : &nbsp; </label>
-                                        <p id="confi-patient-id">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="dob">Date of Birth : &nbsp; </label>
-                                        <p id="confi-patient-dob">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="id">Gender / Preg / Bf : &nbsp; </label>
-                                        <p id="confi-patient-gender">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="id">Date Sample Drawn : &nbsp; </label>
-                                        <p id="confi-sample-date">--</p>
-                                    </li>
-                                    <li class="list-group-item"><label for="id">Patient/Guardian Phone Number :
-                                            &nbsp; </label>
-                                        <p id="confi-patient-phone">--</p>
-                                    </li>
-
-                                </ul>
+                                <div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><label for="district">District : &nbsp; </label>
+                                            <p id="confi-district-name">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="facility">Facility Name : &nbsp; </label>
+                                            <p id="confi-facility-name">--</p>
+                                        </li>
+    
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h3 class="panel-title"><strong>Section 2: Patient Information </strong></h3>
+                                </div>
+                                <div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><label for="surname">Patient Surname : &nbsp; </label>
+                                            <p id="confi-patient-surname">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="firstname">Patient First Name : &nbsp;
+                                            </label>
+                                            <p id="confi-patient-firstname">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="id">Patient ID : &nbsp; </label>
+                                            <p id="confi-patient-id">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="dob">Date of Birth : &nbsp; </label>
+                                            <p id="confi-patient-dob">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="id">Gender / Preg / Bf : &nbsp; </label>
+                                            <p id="confi-patient-gender">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="id">Date Sample Drawn : &nbsp; </label>
+                                            <p id="confi-sample-date">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="id">Patient/Guardian Phone Number :
+                                                &nbsp; </label>
+                                            <p id="confi-patient-phone">--</p>
+                                        </li>
+    
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h3 class="panel-title"><strong>Section 3: Test Type</strong></h3>
+                                </div>
+                                <div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><label for="id">Reason : &nbsp; </label>
+                                            <p id="confi-test-reason">--</p>
+                                        </li>
+    
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h3 class="panel-title"><strong>Section 4: Specimen Information for Early Infant Diagnosis ONLY</strong></h3>
+                                </div>
+                                <div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><label for="district">District : &nbsp; </label>
+                                            <p id="confi-district-name">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="facility">Facility Name : &nbsp; </label>
+                                            <p id="confi-facility-name">--</p>
+                                        </li>
+    
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h3 class="panel-title"><strong>Section 5: Patient and Sample Details for Viral Load ONLY</strong></h3>
+                                </div>
+                                <div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><label for="id">ART Initiation Date : &nbsp;
+                                            </label>
+                                            <p id="confi-art-init-date">--</p>
+                                        </li>
+                                        <li class="list-group-item"><label for="id">Sample Type : &nbsp; </label>
+                                            <p id="confi-sample-type">--</p>
+                                        </li>
+    
+                                        <li class="list-group-item"><label for="id">Current ART Regimen : &nbsp;
+                                            </label>
+                                            <p id="confi-curr-art-regimen">--</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                        </li>
+    
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h3 class="panel-title"><strong>Section 6: Details of Person Collecting Sample</strong></h3>
+                                </div>
+                                <div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><label for="surname">Surname : &nbsp; </label>
+                                            <p id="confi-pcs-surname">--</p>
+                                        </li>
+    
+                                        <li class="list-group-item"><label for="firstname">First Name : &nbsp; </label>
+                                            <p id="confi-pcs-firstname">--</p>
+                                        </li>
+    
+                                        <li class="list-group-item"><label for="phone">Phone Number : &nbsp; </label>
+                                            <p id="confi-pcs-phone">--</p>
+                                        </li>
+    
+                                        <li class="list-group-item"><label for="id">HTC Provider ID : &nbsp; </label>
+                                            <p id="confi-htc-provider-id">--</p>
+                                        </li>
+    
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="form-group col-lg-4">
-                            <div class="card mb-4">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 3:</strong> Reason for Test
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><label for="id">Reason : &nbsp; </label>
-                                        <p id="confi-test-reason">--</p>
-                                    </li>
-
-                                </ul>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header bg-primary">
-                                    <strong>Section 6:</strong> Details of Person Collecting Sample
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><label for="surname">Surname : &nbsp; </label>
-                                        <p id="confi-pcs-surname">--</p>
-                                    </li>
-
-                                    <li class="list-group-item"><label for="firstname">First Name : &nbsp; </label>
-                                        <p id="confi-pcs-firstname">--</p>
-                                    </li>
-
-                                    <li class="list-group-item"><label for="phone">Phone Number : &nbsp; </label>
-                                        <p id="confi-pcs-phone">--</p>
-                                    </li>
-
-                                    <li class="list-group-item"><label for="id">HTC Provider ID : &nbsp; </label>
-                                        <p id="confi-htc-provider-id">--</p>
-                                    </li>
-
-                                </ul>
-                                <input type="text" hidden  id="action_checker" name="checker">
-                                <input type="text" hidden  id="action_checker" name="test_type" value="Viral Load">
-                            </div>
-                        </div>
-                       
-                    </div>  
-                                   
+                    </div>
                 </div>
+                
                 <!--end: Step 5-->
             
 			{{ Form::close() }}
             <!-- /form -->
             <!--end:Wizard-->
+            <style>
+                .wizard > .steps > ul > li {
+                    display: none;
+                }
+            </style>
         </div>
     </div>
 
@@ -679,6 +742,8 @@
                 if (currentIndex > newIndex) {
                     return true;
                 }
+
+                wizard7.validate().settings.ignore = ":disabled,:hidden";
                 return wizard7.valid();
             },
             onStepChanged: function(event, currentIndex, priorIndex) {
@@ -755,44 +820,50 @@
                 $('#wizard7').submit();                
             }
         });
-        //Validation
-        // wizard7.validate({
-        //     errorClass: 'is-invalid',
-        //     validClass: 'is-valid',
-        //     errorElement: "div",
-        //     rules: {
-        //         // Step 1 - Account information
-        //         username: {
-        //             required: true
-        //         },
-        //         email: {
-        //             required: true,
-        //             email: true,
-        //             minlength: 8
-        //         },
-        //         password: {
-        //             required: true,
-        //             minlength: 5,
-        //             maxlength: 12
-        //         },
-        //         password2: {
-        //             required: true,
-        //             minlength: 5,
-        //             maxlength: 12
-        //         },
-        //         // Step 4 - Confirmation
-        //         reminders: {
-        //             required: true
-        //         },
-        //         terms_conditions: {
-        //             required: true
-        //         },
-        //     },
-        //     errorPlacement: function(error, element) {
-        //         $(element).parents(".form-group").append(error);
-        //     }
-        // });
+
+        // Validation
+        wizard7.validate({
+            errorClass: 'is-invalid text-danger mt-2',
+            validClass: 'is-valid',
+            errorElement: "div",
+            ignore: ":hidden",
+            rules: {
+                // Step 1 - Account information
+                username: {
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    minlength: 8
+                },
+                password: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 12
+                },
+                password2: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 12
+                },
+                // Step 4 - Confirmation
+                reminders: {
+                    required: true
+                },
+                terms_conditions: {
+                    required: true
+                },
+            },
+            errorPlacement: function(error, element) {
+                $(element).parents(".form-group").append(error);
+            }
+        });
         $('.wizard').find(".actions ul > li > a").addClass("btn bg-primary");
+        
+        $('.wizard').find(".actions ul > li:nth-child(3) > a").addClass("btn bg-danger");
+
+        $('.wizard').find(".actions ul > li:nth-child(4) > a").addClass("btn bg-success");
     </script>
     <script>
         $(document).ready(function() {
