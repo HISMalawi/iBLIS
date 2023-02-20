@@ -41,6 +41,35 @@
 					<div class="col-md-offset-2 col-md-8">
 						<div class="panel panel-info">  <!-- Patient Details -->
 							
+
+							<?php 
+								$sending_lab = $test->data->other->sending_lab;		
+								$patientFirst = explode(" ",$test->data->other->patient->name)[0];
+								$patientSecond = explode(" ",$test->data->other->patient->name)[1];
+								$patientId = $test->data->other->patient->id;
+								$patientGender = $test->data->other->patient->gender;
+								$patientDOB = $test->data->other->patient->dob;
+								$patientId = $test->data->other->patient->id;
+
+								$sampleType = $test->data->other->sample_type;
+								$sampleStatus = $test->data->other->specimen_status;
+								$testReason = $test->data->other->priority;
+								$dateCreated = $test->data->other->date_created;
+								$dateCreated  = date('Y-m-d', strtotime($dateCreated));
+
+								$regimen = $test->data->other->art_regimen;
+								$siteCode = $test->data->other->site_code_number;
+								$arv_number = $test->data->other->arv_number;
+								$art_start_date = $test->data->other->art_start_date;
+								$art_start_date  = date('Y-m-d', strtotime($art_start_date));
+
+
+								$createdByFirst = explode(" ",$test->data->other->sample_created_by->name)[0];
+								$createdBySecond = explode(" ",$test->data->other->sample_created_by->name)[1];
+
+								$requestedBy = $test->data->other->requested_by;
+							
+							?>
 							<div class="panel-body">
 								<div class="container-fluid">
 									<div class="panel panel-info">
@@ -53,8 +82,7 @@
 													<p><strong>{{"District:"}}</strong></p>
 													</div>
 												<div class="col-md-3">
-												{{ Form::text('search', Input::get('search'),
-													array('class' => 'form-control barcode')) }}
+													<input class="form-control"  type="text" id="district" name="district">
 												</div>
 
 
@@ -62,8 +90,7 @@
 													<p><strong>{{"Facility Name:"}}</strong></p>
 													</div>
 												<div class="col-md-3">
-												{{ Form::text('search', Input::get('search'),
-													array('class' => 'form-control barcode')) }}
+													<input class="form-control"  type="text" id="facility" name="facility">
 												</div>
 											</div>
 										</div>
@@ -80,13 +107,11 @@
 											<div class="row">
 												<div class="col-md-6">
 													<p><strong>{{"Patient Surname:"}}</strong></p>
-														{{ Form::text('search', Input::get('search'),
-														array('class' => 'form-control barcode')) }}
+													<input class="form-control"  type="text" id="pSurname" name="patientSurname">
 												</div>
 												<div class="col-md-6">
 													<p><strong>{{"Patient Firstname:"}}</strong></p>
-														{{ Form::text('search', Input::get('search'),
-														array('class' => 'form-control barcode')) }}
+													<input class="form-control"  type="text" id="pFirst" name="patientFirst">
 												</div>
 											</div>
 											<div class="row">
@@ -95,15 +120,13 @@
 													<div class="row">
 														<div class="col-md-12">
 															<p><strong>{{"Patient ID:"}}</strong></p>
-																{{ Form::text('search', Input::get('search'),
-																array('class' => 'form-control barcode')) }}
+															<input class="form-control"  type="text" id="pId" name="patientId">
 														</div>
 													</div>
 													<div class="row">
 														<div class="col-md-7">
 															<p><strong>{{"Patient/Gurdian Phone Number:"}}</strong></p>
-																{{ Form::text('search', Input::get('search'),
-																array('class' => 'form-control barcode')) }}
+															<input class="form-control"  type="text" id="phoneGurdian" name="phoneGurdian">
 														</div>
 													</div>
 
@@ -116,13 +139,13 @@
 															<div class="row">
 																<div class="col-md-12">
 																	<p><strong>{{"Date of Birth:"}}</strong></p>
-																	<input class="form-control" type="date" id="birthday" name="birthday">
+																	<input class="form-control" type="date" id="birthday" name="phoneDrawer">
 																</div>
 															</div>
 															<div class="row">
 																<div class="col-md-12">
 																	<p><strong>{{"Date Sample Drawn:"}}</strong></p>
-																	<input class="form-control"  type="date" id="birthday" name="birthday">
+																	<input class="form-control"  type="date" id="drawnDate" name="drawnDate">
 																</div>
 															</div>
 
@@ -130,19 +153,19 @@
 														<div class="col-md-6">
 															<p><strong>{{"Gender/Preg/Bf:"}}</strong></p>
 																<label class="container">Male
-																	<input type="radio" name="radio" checked>
+																	<input type="radio" name="radio" id="male" value="male">
 																	<span class="check"></span>
 																</label>
 																<label class="container">Female Non-Preg./Bf.
-																	<input type="radio" name="radio">
+																	<input type="radio" name="radio" id="female" value="female">
 																	<span class="check"></span>
 																</label>
 																<label class="container">Female Pregnant
-																	<input type="radio" name="radio">
+																	<input type="radio" name="radio" id="preg" value="female">
 																	<span class="check"></span>
 																</label>
 																<label class="container">Female Breastfeeding
-																	<input type="radio" name="radio">
+																	<input type="radio" name="radio" id="breast" value= "female">
 																	<span class="check"></span>
 																</label>
 														</div>
@@ -164,17 +187,17 @@
 											<div class="row">
 													<div class="col-md-6">
 														<p><strong>{{"Reason For Testing:"}}</strong></p>
-														<select class="form-control" type="date" id="birthday" name="birthday">
-															<option> 
+														<select class="form-control" type="date" id="reason" name="reason">
+															<option id="routine"> 
 																	Routine
 															</option>
-															<option> 
+															<option id="targeted">  
 																	Targeted
 															</option>
-															<option> 
+															<option id="follow"> 
 																	Follow-up after high VL
 															</option>
-															<option> 
+															<option id="repeat"> 
 																	Repeat (rejected/lost/missing)
 															</option>
 														</select>
@@ -192,19 +215,22 @@
 											<div class="row">
 													<div class="col-md-6">
 														<p><strong>{{"ART Initiation Date:"}}</strong></p>
-														<input class="form-control"  type="date" id="birthday" name="birthday">
+														<input class="form-control"  id="artStart" type="date"  name="artStart">
 													</div>		
 													<div class="col-md-6">
 														<p><strong>{{"Sample Type:"}}</strong></p>
-														<select class="form-control" type="date" id="birthday" name="birthday">
-															<option> 
+														<select class="form-control" type="date" id="sampleType" name="sampleType">
+															<option id="70ml"> 
 																	DBS 70ml
 															</option>
-															<option> 
+															<option id="plasma"> 
 																	Plasma
 															</option>
-															<option> 
+															<option id="dbs"> 
 																	DBS
+															</option>
+															<option id="blood"> 
+																	Blood
 															</option>
 														</select>
 													</div>								
@@ -212,14 +238,14 @@
 											<div class="row">															
 													<div class="col-md-6">
 														<p><strong>{{"Current ART Regimen:"}}</strong></p>
-														<select class="form-control" type="date" id="birthday" name="birthday">
-															<option> 
+														<select class="form-control" type="date" id="regimen" name="regimen">
+															<option id="13A"> 
 																	13A
 															</option>
-															<option> 
+															<option id="15A"> 
 																	15A
 															</option>
-															<option> 
+															<option id="12A"> 
 																	12A
 															</option>
 														</select>
@@ -237,25 +263,21 @@
 											<div class="row">
 													<div class="col-md-6">
 														<p><strong>{{"Sirname:"}}</strong></p>
-														{{ Form::text('search', Input::get('search'),
-														array('class' => 'form-control barcode')) }}
+														<input class="form-control"  type="text" id="drawerSirname" name="drawerSirname">
 													</div>		
 													<div class="col-md-6">
 														<p><strong>{{"First Name:"}}</strong></p>
-														{{ Form::text('search', Input::get('search'),
-														array('class' => 'form-control barcode')) }}
+														<input class="form-control"  type="text" id="drawerFirstname" name="drawerFirstname">
 													</div>								
 											</div>
 											<div class="row">															
 													<div class="col-md-6">
 														<p><strong>{{"Phone Number:"}}</strong></p>
-														{{ Form::text('search', Input::get('search'),
-														array('class' => 'form-control barcode')) }}
+														<input class="form-control"  type="text" id="phoneDrawer" name="phoneDrawer">
 													</div>	
 													<div class="col-md-4">
 														<p><strong>{{"HTC Provider ID:"}}</strong></p>
-														{{ Form::text('search', Input::get('search'),
-														array('class' => 'form-control barcode')) }}
+														<input class="form-control"  type="text" id="provider" name="provider">
 													</div>								
 											</div>
 										</div>
@@ -309,7 +331,80 @@
 			</div>
 		</div> <!-- ./ panel-body -->
 	</div>  <!-- ./ panel -->
+	
+	
+	
+	<script>
+		var sendingLab = "{{$sending_lab}}";
+		var district = "{{$sending_lab}}";
 
-															
+		var pFirst = "{{$patientFirst}}";
+		var pSecond = "{{$patientSecond}}";
+		var pID = "{{$patientId}}";
+		var pGender = "{{$patientGender}}";
+		var pDOB = "{{$patientDOB}}";
+
+		var siteCode = "{{$siteCode}}";
+		var hybridId = siteCode +"-"+pID;
+		document.getElementById('pSurname').value = pSecond;
+		document.getElementById('pId').value = pID;
+		document.getElementById('pFirst').value = pFirst;
+		document.getElementById('birthday').value = pDOB;
+		
+		if(pGender = "male"){
+			document.getElementById('male').checked = true;
+		}else{
+			document.getElementById('female').checked = true;
+		}
+
+		var sampleType = "{{$sampleType}}";
+		var sampleStatus = "{{$sampleStatus}}";
+		var testReason = "{{$testReason}}";
+		var dateCreated = "{{$dateCreated}}";
+
+		document.getElementById('drawnDate').value = dateCreated;
+		if(testReason == "routine"){
+			document.getElementById('routine').selected = true;
+		}
+		if(testReason == "targeted"){
+			document.getElementById('targeted').selected = true;
+		}		
+		if(testReason == "follow"){
+			document.getElementById('follow').selected = true;
+		}		
+		if(testReason == "repeat"){
+			document.getElementById('repeat').selected = true;
+		}
+
+		var regimen = "{{$regimen}}";
+		var arv_number = "{{$arv_number}}";
+		var art_start_date = "{{$art_start_date}}";
+		var sampleType = "{{$sampleType}}";
+
+		document.getElementById('artStart').value = art_start_date;
+
+		if(sampleType == "70ml"){
+			document.getElementById('70ml').selected = true;
+		}else if(sampleType == "plasma"){
+			document.getElementById('plasma').selected = true;
+		}else if(sampleType == "DBS"){
+			document.getElementById('dbs').selected = true;
+		}else if(sampleType == "blood"){
+			document.getElementById('blood').selected = true;
+		}
+		
+		var createdByFirst = "{{$createdByFirst}}";
+		var createdBySecond = "{{$createdBySecond}}";
+		var requestedBy = "{{$requestedBy}}";
+		
+		document.getElementById('drawerSirname').value = createdByFirst;
+		document.getElementById('drawerFirstname').value = createdBySecond;
+
+		document.getElementById('facility').value = sendingLab;
+		document.getElementById('district').value = district;
+
+	</script>
+						
 
 @stop
+
