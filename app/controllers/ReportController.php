@@ -859,8 +859,8 @@ P1
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
-								WHERE tt.name IN ('Minerals', 'Calcium', 'Minerals (Paeds)') 
-								AND m.name IN ('Calcium (CA)', 'Calcium', 'Ca') 
+								WHERE tt.name IN ('Minerals', 'Calcium', 'Minerals (Paeds)', 'Electrolytes') 
+								AND m.name IN ('Calcium (CA)', 'Calcium', 'Ca', 'CA') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
@@ -878,7 +878,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
 								WHERE tt.name IN ('Lipogram', 'Lipogram (Paeds)') 
-								AND m.name IN ('Cholestero l(CHOL)', 'Total Cholesterol(CHOL)') 
+								AND m.name IN ('Cholestero l(CHOL)', 'Total Cholesterol(CHOL)', 'TC') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
@@ -921,7 +921,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
 								WHERE tt.name IN ('Renal Function Test','Renal Function Tests (Paeds)') 
-								AND m.name IN ('Creatinine', 'CREA-S') 
+								AND m.name IN ('Creatinine', 'CREA-S', 'CREATININE (S)') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
@@ -963,7 +963,7 @@ P1
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
-								WHERE tt.name IN ('Pancreatic Function Test', 'Lipase') 
+								WHERE tt.name IN ('Pancreatic Function Test', 'Lipase','Lipogram') 
 								AND m.name = 'Lipase' 
 								AND	substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
@@ -982,8 +982,8 @@ P1
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
-								WHERE tt.name IN ('Minerals', 'Magnesium', 'Minerals (Paeds)') 
-								AND m.name IN ('Magnesium (MGXB)', 'Mg', 'Magnesium') 
+								WHERE tt.name IN ('Minerals', 'Magnesium', 'Minerals (Paeds)','Electrolytes') 
+								AND m.name IN ('Magnesium (MGXB)', 'Mg', 'Magnesium', 'MG') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
@@ -991,8 +991,8 @@ P1
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
-								WHERE tt.name IN ('Minerals', 'Phosphorus', 'Minerals (Paeds)') 
-								AND m.name IN ('Phosphorus (PHOS)', 'P', 'Phosphorus')
+								WHERE tt.name IN ('Minerals', 'Phosphorus', 'Minerals (Paeds)', 'Electrolytes') 
+								AND m.name IN ('Phosphorus (PHOS)', 'P', 'Phosphorus', 'PHO')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
@@ -1045,7 +1045,7 @@ P1
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
-								WHERE tt.name = 'Uric Acid'
+								WHERE tt.name IN ('Uric Acid','Renal Function Test')
 								AND m.name IN ('UA', 'UASR')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
