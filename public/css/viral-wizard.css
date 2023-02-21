@@ -65,7 +65,7 @@
 
 .wizard > .steps ul li.disabled a, .wizard > .steps ul li.disabled a:hover, .wizard > .steps ul li.disabled a:active { background: #fbfbfb; color: #1e2022; cursor: not-allowed; opacity: .7; }
 
-.wizard .content { min-height: 320px; padding-top: 30px; }
+.wizard .content { min-height: 320px; padding-top: 0px; }
 
 .wizard .content > .body { width: 100%; height: auto; position: absolute; }
 
@@ -143,4 +143,4 @@
 @media (max-width: 575.98px) { .wizard > .steps ul { -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
   .wizard > .steps ul li { -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1; margin-bottom: 10px; } }
 
-.card .card-body .wizard { padding: 1rem; }
+.card .card-body .wizard { padding: 0px!important; }

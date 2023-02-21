@@ -12,6 +12,9 @@
           <li class="active">{{ "Viral Load" }}</li>
         </ol>
     </div>
+    <div class="container-fluid">
+        <div class="row no-gutters">					
+            <div class="col-md-offset-2 col-md-8">
     <div class="card">
         <div class="card-body">
 
@@ -552,34 +555,20 @@
                 <h3>Confirmation</h3>
                 <div class="wizard-content">
                     
-                    <div class="row">
-                        <div class="col-md-2 col-md-offset-10 mb-5">
-                            <div class="input-group required text-right">
-                              <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
-                              <input type="text" class="form-control" placeholder="Scan barcode" name="small-barcode" id="small_barcode" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                    </div>
+                  
                     <div class="text-right">
                         <div class="input-group" style="width: 300px; justify-self:end;">
                             
                         </div>
                     </div>
     
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4><strong>Confirmation</strong></h4>
-                        </div>
                         <div class="panel-body">
                             <div class="alert alert-info" role="alert">
-                                Please make sure you have entered the correct informationas their appear on the <strong>EID & Viral Load Request Form</strong>
+                                Please make sure you have entered the correct informationas their appear on the <strong>EID & Viral Load Request Form !!!</strong>
                             </div>
                         </div>
-                        
-                    </div>
-    
-                    <div>
-                        <div class="wizard-content mt-5">
+
+                        <div class="wizard-content mt-3">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                   <h3 class="panel-title"><strong>Section 1: Health Facility Information</strong></h3>
@@ -705,17 +694,17 @@
                                 </div>
                                 <div class="row ma-5 m-5">
 
-                                    <div class="form-group col-lg-4">
+                                    <div class="form-group col-lg-6">
                                         <label for="confi-art-init-date">ART Initiation Date : &nbsp; </label>
                                         <input type="text" disabled class="form-control required" id="confi-art-init-date">
                                     </div>
 
-                                    <div class="form-group col-lg-4">
+                                    <div class="form-group col-lg-6">
                                         <label for="confi-sample-type">Sample Type : &nbsp; </label>
                                         <input type="text" disabled class="form-control required" id="confi-sample-type">
                                     </div>
 
-                                    <div class="form-group col-lg-4">
+                                    <div class="form-group col-lg-6">
                                         <label for="confi-curr-art-regimen">Current ART Regimen : &nbsp; </label>
                                         <input type="text" disabled class="form-control required" id="confi-curr-art-regimen">
                                     </div>
@@ -771,14 +760,13 @@
                 .wizard > .actions {
                     width: 90%;
                     padding-right: 150px;
-                    background-color: white;
-                    position: fixed; /* position the button absolutely */
+                    background-color: white; /* position the button absolutely */
                     bottom: 0px; /* position the button 10 pixels from the bottom of the container */
                 }
             </style>
         </div>
     </div>
-
+</div> </div></div>
     <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
