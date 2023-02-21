@@ -62,7 +62,7 @@
                         </div>
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default panel-info">
                                     <div class="panel-heading">
                                         <strong>Section 1:</strong> Health Facility Information
                                     </div>
@@ -97,7 +97,7 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default panel-info">
                                     <div class="panel-heading">
                                         <strong>Section 2:</strong> Patient Information
                                     </div>
@@ -217,7 +217,7 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default panel-info">
                                     <div class="panel-heading">
                                         <strong>Section 3:</strong> Reason for Test
                                     </div>
@@ -275,7 +275,7 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default panel-info">
                                     <div class="panel-heading">
                                         <strong>Section 4:</strong> Patient and Sample Details
                                     </div>
@@ -506,7 +506,7 @@
                     <div class="row">
                         <div class="form-group col-lg-12">
                             <div class="card">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default panel-info">
                                     <div class="panel-heading">
                                         <strong>Section 5:</strong> Details of Person Collecting Sample
                                     </div>
@@ -569,7 +569,7 @@
                         </div>
 
                         <div class="wizard-content mt-3">
-                            <div class="panel panel-default">
+                            <div class="panel panel-default panel-info">
                                 <div class="panel-heading">
                                   <h3 class="panel-title"><strong>Section 1: Health Facility Information</strong></h3>
                                 </div>
@@ -587,7 +587,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default">
+                            <div class="panel panel-default panel-info">
                                 <div class="panel-heading">
                                   <h3 class="panel-title"><strong>Section 2: Patient Information </strong></h3>
                                 </div>
@@ -677,7 +677,7 @@
 
                                 </div>
                             </div>
-                            <div class="panel panel-default pb-5">
+                            <div class="panel panel-default panel-info pb-5">
                                 <div class="panel-heading">
                                   <h3 class="panel-title"><strong>Section 3: Test Type</strong></h3>
                                 </div>
@@ -688,7 +688,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default">
+                            <div class="panel panel-default panel-info">
                                 <div class="panel-heading">
                                   <h3 class="panel-title"><strong>Section 4: Patient and Sample Details for Viral Load ONLY</strong></h3>
                                 </div>
@@ -710,7 +710,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default">
+                            <div class="panel panel-default panel-info">
                                 <div class="panel-heading">
                                   <h3 class="panel-title"><strong>Section 5: Details of Person Collecting Sample</strong></h3>
                                 </div>
