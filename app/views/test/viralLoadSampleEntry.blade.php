@@ -563,9 +563,9 @@
                     </div>
     
                         <div class="panel-body">
-                            <div class="alert alert-info" role="alert">
-                                Please make sure you have entered the correct informationas their appear on the <strong>EID & Viral Load Request Form !!!</strong>
-                            </div>
+                            <div class="panel-heading alert bg-secondary">
+                                <h3 class="panel-title"><strong>CONFIRMATION</strong></h3>
+                              </div>
                         </div>
 
                         <div class="wizard-content mt-3">
@@ -876,7 +876,7 @@
             }
         });
 
-        Validation
+        // Validation
         wizard7.validate({
             errorClass: 'is-invalid text-danger mt-2',
             validClass: 'is-valid',
@@ -910,9 +910,9 @@
                     required: true
                 },
             },
-            errorPlacement: function(error, element) {
-                $(element).parents(".form-group").append(error);
-            }
+            // errorPlacement: function(error, element) {
+            //     $(element).parents(".form-group").append(error);
+            // }
         });
 
         $('.wizard').find(".actions ul > li > a").addClass("btn bg-primary");
