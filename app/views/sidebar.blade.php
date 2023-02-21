@@ -70,13 +70,14 @@
 					<span class="glyphicon glyphicon-home"></span> {{trans('messages.home')}}</a>
 			</div>
 		</li>
+		@if (!TestCategory::find(Session::get('location_id'))->name == "DNA/PCR")
 		<li>
 			<div class="main-menu {{$active[1]}}">
 				<a href="{{ URL::route('patient.index')}}">
 					<span class="glyphicon glyphicon-download-alt"></span> {{ Lang::choice('messages.patient', 2)}}</a>
 			</div>
 		</li>
-
+		@endif
 		@if (TestCategory::find(Session::get('location_id'))->name == "DNA/PCR")
 		<li>
 			<div class="main-menu {{$active[2]}}">
