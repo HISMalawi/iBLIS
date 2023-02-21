@@ -194,6 +194,22 @@ class Sender
         $nlims_user =  \Config::get('nlims_connection.nlims_custome_username');
         $nlims_pass =  \Config::get('nlims_connection.nlims_custome_password');
 
+        $specimenStatus = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
+        $testStatus = 2;
+       
+        if(count(explode("-",$tracking_number)) > 1){
+            
+            $statusAction = explode("-",$tracking_number)[1];
+            if($statusAction == "accept"){
+                $specimenStatus = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
+            }else if ($statusAction == "rejected"){
+                $specimenStatus = SpecimenStatus::where('name', 'specimen-rejected')->first()->id;
+                $testStatus = "8";
+            }
+        }
+
+        $tracking_number = explode("-",$tracking_number)[0];       
+        
         $order = Sender::search_from_remote($tracking_number);
         
         $check_sample_type = SpecimenType::where('name',$order->data->other->sample_type)->first();
@@ -260,15 +276,15 @@ class Sender
             }
             $specimen->sending_facility_id = $sending_facility_id;
         }
-
-        $specimen->specimen_status_id = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
+       
+        $specimen->specimen_status_id = $specimenStatus;
         $specimen->accepted_by = Auth::user()->id;
         $specimen->time_accepted = time();
         $specimen->save();
 
         $dat = new UnsyncOrder;
 		$dat->specimen_id = $specimen->id;
-		$dat->data_not_synced = "specimen-accepted";
+		$dat->data_not_synced = $specimenStatus;
 		$dat->data_level = "specimen";
 		$dat->sync_status = "not-synced";
 		$dat->updated_by_name = "";
@@ -321,7 +337,7 @@ class Sender
                 $test = new Test;
                 $test->test_type_id = $type->id;
                 $test->specimen_id = $specimen->id;
-                $test->test_status_id = 2;
+                $test->test_status_id = $testStatus;
                 $test->created_by = Auth::user()->id;
                 $test->requested_by = $specimen->drawn_by_name;
 
@@ -349,6 +365,17 @@ class Sender
 
             $test->visit_id = $visit->id;
             $test->save();
+
+            if($testStatus == "8"){
+                $dat = new UnsyncOrder;
+                $dat->specimen_id = $test->id;
+                $dat->data_not_synced = "test-rejected";
+                $dat->data_level = "test";
+                $dat->sync_status = "not-synced";
+                $dat->updated_by_name = "";
+                $dat->updated_by_id = Auth::user()->id;
+                $dat->save();        
+            }
 
             if($name == "Viral Load"){
                 $tracking_number = $specimen->tracking_number;

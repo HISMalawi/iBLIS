@@ -32,6 +32,13 @@ class WorksheetController extends \BaseController {
 		return $res;
 	}
 
+	public function rerunTest(){	
+		$rs = Test::find(Input::get('id'));
+		$rs->test_status_id = Test::RERUN_TEST;
+		$rs->save();
+		return $rs;
+	}
+
 	public function viewWorksheetTests($worksheetId=0){
 	
 		$tests = DB::SELECT("SELECT patients_on_art.arv_number,patients_on_art.art_initiation_date,
@@ -41,6 +48,7 @@ class WorksheetController extends \BaseController {
 						specimens.tracking_number AS trackingNumber,
 						specimens.sending_facility_id AS sending_facility,
 						tests.test_status_id AS testStatus,
+						tests.id AS tstID,
 						test_results.result FROM tests 
 						INNER JOIN specimens ON specimens.id = tests.specimen_id 
 						INNER JOIN visits ON visits.id = tests.visit_id 

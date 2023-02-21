@@ -114,14 +114,18 @@
                             <td> {{$test->result}}</td>
                             <td>
                                
-                                <a class="main-view main-view-{{'1'}} btn btn-sm btn-danger"
-                                       href="{{ URL::route('test.viewDetails', '1') }}"
-                                       id="view-details-{{'1'}}-link"
-                                       title="{{trans('messages.view-details-title')}}">
+                    
+                                <a class="{{(!$test->tstID) ? 'main-view main-view-'.$test->tstID : ''}}  btn btn-sm btn-danger start-test" 
+                                        href="javascript:void(0)" 
+                                        data-test-id="{{$test->tstID}}" data-url="{{ URL::route('worksheet.rerunTest') }}"
+                                        title="{{trans('messages.start-test-title')}}"
+                                        onClick="window.location.reload()"
+                                        >
                                         <span class="glyphicon glyphicon-thumbs-down"></span>
                                         {{'re-run test'}}
                                 </a>
-                                
+
+
                             </td>
                         </tr>
                     @endforeach

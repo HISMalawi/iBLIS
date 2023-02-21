@@ -311,20 +311,22 @@
 							</div>
 							<div class="panel-btn pull-right">
 								<a class="btn btn-sm btn-danger"
-								   href="{{URL::route('test.mergeorupdate', array($tracking_number))}}"
+								   href="{{URL::route('test.mergeorupdate', array($tracking_number.'-'.'rejected'))}}"
 								   data-toggle="modal" >
 									<span class="glyphicon glyphicon-next"></span>
-									Reject & Save
+									Reject Test
 								</a>
 							</div>
 							<div class="panel-btn pull-right">
 								<a class="btn btn-sm btn-success"
-								   href="{{URL::route('test.mergeorupdate', array($tracking_number))}}"
+								   href="{{URL::route('test.mergeorupdate', array($tracking_number.'-'.'accept'))}}"
 								   data-toggle="modal" >
 									<span class="glyphicon glyphicon-next"></span>
-									Accept & Save
+									Accept Test
 								</a>
-							</div>								
+							</div>		
+
+					
 											
 					</div>
 				</div>									
