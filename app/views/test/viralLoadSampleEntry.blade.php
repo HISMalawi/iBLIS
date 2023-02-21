@@ -118,13 +118,13 @@
 
                                     <div class="row">
 
-                                        <div class="form-group required col-lg-6">
-                                            <label for="id">Patient ID : &nbsp; </label>
+                                        <div class="form-group required col-lg-6"> 
                                             <div class="row">
-                                                <div class="col-md-2" style="margin-left: -1px !important; padding: 0px !important;">
+                                                <label for="id">Patient ID : &nbsp; </label>
+                                                <div class="col-md-2">
                                                     <input type="text" style="width: 50px;" class="form-control required" name="side_code" id="side_code">
                                                 </div>
-                                                <div class="col-md-2 text-center" style="width: 10px;">
+                                                <div class="col-md-2 text-center" style="width: 0px;padding:0px;margin:0px;">
                                                     <p class="text-center pt-2">-</p>
                                                 </div>
                                                 <div class="col-md-6">
@@ -636,12 +636,12 @@
                                     <div class="row ma-5 m-5">
 
                                         <div class="form-group required col-lg-6">
-                                            <label for="id">Patient ID : &nbsp; </label>
                                             <div class="row">
+                                                <label for="id">Patient ID : &nbsp; </label>
                                                 <div class="col-md-2" style="margin-left: -1px !important; padding: 0px !important;">
                                                     <input type="text" disabled style="width: 50px;" class="form-control required" name="side_code" id="confi-side-code">
                                                 </div>
-                                                <div class="col-md-2 text-center" style="width: 10px;">
+                                                <div class="col-md-2 text-center" style="width: 0px;padding:0px;margin:0px;">
                                                     <p class="text-center pt-2">-</p>
                                                 </div>
                                                 <div class="col-md-6">
@@ -681,7 +681,7 @@
                                 <div class="panel-heading">
                                   <h3 class="panel-title"><strong>Section 3: Test Type</strong></h3>
                                 </div>
-                                <div class="pa-5 p-5">
+                                <div class="row ms-5 mt-3">
                                     <div class="form-group col-lg-6">
                                         <label for="confi-test-reason">Reason : &nbsp; </label>
                                         <input type="text" disabled class="form-control required" id="confi-test-reason">
