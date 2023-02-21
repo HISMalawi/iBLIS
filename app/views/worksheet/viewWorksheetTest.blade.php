@@ -41,19 +41,26 @@
                     <div class="col-md-11">
                         <span class="glyphicon glyphicon-filter"></span>{{"Tests For Worksheet No: $worksheetNumber"}}
                       
-                        <a class="{{(!$worksheetNumber) ? 'main-view main-view-'.$worksheetNumber : ''}} btn btn-sm btn-warning start-test" href="javascript:void(0)"
+
+                                <a style="margin-left:2%" class="btn btn-sm btn-default pull-right" href="javascript:void(0)"
+                                    alt="{{trans('messages.back')}}" title="{{'verified worksheet'}}"
+                                    onClick="window.location.reload()"
+                                    >
+                                    <span class="glyphicon glyphicon-print"> </span>
+                                    {{'Print Results'}}
+                                </a>
+
+                                <a class="{{(!$worksheetNumber) ? 'main-view main-view-'.$worksheetNumber : ''}} pull-right btn btn-sm btn-success start-test" 
+                                        href="javascript:void(0)" 
                                         data-test-id="{{$worksheetNumber}}" data-url="{{ URL::route('worksheet.worksheetVerified') }}"
-                                        title="{{trans('messages.start-test-title')}}">
-                                        <span class="glyphicon glyphicon-play"></span>
-                                        {{trans('messages.start-test')}}
-                                    </a>
-
-                        <a class="btn btn-sm btn-success" href="#" onclick="window.history.back();return false;"
-                            alt="{{trans('messages.back')}}" title="{{'verified worksheet'}}">
-                            {{'print results'}}
-                        </a>
-
-
+                                        title="{{trans('messages.start-test-title')}}"
+                                        onClick="window.location.reload()"
+                                        >
+                                        
+                                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                                        {{"Worksheet Verified"}}
+                                </a>                       
+                           
                     </div>
                     <div class="col-md-1">
                     
@@ -107,11 +114,11 @@
                             <td> {{$test->result}}</td>
                             <td>
                                
-                                <a class="main-view main-view-{{'1'}} btn btn-sm btn-success"
+                                <a class="main-view main-view-{{'1'}} btn btn-sm btn-danger"
                                        href="{{ URL::route('test.viewDetails', '1') }}"
                                        id="view-details-{{'1'}}-link"
                                        title="{{trans('messages.view-details-title')}}">
-                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        <span class="glyphicon glyphicon-thumbs-down"></span>
                                         {{'re-run test'}}
                                 </a>
                                 
