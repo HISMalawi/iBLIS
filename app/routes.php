@@ -148,11 +148,16 @@ Route::group(array("before" => "auth"), function()
     Route::get("/worksheet/{id}/tests", array(
         "as"   => "worksheet.viewWorksheetTests",
         "uses" => "WorksheetController@viewWorksheetTests"
-    ));
+    ));  
 
     Route::post("/worksheet/verified", array(
         "as"   => "worksheet.worksheetVerified",
         "uses" => "WorksheetController@worksheetVerified"
+    ));
+
+    Route::post("/worksheet/test/reruntest", array(
+        "as"   => "worksheet.rerunTest",
+        "uses" => "WorksheetController@rerunTest"
     ));
     
      Route::get("viralLoadSampleEntry",array(

@@ -337,6 +337,53 @@ P1
 	}
 
 	public function viralLoadSampleEntry(){
+		$searchString = Input::get('search');
+
+		if ($searchString && preg_match("/^X/i", $searchString) ){
+			
+			$remoteResults = Sender::search_from_remote($searchString);
+			
+			$orderResults  = Sender::search_results_from_remote($searchString);
+			if ($remoteResults->message != "order not available" ){
+				if(!empty($remoteResults)) {
+					$testCounter = $remoteResults->data->tests;
+					$gotTest = $remoteResults->data->tests;
+			
+					if(count($testCounter) == 1){
+						foreach($gotTest AS $tst => $status){
+							$actName = $tst;
+						}
+						if($actName == "Viral Load"){
+							return View::make('test.remoteorderVL')
+							->with('test', $remoteResults)
+							->with('tracking_number', $searchString)
+							->with('order_results',$orderResults)
+							->with('searchString', $searchString);
+						}else{
+							return View::make('test.remoteorder')
+							->with('test', $remoteResults)
+							->with('tracking_number', $searchString)
+							->with('order_results',$orderResults)
+							->with('searchString', $searchString);
+						}
+					}else{
+						// Load the view and pass it the tests
+						return View::make('test.remoteorder')
+							->with('test', $remoteResults)
+							->with('tracking_number', $searchString)
+							->with('order_results',$orderResults)
+							->with('searchString', $searchString);
+					}				
+				
+				}
+			}else{
+				Session::set('message', 'Order not available from National LIMS, please wait......');
+                        }
+
+
+		}
+
+
 		return View::make('test.viralLoadSampleEntry');
 	}
 
@@ -356,7 +403,7 @@ P1
 		$patientGender =  Input::get('gender');
 		$patientNumber =  Input::get('phone');
 		$dateSampleDrawn = Input::get('sample-date');
-		$testType = Input::get('test_type');;		
+		$testType = Input::get('test_type');	
 		$patRes = Patient::where('patient_number','=',$patientID)->first()['id'];
 
 		if(!isset($patRes)){
@@ -425,6 +472,9 @@ P1
 		$test->save();
 	
 		$lasecBarcode =  Input::get('small-barcode');
+		if(!isset($lasecBarcode)){
+			$lasecBarcode = "101010";
+		}
 		if($testType == "Viral Load"){
 			$artInitiationDate = Input::get('art-init-date');
 			$artCurrentRegimen = Input::get('regimen');					

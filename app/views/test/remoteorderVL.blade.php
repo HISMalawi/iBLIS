@@ -68,13 +68,19 @@
 								$createdBySecond = explode(" ",$test->data->other->sample_created_by->name)[1];
 
 								$requestedBy = $test->data->other->requested_by;
+
+								$fac = DB::SELECT("SELECT * FROM facilities WHERE name ='$sending_lab'");
+								if(count($fac)>0){
+									$district = $fac[0]->district;
+									$siteCode = $fac[0]->facility_code;
+								}
 							
 							?>
 							<div class="panel-body">
 								<div class="container-fluid">
 									<div class="panel panel-info">
 										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 1:"}}</h1>
+											<h1 class="panel-title">{{"Section 1: Health Facility Information "}}</h1>
 										</div>
 										<div class="panel-body">
 											<div class="row">
@@ -101,7 +107,7 @@
 
 									<div class="panel panel-info">
 										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 2:"}}</h1>
+											<h1 class="panel-title">{{"Section 2: Patient Information"}}</h1>
 										</div>
 										<div class="panel-body">
 											<div class="row">
@@ -181,7 +187,7 @@
 
 									<div class="panel panel-info">
 										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 3:"}}</h1>
+											<h1 class="panel-title">{{"Section 3: Test Type"}}</h1>
 										</div>
 										<div class="panel-body">
 											<div class="row">
@@ -209,7 +215,7 @@
 
 									<div class="panel panel-info">
 										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 4:"}}</h1>
+											<h1 class="panel-title">{{"Section 5: Patient and Samples Details"}}</h1>
 										</div>
 										<div class="panel-body">
 											<div class="row">
@@ -257,7 +263,7 @@
 
 									<div class="panel panel-info">
 										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 6:"}}</h1>
+											<h1 class="panel-title">{{"Section 6: Details of Person Colllecting Sample"}}</h1>
 										</div>
 										<div class="panel-body">
 											<div class="row">
@@ -338,7 +344,7 @@
 	
 	<script>
 		var sendingLab = "{{$sending_lab}}";
-		var district = "{{$sending_lab}}";
+		var district = "{{$district}}";
 
 		var pFirst = "{{$patientFirst}}";
 		var pSecond = "{{$patientSecond}}";
@@ -347,9 +353,9 @@
 		var pDOB = "{{$patientDOB}}";
 
 		var siteCode = "{{$siteCode}}";
-		var hybridId = siteCode +"-"+pID;
+		var hybridId = siteCode +" - "+pID;
 		document.getElementById('pSurname').value = pSecond;
-		document.getElementById('pId').value = pID;
+		document.getElementById('pId').value = hybridId;
 		document.getElementById('pFirst').value = pFirst;
 		document.getElementById('birthday').value = pDOB;
 		
@@ -365,6 +371,7 @@
 		var dateCreated = "{{$dateCreated}}";
 
 		document.getElementById('drawnDate').value = dateCreated;
+		console.log(testReason);
 		if(testReason == "routine"){
 			document.getElementById('routine').selected = true;
 		}
@@ -391,7 +398,7 @@
 			document.getElementById('plasma').selected = true;
 		}else if(sampleType == "DBS"){
 			document.getElementById('dbs').selected = true;
-		}else if(sampleType == "blood"){
+		}else if(sampleType == "Blood"){
 			document.getElementById('blood').selected = true;
 		}
 		

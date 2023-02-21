@@ -22,7 +22,7 @@
             <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
         @endif
 
-            {{ Form::open(array('route' => array('test.index'), 'method' => 'GET', 'id' => 'barcodeForm', 'class' => 'hidden')) }}
+            {{ Form::open(array('route' => array('test.viralLoadSampleEntry'), 'method' => 'GET', 'id' => 'barcodeForm', 'class' => 'hidden')) }}
                 <div class="row">
                     <div class="form-group col-lg-12">
                         <div class="card">
@@ -53,10 +53,10 @@
 
                     <div class="row">
                         <div class="row">
-                            <div class="col-md-2 col-md-offset-10 mb-5">
+                            <div class="col-md-3 col-md-offset-9 mb-5">
                               <div class="input-group required text-right">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
-                                <input class="form-control bar-item barcode" type="text" type="search" class="form-control" placeholder="Scan barcode" name="search" id="smallBarcode2" aria-describedby="basic-addon1">
+                                <input class="form-control bar-item barcode_" type="text" type="search" class="form-control" placeholder="Scan tracking number" name="search" id="smallBarcode2" aria-describedby="basic-addon1">
                               </div>
                             </div>
                         </div>
@@ -119,18 +119,10 @@
                                     <div class="row">
 
                                         <div class="form-group required col-lg-6"> 
-                                            <div class="row">
-                                                <label for="id">Patient ID : &nbsp; </label>
-                                                <div class="col-md-2">
-                                                    <input type="text" style="width: 50px;" class="form-control required" name="side_code" id="side_code">
-                                                </div>
-                                                <div class="col-md-2 text-center" style="width: 0px;padding:0px;margin:0px;">
-                                                    <p class="text-center pt-2">-</p>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <input style="width: 175px;" type="text" class="form-control required" name="id" id="p_id">
-                                                </div>
-                                            </div>
+                                          
+                                            <label for="id">Patient ID : &nbsp; </label>                                                    
+                                            <input style="" type="text" class="form-control required" name="id" id="p_id">
+                                                
                                         </div>
 
                                         <div class="form-group col-lg-6">
@@ -141,37 +133,37 @@
 
                                     <fieldset class="row mb-4">
                                         <label class="d-block mb-3" for="dob">Gender / Preg / Bf (tick one) :</label>
+                                            
+                                            <div class="form-check d-block">
+                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                    id="gridRadios1" value="Male">
+                                                <label class="form-check-label" for="gridRadios1">
+                                                    Male
+                                                </label>
+                                            </div>
+                                            <div class="form-check d-block">
+                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                    id="gridRadios2" value="Female Non-Preg./ Bf.">
+                                                <label class="form-check-label" for="gridRadios2">
+                                                    Female Non-Preg./ Bf.
+                                                </label>
+                                            </div>
 
-                                        <div class="form-check d-block">
-                                            <input class="form-check-input required mx-3" type="radio" name="gender"
-                                                id="gridRadios1" value="Male">
-                                            <label class="form-check-label" for="gridRadios1">
-                                                Male
-                                            </label>
-                                        </div>
-                                        <div class="form-check d-block">
-                                            <input class="form-check-input required mx-3" type="radio" name="gender"
-                                                id="gridRadios2" value="Female Non-Preg./ Bf.">
-                                            <label class="form-check-label" for="gridRadios2">
-                                                Female Non-Preg./ Bf.
-                                            </label>
-                                        </div>
+                                            <div class="form-check d-block">
+                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                    id="gridRadios3" value="Female Pregnant">
+                                                <label class="form-check-label" for="gridRadios3">
+                                                    Female Pregnant
+                                                </label>
+                                            </div>
 
-                                        <div class="form-check d-block">
-                                            <input class="form-check-input required mx-3" type="radio" name="gender"
-                                                id="gridRadios3" value="Female Pregnant">
-                                            <label class="form-check-label" for="gridRadios3">
-                                                Female Pregnant
-                                            </label>
-                                        </div>
-
-                                        <div class="form-check d-block">
-                                            <input class="form-check-input required mx-3" type="radio" name="gender"
-                                                id="gridRadios4" value="Female Breastfeeding">
-                                            <label class="form-check-label" for="gridRadios4">
-                                                Female Breastfeeding
-                                            </label>
-                                        </div>
+                                            <div class="form-check d-block">
+                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                    id="gridRadios4" value="Female Breastfeeding">
+                                                <label class="form-check-label" for="gridRadios4">
+                                                    Female Breastfeeding
+                                                </label>
+                                            </div>
 
                                     </fieldset>
                                     <?php //var_dump(Input::get('printTracking'));exit; ?>
@@ -743,6 +735,8 @@
     
                                     </div>
                                 </div>
+                                <input type="text" hidden  id="action_checker" name="checker">
+                                <input type="text" hidden  id="action_checker" name="test_type" value="Viral Load">
                             </div>
                         </div>
                     </div>
@@ -778,7 +772,7 @@
 
                     $('#small-barcode').val(value);
 
-                    $('#small-barcode').val().endsWith('$') && $('#barcodeForm').submit()
+                    //$('#small-barcode').val().endsWith('$') && $('#barcodeForm').submit()
             });
         });
 
