@@ -65,7 +65,7 @@
 			<table class="table table-striped table-hover table-condensed" >
 				<tbody>
                 @include("reportHeader")
-
+				<h4 id="data_y" style="color:green">Data for the Year: <span id='data_year'></span> </h4>
 				<table class="table table-bordered">
                     <tbody>
                         <tr>

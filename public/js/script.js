@@ -1382,6 +1382,7 @@ $(function(){
 	}
 
 async function mohReportProcessData(year, indicators, counter, quarters, department) {
+	document.getElementById("data_year").innerHTML = year;
   for (let i = 0; i < indicators.length; i++) {
     let total = 0;
     for (let q = 0; q < quarters.length; q++) {
