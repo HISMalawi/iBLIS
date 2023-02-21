@@ -842,7 +842,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('Bilirubin Total(BIT))', 'Bilirubin Total(BIT)', 'TBIL-DSA') 
+								AND m.name IN ('Bilirubin Total(BIT))', 'Bilirubin Total(BIT)', 'TBIL-DSA','TBIL-DSA-H') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
@@ -851,7 +851,7 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('Bilirubin Direct(BID)', 'DBIL-DSA') 
+								AND m.name IN ('Bilirubin Direct(BID)', 'DBIL-DSA','DBIL-DSA-H') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
