@@ -22,6 +22,7 @@ class Test extends Eloquent
 	const VOIDED = 6;
 	const NOT_DONE = 7;
 	const TEST_REJECTED = 8;
+	const RERUN_TEST = 9;
 
 	/**
 	 * Other constants

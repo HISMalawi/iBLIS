@@ -83,8 +83,9 @@
                     <tr>
                         <th class="col-md-2" style="width: 13.5% !important;"> {{"Worksheet No."}}</th>
                         <th class="col-md-2" >{{"Date Created"}}</th>
-                        <th class="col-md-2" >{{"Device Used"}}</th>
+                        <th class="col-md-1" >{{"Device Used"}}</th>
                         <th class="col-md-1" >{{"Status"}}</th>
+                        <th class="col-md-1" >{{"Total Tests"}}</th>
                         <th class="col-md-1">{{"Started At"}}</th>
                         <th class="col-md-1">{{"Completed At"}}</th>
                         <th class="col-md-1">{{"Verified At"}}</th>
@@ -93,51 +94,60 @@
                 </thead>
                 <tbody>
                     @foreach($worksheets as $worksheet)
-                      
-                        <tr>    
-                            <td> {{$worksheet->id}}</td>
-                            <td> {{$worksheet->created_at}}</td>
-                            <td> {{$worksheet->device_name}}</td>
-                            @if(isset($worksheet->verified_at))
-                                <td>Verified</td>
-                            @else 
-                                <td>Completed</td>
-                            @endif
-                            <td> {{$worksheet->started_at}}</td>
-                            <td> {{$worksheet->completed_at}}</td>
-                            <td> {{$worksheet->verified_at}}</td>
-                            <td>
-                                    
-                                    
-
+                        <?php 
+                            $worksheetID = $worksheet->id;
+                            $res = DB::SELECT("SELECT count(*) AS total FROM tests WHERE worksheet_id='$worksheetID'");
+                            if(count($res)>0){
+                                $total = $res[0]->total;
+                            }
+                        ?>
+                        @if($total >0)
+                            <tr>    
+                                <td> {{$worksheet->id}}</td>
+                                <td> {{$worksheet->created_at}}</td>
+                                <td> {{$worksheet->device_name}}</td>
                                 @if(isset($worksheet->verified_at))
-                                    <a class="main-view main-view-{{'1'}} btn btn-sm btn-success"
-                                       href="{{ URL::route('test.viewDetails', '1') }}"
-                                       id="view-details-{{'1'}}-link"
-                                       title="{{trans('messages.view-details-title')}}">
-                                        <span class="glyphicon glyphicon-eye-open"></span>
-                                        {{'print results'}}
-                                    </a>
-
+                                    <td>Verified</td>
+                                @else 
+                                    <td>Completed</td>
                                 @endif
-                                @if(!isset($worksheet->verified_at) && isset($worksheet->completed_at))
-                                    <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
-                                           href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
-                                           title="{{trans('messages.verify-title')}}">
-                                            <span class="glyphicon glyphicon-thumbs-up"></span>
-                                            {{'verify results'}}
-                                    </a>
-                                @else
+                                <td> {{$total}}</td>
+                                <td> {{$worksheet->started_at}}</td>
+                                <td> {{$worksheet->completed_at}}</td>
+                                <td> {{$worksheet->verified_at}}</td>
+                                <td>
+                                        
+                                        
 
-                                    <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
-                                           href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
-                                           title="{{trans('messages.verify-title')}}">
-                                            <span class="glyphicon glyphicon-thumbs-up"></span>
-                                            {{'view tests'}}
-                                    </a>
-                                @endif
-                            </td>
-                        </tr>
+                                    @if(isset($worksheet->verified_at))
+                                        <a class="main-view main-view-{{'1'}} btn btn-sm btn-default"
+                                        href="{{ URL::route('test.viewDetails', '1') }}"
+                                        id="view-details-{{'1'}}-link"
+                                        title="{{trans('messages.view-details-title')}}">
+                                            <span class="glyphicon glyphicon glyphicon-print"></span>
+                                            {{'print results'}}
+                                        </a>
+
+                                    @endif
+                                    @if(!isset($worksheet->verified_at) && isset($worksheet->completed_at))
+                                        <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
+                                            href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
+                                            title="{{trans('messages.verify-title')}}">
+                                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                                {{'verify results'}}
+                                        </a>
+                                    @else
+
+                                        <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
+                                            href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
+                                            title="{{trans('messages.verify-title')}}">
+                                                <span class="glyphicon glyphicon-eye-open"></span>
+                                                {{'view tests'}}
+                                        </a>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                            
                 </tbody>
