@@ -707,7 +707,7 @@ P1
 					INNER JOIN test_types tt ON tt.id = t.test_type_id
 					INNER JOIN measures m ON m.id = tr.measure_id	
 					INNER JOIN visits v ON v.id = t.visit_id	
-					WHERE tt.name = 'Cross-match' AND m.name='Product Type' AND tr.result='Packed Red Cells'
+					WHERE tt.name = 'Cross-match' AND m.name='Product Type' AND tr.result IN ('Packed Red Cells','RED BLOOD CELLS')
 					AND substr(t.time_created,1,7) = '$period'",
 
 		"Total Number Transfused with Platelets" =>"SELECT count(*) AS test_count FROM tests t
