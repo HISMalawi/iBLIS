@@ -545,8 +545,15 @@
                 <!-- Confirmation section -->
                 <h3>Confirmation</h3>
                 <div class="wizard-content">
-
-                        <div class="mt-3">
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-9 mb-3">
+                                <div class="input-group required text-right">
+                                  <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
+                                  <input class="form-control bar-item barcode_" type="text" type="search" class="form-control" placeholder="Scan barcode" name="small-barcode" id="small-barcode" aria-describedby="basic-addon1">
+                                </div>
+                              </div>
+                        </div>
+                        <div class="mt-1">
                             <div class="panel panel-info">
                                 
                                 <div class="panel panel-heading">
@@ -556,20 +563,20 @@
                                 <!-- Section 2 confirmation -->
 
                                 <div style="margin-top: -20px;">
-                                    <div class="p-3" style="background-color: #f9fafb;">
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
                                         <strong>Section 1: Health Facility Information</strong>
                                     </div>
     
                                     <div>
                                         <div class="row">
-                                            <div class="col-md-4 p-3" style="margin-left: 20px !important; margin-bottom: 0px !important;">
-                                                <div class="mt-3">
+                                            <div class="col-md-4 custom-padding" style="margin-left: 20px !important; margin-bottom: 0px !important;">
+                                                <div class="mt-1">
                                                     <label for="surname">District : &nbsp; </label>
                                                     <p id="confi-district-name">--</p>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 p-3">
-                                                <div class="mt-3">
+                                            <div class="col-md-4 custom-padding">
+                                                <div class="mt-1">
                                                     <label for="firstname">Facility : &nbsp;
                                                     </label>
                                                     <p id="confi-facility-name">--</p>
@@ -582,7 +589,7 @@
                                 <!-- Section 2 confirmation -->
 
                                 <div>
-                                    <div class="p-3" style="background-color: #f9fafb;">
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
                                         <strong>Section 2: Patient Information</strong>
                                     </div>
     
@@ -632,7 +639,7 @@
                                 <!-- Section 3 confirmation -->
 
                                 <div>
-                                    <div class="p-3" style="background-color: #f9fafb;">
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
                                         <strong>Section 3: Test Type</strong>
                                     </div>
     
@@ -648,23 +655,23 @@
                                 <!-- Section 4 confirmation -->
 
                                 <div>
-                                    <div class="p-3" style="background-color: #f9fafb;">
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
                                         <strong>Section 4: Patient and Sample Details for Viral Load ONLY</strong>
                                     </div>
     
                                     <div class="row" style="padding-left: 20px;">
-                                        <div class="col-md-4 p-3" >
-                                            <div class="mt-3"><label for="id">ART Initiation Date : &nbsp; </label>
+                                        <div class="col-md-4 custom-padding" >
+                                            <div class="mt-1"><label for="id">ART Initiation Date : &nbsp; </label>
                                                 <p id="confi-art-init-date">--</p>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 p-3" >
-                                            <div class="mt-3"><label for="id">Sample Type : &nbsp; </label>
+                                        <div class="col-md-4 custom-padding" >
+                                            <div class="mt-1"><label for="id">Sample Type : &nbsp; </label>
                                                 <p id="confi-sample-type">--</p>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 p-3" >
-                                            <div class="mt-3"><label for="id">Current ART Regimen : &nbsp; </label>
+                                        <div class="col-md-4 custom-padding" >
+                                            <div class="mt-1"><label for="id">Current ART Regimen : &nbsp; </label>
                                                 <p id="confi-curr-art-regimen">--</p>
                                             </div>
                                         </div>
@@ -673,28 +680,28 @@
 
                                 <!-- Section 5 confirmation -->
                                 <div>
-                                    <div class="p-3" style="background-color: #f9fafb;">
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
                                         <strong>Section 5: Details of Person Collecting Sample</strong>
                                     </div>
 
                                     <div class="row" style="padding-left: 20px;">
-                                        <div class="col-md-3 p-3" >
-                                            <div class="mt-3"><label for="id">Surname : &nbsp; </label>
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">Surname : &nbsp; </label>
                                                 <p id="confi-pcs-surname">--</p>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 p-3" >
-                                            <div class="mt-3"><label for="id">First name : &nbsp; </label>
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">First name : &nbsp; </label>
                                                 <p id="confi-pcs-firstname">--</p>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 p-3" >
-                                            <div class="mt-3"><label for="id">Phone number : &nbsp; </label>
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">Phone number : &nbsp; </label>
                                                 <p id="confi-pcs-phone">--</p>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 p-3" >
-                                            <div class="mt-3"><label for="id">HTC Provider ID : &nbsp; </label>
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">HTC Provider ID : &nbsp; </label>
                                                 <p id="confi-htc-provider-id">--</p>
                                             </div>
                                         </div>
@@ -708,7 +715,9 @@
                         </div>
                     </div>
                 </div>
-                
+                <?php
+                  Session::flash('message', null);  
+                ?>
         </div>
     </div>
 </div> </div></div>
