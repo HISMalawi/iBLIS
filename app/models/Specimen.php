@@ -17,7 +17,7 @@ class Specimen extends Eloquent
 	const NOT_COLLECTED = 1;
 	const ACCEPTED = 2;
 	const REJECTED = 3;
-	const COLLECTED = 0;
+	const COLLECTED = 4;
 	
 	/**
 	 * Enabling soft deletes for specimen details.
