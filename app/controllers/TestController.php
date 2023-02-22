@@ -402,9 +402,9 @@ P1
 		$patientID =  Input::get('id');
 		$patientGender =  Input::get('gender');
 		$patientNumber =  Input::get('phone');
-		$dateSampleDrawn = Input::get('sample-date');
 		$testType = Input::get('test_type');	
 		$patRes = Patient::where('patient_number','=',$patientID)->first()['id'];
+		$dateSampleDrawn = Input::get('sample-date')." ". Date('H:i:s');
 
 		if(!isset($patRes)){
 			$newPat = new Patient;
