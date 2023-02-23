@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/jquery-steps/jquery.steps.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/plugins.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/select2/css/select2.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.css') }}" />
 
     <div>
         <ol class="breadcrumb">
@@ -191,7 +191,7 @@
 
                                         <div class="form-group col-lg-6">
                                             <label for="phone">Patient/Guardian Phone Number : &nbsp; </label>
-                                            <input type="text" style="float: none;" class="form-control" name="phone" id="p_phone">
+                                            <input type="text" minlength="10" style="float: none;" class="form-control" name="phone" id="p_phone">
                                             <div id="phone-error"></div>
                                         </div>
 
@@ -555,7 +555,7 @@
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label for="phone">Phone Number : &nbsp; </label>
-                                                <input type="text" class="form-control" name="pcsphone" id="pcs-phone">
+                                                <input type="text" minlength="10" class="form-control" name="pcsphone" id="pcs-phone">
                                             </div>
                                             <div style="text-align: left;" id="pcsphone-error"></div>
                                         </div>
@@ -762,27 +762,30 @@
     <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/bootstrap-datepicker.js') }} "></script>
     <script>
 
         $(document).ready(function() {
 
             $('#dob').datepicker({
-                format: 'dd/mm/yyyy',
+                format: 'yyyy/mm/dd',
                 endDate: new Date(),
                 autoclose: true,
                 todayHighlight: true
+            }).on('change', function(e) {
+                $('#sample_date').datepicker('setStartDate', $('#dob').val());
             });
 
             $('#sample_date').datepicker({
-                format: 'dd/mm/yyyy',
+                format: 'yyyy/mm/dd',
+                startDate: new Date(),
                 endDate: new Date(),
                 autoclose: true,
                 todayHighlight: true
-            });
-
+            })
+            
             $('#artinitdate').datepicker({
-                format: 'dd/mm/yyyy',
+                format: 'yyyy/mm/dd',
                 endDate: new Date(),
                 autoclose: true,
                 todayHighlight: true
@@ -963,7 +966,8 @@
                     required: true
                 },
                 phone: {
-                    required: true
+                    required: true,
+                    maxlength: 10,
                 },
                 // Step 3 
                 reason: {
@@ -987,7 +991,8 @@
                     required: true
                 },
                 pcsphone: {
-                    required: true
+                    required: true,
+                    maxlength: 10,
                 },
                 htcproviderid: {
                     required: true

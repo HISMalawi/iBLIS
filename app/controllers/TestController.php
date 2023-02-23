@@ -395,7 +395,7 @@ P1
 	public function createOrderRetrospective(){
 	
 		$actionLevel = Input::get('checker');
-		$sampleType = Input::get('sample-type');
+		$sampleType = Input::get('sampletype');
 		$patientSurname = Input::get('surname');
 		$patientFirstname = Input::get('firstname');
 		$patientDOB = Input::get('dob');
@@ -404,7 +404,7 @@ P1
 		$patientNumber =  Input::get('phone');
 		$testType = Input::get('test_type');	
 		$patRes = Patient::where('patient_number','=',$patientID)->first()['id'];
-		$dateSampleDrawn = Input::get('sample-date')." ". Date('H:i:s');
+		$dateSampleDrawn = Input::get('sampledate')." ". Date('H:i:s');
 
 		if(!isset($patRes)){
 			$newPat = new Patient;
@@ -429,10 +429,10 @@ P1
 		$facilityName = Input::get('facility');
 		$district = Input::get('district');
 		
-		$sampleCollectorFirstName = Input::get('sample_collector_first_name');
-		$sampleCollectorLastName = Input::get('sample_collector_last_name');
-		$sampleCollectorPhone = Input::get('sample_collector_phone');
-		$sampleCollectorHTCProviderID = Input::get('htc-provider-id');
+		$sampleCollectorFirstName = Input::get('pcsfirstname');
+		$sampleCollectorLastName = Input::get('pcssurname');
+		$sampleCollectorPhone = Input::get('pcsphone');
+		$sampleCollectorHTCProviderID = Input::get('htcproviderid');
 	
 		$visit = new Visit;
 		$visit->patient_id = $patRes;
@@ -476,7 +476,7 @@ P1
 			$lasecBarcode = "101010";
 		}
 		if($testType == "Viral Load"){
-			$artInitiationDate = Input::get('art-init-date');
+			$artInitiationDate = Input::get('artinitdate');
 			$artCurrentRegimen = Input::get('regimen');					
 			$patientOnArt = new Art;
 			$patientOnArt->specimen_id = $specimen->id;
