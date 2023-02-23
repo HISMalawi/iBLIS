@@ -73,6 +73,9 @@
 								if(count($fac)>0){
 									$district = $fac[0]->district;
 									$siteCode = $fac[0]->facility_code;
+								}else
+								{
+									$district = "";
 								}
 							
 							?>
