@@ -774,6 +774,7 @@
                 todayHighlight: true
             }).on('change', function(e) {
                 $('#sample_date').datepicker('setStartDate', $('#dob').val());
+                $('#artinitdate').datepicker('setStartDate', $('#dob').val());
             });
 
             $('#sample_date').datepicker({
