@@ -743,29 +743,29 @@ P1
 	public function extractBiochemistryMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-		"Blood glucose" => "SELECT count(*) AS test_count FROM tests t
+		"Blood glucose" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN specimens sp ON sp.id = t.specimen_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Glucose', 'Glucose (Paeds)') 
 								AND sp.specimen_type_id ='3' 
-								AND m.name IN ('Glucose', 'Glu') 
+								AND m.name IN ('Glucose', 'Glu','Glu-G') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 		
-		"CSF glucose" => "SELECT count(*) AS test_count FROM tests t
+		"CSF glucose" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN specimens sp ON sp.id = t.specimen_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Glucose', 'Glucose (Paeds)') 
 								AND sp.specimen_type_id ='2' 
-								AND m.name IN ('Glucose', 'Glu') 
+								AND m.name IN ('Glucose', 'Glu', 'Glu-G') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 
-		"Total Protein" => "SELECT count(*) AS test_count FROM tests t
+		"Total Protein" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
@@ -774,7 +774,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 
-		"Albumin" => "SELECT count(*) AS test_count FROM tests t
+		"Albumin" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
@@ -783,7 +783,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 		
-		"Alkaline Phosphatase(ALP)" => "SELECT count(*) AS test_count FROM tests t
+		"Alkaline Phosphatase(ALP)" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
@@ -792,7 +792,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
-		"Alanine aminotransferase (ALT)" => "SELECT count(*) AS test_count FROM tests t
+		"Alanine aminotransferase (ALT)" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
@@ -801,7 +801,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
-		"Amylase" => "SELECT count(*) AS test_count FROM tests t
+		"Amylase" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -810,16 +810,16 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 								
-	    "Antistreptolysin O (ASO)" => "SELECT count(*) AS test_count FROM tests t
+	    "Antistreptolysin O (ASO)" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
-								WHERE tt.name IN ('Anti Streptolysis O', 'BioMarkers') 
+								WHERE tt.name IN ('Anti Streptolysis O', 'BioMarkers','Anti Streptolysin O') 
 								AND m.name IN ('ASO', 'Anti Streptolysis O', 'Antistreptolysin O (ASO)')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 		
-		"Aspartate aminotransferase(AST)" => "SELECT count(*) AS test_count FROM tests t
+		"Aspartate aminotransferase(AST)" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
@@ -828,7 +828,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 		
-		"Gamma Glutamyl Transferase" => "SELECT count(*) AS test_count FROM tests t
+		"Gamma Glutamyl Transferase" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
@@ -837,25 +837,25 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
-		"Bilirubin Total" => "SELECT count(*) AS test_count FROM tests t
+		"Bilirubin Total" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('Bilirubin Total(BIT))', 'Bilirubin Total(BIT)', 'TBIL-DSA','TBIL-DSA-H') 
+								AND m.name IN ('Bilirubin Total(BIT))', 'Bilirubin Total(BIT)', 'TBIL-DSA','TBIL-DSA-H', 'Bilirubin Total(TBIL-DSA))','Total Bilirubin (T-BIL-V)') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
-		"Bilirubin Direct" => "SELECT count(*) AS test_count FROM tests t
+		"Bilirubin Direct" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name IN ('Liver Function Tests','Liver Function Tests (Paeds)') 
-								AND m.name IN ('Bilirubin Direct(BID)', 'DBIL-DSA','DBIL-DSA-H') 
+								AND m.name IN ('Bilirubin Direct(BID)', 'DBIL-DSA','DBIL-DSA-H','Bilirubin Direct(DBIL-DSA)', 'Direct Bilirubin (D-BIL-V)') 
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
-		"Calcium" => "SELECT count(*) AS test_count FROM tests t
+		"Calcium" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -864,7 +864,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
-		"Chloride" => "SELECT count(*) AS test_count FROM tests t
+		"Chloride" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures  m ON m.id= tr.measure_id
@@ -873,7 +873,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> '' ",
 
-		"Cholesterol Total" => "SELECT count(*) AS test_count FROM tests t
+		"Cholesterol Total" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -882,7 +882,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Cholesterol LDL" =>  "SELECT count(*) AS test_count FROM tests t
+		"Cholesterol LDL" =>  "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -891,7 +891,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 		
-		"Cholesterol HDL" =>  "SELECT count(*) AS test_count FROM tests t
+		"Cholesterol HDL" =>  "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -900,14 +900,14 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Cholinesterase" => "SELECT count(*) AS test_count FROM tests t
+		"Cholinesterase" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								WHERE tt.name = 'Cholinesterase'
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <>''",
 
-		"C Reactive Protein (CRP)" => "SELECT count(*) AS test_count FROM tests t
+		"C Reactive Protein (CRP)" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -916,7 +916,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 		
-		"Creatinine" => "SELECT count(*) AS test_count FROM tests t
+		"Creatinine" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -925,7 +925,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Creatine Kinase NAC" =>  "SELECT count(*) AS test_count FROM tests t
+		"Creatine Kinase NAC" =>  "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -934,7 +934,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 
-		"Creatine Kinase MB" => "SELECT count(*) AS test_count FROM tests t
+		"Creatine Kinase MB" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -943,14 +943,14 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 
-		"Haemoglobin A1c" => "SELECT count(*) AS test_count FROM tests t
+		"Haemoglobin A1c" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								WHERE tt.name IN ('HbA1c','HbA1c (Paeds)')  
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 
-		"Iron" => 	"SELECT count(*) AS test_count FROM tests t
+		"Iron" => 	"SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -959,7 +959,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 
-		"Lipase" => "SELECT count(*) AS test_count FROM tests t
+		"Lipase" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -968,7 +968,7 @@ P1
 								AND	substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Lactate Dehydrogenase (LDH)" => "SELECT count(*) AS test_count FROM tests t
+		"Lactate Dehydrogenase (LDH)" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -978,7 +978,7 @@ P1
 								AND tr.result <> ''",
 
 
-		"Magnesium" => "SELECT count(*) AS test_count FROM tests t
+		"Magnesium" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -987,7 +987,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Phosphorus" => "SELECT count(*) AS test_count FROM tests t
+		"Phosphorus" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -996,7 +996,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Potassium" =>  "SELECT count(*) AS test_count FROM tests t
+		"Potassium" =>  "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -1005,7 +1005,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Rheumatoid Factor" => "SELECT count(*) AS test_count FROM tests t
+		"Rheumatoid Factor" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -1014,7 +1014,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result <> ''",
 		
-		"Sodium" => "SELECT count(*) AS test_count FROM tests t
+		"Sodium" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -1023,7 +1023,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 		
-		"Triglycerides" =>  "SELECT count(*) AS test_count FROM tests t
+		"Triglycerides" =>  "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -1032,7 +1032,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 		
-		"Urea" => "SELECT count(*) AS test_count FROM tests t
+		"Urea" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -1041,7 +1041,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Uric acid" => "SELECT count(*) AS test_count FROM tests t
+		"Uric acid" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN measures m ON m.id= tr.measure_id
@@ -1050,14 +1050,14 @@ P1
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Micro-protein" => "SELECT count(*) AS test_count FROM tests t
+		"Micro-protein" => "SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								WHERE tt.name = 'Microprotein'
 								AND substr(t.time_created,1,7) = '$period' 
 								AND tr.result<>'' ",
 
-		"Micro-albumin" =>"SELECT count(*) AS test_count FROM tests t
+		"Micro-albumin" =>"SELECT count(distinct t.id) AS test_count FROM tests t
 								INNER JOIN test_results tr ON t.id = tr.test_id
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								WHERE tt.name = 'Microalbumin' 
