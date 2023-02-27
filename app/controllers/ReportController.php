@@ -1078,7 +1078,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name IN ('Smear microscopy result','Smear microscopy result 1')
 									AND tr.result NOT IN ('0', '')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1086,7 +1086,7 @@ P1
 				"Number of  new TB cases examined" => "SELECT count(*) AS test_count FROM tests t
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND ts.name IN ('completed','verified')
 									AND substr(t.time_created,1,7) = '$period'",
 
@@ -1094,7 +1094,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name IN ('Smear microscopy result','Smear microscopy result 1')
 									AND (tr.result LIKE '%+%' OR tr.result LIKE '%Scanty%' OR tr.result = 'Positive')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1116,7 +1116,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name= 'Gene Xpert MTB' 
 									AND tr.result LIKE '%NOT%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1125,7 +1125,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name= 'Gene Xpert MTB' 
 									AND (tr.result LIKE '%DETECTED%' AND tr.result NOT LIKE '%NOT%')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1134,7 +1134,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name= 'Gene Xpert RIF Resistance' 
 									AND (tr.result LIKE '%DETECTED%' AND tr.result NOT LIKE '%NOT%')
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1143,7 +1143,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name= 'Gene Xpert RIF Resistance' 
 									AND tr.result LIKE '%NOT%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1152,7 +1152,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name= 'Gene Xpert RIF Resistance' 
 									AND tr.result LIKE '%Indetermi%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1161,7 +1161,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name= 'Gene Xpert MTB' 
 									AND tr.result LIKE '%Invalid%'
 									AND substr(t.time_created,1,7) = '$period'",
@@ -1170,7 +1170,7 @@ P1
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
 									INNER JOIN measures m ON m.id = tr.measure_id
-									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB')
+									WHERE tt.name IN ('TB Tests', 'TB Microscopy','TB', 'TB_Microscopy', 'TB Gene_Xpert')
 									AND m.name= 'Gene Xpert MTB' 
 									AND tr.result LIKE '%NO Result%'
 									AND substr(t.time_created,1,7) = '$period'",
