@@ -767,7 +767,7 @@
     <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/bootstrap-datepicker.js') }} "></script>
+    <script src="{{ URL::asset('js/bootstrap-datepicker.js') }} "></script>
     <script>
 
         $(document).ready(function() {
@@ -1027,7 +1027,7 @@
             }, 
 
             errorPlacement: function(error, element) {
-                console.log(element.attr("name"))
+                
                 if (element.attr("name") === "barcode") {
                     error.appendTo("#barcode-error");
                 } else if (element.attr("name") === "district") {
@@ -1097,43 +1097,20 @@
         $('.wizard').find(".actions ul > li:nth-child(3) > a").addClass("btn btn-danger");
 
         $('.wizard').find(".actions ul > li:nth-child(4) > a").addClass("btn btn-success");
+
     </script>
     <script>
+        
         $(document).ready(function() {
-
-            var data = [
-                {
-                    id: 0,
-                    text: 'enhancement'
-                },
-                {
-                    id: 1,
-                    text: 'bug'
-                },
-                {
-                    id: 2,
-                    text: 'duplicate'
-                },
-                {
-                    id: 3,
-                    text: 'invalid'
-                },
-                {
-                    id: 4,
-                    text: 'wontfix'
-                }
-            ];
 
             $('.district-select').select2({
                 theme: 'bootstrap4',
-                data: data,
             });
 
             $($('.district-select').data('select2').$container).addClass('form-control')
 
             $('.facility-select').select2({
                 theme: 'bootstrap4',
-                data: data,
             });
 
             $($('.facility-select').data('select2').$container).addClass('form-control')
