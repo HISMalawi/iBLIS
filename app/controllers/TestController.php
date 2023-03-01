@@ -337,7 +337,12 @@ P1
 	}
 
 	public function viralLoadSampleEntry(){
+
 		$searchString = Input::get('search');
+
+		$facilities = Facility::where('facility_code','!=','')->get();
+
+		$districts = Facility::where('district','!=','')->select('district AS name')->distinct()->orderBy('district')->get();
 
 		if ($searchString && preg_match("/^X/i", $searchString) ){
 			
@@ -384,7 +389,14 @@ P1
 		}
 
 
-		return View::make('test.viralLoadSampleEntry');
+		return View::make('test.viralLoadSampleEntry', compact('facilities', 'districts'));
+	}
+
+	public function filterFacilities($district){
+
+		$filteredData = Facility::where('district', $district)->get();
+
+		return Response::json(["data" => $filteredData, "message" => "Success"]);
 	}
 
 	public function eidSampleEntry(){
@@ -1078,13 +1090,6 @@ P1
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
 						->with('activeTest', array($specimen->test->id));
 		}
-
-
-
-
-
-
-
 
 	}
 

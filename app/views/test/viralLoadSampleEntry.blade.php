@@ -33,6 +33,7 @@
             @endif
         @endif
 
+
             {{ Form::open(array('route' => array('test.viralLoadSampleEntry'), 'method' => 'GET', 'id' => 'barcodeForm', 'class' => 'hidden')) }}
                 <div class="row">
                     <div class="form-group col-lg-12">
@@ -79,12 +80,13 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-
                                         <div class="form-group col-lg-6 ec">
                                             <label for="district">District : &nbsp; </label>
-                                            <select  class="form-control required" style="float: none;" name="district" id="district">
-                                                <option value="" selected="selected">-- Select / Search --</option>
-                                                <option value="Lilongwe">Lilongwe</option>
+                                            <select  class="form-control required district-select" style="float: none;" name="district" id="district">
+                                                <option>-- Select district ---</option>
+                                                @foreach ($districts as $district)
+                                                <option value={{$district->name}}>{{ $district->name }}</option>
+                                                @endforeach
                                             </select>
                                         
                                             <div style="text-align: center; margin-left: -35px;" id="district-error"></div>
@@ -93,9 +95,11 @@
 
                                         <div class="form-group col-lg-6 ec">
                                             <label for="facility">Facility Name : &nbsp;</label>
-                                            <select class="form-control required" style="float: none;" name="facility" id="facility">
-                                                <option value="" selected="selected">-- Select / Search --</option>
-                                                <option value="KCH" >KCH</option>
+                                            <select  class="form-control required facility-select" style="float: none;" name="district" id="district">
+                                                <option>-- Select facility ---</option>
+                                                @foreach ($facilities as $facility)
+                                                <option value={{$facility->name}}>{{ $facility->name }}</option>
+                                                @endforeach
                                             </select>
                                             <div style="text-align: center; margin-left: -35px;" id="facility-error"></div>
                                         </div>
@@ -756,9 +760,10 @@
                 <?php
                   Session::flash('message', null);  
                 ?>
+            </div>
         </div>
-    </div>
-</div> </div></div>
+    </div> 
+    </div></div>
     <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
@@ -798,6 +803,8 @@
                 $('#small-barcode').val(value);
 
             });
+
+
         });
 
         //Advanced - with validation
@@ -1122,10 +1129,32 @@
                 data: data,
             });
 
+            $($('.district-select').data('select2').$container).addClass('form-control')
+
             $('.facility-select').select2({
                 theme: 'bootstrap4',
                 data: data,
             });
+
+            $($('.facility-select').data('select2').$container).addClass('form-control')
+
+            $('.district-select').on('change', function() {
+                
+                $.ajax({
+                    url: `/filter-facilities/${$('.district-select').val()}`,
+                    type: 'GET',
+                    success: function (response) {
+                        var select2 = $('.facility-select');
+                        select2.empty();
+                        select2.append('<option value="">--- Select a facility ---</option>');
+                        $.each(response.data, function (index, value) {
+                            select2.append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+
+            })
+
         });
     </script>
 @stop

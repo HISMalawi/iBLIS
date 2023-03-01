@@ -160,9 +160,14 @@ Route::group(array("before" => "auth"), function()
         "uses" => "WorksheetController@rerunTest"
     ));
     
-     Route::get("viralLoadSampleEntry",array(
+    Route::get("viralLoadSampleEntry",array(
         "as" => "test.viralLoadSampleEntry",
         "uses" => "TestController@viralLoadSampleEntry"
+    ));
+
+    Route::get("/filter-facilities/{district}",array(
+        "as" => "test.filterFacilities",
+        "uses" => "TestController@filterFacilities"
     ));
     
     Route::post("createOrderRetrospective",array(
