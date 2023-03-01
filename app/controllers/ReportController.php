@@ -1177,35 +1177,35 @@ P1
 
 				"Total number of COVID-19 tests performed" => "SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id = t.test_type_id
-									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2','SARS-CoV-2', 'SARS COV-2 Rapid Antigen')
 									AND t.test_status_id NOT IN (1,2,3,7)
 									AND substr(t.time_created,1,7) = '$period'",
 				
 				"Total number of SARS-COV2 Positive" => "SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
-									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2','SARS-CoV-2', 'SARS COV-2 Rapid Antigen')
 									AND tr.result ='Positive'
 									AND substr(t.time_created,1,7) = '$period'",
 
 				"Total number of INVALID SARS-COV2 results" =>   "SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
-									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2','SARS-CoV-2', 'SARS COV-2 Rapid Antigen')
 									AND tr.result ='Invalid'
 									AND substr(t.time_created,1,7) = '$period'",
 
 				"Total number of NO RESULTS"  =>  "SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
-									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2','SARS-CoV-2', 'SARS COV-2 Rapid Antigen')
 									AND tr.result ='NO RESULTS'
 									AND substr(t.time_created,1,7) = '$period'",
 
 				"Total number of ERROR results" =>  "SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
-									WHERE tt.name IN ('SARS COV 19','SARS Cov 2', 'SARS COV-2 Rapid Antigen')
+									WHERE tt.name IN ('SARS COV 19','SARS Cov 2','SARS-CoV-2', 'SARS COV-2 Rapid Antigen')
 									AND tr.result ='ERROR'
 									AND substr(t.time_created,1,7) = '$period'",
 
@@ -1295,17 +1295,28 @@ P1
 								AND ts.name IN ('completed', 'verified')
 								AND substr(t.time_created,1,7) = '$period'",
 				
-				"Positive CSF cultures" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+				"Positive CSF cultures" => "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.specimen_id IN (
+								SELECT sp.id FROM specimens sp
+								JOIN specimen_types spt ON spt.id = sp.specimen_type_id
 								WHERE spt.name = 'CSF'
-								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
+								WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
+								AND EXISTS (
+								SELECT 1 FROM test_results tr
+								JOIN measures m ON m.id = tr.measure_id
+								WHERE tr.test_id = t.id
 								AND tr.result NOT LIKE '%Growth of normal%'
 								AND tr.result NOT IN ('0', 'No Growth', 'Growth of contaminants')
-								AND ts.name IN ('completed', 'verified')
+								)
 								AND substr(t.time_created,1,7) = '$period'",
 
 				"Total India ink done" => "SELECT count(distinct t.id) AS test_count FROM tests t 
@@ -1352,43 +1363,67 @@ P1
 								AND ts.name IN ('completed', 'verified')
 								AND substr(t.time_created,1,7) = '$period'",
 
-				"HVS with organism" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								INNER JOIN measures m ON m.id=tr.measure_id
+				"HVS with organism" => "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.specimen_id IN (
+								SELECT sp.id FROM specimens sp
+								JOIN specimen_types spt ON spt.id = sp.specimen_type_id
 								WHERE spt.name = 'HVS'
-								AND ts.name IN ('completed', 'verified')
+								)
+								AND t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
+								AND EXISTS (
+								SELECT 1 FROM test_results tr
+								JOIN measures m ON m.id = tr.measure_id
+								WHERE tr.test_id = t.id
 								AND (tr.result IN ('seen', 'growth') OR tr.result LIKE '%positive%')
+								)
 								AND substr(t.time_created,1,7) = '$period'",
 								
-				"HVS Culture" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								INNER JOIN measures m ON m.id=tr.measure_id
+				"HVS Culture" => "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.specimen_id IN (
+								SELECT sp.id FROM specimens sp
+								JOIN specimen_types spt ON spt.id = sp.specimen_type_id
 								WHERE spt.name = 'HVS'
-								AND ts.name IN ('completed', 'verified')
-								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
+								WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
 								AND substr(t.time_created,1,7) = '$period'",
 
-				"HVS Culture Positive" =>  "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								INNER JOIN measures m ON m.id=tr.measure_id
-								WHERE spt.name = 'HVS'
-								AND ts.name IN ('completed', 'verified')
-								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
-								AND tr.result NOT LIKE '%Growth of normal%'
-								AND tr.result NOT IN ('0', 'No Growth', 'Growth of contaminants')
-								AND substr(t.time_created,1,7) = '$period'",
+				"HVS Culture Positive" => "SELECT COUNT(DISTINCT t.id) AS test_count
+									FROM tests t
+									WHERE t.specimen_id IN (
+									SELECT sp.id FROM specimens sp
+									JOIN specimen_types spt ON spt.id = sp.specimen_type_id
+									WHERE spt.name = 'HVS'
+									)
+									AND t.test_type_id IN (
+									SELECT tt.id FROM test_types tt
+									WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+									)
+									AND t.test_status_id IN (
+									SELECT ts.id FROM test_statuses ts
+									WHERE ts.name IN ('completed', 'verified')
+									)
+									AND EXISTS (
+									SELECT 1 FROM test_results tr
+									JOIN measures m ON m.id = tr.measure_id
+									WHERE tr.test_id = t.id
+									AND ((tr.result NOT LIKE '%Growth of normal%') AND tr.result NOT IN ('0', 'No Growth', 'Growth of contaminants'))
+									)
+									AND substr(t.time_created,1,7) = '$period'",
 				
 				"Other swabs analysed"=>"SELECT count(distinct t.id) AS test_count FROM specimens sp
 								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
@@ -1400,52 +1435,84 @@ P1
 								AND ts.name IN ('completed', 'verified')
 								AND substr(t.time_created,1,7) = '$period'",
 
-				"Other swabs with organism" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+				"Other swabs with organism" => "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.specimen_id IN (
+								SELECT sp.id FROM specimens sp
+								JOIN specimen_types spt ON spt.id = sp.specimen_type_id
 								WHERE spt.name = 'Swabs'
-								AND ts.name IN ('completed', 'verified')
+								)
+								AND t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
+								AND EXISTS (
+								SELECT 1 FROM test_results tr
+								JOIN measures m ON m.id = tr.measure_id
+								WHERE tr.test_id = t.id
 								AND (tr.result IN ('seen', 'growth', 'AFB SEEN  SCANTY','Scanty AAFB seen') OR tr.result LIKE '%positive%')
+								)
 								AND substr(t.time_created,1,7) = '$period'",
 				
-				"Other swabs culture" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								INNER JOIN measures m ON m.id=tr.measure_id
+				"Other swabs culture" => "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.specimen_id IN (
+								SELECT sp.id FROM specimens sp
+								JOIN specimen_types spt ON spt.id = sp.specimen_type_id
 								WHERE spt.name = 'Swabs'
-								AND ts.name IN ('completed', 'verified')
-								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
+								WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
 								AND substr(t.time_created,1,7) = '$period'",
 								
-				"Other swabs culture Positive"=> "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								INNER JOIN measures m ON m.id=tr.measure_id
+				"Other swabs culture Positive"=> "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.specimen_id IN (
+								SELECT sp.id FROM specimens sp
+								JOIN specimen_types spt ON spt.id = sp.specimen_type_id
 								WHERE spt.name = 'Swabs'
-								AND ts.name IN ('completed', 'verified')
-								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
+								WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
+								AND EXISTS (
+								SELECT 1 FROM test_results tr
+								JOIN measures m ON m.id = tr.measure_id
+								WHERE tr.test_id = t.id
 								AND tr.result NOT LIKE '%Growth of normal%'
 								AND tr.result NOT IN ('0', 'No Growth', 'Growth of contaminants')
+								)
 								AND substr(t.time_created,1,7) = '$period'",
 
-				"Number of Blood Cultures done" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
-								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
-								INNER JOIN tests t ON t.specimen_id=sp.id
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_results tr ON tr.test_id=t.id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+				"Number of Blood Cultures done" => "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.specimen_id IN (
+								SELECT sp.id FROM specimens sp
+								JOIN specimen_types spt ON spt.id = sp.specimen_type_id
 								WHERE spt.name = 'Blood'
-								AND ts.name IN ('completed', 'verified')
-								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
+								WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
 								AND substr(t.time_created,1,7) = '$period'",
 
 				"Positive blood Cultures" => "SELECT count(distinct t.id) AS test_count FROM specimens sp
@@ -1548,15 +1615,15 @@ P1
 								AND substr(t.time_created,1,7) = '$period'",
 				
 				"Positive cholera samples" =>"SELECT count(*) AS test_count FROM tests t
-							INNER JOIN test_types tt ON t.test_type_id=tt.id
-							INNER JOIN test_results tr ON  tr.test_id=t.id
-							INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-							INNER JOIN measures m ON m.id=tr.measure_id
-							WHERE tt.name IN ('Cholera','Vibrio Cholerae') 
-							AND m.name = 'Culture'
-							AND ts.name IN ('completed', 'verified')
-							AND tr.result = 'Growth'
-							AND substr(t.time_created,1,7) = '$period'",
+								INNER JOIN test_types tt ON t.test_type_id=tt.id
+								INNER JOIN test_results tr ON  tr.test_id=t.id
+								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+								INNER JOIN measures m ON m.id=tr.measure_id
+								WHERE tt.name IN ('Cholera','Vibrio Cholerae') 
+								AND m.name = 'Culture'
+								AND ts.name IN ('completed', 'verified')
+								AND tr.result = 'Growth'
+								AND substr(t.time_created,1,7) = '$period'",
 				
 				"Other stool cultures" =>"SELECT count(*) AS test_count FROM specimens sp
 								INNER JOIN specimen_types spt ON spt.id=sp.specimen_type_id
