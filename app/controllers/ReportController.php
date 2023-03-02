@@ -2611,16 +2611,6 @@ P1
 								AND tr.result NOT IN ('NMPS', 'NPS', '')
 								)
 								AND substr(t.time_created,1,7) = '$period'",
-			
-			// "SELECT count(*) AS test_count FROM tests t 
-			// 					INNER JOIN test_types tt ON tt.id = t.test_type_id
-			// 					INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-			// 					INNER JOIN test_results tr ON tr.test_id = t.id
-			// 					WHERE tt.name = 'Blood Parasites Screen'
-			// 					AND ts.name IN ('verified', 'completed')
-			// 					AND tr.result NOT LIKE '%no%'
-			// 					AND tr.result NOT IN ('NMPS', 'NPS', '')
-			// 					AND substr(t.time_created,1,7) = '$period' ",
 
 			"Stool Microscopy (count)" => "SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
