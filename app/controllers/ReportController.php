@@ -1507,7 +1507,7 @@ P1
 								)
 								AND t.test_type_id IN (
 								SELECT tt.id FROM test_types tt
-								WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								WHERE tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity', 'Blood Culture')
 								)
 								AND t.test_status_id IN (
 								SELECT ts.id FROM test_statuses ts
@@ -1523,7 +1523,7 @@ P1
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE spt.name = 'Blood'
 								AND ts.name IN ('completed', 'verified')
-								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity')
+								AND tt.name IN ('Culture & Sensitivity', 'Culture & Sensitivity (Paeds)', 'Culture/sensistivity', 'Blood Culture')
 								AND tr.result = 'Growth'
 								AND substr(t.time_created,1,7) = '$period'",
 
