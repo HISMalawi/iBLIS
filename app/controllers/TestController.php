@@ -51,9 +51,10 @@ class TestController extends \BaseController {
 		
 		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
 			
-			$remoteResults = Sender::search_from_remote($searchString);
+			$remoteResults = Sender::search_from_remote(trim($searchString));
 			
-			$orderResults  = Sender::search_results_from_remote($searchString);
+			$orderResults  = Sender::search_results_from_remote(trim($searchString));
+
 			if ($remoteResults->message != "order not available" ){
 				if(!empty($remoteResults)) {
 					$testCounter = $remoteResults->data->tests;
@@ -346,9 +347,9 @@ P1
 
 		if ($searchString && preg_match("/^X/i", $searchString) ){
 			
-			$remoteResults = Sender::search_from_remote($searchString);
+			$remoteResults = Sender::search_from_remote(trim($searchString));
 			
-			$orderResults  = Sender::search_results_from_remote($searchString);
+			$orderResults  = Sender::search_results_from_remote(trim($searchString));
 			if ($remoteResults->message != "order not available" ){
 				if(!empty($remoteResults)) {
 					$testCounter = $remoteResults->data->tests;

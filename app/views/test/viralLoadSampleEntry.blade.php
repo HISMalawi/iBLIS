@@ -83,7 +83,7 @@
                                         <div class="form-group col-lg-6 ec">
                                             <label for="district">District : &nbsp; </label>
                                             <select  class="form-control required district-select" style="float: none;" name="district" id="district">
-                                                <option>-- Select district ---</option>
+                                                <option value="">-- Select district ---</option>
                                                 @foreach ($districts as $district)
                                                 <option value={{$district->name}}>{{ $district->name }}</option>
                                                 @endforeach
@@ -96,7 +96,7 @@
                                         <div class="form-group col-lg-6 ec">
                                             <label for="facility">Facility Name : &nbsp;</label>
                                             <select  class="form-control required facility-select" style="float: none;" name="district" id="district">
-                                                <option>-- Select facility ---</option>
+                                                <option value="">-- Select facility ---</option>
                                                 @foreach ($facilities as $facility)
                                                 <option value={{$facility->name}}>{{ $facility->name }}</option>
                                                 @endforeach
@@ -973,10 +973,6 @@
                 sampledate: {
                     required: true
                 },
-                phone: {
-                    required: true,
-                    maxlength: 10,
-                },
                 // Step 3 
                 reason: {
                     required: true
@@ -1099,15 +1095,10 @@
         $('.wizard').find(".actions ul > li:nth-child(4) > a").addClass("btn btn-success");
 
     </script>
+    
     <script>
-        
+
         $(document).ready(function() {
-
-            $('.district-select').select2({
-                theme: 'bootstrap4',
-            });
-
-            $($('.district-select').data('select2').$container).addClass('form-control')
 
             $('.facility-select').select2({
                 theme: 'bootstrap4',
@@ -1119,6 +1110,7 @@
                 
                 $.ajax({
                     url: `/filter-facilities/${$('.district-select').val()}`,
+                    async: true,
                     type: 'GET',
                     success: function (response) {
                         var select2 = $('.facility-select');
@@ -1130,7 +1122,9 @@
                     }
                 });
 
+
             })
+            
 
         });
     </script>

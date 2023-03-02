@@ -9,299 +9,332 @@
 	</div>
 	<?php $showWorkSheet = false;?>
 	<div class="panel panel-primary">
-		<div class="panel-heading ">
-			<div class="container-fluid">
-				<div class="row less-gutter">
-					<div class="col-md-11">
-						<span class="glyphicon glyphicon-cog"></span>{{trans('messages.test-details')}}
-					
-						@if(Auth::user()->can('request_test'))
-							<div class="panel-btn pull-right">
-								<a class="btn btn-sm btn-success"
-								   href="{{URL::route('test.mergeorupdate', array($tracking_number))}}"
-								   data-toggle="modal" >
-									<span class="glyphicon glyphicon-next"></span>
-									Proceed
-								</a>
-							</div>
-						@endif
-
-					</div>
-					<div class="col-md-1">
-						<a class="btn btn-sm btn-primary pull-right" href="#" onclick="window.history.back();return false;"
-						   alt="{{trans('messages.back')}}" title="{{trans('messages.back')}}">
-							<span class="glyphicon glyphicon-backward"></span></a>
-					</div>
-				</div>
-			</div>
-		</div> <!-- ./ panel-heading -->
-		<div class="panel-body">
-			<div class="container-fluid">
-				<div class="row">					
-					<div class="col-md-offset-2 col-md-8">
-						<div class="panel panel-info">  <!-- Patient Details -->
-							
-
-							<?php 
-								$sending_lab = $test->data->other->sending_lab;		
-								$patientFirst = explode(" ",$test->data->other->patient->name)[0];
-								$patientSecond = explode(" ",$test->data->other->patient->name)[1];
-								$patientId = $test->data->other->patient->id;
-								$patientGender = $test->data->other->patient->gender;
-								$patientDOB = $test->data->other->patient->dob;
-								$patientId = $test->data->other->patient->id;
-
-								$sampleType = $test->data->other->sample_type;
-								$sampleStatus = $test->data->other->specimen_status;
-								$testReason = $test->data->other->priority;
-								$dateCreated = $test->data->other->date_created;
-								$dateCreated  = date('Y-m-d', strtotime($dateCreated));
-
-								$regimen = $test->data->other->art_regimen;
-								$siteCode = $test->data->other->site_code_number;
-								$arv_number = $test->data->other->arv_number;
-								$art_start_date = $test->data->other->art_start_date;
-								$art_start_date  = date('Y-m-d', strtotime($art_start_date));
-
-
-								$createdByFirst = explode(" ",$test->data->other->sample_created_by->name)[0];
-								$createdBySecond = explode(" ",$test->data->other->sample_created_by->name)[1];
-
-								$requestedBy = $test->data->other->requested_by;
-
-								$fac = DB::SELECT("SELECT * FROM facilities WHERE name ='$sending_lab'");
-								if(count($fac)>0){
-									$district = $fac[0]->district;
-									$siteCode = $fac[0]->facility_code;
-								}else
-								{
-									$district = "";
-								}
-							
-							?>
-							<div class="panel-body">
-								<div class="container-fluid">
-									<div class="panel panel-info">
-										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 1: Health Facility Information "}}</h1>
-										</div>
-										<div class="panel-body">
-											<div class="row">
-												<div class="col-md-3">
-													<p><strong>{{"District:"}}</strong></p>
-													</div>
-												<div class="col-md-3">
-													<input class="form-control"  type="text" id="district" name="district">
-												</div>
-
-
-												<div class="col-md-3">
-													<p><strong>{{"Facility Name:"}}</strong></p>
-													</div>
-												<div class="col-md-3">
-													<input class="form-control"  type="text" id="facility" name="facility">
-												</div>
-											</div>
-										</div>
-									</div>
-									
-
-
-
-									<div class="panel panel-info">
-										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 2: Patient Information"}}</h1>
-										</div>
-										<div class="panel-body">
-											<div class="row">
-												<div class="col-md-6">
-													<p><strong>{{"Patient Surname:"}}</strong></p>
-													<input class="form-control"  type="text" id="pSurname" name="patientSurname">
-												</div>
-												<div class="col-md-6">
-													<p><strong>{{"Patient Firstname:"}}</strong></p>
-													<input class="form-control"  type="text" id="pFirst" name="patientFirst">
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-														
-													<div class="row">
-														<div class="col-md-12">
-															<p><strong>{{"Patient ID:"}}</strong></p>
-															<input class="form-control"  type="text" id="pId" name="patientId">
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-7">
-															<p><strong>{{"Patient/Gurdian Phone Number:"}}</strong></p>
-															<input class="form-control"  type="text" id="phoneGurdian" name="phoneGurdian">
-														</div>
-													</div>
-
-
-												</div>
-												<div class="col-md-6">
-													<div class="row">
-														<div class="col-md-6">														
-
-															<div class="row">
-																<div class="col-md-12">
-																	<p><strong>{{"Date of Birth:"}}</strong></p>
-																	<input class="form-control" type="date" id="birthday" name="phoneDrawer">
-																</div>
-															</div>
-															<div class="row">
-																<div class="col-md-12">
-																	<p><strong>{{"Date Sample Drawn:"}}</strong></p>
-																	<input class="form-control"  type="date" id="drawnDate" name="drawnDate">
-																</div>
-															</div>
-
-														</div>
-														<div class="col-md-6">
-															<p><strong>{{"Gender/Preg/Bf:"}}</strong></p>
-																<label class="container">Male
-																	<input type="radio" name="radio" id="male" value="male">
-																	<span class="check"></span>
-																</label>
-																<label class="container">Female Non-Preg./Bf.
-																	<input type="radio" name="radio" id="female" value="female">
-																	<span class="check"></span>
-																</label>
-																<label class="container">Female Pregnant
-																	<input type="radio" name="radio" id="preg" value="female">
-																	<span class="check"></span>
-																</label>
-																<label class="container">Female Breastfeeding
-																	<input type="radio" name="radio" id="breast" value= "female">
-																	<span class="check"></span>
-																</label>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-
-
-
-
-									<div class="panel panel-info">
-										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 3: Test Type"}}</h1>
-										</div>
-										<div class="panel-body">
-											<div class="row">
-													<div class="col-md-6">
-														<p><strong>{{"Reason For Testing:"}}</strong></p>
-														<select class="form-control" type="date" id="reason" name="reason">
-															<option id="routine"> 
-																	Routine
-															</option>
-															<option id="targeted">  
-																	Targeted
-															</option>
-															<option id="follow"> 
-																	Follow-up after high VL
-															</option>
-															<option id="repeat"> 
-																	Repeat (rejected/lost/missing)
-															</option>
-														</select>
-													</div>												
-											</div>
-										</div>
-									</div>
-
-
-									<div class="panel panel-info">
-										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 5: Patient and Samples Details"}}</h1>
-										</div>
-										<div class="panel-body">
-											<div class="row">
-													<div class="col-md-6">
-														<p><strong>{{"ART Initiation Date:"}}</strong></p>
-														<input class="form-control"  id="artStart" type="date"  name="artStart">
-													</div>		
-													<div class="col-md-6">
-														<p><strong>{{"Sample Type:"}}</strong></p>
-														<select class="form-control" type="date" id="sampleType" name="sampleType">
-															<option id="70ml"> 
-																	DBS 70ml
-															</option>
-															<option id="plasma"> 
-																	Plasma
-															</option>
-															<option id="dbs"> 
-																	DBS
-															</option>
-															<option id="blood"> 
-																	Blood
-															</option>
-														</select>
-													</div>								
-											</div>
-											<div class="row">															
-													<div class="col-md-6">
-														<p><strong>{{"Current ART Regimen:"}}</strong></p>
-														<select class="form-control" type="date" id="regimen" name="regimen">
-															<option id="13A"> 
-																	13A
-															</option>
-															<option id="15A"> 
-																	15A
-															</option>
-															<option id="12A"> 
-																	12A
-															</option>
-														</select>
-													</div>								
-											</div>
-										</div>
-									</div>
-
-
-									<div class="panel panel-info">
-										<div class="panel-heading">
-											<h1 class="panel-title">{{"Section 6: Details of Person Colllecting Sample"}}</h1>
-										</div>
-										<div class="panel-body">
-											<div class="row">
-													<div class="col-md-6">
-														<p><strong>{{"Sirname:"}}</strong></p>
-														<input class="form-control"  type="text" id="drawerSirname" name="drawerSirname">
-													</div>		
-													<div class="col-md-6">
-														<p><strong>{{"First Name:"}}</strong></p>
-														<input class="form-control"  type="text" id="drawerFirstname" name="drawerFirstname">
-													</div>								
-											</div>
-											<div class="row">															
-													<div class="col-md-6">
-														<p><strong>{{"Phone Number:"}}</strong></p>
-														<input class="form-control"  type="text" id="phoneDrawer" name="phoneDrawer">
-													</div>	
-													<div class="col-md-4">
-														<p><strong>{{"HTC Provider ID:"}}</strong></p>
-														<input class="form-control"  type="text" id="provider" name="provider">
-													</div>								
-											</div>
-										</div>
-									</div>
-
-
-
-
+		<form action={{ "#" }} id="remoteOrderForm" name="remoteOrderForm">
+			<div class="panel-heading ">
+				<div class="container-fluid">
+					<div class="row less-gutter">
+						<div class="col-md-11">
+							<span class="glyphicon glyphicon-folder-open" style="margin-right: 10px;"></span>{{trans('messages.test-details')}}
 						
+							{{-- @if(Auth::user()->can('request_test'))
+								<div class="panel-btn pull-right">
+									<a class="btn btn-sm btn-success"
+									href="{{URL::route('test.mergeorupdate', array($tracking_number))}}"
+									data-toggle="modal" >
+										<span class="glyphicon glyphicon-next"></span>
+										Proceed
+									</a>
+								</div>
+							@endif --}}
 
+						</div>
+						<div class="col-md-1">
+							<a class="btn btn-sm btn-primary pull-right" href="#" onclick="window.history.back();return false;"
+							alt="{{trans('messages.back')}}" title="{{trans('messages.back')}}">
+								<span class="glyphicon glyphicon-backward"></span></a>
+						</div>
 					</div>
 				</div>
-			</div> <!-- ./ container-fluid -->
+			</div> <!-- ./ panel-heading -->
+			<div class="panel-body">
+				<div class="container-fluid">
+					<div class="row">					
+						<div class="">
+							<div class="">  <!-- Patient Details -->
+								
 
-		</div> <!-- ./ panel-body -->
+								<?php 
+									$sending_lab = $test->data->other->sending_lab;		
+									$patientFirst = explode(" ",$test->data->other->patient->name)[0];
+									$patientSecond = explode(" ",$test->data->other->patient->name)[1];
+									$patientId = $test->data->other->patient->id;
+									$patientGender = $test->data->other->patient->gender;
+									$patientDOB = $test->data->other->patient->dob;
+									$patientId = $test->data->other->patient->id;
+
+									$sampleType = $test->data->other->sample_type;
+									$sampleStatus = $test->data->other->specimen_status;
+									$testReason = $test->data->other->priority;
+									$dateCreated = $test->data->other->date_created;
+									$dateCreated  = date('Y-m-d', strtotime($dateCreated));
+
+									$regimen = $test->data->other->art_regimen;
+									$siteCode = $test->data->other->site_code_number;
+									$arv_number = $test->data->other->arv_number;
+									$art_start_date = $test->data->other->art_start_date;
+									$art_start_date  = date('Y-m-d', strtotime($art_start_date));
+
+
+									$createdByFirst = explode(" ",$test->data->other->sample_created_by->name)[0];
+									$createdBySecond = explode(" ",$test->data->other->sample_created_by->name)[1];
+
+									$requestedBy = $test->data->other->requested_by;
+
+									$fac = DB::SELECT("SELECT * FROM facilities WHERE name ='$sending_lab'");
+									if(count($fac)>0){
+										$district = $fac[0]->district;
+										$siteCode = $fac[0]->facility_code;
+									}else
+									{
+										$district = "";
+									}
+								
+								?>
+								<div class="panel-body">
+									<div class="container-fluid">
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h1 class="panel-title"><strong>Section 1:</strong> Health Facility Information </h1>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+
+													<div class="col-md-6">
+														<div class="form-group">
+															<label><strong>{{"District:"}}</strong></label>
+															<input class="form-control"  type="text" id="district" name="district">
+														</div>
+													</div>
+
+
+													<div class="col-md-6">
+														<div class="form-group">
+															<label><strong>{{"Facility Name:"}}</strong></label>
+															<input class="form-control"  type="text" id="facility" name="facility">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+
+
+
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h1 class="panel-title"><strong>Section 2:</strong> Patient Information</h1>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+													<div class="col-md-6">
+														<p><strong>{{"Patient Surname:"}}</strong></p>
+														<input class="form-control"  type="text" id="pSurname" name="patientSurname">
+													</div>
+													<div class="col-md-6">
+														<p><strong>{{"Patient Firstname:"}}</strong></p>
+														<input class="form-control"  type="text" id="pFirst" name="patientFirst">
+													</div>
+												</div>
+												<div class="row" style="margin-top: 10px !important;">
+													<div class="col-md-6">
+															
+														<div class="row">
+															<div class="col-md-12">
+																<p><strong>{{"Patient ID:"}}</strong></p>
+																<input class="form-control"  type="text" id="pId" name="patientId">
+															</div>
+														</div>
+														<div class="row" style="margin-top: 10px !important;">
+															<div class="col-md-7">
+																<p><strong>{{"Patient/Gurdian Phone Number:"}}</strong></p>
+																<input class="form-control"  type="text" id="phoneGurdian" name="phoneGurdian">
+															</div>
+														</div>
+
+
+													</div>
+													<div class="col-md-6">
+														<div class="row">
+															<div class="col-md-6">														
+
+																<div class="row">
+																	<div class="col-md-12">
+																		<p><strong>{{"Date of Birth:"}}</strong></p>
+																		<input class="form-control" type="date" id="birthday" name="phoneDrawer">
+																	</div>
+																</div>
+																<div class="row" style="margin-top: 10px !important;">
+																	<div class="col-md-12">
+																		<p><strong>{{"Date Sample Drawn:"}}</strong></p>
+																		<input class="form-control"  type="date" id="drawnDate" name="drawnDate">
+																	</div>
+																</div>
+
+															</div>
+															<div class="col-md-6">
+																<div class="form-group">
+																	<div style="font-size: 14px;"><strong>{{"Gender/Preg/Bf:"}}</strong></div>
+																	<div class="radio">
+																	<label><input type="radio" name="radio" id="male" value="male">Male</label>
+																	</div>
+																	<div class="radio">
+																	<label><input type="radio" name="radio" id="female" value="female">Female Non-Preg./Bf.</label>
+																	</div>
+																	<div class="radio">
+																	<label><input type="radio" name="radio" id="preg" value="female">Female Pregnant</label>
+																	</div>
+																	<div class="radio">
+																		<label><input type="radio" name="radio" id="breast" value="female">Female Breastfeeding</label>
+																	</div>
+																</div>
+																
+																{{-- <p><strong>{{"Gender/Preg/Bf:"}}</strong></p>
+																	<label class="container">Male
+																		<input type="radio" name="radio" id="male" value="male">
+																		<span class="check"></span>
+																	</label>
+																	<label class="container ml-3">Female Non-Preg./Bf.
+																		<input type="radio" name="radio" id="female" value="female">
+																		<span class="check"></span>
+																	</label>
+																	<label class="container">Female Pregnant
+																		<input type="radio" name="radio" id="preg" value="female">
+																		<span class="check"></span>
+																	</label>
+																	<label class="container">Female Breastfeeding
+																		<input type="radio" name="radio" id="breast" value= "female">
+																		<span class="check"></span>
+																	</label> --}}
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+
+
+
+
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h1 class="panel-title"><strong>Section 3:</strong>{{" Test Type"}}</h1>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+														<div class="col-md-6 form-group">
+															<label><strong>{{"Reason For Testing:"}}</strong></label>
+															<select class="form-control" type="date" id="reason" name="reason">
+																<option id="routine"> 
+																		Routine
+																</option>
+																<option id="targeted">  
+																		Targeted
+																</option>
+																<option id="follow"> 
+																		Follow-up after high VL
+																</option>
+																<option id="repeat"> 
+																		Repeat (rejected/lost/missing)
+																</option>
+															</select>
+														</div>												
+												</div>
+											</div>
+										</div>
+
+
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h1 class="panel-title"><strong>Section 4:</strong>{{" Patient and Samples Details"}}</h1>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group">
+															<label><strong>{{"ART Initiation Date:"}}</strong></label>
+															<input class="form-control"  id="artStart" type="date"  name="artStart">
+														</div>
+													</div>		
+													<div class="col-md-4">
+														<div class="form-group">
+															<label><strong>{{"Sample Type:"}}</strong></label>
+															<select class="form-control" type="date" id="sampleType" name="sampleType">
+																<option id="70ml"> 
+																		DBS 70ml
+																</option>
+																<option id="plasma"> 
+																		Plasma
+																</option>
+																<option id="dbs"> 
+																		DBS
+																</option>
+																<option id="blood"> 
+																		Blood
+																</option>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group">
+															<label><strong>{{"Current ART Regimen:"}}</strong></label>
+															<select class="form-control" type="date" id="regimen" name="regimen">
+																<option id="13A"> 
+																		13A
+																</option>
+																<option id="15A"> 
+																		15A
+																</option>
+																<option id="12A"> 
+																		12A
+																</option>
+															</select>
+														</div>
+													</div>									
+												</div>
+											</div>
+										</div>
+
+
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h1 class="panel-title"><strong>Section 5:</strong>{{" Details of Person Colllecting Sample"}}</h1>
+											</div>
+											<div class="panel-body">
+												<div class="row">
+														<div class="col-md-3">
+															<div class="form-group">
+															<label><strong>{{"Sirname:"}}</strong></label>
+															<input class="form-control"  type="text" id="drawerSirname" name="drawerSirname">
+															</div>
+														</div>		
+														
+														<div class="col-md-3">
+															<div class="form-group">
+															<label><strong>{{"First Name:"}}</strong></label>
+															<input class="form-control"  type="text" id="drawerFirstname" name="drawerFirstname">
+															</div>
+														</div>	
+														
+														<div class="col-md-3">
+															<div class="form-group">
+															<label><strong>{{"Phone Number:"}}</strong></label>
+															<input class="form-control"  type="text" id="phoneDrawer" name="phoneDrawer">
+															</div>
+														</div>	
+														
+														<div class="col-md-3">
+															<div class="form-group">
+															<label><strong>{{"HTC Provider ID:"}}</strong></label>
+															<input class="form-control"  type="text" id="provider" name="provider">
+															</div>
+														</div>						
+																
+												</div>
+											</div>
+										</div>
+
+
+
+
+							
+
+						</div>
+					</div>
+				</div> <!-- ./ container-fluid -->
+
+			</div> <!-- ./ panel-body -->
+		</form>
 	</div> <!-- ./ panel -->
 
 	<div class="panel-info">  <!-- Test Results -->
@@ -309,33 +342,27 @@
 		<div class="panel-body" >
 			<div class="container-fluid">
 				<div class="row">					
-					<div class="col-md-offset-4 col-md-6">
-							<div class="panel-btn pull-right ">
-								<a class="btn btn-sm btn-danger"
-								   href="{{URL::route('test.mergeorupdate', array($tracking_number))}}"
-								   data-toggle="modal" >
-									<span class="glyphicon glyphicon-next"></span>
-									Cancel
-								</a>
-							</div>
-							<div class="panel-btn pull-right">
-								<a class="btn btn-sm btn-danger"
-								   href="{{URL::route('test.mergeorupdate', array($tracking_number.'-'.'rejected'))}}"
-								   data-toggle="modal" >
-									<span class="glyphicon glyphicon-next"></span>
-									Reject Test
-								</a>
-							</div>
-							<div class="panel-btn pull-right">
-								<a class="btn btn-sm btn-success"
-								   href="{{URL::route('test.mergeorupdate', array($tracking_number.'-'.'accept'))}}"
-								   data-toggle="modal" >
-									<span class="glyphicon glyphicon-next"></span>
-									Accept Test
-								</a>
-							</div>		
-
-					
+					<div class="col-md-offset-8 col-md-4">
+						<div class="pull-right">
+							<a class="btn btn-sm btn-warning"
+								href="{{URL::route('test.mergeorupdate', array(trim($tracking_number)))}}"
+								data-toggle="modal" >
+								<span class="glyphicon glyphicon-next"></span>
+								Cancel
+							</a>
+							<a class="btn btn-sm btn-danger"
+								href="{{URL::route('test.mergeorupdate', array(trim($tracking_number).'-'.'rejected'))}}"
+								data-toggle="modal" >
+								<span class="glyphicon glyphicon-next"></span>
+								Reject Test
+							</a>
+							<a class="btn btn-sm btn-success"
+								href="{{URL::route('test.mergeorupdate', array(trim($tracking_number).'-'.'accept'))}}"
+								data-toggle="modal" >
+								<span class="glyphicon glyphicon-next"></span>
+								Accept Test
+							</a>
+						</div>
 											
 					</div>
 				</div>									
@@ -362,9 +389,9 @@
 		document.getElementById('pFirst').value = pFirst;
 		document.getElementById('birthday').value = pDOB;
 		
-		if(pGender = "male"){
+		if(pGender == "M"){
 			document.getElementById('male').checked = true;
-		}else{
+		}else if(pGender == "F"){
 			document.getElementById('female').checked = true;
 		}
 
