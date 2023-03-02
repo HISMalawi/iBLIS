@@ -7,7 +7,7 @@
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/layout.css') }}" />
         <script type="text/javascript" src="{{ URL::asset('js/jquery.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('js/script.js') }} "></script>
-        <title>{{ Config::get('kblis.name') }} {{ Config::get('version.iblis') }}</title>
+        <title>{{ Config::get('kblis.name') }} {{ Config::get('app.version') }}</title>
     </head>
     <body>
         <div class="container login-page">

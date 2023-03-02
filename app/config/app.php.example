@@ -1,5 +1,71 @@
 <?php
 
+ $useElasticSearch = true;
+
+ 
+ if ($useElasticSearch){
+	$providers = array(
+		'Illuminate\Foundation\Providers\ArtisanServiceProvider',
+		'Illuminate\Auth\AuthServiceProvider',
+		'Illuminate\Cache\CacheServiceProvider',
+		'Illuminate\Session\CommandsServiceProvider',
+		'Illuminate\Foundation\Providers\ConsoleSupportServiceProvider',
+		'Illuminate\Routing\ControllerServiceProvider',
+		'Illuminate\Cookie\CookieServiceProvider',
+		'Illuminate\Database\DatabaseServiceProvider',
+		'Illuminate\Encryption\EncryptionServiceProvider',
+		'Illuminate\Filesystem\FilesystemServiceProvider',
+		'Illuminate\Hashing\HashServiceProvider',
+		'Illuminate\Html\HtmlServiceProvider',
+		'Illuminate\Log\LogServiceProvider',
+		'Illuminate\Mail\MailServiceProvider',
+		'Illuminate\Database\MigrationServiceProvider',
+		'Illuminate\Pagination\PaginationServiceProvider',
+		'Illuminate\Queue\QueueServiceProvider',
+		'Illuminate\Redis\RedisServiceProvider',
+		'Illuminate\Remote\RemoteServiceProvider',
+		'Illuminate\Auth\Reminders\ReminderServiceProvider',
+		'Illuminate\Database\SeedServiceProvider',
+		'Illuminate\Session\SessionServiceProvider',
+		'Illuminate\Translation\TranslationServiceProvider',
+		'Illuminate\Validation\ValidationServiceProvider',
+		'Illuminate\View\ViewServiceProvider',
+		'Illuminate\Workbench\WorkbenchServiceProvider',
+		'Zizaco\Entrust\EntrustServiceProvider',
+		'Shift31\LaravelElasticsearch\ElasticsearchServiceProvider'
+	);}
+	else {
+		$providers = array(
+			'Illuminate\Foundation\Providers\ArtisanServiceProvider',
+			'Illuminate\Auth\AuthServiceProvider',
+			'Illuminate\Cache\CacheServiceProvider',
+			'Illuminate\Session\CommandsServiceProvider',
+			'Illuminate\Foundation\Providers\ConsoleSupportServiceProvider',
+			'Illuminate\Routing\ControllerServiceProvider',
+			'Illuminate\Cookie\CookieServiceProvider',
+			'Illuminate\Database\DatabaseServiceProvider',
+			'Illuminate\Encryption\EncryptionServiceProvider',
+			'Illuminate\Filesystem\FilesystemServiceProvider',
+			'Illuminate\Hashing\HashServiceProvider',
+			'Illuminate\Html\HtmlServiceProvider',
+			'Illuminate\Log\LogServiceProvider',
+			'Illuminate\Mail\MailServiceProvider',
+			'Illuminate\Database\MigrationServiceProvider',
+			'Illuminate\Pagination\PaginationServiceProvider',
+			'Illuminate\Queue\QueueServiceProvider',
+			'Illuminate\Redis\RedisServiceProvider',
+			'Illuminate\Remote\RemoteServiceProvider',
+			'Illuminate\Auth\Reminders\ReminderServiceProvider',
+			'Illuminate\Database\SeedServiceProvider',
+			'Illuminate\Session\SessionServiceProvider',
+			'Illuminate\Translation\TranslationServiceProvider',
+			'Illuminate\Validation\ValidationServiceProvider',
+			'Illuminate\View\ViewServiceProvider',
+			'Illuminate\Workbench\WorkbenchServiceProvider',
+			'Zizaco\Entrust\EntrustServiceProvider'
+		);
+	}
+
 return array(
 
 	/*
@@ -27,6 +93,8 @@ return array(
 	*/
 
 	'url' => 'http://iblis',
+
+	'version' => 'v2.6.5',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -77,39 +145,9 @@ return array(
 	| this array to grant expanded functionality to your applications.
 	|
 	*/
+	'useElasticSearch' => $useElasticSearch,
 
-	'providers' => array(
-
-		'Illuminate\Foundation\Providers\ArtisanServiceProvider',
-		'Illuminate\Auth\AuthServiceProvider',
-		'Illuminate\Cache\CacheServiceProvider',
-		'Illuminate\Session\CommandsServiceProvider',
-		'Illuminate\Foundation\Providers\ConsoleSupportServiceProvider',
-		'Illuminate\Routing\ControllerServiceProvider',
-		'Illuminate\Cookie\CookieServiceProvider',
-		'Illuminate\Database\DatabaseServiceProvider',
-		'Illuminate\Encryption\EncryptionServiceProvider',
-		'Illuminate\Filesystem\FilesystemServiceProvider',
-		'Illuminate\Hashing\HashServiceProvider',
-		'Illuminate\Html\HtmlServiceProvider',
-		'Illuminate\Log\LogServiceProvider',
-		'Illuminate\Mail\MailServiceProvider',
-		'Illuminate\Database\MigrationServiceProvider',
-		'Illuminate\Pagination\PaginationServiceProvider',
-		'Illuminate\Queue\QueueServiceProvider',
-		'Illuminate\Redis\RedisServiceProvider',
-		'Illuminate\Remote\RemoteServiceProvider',
-		'Illuminate\Auth\Reminders\ReminderServiceProvider',
-		'Illuminate\Database\SeedServiceProvider',
-		'Illuminate\Session\SessionServiceProvider',
-		'Illuminate\Translation\TranslationServiceProvider',
-		'Illuminate\Validation\ValidationServiceProvider',
-		'Illuminate\View\ViewServiceProvider',
-		'Illuminate\Workbench\WorkbenchServiceProvider',
-		'Zizaco\Entrust\EntrustServiceProvider',
-		'Shift31\LaravelElasticsearch\ElasticsearchServiceProvider'
-
-	),
+	'providers' => $providers,
 
 	/*
 	|--------------------------------------------------------------------------

@@ -2567,8 +2567,6 @@ P1
 			"Other urine parasites" => "SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								INNER JOIN test_results tr ON tr.test_id = t.id 
-								INNER JOIN measures m ON m.id = tr.measure_id
 								WHERE tt.name = 'Other urine parasites' 
 								AND ts.name IN ('verified', 'completed')  
 								AND substr(t.time_created,1,7) = '$period'",
@@ -2595,15 +2593,34 @@ P1
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' ",
 
-			"Blood Parasites seen" => "SELECT count(*) AS test_count FROM tests t 
-								INNER JOIN test_types tt ON tt.id = t.test_type_id
-								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								INNER JOIN test_results tr ON tr.test_id = t.id
+			"Blood Parasites seen" => "SELECT COUNT(DISTINCT t.id) AS test_count
+								FROM tests t
+								WHERE t.test_type_id IN (
+								SELECT tt.id FROM test_types tt
 								WHERE tt.name = 'Blood Parasites Screen'
-								AND ts.name IN ('verified', 'completed')
+								)
+								AND t.test_status_id IN (
+								SELECT ts.id FROM test_statuses ts
+								WHERE ts.name IN ('completed', 'verified')
+								)
+								AND EXISTS (
+								SELECT 1 FROM test_results tr
+								JOIN measures m ON m.id = tr.measure_id
+								WHERE tr.test_id = t.id
 								AND tr.result NOT LIKE '%no%'
 								AND tr.result NOT IN ('NMPS', 'NPS', '')
-								AND substr(t.time_created,1,7) = '$period' ",
+								)
+								AND substr(t.time_created,1,7) = '$period'",
+			
+			// "SELECT count(*) AS test_count FROM tests t 
+			// 					INNER JOIN test_types tt ON tt.id = t.test_type_id
+			// 					INNER JOIN test_statuses ts ON ts.id = t.test_status_id
+			// 					INNER JOIN test_results tr ON tr.test_id = t.id
+			// 					WHERE tt.name = 'Blood Parasites Screen'
+			// 					AND ts.name IN ('verified', 'completed')
+			// 					AND tr.result NOT LIKE '%no%'
+			// 					AND tr.result NOT IN ('NMPS', 'NPS', '')
+			// 					AND substr(t.time_created,1,7) = '$period' ",
 
 			"Stool Microscopy (count)" => "SELECT count(*) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id

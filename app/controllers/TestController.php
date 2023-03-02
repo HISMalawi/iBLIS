@@ -77,19 +77,24 @@ class TestController extends \BaseController {
 
 		// Search Conditions
 		$location = TestCategory::where("id", '=', Session::get('location_id'))->first();
-
+		if(Config::get('app.useElasticSearch') == true){
+			$elasticSEarchPing = ES::ping();
+		}else{
+			$elasticSEarchPing = false;
+		}
+		
 		if($searchString||$testStatusId||$dateFrom||$dateTo){
 			if (str_is('*ARCHIVES*', strtoupper($location))) {
 				$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
 			}elseif (str_is('*RECEPTION*', strtoupper($location))) {
-				if(ES::ping()){
+				if($elasticSEarchPing){
 					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId);
 				}
 				else{
 					$tests = Test::searchOn($searchString, $dateFrom, $dateTo, $testStatusId);
 				}
 			}else{
-				if(ES::ping()){
+				if($elasticSEarchPing){
 					$tests = Test::eSearch($searchString, $dateFrom, $dateTo,$testStatusId,Session::get('location_id'));
 				}
 				else{

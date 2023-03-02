@@ -30,7 +30,7 @@
 
     <footer class="footer">
         <div>
-        		{{ HTML::link('http://egpaf.org/', 'EGPAF.org')}} &copy; {{date("Y")}} - BLIS {{ Config::get('version.iblis') }}
+        		{{ HTML::link('http://egpaf.org/', 'EGPAF.org')}} &copy; {{date("Y")}} - BLIS {{ Config::get('app.version') }}
         </div>
     </footer>
     <!-- End footer section-->
