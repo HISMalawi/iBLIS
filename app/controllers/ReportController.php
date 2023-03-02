@@ -3243,34 +3243,39 @@ P1
 	 *
 	 */
 	public function infectionReport(){
+		$ageRanges = array('0-5'=>'Under 5 years', 
+							'5-14'=>'5 years and over but under 14 years', 
+							'14-120'=>'14 years and above');	//	Age ranges - will definitely change in configurations
+		if (Request::method() == 'POST') {
+			
+			$gender = array(Patient::MALE, Patient::FEMALE); 	//	Array for gender - male/female
+			$ranges = array('Low', 'Normal', 'High');
+			$accredited = array();
 
-	 	$ageRanges = array('0-5'=>'Under 5 years', 
-	 					'5-14'=>'5 years and over but under 14 years', 
-	 					'14-120'=>'14 years and above');	//	Age ranges - will definitely change in configurations
-		$gender = array(Patient::MALE, Patient::FEMALE); 	//	Array for gender - male/female
-		$ranges = array('Low', 'Normal', 'High');
-		$accredited = array();
+			//	Fetch form filters
+			$date = date('Y-m-d');
+			$from = Input::get('start');
+			if(!$from) $from = date('Y-m-01');
+			$to = Input::get('end');
+			if(!$to) $to = $date;
+			
+			$toPlusOne = date_add(new DateTime($to), date_interval_create_from_date_string('1 day'));
 
-		//	Fetch form filters
-		$date = date('Y-m-d');
-		$from = Input::get('start');
-		if(!$from) $from = date('Y-m-01');
-		$to = Input::get('end');
-		if(!$to) $to = $date;
-		
-		$toPlusOne = date_add(new DateTime($to), date_interval_create_from_date_string('1 day'));
+			$testCategory = Input::get('test_category');
 
-		$testCategory = Input::get('test_category');
-
-		$infectionData = Test::getInfectionData($from, $toPlusOne, $testCategory);	// array for counts data for each test type and age range
-		
-		return View::make('reports.infection.index')
-					->with('gender', $gender)
-					->with('ageRanges', $ageRanges)
-					->with('ranges', $ranges)
-					->with('infectionData', $infectionData)
-					->with('accredited', $accredited)
-					->withInput(Input::all());
+			$infectionData = Test::getInfectionData($from, $toPlusOne, $testCategory);	// array for counts data for each test type and age range
+			
+			return View::make('reports.infection.results')
+						->with('gender', $gender)
+						->with('ageRanges', $ageRanges)
+						->with('ranges', $ranges)
+						->with('infectionData', $infectionData)
+						->with('accredited', $accredited)
+						->withInput(Input::all());
+		}else{
+			
+			return View::make('reports.infection.index')->with('ageRanges', $ageRanges);
+		}
 	}
 
 	/**

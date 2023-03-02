@@ -7,7 +7,7 @@
 	  <li class="active">{{ trans('messages.infection-report') }}</li>
 	</ol>
 </div>
-{{ Form::open(array('route' => array('reports.aggregate.infection'), 'class' => 'form-inline', 'role' => 'form')) }}
+{{ Form::open(array('route' => array('reports.aggregate.infection'), 'method' => 'post','class' => 'form-inline', 'role' => 'form')) }}
 <!-- <div class='container-fluid'> -->
 	<div class="row">
 		<div class="col-md-3">
@@ -81,181 +81,25 @@
 		</p>
 
 	</strong>
-		<div class="table-responsive">
-			<table class="table table-condensed report-table-border">
-				<thead>
-					<tr>
-						<th rowspan="2">{{ Lang::choice('messages.test',1) }}</th>
-						<th rowspan="2">{{ Lang::choice('messages.measure',1) }}</th>
-						<th rowspan="2">{{ trans('messages.test-results') }}</th>
-						<th rowspan="2">{{ trans('messages.gender') }}</th>
-						<th colspan="{{ count($ageRanges) }}">{{ trans('messages.measure-age-range') }}</th>
-						<th rowspan="2">{{ trans('messages.mf-total') }}</th>
-						<th rowspan="2">{{ Lang::choice('messages.total',1) }}</th>
-						<th rowspan="2">{{ trans('messages.total-tests') }}</th>
-					</tr>
-					<tr>
-						@foreach($ageRanges as $ageRange => $description)
-							<th title='{{$description}}'>{{ $ageRange }}</th>
-					    @endforeach
-					</tr>
-				</thead>
-				<tbody>
-					<?php 
-						$testRow = "";
-
-						$currentTest = "";
-						$currentMeasure = "";
-						$currentResult = "";
-
-						$testCount = 0;
-						$measureCount = 0;
-						$resultCount = 0;
-
-						$testTotal = 0;
-						$resultTotal = 0;
-					?>
-					
-					@forelse($infectionData as $inf)
-						<?php
-						$testCount++;
-						$measureCount++;
-						$resultCount++;
-
-						if(strcmp($currentTest, $inf->test_name) == 0){
-							$testRow.="<tr>";
-
-							if(strcmp($currentMeasure, $inf->measure_name) != 0){
-								$testRow = str_replace("NEW_MEASURE", $measureCount, $testRow);
-								$testRow = str_replace("NEW_RESULT", $resultCount, $testRow);
-								$testRow = str_replace("RESULT_TOTAL", $resultTotal, $testRow);
-
-								$measureCount=0;
-								$resultCount=0;
-								$resultTotal = 0;
-
-								$currentMeasure = $inf->measure_name;
-								$currentResult = $inf->result;
-
-								$testRow.="<td rowspan='NEW_MEASURE'>".$inf->measure_name."</td>";
-								$testRow.="<td rowspan='NEW_RESULT'>".$inf->result."</td>";
-							}else{
-								if(strcmp($currentResult, $inf->result) != 0){
-									$testRow = str_replace("NEW_RESULT", $resultCount, $testRow);
-									$testRow = str_replace("RESULT_TOTAL", $resultTotal, $testRow);
-
-									$resultCount=0;
-									$resultTotal = 0;
-
-									$currentResult = $inf->result;
-									$testRow.="<td rowspan='NEW_RESULT'>".$inf->result."</td>";
-								}
-							}
-						}else{
-							$testRow = str_replace("NEW_TEST", $testCount, $testRow);
-							$testRow = str_replace("NEW_MEASURE", $measureCount, $testRow);
-							$testRow = str_replace("NEW_RESULT", $resultCount, $testRow);
-
-							$testRow = str_replace("RESULT_TOTAL", $resultTotal, $testRow);
-							$testRow = str_replace("TEST_TOTAL", $testTotal, $testRow);
-
-							echo $testRow;
-
-							$testCount=0;
-							$measureCount=0;
-							$resultCount=0;
-
-							$testTotal = 0;
-							$resultTotal = 0;
-
-							$currentTest = $inf->test_name;
-							$currentMeasure = $inf->measure_name;
-							$currentResult = $inf->result;
-
-							$testRow="<tr>";
-							$testRow.="<td rowspan='NEW_TEST'>".$inf->test_name."</td>";
-							$testRow.="<td rowspan='NEW_MEASURE'>".$inf->measure_name."</td>";
-							$testRow.="<td rowspan='NEW_RESULT'>".$inf->result."</td>";
-						}
-
-						$testRow.="<td>".$inf->gender."</td>";
-						$testRow.="<td>".$inf->RC_U_5."</td>";
-						$testRow.="<td>".$inf->RC_5_15."</td>";
-						$testRow.="<td>".$inf->RC_A_15."</td>";
-						$testRow.="<td>".($inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15)."</td><!-- Male|Female Total-->";
-
-						$resultTotal += $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
-
-						if(strcmp($currentResult, $inf->result) == 0 && $resultCount == 0){
-							$testRow.="<td rowspan='NEW_RESULT'>RESULT_TOTAL</td>";
-						}
-
-						if($measureCount == 0)
-							$testTotal = $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
-						else
-							$testTotal += $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
-
-						if(strcmp($currentTest, $inf->test_name) == 0 && $testCount == 0){
-							$testRow.="<td rowspan='NEW_TEST'>TEST_TOTAL</td>";
-						}
-
-						$testRow.="</tr>";
-						?>
-					@empty
-						<tr>
-							<td colspan="9">
-								{{trans('messages.no-records-found')}}
-							</td>
-						</tr>
-					@endforelse
-					<?php
-						$testRow = str_replace("NEW_TEST", ++$testCount, $testRow);
-						$testRow = str_replace("NEW_MEASURE", ++$measureCount, $testRow);
-						$testRow = str_replace("NEW_RESULT", ++$resultCount, $testRow);
-						$testRow = str_replace("RESULT_TOTAL", $resultTotal, $testRow);
-						$testRow = str_replace("TEST_TOTAL", $testTotal, $testRow);
-					?>
-					{{$testRow}}
-				</tbody>
-			</table>
-		</div>
+	<div class="table-responsive">
+		<table class="table table-condensed report-table-border">
+			<thead>
+				<tr>
+					<th rowspan="2">{{ Lang::choice('messages.test',1) }}</th>
+					<th rowspan="2">{{ Lang::choice('messages.measure',1) }}</th>
+					<th rowspan="2">{{ trans('messages.test-results') }}</th>
+					<th rowspan="2">{{ trans('messages.gender') }}</th>
+					<th colspan="{{ count($ageRanges) }}">{{ trans('messages.measure-age-range') }}</th>
+					<th rowspan="2">{{ trans('messages.mf-total') }}</th>
+					<th rowspan="2">{{ Lang::choice('messages.total',1) }}</th>
+					<th rowspan="2">{{ trans('messages.total-tests') }}</th>
+				</tr>
+				<tr>
+					@foreach($ageRanges as $ageRange => $description)
+						<th title='{{$description}}'>{{ $ageRange }}</th>
+						@endforeach
+				</tr>
+			</thead>
+		</table>
 	</div>
-</div>
-
-
-<script type="text/javascript">
-	document.getElementById("exp").style.display = "inline";
-	$("#export").click(function(e)
-	{  var period = '<?php echo($period); ?>';	  
-		exportTableToCSV(period +'_'+'infection_report.csv');
-	})
-
-	function downloadCSV(csv, filename) {
-		    var csvFile;
-		    var downloadLink;
-		    csvFile = new Blob([csv], {type: "text/csv"});
-		    downloadLink = document.createElement("a");
-		    downloadLink.download = filename;
-		    downloadLink.href = window.URL.createObjectURL(csvFile);
-		    downloadLink.style.display = "none";
-		    document.body.appendChild(downloadLink);
-		    downloadLink.click();
-	}
-
-	function exportTableToCSV(filename) {
-		var period = '<?php echo($period); ?>';
-	    var csv = [];
-	    var rows = document.querySelectorAll("table tr");
-	   	var row = [];		   	
-	  
-	    for (var i = 0; i < rows.length; i++) {
-	        var row = [], cols = rows[i].querySelectorAll("td, th");	        
-	        for (var j = 0; j < cols.length; j++) 
-	            row.push(cols[j].innerText);	        
-	        csv.push(row.join(","));   	             
-	    }
-	    downloadCSV(csv.join("\n"), filename);
-	}
-	
-</script>
 @stop
