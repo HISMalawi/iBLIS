@@ -511,6 +511,10 @@ return array(
     'tab-label'  => 'Antibiotic Susceptibility Test (AST)',
     'csv' => 'Export',
     'malaria-report' => 'Malaria Report',
+    'patient_arv_number' => 'Patient ARV Number',
+    'patient_art_init_date' => 'Patient ART Initiation Date',
+    'sending_facility' => 'Sending Facility',
+
 
     /* culture and sensitivity */
     'tab_label' => 'Culture & sensitivity Tests',
