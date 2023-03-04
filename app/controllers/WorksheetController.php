@@ -12,7 +12,8 @@ class WorksheetController extends \BaseController {
 		//
 		$worksheets = DB::select("SELECT * FROM worksheets ORDER BY id DESC");
 		return View::make('worksheet.index')
-				->with('worksheets',$worksheets);
+				->with('worksheets',$worksheets)
+				->with('available_printers', Config::get('kblis.A4_printers'));
 	}
 
 
@@ -61,7 +62,8 @@ class WorksheetController extends \BaseController {
 
 		return View::make('worksheet.viewWorksheetTest')
 				->with('tests',$tests)
-				->with('worksheetNumber',$worksheetId);
+				->with('worksheetNumber',$worksheetId)
+				->with('available_printers', Config::get('kblis.A4_printers'));
 		
 	}
 
