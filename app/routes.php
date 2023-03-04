@@ -94,6 +94,14 @@ Route::group(array("before", "print"), function()
         "as" => "reports.patient.report",
         "uses" => "ReportController@viewPatientReport"
     ));
+    Route::any("/vlpatientreport/{id}", array(
+        "as" => "reports.patient.exportvl",
+        "uses" => "ReportController@VlPatientReport"
+    ));
+    Route::any("/print/eid_vl_results/{id}", array(
+        "as" => "reports.patient.vlpatientreport",
+        "uses" => "ReportController@PrintVlPatientReport"
+    ));
 
     Route::any("/print/{id}/{visit}", array(
         "as" => "reports.patient.print",
