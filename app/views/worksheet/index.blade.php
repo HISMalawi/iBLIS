@@ -1,5 +1,7 @@
 @extends("layout")
 @section("content")
+
+
     <div>
         <ol class="breadcrumb">
           <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
@@ -120,14 +122,11 @@
                                         
 
                                     @if(isset($worksheet->verified_at))
-                                        <a class="main-view main-view-{{'1'}} btn btn-sm btn-default"
-                                        href="{{ URL::route('test.viewDetails', '1') }}"
-                                        id="view-details-{{'1'}}-link"
-                                        title="{{trans('messages.view-details-title')}}">
-                                            <span class="glyphicon glyphicon glyphicon-print"></span>
-                                            {{'print results'}}
-                                        </a>
-
+                                    {{ Form::open(array('url' => 'print/eid_vl_results/'.$worksheet->id, 'class' => 'form-inline', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
+                                    {{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+                                    {{ Form::button(trans('Print Results'), array('class' => 'btn-success', 
+				        	        'onclick' => "selectPrinter()")) }}
+                                    {{Form::close()}}
                                     @endif
                                     @if(!isset($worksheet->verified_at) && isset($worksheet->completed_at))
                                         <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
@@ -322,4 +321,36 @@
         Session::forget('activeTest');
         Session::forget('search_string');
     ?>
+
+<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+
+		<!-- - content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel" style="text-align: left;">
+					Select Printer
+				</h4>
+			</div>
+			<div class="modal-body">
+        <span style="text-align:center;">
+          <table align="center" id="printers">
+			   @foreach($available_printers AS $printer)
+			  <tr onmousedown="updateValue(this)" value="{{$printer}}">
+				  <td><input type="radio" class="printer_radio_button" value="{{$printer}}" name="printer_name"/></td>
+				  <td style="text-align: left; padding-left:50px;">{{$printer}}</td>
+			  </tr>
+			  @endforeach
+		  </table>
+        </span>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" 
+						onclick="submitVlPrintForm()">Okay</button>
+					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 @stop
