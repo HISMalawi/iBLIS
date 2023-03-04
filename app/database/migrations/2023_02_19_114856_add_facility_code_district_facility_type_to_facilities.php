@@ -28,7 +28,7 @@ class AddFacilityCodeDistrictFacilityTypeToFacilities extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('facilities', function(Blueprint $table)
+		Schema::table('facilities', function($table)
 		{
 			//
             $table->dropColumn('facility_code');

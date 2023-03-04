@@ -63,7 +63,7 @@
             <div class="pull-right">
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li >
+                    <li >  
                         <span class="navbar-brand lab-section-banner">{{ TestCategory::find(Session::get('location_id'))->name }}</span>
                     </li>
                 </ul>

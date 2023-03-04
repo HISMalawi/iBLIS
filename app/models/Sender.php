@@ -196,6 +196,7 @@ class Sender
 
         $specimenStatus = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
         $testStatus = 2;
+        $specimenStatusWord = "specimen-accepted";
        
         if(count(explode("-",$tracking_number)) > 1){
             
@@ -204,6 +205,7 @@ class Sender
                 $specimenStatus = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
             }else if ($statusAction == "rejected"){
                 $specimenStatus = SpecimenStatus::where('name', 'specimen-rejected')->first()->id;
+                $specimenStatusWord = "specimen-rejected";
                 $testStatus = "8";
             }
         }
@@ -284,7 +286,7 @@ class Sender
 
         $dat = new UnsyncOrder;
 		$dat->specimen_id = $specimen->id;
-		$dat->data_not_synced = $specimenStatus;
+		$dat->data_not_synced = $specimenStatusWord;
 		$dat->data_level = "specimen";
 		$dat->sync_status = "not-synced";
 		$dat->updated_by_name = "";
