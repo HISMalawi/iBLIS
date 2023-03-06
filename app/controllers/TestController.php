@@ -360,7 +360,7 @@ P1
 							$actName = $tst;
 						}
 						if($actName == "Viral Load"){
-							return View::make('test.remoteorderVL')
+							return View::make('test.remoteorderVL', compact('facilities', 'districts'))
 							->with('test', $remoteResults)
 							->with('tracking_number', $searchString)
 							->with('order_results',$orderResults)

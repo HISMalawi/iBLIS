@@ -2,6 +2,7 @@
 @section("content")
 
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/select2/css/select2.css') }}" />
 
 	<div>
 		<ol class="breadcrumb">
@@ -73,14 +74,21 @@
 
 									$requestedBy = $test->data->other->requested_by;
 
-									$fac = DB::SELECT("SELECT * FROM facilities WHERE name ='$sending_lab'");
+									$facilityObject = Facility::where('name', $sending_lab)->get();
+
+									$district = "";
+									$facility = "";
 									
-									if(count($fac)>0){
-										$district = $fac[0]->district;
-										$siteCode = $fac[0]->facility_code;
-									}else
-									{
+									if(count($facilityObject) > 0){
+
+										$district = $facilityObject[0]->district;
+										$siteCode = $facilityObject[0]->facility_code;
+										$facility = $facilityObject[0]->name;
+
+									}else{
+
 										$district = "";
+										$facility = "";
 									}
 								
 								?>
@@ -96,7 +104,12 @@
 													<div class="col-md-6">
 														<div class="form-group">
 															<label><strong>{{"District:"}}</strong></label>
-															<input class="form-control" required  type="text" id="district" name="district">
+															<select  class="form-control required district-select" style="float: none;" name="district" id="district">
+															<option value="">-- Select district ---</option>
+																@foreach ($districts as $fac_district)
+																	<option value={{$fac_district->name}}>{{ $fac_district->name }}</option>
+																@endforeach
+															</select>
 														</div>
 													</div>
 
@@ -104,7 +117,12 @@
 													<div class="col-md-6">
 														<div class="form-group">
 															<label><strong>{{"Facility Name:"}}</strong></label>
-															<input class="form-control" required  type="text" id="facility" name="facility">
+															<select  class="form-control required facility-select" style="float: none;" name="facility" id="facility">
+																<option value="">-- Select facility ---</option>
+																@foreach ($facilities as $facility_)
+																<option value="{{$facility_->name}}">{{ $facility_->name }}</option>
+																@endforeach
+															</select>
 														</div>
 													</div>
 												</div>
@@ -380,6 +398,7 @@
 	</form>
 
 	<script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
+	<script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
 	<script src="{{ URL::asset('js/bootstrap-datepicker.js') }} "></script>
 	
 	<script>
@@ -412,14 +431,46 @@
 					}
 				}
 			})
-		});
-	</script>
-	
-	<script>
 
+			$('.district-select').select2({
+                theme: 'bootstrap4',
+            });
+
+            $($('.district-select').data('select2').$container).addClass('form-control');
+
+			
+            $('.facility-select').select2({
+                theme: 'bootstrap4',
+            });
+
+            $($('.facility-select').data('select2').$container).addClass('form-control');
 
 			var sendingLab = "{{$sending_lab}}";
+			
 			var district = "{{$district}}";
+
+
+			$('#district').val(`${district}`).trigger('change');
+			$('#facility').val(`${sendingLab}`).trigger('change');
+
+
+            $('.district-select').on('change', function() {
+                				
+                $.ajax({
+                    url: `/filter-facilities/${$('.district-select').val()}`,
+                    async: true,
+                    type: 'GET',
+                    success: function (response) {
+                        var select2 = $('.facility-select');
+                        select2.empty();
+                        select2.append('<option value="">--- Select a facility ---</option>');
+                        $.each(response.data, function (index, value) {
+                            select2.append('<option value="' + value.name + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+
+            });
 
 			var pFirst = "{{$patientFirst}}";
 			var pSecond = "{{$patientSecond}}";
@@ -428,11 +479,6 @@
 
 			var pDOB = "{{$patientDOB}}";
 			
-
-			console.log(pDOB)
-
-			// $('#birthday').datepicker("setDate", pBOD);
-
 			var siteCode = "{{$siteCode}}";
 			var hybridId = siteCode +" - "+pID;
 			document.getElementById('pSurname').value = pSecond;
@@ -451,7 +497,7 @@
 			var dateCreated = "{{$dateCreated}}";
 
 			document.getElementById('drawnDate').value = dateCreated;
-			console.log(testReason);
+
 			if(testReason == "routine"){
 				document.getElementById('routine').selected = true;
 			}
@@ -488,13 +534,9 @@
 			
 			document.getElementById('drawerSirname').value = createdByFirst;
 			document.getElementById('drawerFirstname').value = createdBySecond;
-
-			document.getElementById('facility').value = sendingLab;
-			document.getElementById('district').value = district;
-
-		
-
+		});
 	</script>
+
 						
 
 @stop
