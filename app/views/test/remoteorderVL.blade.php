@@ -1,5 +1,8 @@
 @extends("layout")
 @section("content")
+
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.css') }}" />
+
 	<div>
 		<ol class="breadcrumb">
 			<li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
@@ -8,8 +11,8 @@
 		</ol>
 	</div>
 	<?php $showWorkSheet = false;?>
-	<div class="panel panel-primary">
-		<form action={{ "#" }} id="remoteOrderForm" name="remoteOrderForm">
+	<form id="remoteOrderForm" method="GET" action="{{URL::route('test.mergeorupdate', array(trim($tracking_number).'-'.'accept'))}}">
+		<div class="panel panel-primary">
 			<div class="panel-heading ">
 				<div class="container-fluid">
 					<div class="row less-gutter">
@@ -71,6 +74,7 @@
 									$requestedBy = $test->data->other->requested_by;
 
 									$fac = DB::SELECT("SELECT * FROM facilities WHERE name ='$sending_lab'");
+									
 									if(count($fac)>0){
 										$district = $fac[0]->district;
 										$siteCode = $fac[0]->facility_code;
@@ -82,7 +86,7 @@
 								?>
 								<div class="panel-body">
 									<div class="container-fluid">
-										<div class="panel panel-info">
+										<div class="panel panel-default">
 											<div class="panel-heading">
 												<h1 class="panel-title"><strong>Section 1:</strong> Health Facility Information </h1>
 											</div>
@@ -92,7 +96,7 @@
 													<div class="col-md-6">
 														<div class="form-group">
 															<label><strong>{{"District:"}}</strong></label>
-															<input class="form-control"  type="text" id="district" name="district">
+															<input class="form-control" required  type="text" id="district" name="district">
 														</div>
 													</div>
 
@@ -100,7 +104,7 @@
 													<div class="col-md-6">
 														<div class="form-group">
 															<label><strong>{{"Facility Name:"}}</strong></label>
-															<input class="form-control"  type="text" id="facility" name="facility">
+															<input class="form-control" required  type="text" id="facility" name="facility">
 														</div>
 													</div>
 												</div>
@@ -110,7 +114,7 @@
 
 
 
-										<div class="panel panel-info">
+										<div class="panel panel-default">
 											<div class="panel-heading">
 												<h1 class="panel-title"><strong>Section 2:</strong> Patient Information</h1>
 											</div>
@@ -118,11 +122,11 @@
 												<div class="row">
 													<div class="col-md-6">
 														<p><strong>{{"Patient Surname:"}}</strong></p>
-														<input class="form-control"  type="text" id="pSurname" name="patientSurname">
+														<input class="form-control" required  type="text" id="pSurname" name="patientSurname">
 													</div>
 													<div class="col-md-6">
 														<p><strong>{{"Patient Firstname:"}}</strong></p>
-														<input class="form-control"  type="text" id="pFirst" name="patientFirst">
+														<input class="form-control" required  type="text" id="pFirst" name="patientFirst">
 													</div>
 												</div>
 												<div class="row" style="margin-top: 10px !important;">
@@ -131,7 +135,7 @@
 														<div class="row">
 															<div class="col-md-12">
 																<p><strong>{{"Patient ID:"}}</strong></p>
-																<input class="form-control"  type="text" id="pId" name="patientId">
+																<input class="form-control" required  type="text" id="pId" name="patientId">
 															</div>
 														</div>
 														<div class="row" style="margin-top: 10px !important;">
@@ -150,13 +154,13 @@
 																<div class="row">
 																	<div class="col-md-12">
 																		<p><strong>{{"Date of Birth:"}}</strong></p>
-																		<input class="form-control" type="date" id="birthday" name="phoneDrawer">
+																		<input class="form-control" required type="text" id="birthday" name="dob">
 																	</div>
 																</div>
 																<div class="row" style="margin-top: 10px !important;">
 																	<div class="col-md-12">
 																		<p><strong>{{"Date Sample Drawn:"}}</strong></p>
-																		<input class="form-control"  type="date" id="drawnDate" name="drawnDate">
+																		<input class="form-control" required  type="text" id="drawnDate" name="drawnDate">
 																	</div>
 																</div>
 
@@ -165,16 +169,16 @@
 																<div class="form-group">
 																	<div style="font-size: 14px;"><strong>{{"Gender/Preg/Bf:"}}</strong></div>
 																	<div class="radio">
-																	<label><input type="radio" name="radio" id="male" value="male">Male</label>
+																	<label><input type="radio" required name="radio" id="male" value="male">Male</label>
 																	</div>
 																	<div class="radio">
-																	<label><input type="radio" name="radio" id="female" value="female">Female Non-Preg./Bf.</label>
+																	<label><input type="radio" required name="radio" id="female" value="female">Female Non-Preg./Bf.</label>
 																	</div>
 																	<div class="radio">
-																	<label><input type="radio" name="radio" id="preg" value="female">Female Pregnant</label>
+																	<label><input type="radio" required name="radio" id="preg" value="female">Female Pregnant</label>
 																	</div>
 																	<div class="radio">
-																		<label><input type="radio" name="radio" id="breast" value="female">Female Breastfeeding</label>
+																		<label><input type="radio" required name="radio" id="breast" value="female">Female Breastfeeding</label>
 																	</div>
 																</div>
 																
@@ -206,7 +210,7 @@
 
 
 
-										<div class="panel panel-info">
+										<div class="panel panel-default">
 											<div class="panel-heading">
 												<h1 class="panel-title"><strong>Section 3:</strong>{{" Test Type"}}</h1>
 											</div>
@@ -214,7 +218,7 @@
 												<div class="row">
 														<div class="col-md-6 form-group">
 															<label><strong>{{"Reason For Testing:"}}</strong></label>
-															<select class="form-control" type="date" id="reason" name="reason">
+															<select required class="form-control" type="text" id="reason" name="reason">
 																<option id="routine"> 
 																		Routine
 																</option>
@@ -234,7 +238,7 @@
 										</div>
 
 
-										<div class="panel panel-info">
+										<div class="panel panel-default">
 											<div class="panel-heading">
 												<h1 class="panel-title"><strong>Section 4:</strong>{{" Patient and Samples Details"}}</h1>
 											</div>
@@ -243,13 +247,13 @@
 													<div class="col-md-4">
 														<div class="form-group">
 															<label><strong>{{"ART Initiation Date:"}}</strong></label>
-															<input class="form-control"  id="artStart" type="date"  name="artStart">
+															<input required class="form-control"  id="artStart" type="text"  name="artStart">
 														</div>
 													</div>		
 													<div class="col-md-4">
 														<div class="form-group">
 															<label><strong>{{"Sample Type:"}}</strong></label>
-															<select class="form-control" type="date" id="sampleType" name="sampleType">
+															<select required class="form-control" type="text" id="sampleType" name="sampleType">
 																<option id="70ml"> 
 																		DBS 70ml
 																</option>
@@ -268,7 +272,7 @@
 													<div class="col-md-4">
 														<div class="form-group">
 															<label><strong>{{"Current ART Regimen:"}}</strong></label>
-															<select class="form-control" type="date" id="regimen" name="regimen">
+															<select required class="form-control" type="text" id="regimen" name="regimen">
 																<option id="13A"> 
 																		13A
 																</option>
@@ -286,7 +290,7 @@
 										</div>
 
 
-										<div class="panel panel-info">
+										<div class="panel panel-default">
 											<div class="panel-heading">
 												<h1 class="panel-title"><strong>Section 5:</strong>{{" Details of Person Colllecting Sample"}}</h1>
 											</div>
@@ -295,14 +299,14 @@
 														<div class="col-md-3">
 															<div class="form-group">
 															<label><strong>{{"Sirname:"}}</strong></label>
-															<input class="form-control"  type="text" id="drawerSirname" name="drawerSirname">
+															<input required class="form-control"  type="text" id="drawerSirname" name="drawerSirname">
 															</div>
 														</div>		
 														
 														<div class="col-md-3">
 															<div class="form-group">
 															<label><strong>{{"First Name:"}}</strong></label>
-															<input class="form-control"  type="text" id="drawerFirstname" name="drawerFirstname">
+															<input required class="form-control"  type="text" id="drawerFirstname" name="drawerFirstname">
 															</div>
 														</div>	
 														
@@ -316,7 +320,7 @@
 														<div class="col-md-3">
 															<div class="form-group">
 															<label><strong>{{"HTC Provider ID:"}}</strong></label>
-															<input class="form-control"  type="text" id="provider" name="provider">
+															<input required class="form-control"  type="text" id="provider" name="provider">
 															</div>
 														</div>						
 																
@@ -334,113 +338,161 @@
 				</div> <!-- ./ container-fluid -->
 
 			</div> <!-- ./ panel-body -->
-		</form>
-	</div> <!-- ./ panel -->
+		</div> <!-- ./ panel -->
 
-	<div class="panel-info">  <!-- Test Results -->
+		<div class="panel-info">  <!-- Test Results -->
 		
-		<div class="panel-body" >
-			<div class="container-fluid">
-				<div class="row">					
-					<div class="col-md-offset-8 col-md-4">
-						<div class="pull-right">
-							<a class="btn btn-sm btn-warning"
-								href="{{URL::route('test.mergeorupdate', array(trim($tracking_number)))}}"
-								data-toggle="modal" >
-								<span class="glyphicon glyphicon-next"></span>
-								Cancel
-							</a>
-							<a class="btn btn-sm btn-danger"
-								href="{{URL::route('test.mergeorupdate', array(trim($tracking_number).'-'.'rejected'))}}"
-								data-toggle="modal" >
-								<span class="glyphicon glyphicon-next"></span>
-								Reject Test
-							</a>
-							<a class="btn btn-sm btn-success"
-								href="{{URL::route('test.mergeorupdate', array(trim($tracking_number).'-'.'accept'))}}"
-								data-toggle="modal" >
-								<span class="glyphicon glyphicon-next"></span>
-								Accept Test
-							</a>
+			<div class="panel-body" >
+				<div class="container-fluid">
+					<div class="row">					
+						<div class="col-md-offset-8 col-md-4">
+							<div class="pull-right">
+								<a class="btn btn-warning"
+									href="{{URL::route('test.mergeorupdate', array(trim($tracking_number)))}}"
+									data-toggle="modal" >
+									<span class="glyphicon glyphicon-next"></span>
+									Cancel
+								</a>
+								<a class="btn btn-danger"
+									href="{{URL::route('test.mergeorupdate', array(trim($tracking_number).'-'.'rejected'))}}"
+									data-toggle="modal" >
+									<span><i class="glyphicon glyphicon-remove-sign"></i></span>
+									Reject Test
+								</a>
+								{{-- <a class="btn btn-sm btn-success"
+									href="{{URL::route('test.mergeorupdate', array(trim($tracking_number).'-'.'accept'))}}"
+									data-toggle="modal" >
+									<span class="glyphicon glyphicon-next"></span>
+									Accept Test
+								</a> --}}
+
+								<button type="submit" class="btn btn-primary">
+									<span><i class="glyphicon glyphicon-check"></i></span>
+									Accept Test
+								</button>
+							</div>
+												
 						</div>
-											
-					</div>
-				</div>									
+					</div>									
+				</div>
 			</div>
-		</div> <!-- ./ panel-body -->
-	</div>  <!-- ./ panel -->
-	
-	
+		</div>
+	</form>
+
+	<script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
+	<script src="{{ URL::asset('js/bootstrap-datepicker.js') }} "></script>
 	
 	<script>
-		var sendingLab = "{{$sending_lab}}";
-		var district = "{{$district}}";
+		$(document).ready(function () {
 
-		var pFirst = "{{$patientFirst}}";
-		var pSecond = "{{$patientSecond}}";
-		var pID = "{{$patientId}}";
-		var pGender = "{{$patientGender}}";
-		var pDOB = "{{$patientDOB}}";
+			$('#birthday').datepicker({
+                format: 'yyyy/mm/dd',
+                autoclose: true,
+                todayHighlight: true
+            })
 
-		var siteCode = "{{$siteCode}}";
-		var hybridId = siteCode +" - "+pID;
-		document.getElementById('pSurname').value = pSecond;
-		document.getElementById('pId').value = hybridId;
-		document.getElementById('pFirst').value = pFirst;
-		document.getElementById('birthday').value = pDOB;
+			$('#drawnDate').datepicker({
+                format: 'yyyy/mm/dd',
+                autoclose: true,
+                todayHighlight: true
+            })
+
+			$('#artStart').datepicker({
+                format: 'yyyy/mm/dd',
+                autoclose: true,
+                todayHighlight: true
+            })
+
+			$('#remoteOrderForm').validate({
+				errorClass: "error-class text-danger",
+				errorElement: "div",
+				rules: {
+					district: {
+						required: true
+					}
+				}
+			})
+		});
+	</script>
+	
+	<script>
+
+
+			var sendingLab = "{{$sending_lab}}";
+			var district = "{{$district}}";
+
+			var pFirst = "{{$patientFirst}}";
+			var pSecond = "{{$patientSecond}}";
+			var pID = "{{$patientId}}";
+			var pGender = "{{$patientGender}}";
+
+			var pDOB = "{{$patientDOB}}";
+			
+
+			console.log(pDOB)
+
+			// $('#birthday').datepicker("setDate", pBOD);
+
+			var siteCode = "{{$siteCode}}";
+			var hybridId = siteCode +" - "+pID;
+			document.getElementById('pSurname').value = pSecond;
+			document.getElementById('pId').value = hybridId;
+			document.getElementById('pFirst').value = pFirst;
+			
+			if(pGender == "M"){
+				document.getElementById('male').checked = true;
+			}else if(pGender == "F"){
+				document.getElementById('female').checked = true;
+			}
+
+			var sampleType = "{{$sampleType}}";
+			var sampleStatus = "{{$sampleStatus}}";
+			var testReason = "{{$testReason}}";
+			var dateCreated = "{{$dateCreated}}";
+
+			document.getElementById('drawnDate').value = dateCreated;
+			console.log(testReason);
+			if(testReason == "routine"){
+				document.getElementById('routine').selected = true;
+			}
+			if(testReason == "targeted"){
+				document.getElementById('targeted').selected = true;
+			}		
+			if(testReason == "follow"){
+				document.getElementById('follow').selected = true;
+			}		
+			if(testReason == "repeat"){
+				document.getElementById('repeat').selected = true;
+			}
+
+			var regimen = "{{$regimen}}";
+			var arv_number = "{{$arv_number}}";
+			var art_start_date = "{{$art_start_date}}";
+			var sampleType = "{{$sampleType}}";
+
+			document.getElementById('artStart').value = art_start_date;
+
+			if(sampleType == "70ml"){
+				document.getElementById('70ml').selected = true;
+			}else if(sampleType == "plasma"){
+				document.getElementById('plasma').selected = true;
+			}else if(sampleType == "DBS"){
+				document.getElementById('dbs').selected = true;
+			}else if(sampleType == "Blood"){
+				document.getElementById('blood').selected = true;
+			}
+			
+			var createdByFirst = "{{$createdByFirst}}";
+			var createdBySecond = "{{$createdBySecond}}";
+			var requestedBy = "{{$requestedBy}}";
+			
+			document.getElementById('drawerSirname').value = createdByFirst;
+			document.getElementById('drawerFirstname').value = createdBySecond;
+
+			document.getElementById('facility').value = sendingLab;
+			document.getElementById('district').value = district;
+
 		
-		if(pGender == "M"){
-			document.getElementById('male').checked = true;
-		}else if(pGender == "F"){
-			document.getElementById('female').checked = true;
-		}
-
-		var sampleType = "{{$sampleType}}";
-		var sampleStatus = "{{$sampleStatus}}";
-		var testReason = "{{$testReason}}";
-		var dateCreated = "{{$dateCreated}}";
-
-		document.getElementById('drawnDate').value = dateCreated;
-		console.log(testReason);
-		if(testReason == "routine"){
-			document.getElementById('routine').selected = true;
-		}
-		if(testReason == "targeted"){
-			document.getElementById('targeted').selected = true;
-		}		
-		if(testReason == "follow"){
-			document.getElementById('follow').selected = true;
-		}		
-		if(testReason == "repeat"){
-			document.getElementById('repeat').selected = true;
-		}
-
-		var regimen = "{{$regimen}}";
-		var arv_number = "{{$arv_number}}";
-		var art_start_date = "{{$art_start_date}}";
-		var sampleType = "{{$sampleType}}";
-
-		document.getElementById('artStart').value = art_start_date;
-
-		if(sampleType == "70ml"){
-			document.getElementById('70ml').selected = true;
-		}else if(sampleType == "plasma"){
-			document.getElementById('plasma').selected = true;
-		}else if(sampleType == "DBS"){
-			document.getElementById('dbs').selected = true;
-		}else if(sampleType == "Blood"){
-			document.getElementById('blood').selected = true;
-		}
-		
-		var createdByFirst = "{{$createdByFirst}}";
-		var createdBySecond = "{{$createdBySecond}}";
-		var requestedBy = "{{$requestedBy}}";
-		
-		document.getElementById('drawerSirname').value = createdByFirst;
-		document.getElementById('drawerFirstname').value = createdBySecond;
-
-		document.getElementById('facility').value = sendingLab;
-		document.getElementById('district').value = district;
 
 	</script>
 						

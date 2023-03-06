@@ -1008,7 +1008,7 @@
                 district: "Please select a district",
                 firstname: "Enter patient first name",
                 surname: "Enter patient surname",
-                id: "Enter patient id",
+                id: "Enter patient ID",
                 dob: "Please select patient date of birth",
                 gender: "Please select patient gender",
                 sampledate: "Please select the date when the sample was taken",
