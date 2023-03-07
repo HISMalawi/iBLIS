@@ -122,7 +122,7 @@
                                         
 
                                     @if(isset($worksheet->verified_at))
-                                    {{ Form::open(array('url' => 'print/eid_vl_results/'.$worksheet->id, 'class' => 'form-inline', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
+                                    {{ Form::open(array('url' => 'vlprint/eid_vl_results/'.$worksheet->id, 'class' => 'form-inline', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
                                     {{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
                                     {{ Form::button(trans('Print Results'), array('class' => 'btn-success', 
 				        	        'onclick' => "selectPrinter()")) }}
