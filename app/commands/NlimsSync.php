@@ -94,6 +94,8 @@ class NlimsSync extends Command {
 									INNER JOIN test_types ON test_types.id = tests.test_type_id
 									WHERE tests.specimen_id =".$sample_id                      
 								);
+
+								
 				if($tests){
 					foreach($tests as $test){
 						$test_name = $test->test_name;
@@ -112,6 +114,8 @@ class NlimsSync extends Command {
 										INNER JOIN patients ON patients.id = visits.patient_id
 										WHERE tests.id =".$test_id
 										);
+
+										
 				if($vst){
 					foreach($vst as $visit){
 						$p_first_name = explode(" ",$visit->pat_name)[0];
@@ -156,6 +160,8 @@ class NlimsSync extends Command {
 					'national_patient_id' 					=> '',
 					'phone_number' 							=> ''
 				);
+
+				
 			
 				$acc = json_encode($json);
 				$ch = curl_init($url."/api/v1/create_order/");
@@ -168,14 +174,14 @@ class NlimsSync extends Command {
 						'token: '. $token,
 						'Content-Length: ' . strlen($acc))
 				);
-				$res = json_decode(curl_exec($ch));		
-        //var_dump($res != NULL);exit;	
+
+				$res = json_decode(curl_exec($ch));	
 			if ($res != NULL){		
-				if($res->error == false && $res->message == "order created successfuly"){				
+	if($res->error == false && $res->message == "order created successfuly"){				
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced','new order')->where('specimen_id',$sample_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
-					dd($res);
+					//dd($res);
 				}
 			    }
 			}
@@ -258,7 +264,7 @@ class NlimsSync extends Command {
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced',$order->sample_status)->where('specimen_id',$sample_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
-					dd($res);
+					//dd($res);
 				}
 
 			}
@@ -285,7 +291,7 @@ class NlimsSync extends Command {
 		 if($res->message == "re authenticated successfuly")
 		 {	$token = $res->data->token; }
 
-		
+	
 		$res = DB::select("SELECT specimens.id AS sample_id,unsync_orders.specimen_id AS test_id ,specimens.tracking_number, 
 					unsync_orders.data_not_synced AS test_status, unsync_orders.updated_by_name AS updater, 
 					unsync_orders.updated_by_id AS updater_id, unsync_orders.updated_at 
@@ -377,7 +383,7 @@ class NlimsSync extends Command {
 					$unsync = UnsyncOrder::where('sync_status', 'not-synced')->where('data_not_synced',$order->test_status)->where('specimen_id',$order->test_id)->first();
 					$unsync->sync_status = "synced";
 					$unsync->save();
-					dd($res);
+					//dd($res);
 				}
 
 
