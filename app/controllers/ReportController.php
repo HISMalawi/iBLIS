@@ -294,17 +294,16 @@ P1
 	}
 	public function PrintVlPatientReport($worksheet_id){
 		$tests = Test::where('worksheet_id', '=',$worksheet_id)->get();
+		$printer = Input::get("printer_name");
 		foreach($tests as $test){
 			$printUrl = url('')."/vlpatientreport/{$test->id}"; 	
 			$fileName = "vlpatientreport".$worksheet_id."_".$test->id.".pdf";
-			$printer = Input::get("printer_name");
 			$process = new Process("xvfb-run -a wkhtmltopdf --footer-font-size 10 --footer-center 'Page [page]/[toPage]' -s A4 -T 2mm -L 2mm -R 2mm '$printUrl' $fileName");
 			$process->run();
 			$process = new Process("lp -d $printer $fileName");
 			$process->run();
-			$process = new Process("rm $fileName && rm vlpatientreport*.pdf");
-			$process->run();
-			
+			$process = new Process("rm $fileName");
+			$process->run();	
 		}
 		return Redirect::route('worksheet.index');
 	}
