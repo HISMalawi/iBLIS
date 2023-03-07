@@ -2334,7 +2334,7 @@ P1
 	public function extractparasitolgyMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-			"Total malaria microscopy tests done" => "SELECT count(*) AS test_count FROM tests t 
+			"Total malaria microscopy tests done" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2345,7 +2345,7 @@ P1
 								AND m.name IN ('Blood film', 'Results','Malaria Species')
 								AND tr.result NOT IN ('', '0')",
 
-			"Total positive malaria microscopy tests done" => "SELECT count(*) AS test_count FROM tests t 
+			"Total positive malaria microscopy tests done" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2354,10 +2354,10 @@ P1
 								AND ts.name  IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name IN ('Blood film', 'Results','Malaria Species')
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative',  'no malaria palasite seen','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
 								AND tr.result NOT LIKE '%No parasi%'",
 
-			"Malaria microscopy in <= 5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"Malaria microscopy in <= 5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2371,7 +2371,7 @@ P1
 								AND m.name IN ('Blood film', 'Results','Malaria Species') 
 								AND tr.result NOT IN ('', '0') ",
 
-			"Malaria microscopy in > 5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"Malaria microscopy in > 5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2385,7 +2385,7 @@ P1
 								AND m.name IN ('Blood film', 'Results','Malaria Species') 
 								AND tr.result NOT IN ('', '0') ",
 
-			"Positive malaria slides in < 5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"Positive malaria slides in < 5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2397,10 +2397,10 @@ P1
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name IN ('Blood film', 'Results','Malaria Species') 
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative', 'no malaria palasite seen','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
 								AND tr.result NOT LIKE '%No parasi%'",
 
-			"Positive malaria slides in > 5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"Positive malaria slides in > 5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2412,10 +2412,10 @@ P1
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name IN ('Blood film', 'Results','Malaria Species') 
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative', 'no malaria palasite seen','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
 								AND tr.result NOT LIKE '%No parasi%'",
 
-			"Malaria microscopy in unknown age" => "SELECT count(*) AS test_count FROM tests t
+			"Malaria microscopy in unknown age" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2429,7 +2429,7 @@ P1
 								AND m.name IN ('Blood film', 'Results','Malaria Species') 
 								AND tr.result NOT IN ('', '0') ",
 
-			"Positive malaria slides in unknown age" => "SELECT count(*) AS test_count FROM tests t
+			"Positive malaria slides in unknown age" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2441,10 +2441,10 @@ P1
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name IN ('Blood film', 'Results','Malaria Species') 
-								AND tr.result NOT IN ( '', 'NMPS', 'Negative','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
+								AND tr.result NOT IN ( '', 'NMPS', 'Negative', 'no malaria palasite seen','No malaria parasites seen', 'No tryps seen', 'No parasite seen', '0', 'NPS', ' NMPS')
 								AND tr.result NOT LIKE '%No parasi%'",
 
-			"Total MRDTs Done" => "SELECT count(*) AS test_count FROM tests t 
+			"Total MRDTs Done" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2456,7 +2456,7 @@ P1
 								AND tr.result NOT IN ('', '0')",
 
 			
-			"MRDTs Positives" => "SELECT count(*) AS test_count FROM tests t 
+			"MRDTs Positives" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2467,7 +2467,7 @@ P1
 								AND m.name = 'MRDT'
 								AND tr.result ='Positive'",
 
-			"MRDTs in <=  5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"MRDTs in <=  5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2481,7 +2481,7 @@ P1
 								AND m.name = 'MRDT' 
 								AND tr.result NOT IN ('', '0') ",
 
-			"MRDT Positives in < 5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"MRDT Positives in < 5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2495,7 +2495,7 @@ P1
 								AND m.name = 'MRDT' 
 								AND tr.result ='Positive'",
 
-			"MRDTs in >= 5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"MRDTs in >= 5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2509,7 +2509,7 @@ P1
 								AND m.name = 'MRDT' 
 								AND tr.result NOT IN ('', '0') ",
 
-			"MRDT Positives in > 5yrs" => "SELECT count(*) AS test_count FROM tests t
+			"MRDT Positives in > 5yrs" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2523,7 +2523,7 @@ P1
 								AND m.name = 'MRDT' 
 								AND tr.result = 'Positive'",
 
-			"Total invalid MRDTs tests" =>"SELECT count(*) AS test_count FROM tests t 
+			"Total invalid MRDTs tests" =>"SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2534,14 +2534,14 @@ P1
 								AND m.name = 'MRDT'
 								AND tr.result ='Invalid'",
 
-			"Trypanosome tests" => "SELECT count(*) AS test_count FROM tests t 
+			"Trypanosome tests" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE tt.name = 'Trypanosome tests' 
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' ",
 
-			"Positive tests" => "SELECT count(*) AS test_count FROM tests t 
+			"Positive tests" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
@@ -2550,35 +2550,35 @@ P1
 								AND tr.result = 'Positive'
 								AND substr(t.time_created,1,7) = '$period' ",
 
-			"Urine microscopy total" =>"SELECT count(*) AS test_count FROM tests t 
+			"Urine microscopy total" =>"SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE tt.name IN ('Urine Microscopy', 'Urine Microscopy (Paeds)') 
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' ",
 
-			"Schistosome Haematobium" => "SELECT count(*) AS test_count FROM tests t 
+			"Schistosome Haematobium" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE tt.name IN ('Schistosome Haematobiums', 'Schistosome Haematobium') 
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' ",
 
-			"Other urine parasites" => "SELECT count(*) AS test_count FROM tests t 
+			"Other urine parasites" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE tt.name = 'Other urine parasites' 
 								AND ts.name IN ('verified', 'completed')  
 								AND substr(t.time_created,1,7) = '$period'",
 
-			"urine chemistry (count)" => "SELECT count(*) AS test_count FROM tests t 
+			"urine chemistry (count)" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE tt.name IN ('Urine Chemistries', 'Urine chemistry (paeds)') 
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' ",
 
-			"Semen analysis (count)" =>  "SELECT count(*) AS test_count FROM tests t 
+			"Semen analysis (count)" =>  "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE tt.name = 'Semen Analysis'
@@ -2586,7 +2586,7 @@ P1
 								AND substr(t.time_created,1,7) = '$period' ",
 
 
-			"Blood Parasites (count)" =>  "SELECT count(*) AS test_count FROM tests t 
+			"Blood Parasites (count)" =>  "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								WHERE tt.name = 'Blood Parasites Screen'
@@ -3386,12 +3386,12 @@ P1
 		return View::make('reports.malariamicroscopy.index');
 	}
 	public function getMalariaData($start_date, $end_date){
-		$sql_query = "SELECT t.id, v.visit_type, TIMESTAMPDIFF(YEAR, p.dob, CURDATE()) AS age, CASE WHEN p.gender=0 THEN 'M' ELSE 'F' END AS gender,
+		$sql_query = "SELECT t.id, v.visit_type, (substr(t.time_created,1,4) - substr(p.dob,1,4)) AS age, CASE WHEN p.gender=0 THEN 'M' ELSE 'F' END AS gender,
 		v.ward_or_location, t.time_completed, tt.name AS test_name, m.name AS measure_name, tr.result
 		FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id INNER JOIN test_results tr ON t.id = tr.test_id
 		INNER JOIN measures m ON tr.measure_id = m.id INNER JOIN visits v ON v.id = t.visit_id
-		INNER JOIN patients p ON p.id = v.patient_id WHERE tt.name = 'Malaria Screening' AND (DATE(t.time_completed) BETWEEN '$start_date' AND '$end_date')
-		AND tr.result<>'0' AND tr.result<>'' AND (m.name='blood film' OR m.name='mrdt')";
+		INNER JOIN patients p ON p.id = v.patient_id WHERE tt.name IN ('Malaria Screening','Malaria Screening (Paeds)') AND (substr(t.time_created,1,10) BETWEEN '$start_date' AND '$end_date')
+		AND tr.result NOT IN ('', '0') AND m.name IN ('Blood film', 'Results','Malaria Species','MRDT')";
 		$data = DB::select(DB::raw($sql_query));
 		return $data;
 	}
@@ -3408,6 +3408,18 @@ P1
 			$pos_micro_u5 = [];
 			$neg_micro_o5 = [];
 			$neg_micro_u5 = [];
+			
+			$pos_mrdt_uu5 = [];
+			$pos_mrdt_oo5 =[];
+			$neg_mrdt_uu5 = [];
+			$neg_mrdt_oo5 =[];
+			$inv_mrdt_uu5 = [];
+			$inv_mrdt_oo5 =[];
+			$pos_micro_oo5 = [];
+			$pos_micro_uu5 = [];
+			$neg_micro_oo5 = [];
+			$neg_micro_uu5 = [];
+
 			$wards = [];
 
 			$pm_micro_o5 = [];
@@ -3441,13 +3453,16 @@ P1
 			$pfp_mrdt_o5 = [];
 			$nfp_mrdt_o5 = [];
 			
-
+			$result_arr = array('No parasite seen', 'No parasite', 'no parasites seen', 'nps', 'NMPS','no malaria palasite seen', 'no malaria parasite seen');
+			$neg_micro_results = array_map('strtoupper', $result_arr);
+			$m_micro = array_map('strtoupper', array('Blood film', 'Malaria Species'));
 
 			foreach($data as $d){
 				array_push($wards, $d->ward_or_location);
 				if($d->measure_name == 'MRDT' && $d->result == 'Positive'){
 					if($d->age <= 5){
 						array_push($pos_mrdt_u5, $d->ward_or_location);
+						array_push($pos_mrdt_uu5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($pinp_mrdt_u5, $d->id);
 						}
@@ -3459,6 +3474,7 @@ P1
 					}
 					else{
 						array_push($pos_mrdt_o5, $d->ward_or_location);
+						array_push($pos_mrdt_oo5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($pinp_mrdt_o5, $d->id);
 						}
@@ -3475,6 +3491,7 @@ P1
 				elseif($d->measure_name == 'MRDT' && $d->result == 'Negative'){
 					if($d->age <= 5){
 						array_push($neg_mrdt_u5, $d->ward_or_location);
+						array_push($neg_mrdt_uu5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($ninp_mrdt_u5, $d->id);
 						}
@@ -3486,6 +3503,7 @@ P1
 					}
 					else{
 						array_push($neg_mrdt_o5, $d->ward_or_location);
+						array_push($neg_mrdt_oo5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($ninp_mrdt_o5, $d->id);
 						}
@@ -3502,14 +3520,17 @@ P1
 				elseif($d->measure_name == 'MRDT' && $d->result == 'Invalid'){
 					if($d->age <= 5){
 						array_push($inv_mrdt_u5, $d->ward_or_location);
+						array_push($inv_mrdt_uu5, $d->id);
 					}
 					else{
 						array_push($inv_mrdt_o5, $d->ward_or_location);
+						array_push($inv_mrdt_0o5, $d->id);
 					}
 				}
-				elseif(strtoupper($d->measure_name) == strtoupper('Blood film') && strtoupper($d->result) == strtoupper('Malaria Parasites seen')){
+				elseif(in_array(strtoupper($d->measure_name), $m_micro) && !in_array(strtoupper($d->result), $neg_micro_results)){
 					if($d->age <= 5){
 						array_push($pos_micro_u5, $d->ward_or_location);
+						array_push($pos_micro_uu5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($pinp_micro_u5, $d->id);
 						}
@@ -3521,6 +3542,7 @@ P1
 					}
 					else{
 						array_push($pos_micro_o5, $d->ward_or_location);
+						array_push($pos_micro_oo5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($pinp_micro_o5, $d->id);
 						}
@@ -3534,9 +3556,10 @@ P1
 						}
 					}
 				}
-				elseif(strtoupper($d->measure_name) == strtoupper('Blood film') && strtoupper($d->result) == strtoupper('No parasite seen')){
+				elseif(in_array(strtoupper($d->measure_name), $m_micro) && in_array(strtoupper($d->result), $neg_micro_results)){
 					if($d->age <= 5){
 						array_push($neg_micro_u5, $d->ward_or_location);
+						array_push($neg_micro_uu5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($ninp_micro_u5, $d->id);
 						}
@@ -3548,6 +3571,7 @@ P1
 					}
 					else{
 						array_push($neg_micro_o5, $d->ward_or_location);
+						array_push($neg_micro_oo5, $d->id);
 						if(strtoupper($d->visit_type) == 'IN PATIENT'){
 							array_push($ninp_micro_o5, $d->id);
 						}
@@ -3677,22 +3701,22 @@ P1
 			$arr['gList'] = ['male', 'female'];
 			$arr['size'] = count($data);
 			$arr['total_tested'] = [
-				'micro_o5' => count($pos_micro_o5) + count($neg_micro_o5),
-				'micro_u5' => count($pos_micro_u5) + count($neg_micro_u5),
-				'mrdt_o5' => count($pos_mrdt_o5) + count($neg_mrdt_o5),
-				'mrdt_u5' => count($neg_mrdt_u5) + count($neg_mrdt_u5)
+				'micro_o5' => count(array_unique($pos_micro_oo5)) + count(array_unique($neg_micro_oo5)),
+				'micro_u5' => count(array_unique($pos_micro_uu5)) + count(array_unique($neg_micro_uu5)),
+				'mrdt_o5' => count(array_unique($pos_mrdt_oo5)) + count(array_unique($neg_mrdt_oo5)),
+				'mrdt_u5' => count(array_unique($pos_mrdt_uu5)) + count(array_unique($neg_mrdt_uu5)),
 			];
 			$arr['total_positives'] = [
-				'micro_o5' => count($pos_micro_o5),
-				'micro_u5' => count($pos_micro_u5),
-				'mrdt_o5' => count($pos_mrdt_o5),
-				'mrdt_u5' => count($pos_mrdt_u5)
+				'micro_o5' => count(array_unique($pos_micro_oo5)),
+				'micro_u5' => count(array_unique($pos_micro_uu5)),
+				'mrdt_o5' => count(array_unique($pos_mrdt_oo5)),
+				'mrdt_u5' => count(array_unique($pos_mrdt_uu5))
 			];
 			$arr['total_negatives'] = [
-				'micro_u5' => count($neg_micro_u5),
-				'micro_o5' => count($neg_micro_o5),
-				'mrdt_o5' => count($neg_mrdt_o5),
-				'mrdt_u5' => count($neg_mrdt_u5)
+				'micro_u5' => count(array_unique($neg_micro_u5)),
+				'micro_o5' => count(array_unique($neg_micro_o5)),
+				'mrdt_o5' => 	count(array_unique($neg_mrdt_o5)),
+				'mrdt_u5' => 	count(array_unique($neg_mrdt_u5))
 			];
 			$arr['gender'] = [
 				'male' => [
