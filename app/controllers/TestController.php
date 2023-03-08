@@ -463,12 +463,13 @@ P1
 		$specimen->specimen_type_id = SpecimenType::where('name', '=', $sampleType)->first()['id'];
 		$specimen->accepted_by = Auth::user()->id;		
 		$specimen->accession_number = Specimen::assignAccessionNumber();
-	    $specimen->tracking_number = "X".Specimen::assignAccessionNumber();
+	  $specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 		$specimen->priority = $reasonForTest;
 		$specimen->drawn_by_id = $sampleCollectorHTCProviderID;
 		$specimen->drawn_by_name = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
 		$specimen->specimen_status_id = Specimen::COLLECTED;
 		$specimen->date_of_collection = $dateSampleDrawn;
+		$specimen->sending_facility_id = $facilityName;
 		$specimen->save();
 
 		$test = new Test;
