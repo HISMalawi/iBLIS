@@ -401,7 +401,9 @@ P1
 	}
 
 	public function eidSampleEntry(){
-		return View::make('test.eidSampleEntry');
+		$facilities = Facility::where('facility_code','!=','')->get();
+		$districts = Facility::where('district','!=','')->select('district AS name')->distinct()->orderBy('district')->get();
+		return View::make('test.eidSampleEntry', compact('facilities', 'districts'));
 	}
 
 
@@ -415,7 +417,7 @@ P1
 		$patientID =  Input::get('id');
 		$patientGender =  Input::get('gender');
 		$patientNumber =  Input::get('phone');
-		$testType = Input::get('test_type');	
+		$testType = Input::get('test_type');
 		$patRes = Patient::where('patient_number','=',$patientID)->first()['id'];
 		$dateSampleDrawn = Input::get('sampledate')." ". Date('H:i:s');
 
