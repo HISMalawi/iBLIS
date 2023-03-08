@@ -146,7 +146,7 @@
                                         <div class="col-lg-6">
                                             <label for="dob">Date of Birth : &nbsp; </label>
                                             <div class="input-group text-right date" style="margin-left: 200px;">
-                                                <input style="" placeholder="dd/mm/yyyy" type="text" type="search" class="form-control" id="dob" name="dob">
+                                                <input style="" placeholder="yyyy/mm/dd" type="text" type="search" class="form-control" id="dob" name="dob">
                                             </div>
                                             <div style="text-align: left; margin-left: 200px !important;" id="dob-error"></div>
                                         </div>
@@ -202,7 +202,7 @@
                                         <div class="col-lg-6">
                                             <label for="dob">Date Sample Drawn : &nbsp; </label>
                                             <div class="input-group text-right date" id='sample-drawn-date' style="margin-left: 200px;">
-                                                <input type='text' placeholder="dd/mm/yyyy" class="form-control" id="sample_date" name="sampledate" aria-describedby="sample-drawn-addon" />
+                                                <input type='text' placeholder="yyyy/mm/dd" class="form-control" id="sample_date" name="sampledate" aria-describedby="sample-drawn-addon" />
                                             </div>
                                             <div style="text-align: left; margin-left: 200px !important;" id="sample-date-error"></div>
                                         </div>
@@ -299,7 +299,7 @@
                                         <div class="col-lg-6">
                                             <label for="dob">ART Initiation Date : &nbsp; </label>
                                             <div class="input-group text-right date" id='sample-drawn-date' style="margin-left: 200px;">
-                                                <input type='text' placeholder="dd/mm/yyyy" class="form-control" name="artinitdate"
+                                                <input type='text' placeholder="yyyy/mm/dd" class="form-control" name="artinitdate"
                                                 id="artinitdate" aria-describedby="sample-drawn-addon" />
                                             </div>
                                             <div style="text-align: left;" id="art-init-error"></div>
