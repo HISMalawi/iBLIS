@@ -85,7 +85,7 @@
                                             <select  class="form-control required district-select" style="float: none;" name="district" id="district">
                                                 <option value="">-- Select district ---</option>
                                                 @foreach ($districts as $district)
-                                                <option value={{$district->name}}>{{ $district->name }}</option>
+                                                <option value="{{$district->name}}">{{ $district->name }}</option>
                                                 @endforeach
                                             </select>
                                         
@@ -95,10 +95,10 @@
 
                                         <div class="form-group col-lg-6 ec">
                                             <label for="facility">Facility Name : &nbsp;</label>
-                                            <select  class="form-control required facility-select" style="float: none;" name="district" id="district">
+                                            <select  class="form-control required facility-select" style="float: none;" name="facility" id="facility">
                                                 <option value="">-- Select facility ---</option>
                                                 @foreach ($facilities as $facility)
-                                                <option value={{$facility->name}}>{{ $facility->name }}</option>
+                                                <option value="{{$facility->name}}">{{ $facility->name }}</option>
                                                 @endforeach
                                             </select>
                                             <div style="text-align: center; margin-left: -35px;" id="facility-error"></div>
@@ -836,7 +836,6 @@
                 }
             },
             onStepChanged: function(event, currentIndex, priorIndex) {
-
                 if (currentIndex === 0) {
                     // Hide previous button
                     $('.wizard').find(".actions ul > li:nth-child(1) > a").hide();
@@ -1117,7 +1116,7 @@
                         select2.empty();
                         select2.append('<option value="">--- Select a facility ---</option>');
                         $.each(response.data, function (index, value) {
-                            select2.append('<option value="' + value.id + '">' + value.name + '</option>');
+                            select2.append('<option value="' + value.name + '">' + value.name + '</option>');
                         });
                     }
                 });
