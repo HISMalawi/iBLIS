@@ -58,7 +58,7 @@
                                         >
                                         
                                         <span class="glyphicon glyphicon-thumbs-up"></span>
-                                        {{"Worksheet Verified"}}
+                                        {{"Verify Worksheet"}}
                                 </a>                       
                            
                     </div>
