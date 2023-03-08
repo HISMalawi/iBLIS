@@ -107,6 +107,11 @@ Route::group(array("before", "print"), function()
     
     Route::any("/vlprint/eid_vl_results/{id}", array(
         "as" => "reports.patient.vlpatientreport",
+        "uses" => "ReportController@BulkPrintVlPatientReport"
+    ));
+
+    Route::any("/vlprint/eid_vl_results/test/{test_id}", array(
+        "as" => "reports.patient.printvlpatientreport",
         "uses" => "ReportController@PrintVlPatientReport"
     ));
 
