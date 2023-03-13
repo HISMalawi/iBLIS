@@ -43,18 +43,21 @@
                       
 
                                 @if(isset($worksheet->verified_at))
-                                {{ Form::open(array('url' => 'vlprint/eid_vl_results/'.$worksheet->id, 'class' => 'pull-right', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
-                                {{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
-                                {{ Form::button(trans('Print Results'), array('class' => 'btn-sm btn-success', 
-                                'onclick' => "selectPrinter()")) }}
-                                {{Form::close()}}
+                                    {{ Form::open(array('url' => 'vlprint/eid_vl_results/'.$worksheet->id, 'class' => 'pull-right', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
+                                    {{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+                              
+                                    <button type="button" style="margin-top:1.5%;" class="btn btn-sm btn-default" onclick="selectPrinter()"/>
+                                                    <span class="glyphicon glyphicon-print">Print results</span>
+                                                </button>
+                                    {{Form::close()}}
                                 @endif
 
-                                <a class="{{(!$worksheetNumber) ? 'main-view main-view-'.$worksheetNumber : ''}} pull-right btn btn-sm btn-success start-test" 
+                                <a class="pull-right btn btn-sm btn-success start-test" 
                                         href="javascript:void(0)" 
                                         data-test-id="{{$worksheetNumber}}" data-url="{{ URL::route('worksheet.worksheetVerified') }}"
                                         title="{{trans('messages.start-test-title')}}"
                                         onClick="window.location.reload()"
+                                        style="margin-right:1.5%"
                                         >
                                         
                                         <span class="glyphicon glyphicon-thumbs-up"></span>
