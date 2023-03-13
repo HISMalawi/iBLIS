@@ -192,6 +192,25 @@ class TestController extends \BaseController {
 		return $id;
 	}
 
+
+	public function receiveSample(){
+
+		$trackingNumber = Input::get('trackingNumber');
+	
+		if(isset($trackingNumber) && $trackingNumber != ""){
+			$res = $specimen = Sender::recieveSample($trackingNumber);	
+			if($res[0] == false){
+				//Sender::acknowledgeRecipientNlims($trackingNumber);
+				Session::set('message', "Sample Received Successful");	
+			}else{
+				Session::set('message', $res[1]);	
+			}
+		}
+		return View::make('test.receiveSample');
+		
+	}
+
+
 	/**
 	 * Display a form for creating a new Test.
 	 *
@@ -539,6 +558,7 @@ P1
 	}
 
 	public function printTrackingNumber($sid){
+		
 		$specimen = Specimen::find($sid);
 		$test_types = $specimen->testTypesShortNamed();
 		$test = $specimen->test;

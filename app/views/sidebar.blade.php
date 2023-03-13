@@ -80,9 +80,15 @@
 		@endif
 		@if (TestCategory::find(Session::get('location_id'))->name == "DNA/PCR")
 		<li>
+			<div class="main-menu {{$active[1]}}">
+				<a href="{{ URL::route('test.receiveSample')}}">
+					<span class="glyphicon glyphicon-download-alt"></span> {{ "Sample Receiving"}}</a>
+			</div>
+		</li>
+		<li>
 			<div class="main-menu {{$active[2]}}">
 				<a>
-					<span class="glyphicon glyphicon-edit"></span> {{"Sample Entry"}}</a>
+					<span class="glyphicon glyphicon-edit"></span> {{"Sample Registration"}}</a>
 			</div>
 			<div class="sub-menu {{$active[2]}}">
 				<ul class="sub-menu-items">
@@ -118,7 +124,12 @@
 			</div>
 		</li>
 
-		
+		<li>
+			<div class="main-menu {{$active[9]}}">
+				<a href="{{ URL::route('worksheet.rerun')}}">
+					<span class="glyphicon glyphicon-download-alt"></span> {{"Re-Runs"}}</a>
+			</div>
+		</li>
 
 		@if(Entrust::can('manage_lab_configurations'))
 		<li>

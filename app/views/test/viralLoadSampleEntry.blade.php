@@ -8,7 +8,7 @@
     <div>
         <ol class="breadcrumb">
           <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
-          <li class="active">{{ "Sample Entry" }}</li>
+          <li class="active">{{ "Sample Registration" }}</li>
           <li class="active">{{ "Viral Load" }}</li>
         </ol>
     </div>

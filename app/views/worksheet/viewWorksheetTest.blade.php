@@ -84,8 +84,8 @@
                         <th class="col-md-1">{{"Date Created"}}</th>
                         <th class="col-md-1">{{"Sending Facility"}}</th>
                         <th class="col-md-1">{{"Test Status"}}</th>
-                        <th class="col-md-2">{{"Test Result"}}</th>
-                        <th class="col-md-3">{{trans('messages.actions')}}</th>
+                        <th class="col-md-1">{{"Test Result"}}</th>
+                        <th class="col-md-4">{{trans('messages.actions')}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,7 +114,8 @@
                             <td> {{$test->result}}</td>
                             <td>
                                
-                    
+                            @if($test->result != "collect new sample")
+                             
                                 <a class="{{(!$test->tstID) ? 'main-view main-view-'.$test->tstID : ''}}  btn btn-sm btn-danger start-test" 
                                         href="javascript:void(0)" 
                                         data-test-id="{{$test->tstID}}" data-url="{{ URL::route('worksheet.rerunTest') }}"
@@ -124,7 +125,17 @@
                                         <span class="glyphicon glyphicon-thumbs-down"></span>
                                         {{'re-run test'}}
                                 </a>
-
+                            @endif
+                            @if($test->result != "collect new sample")
+                               
+                                <a class="btn btn-sm btn-warning" id="reject-{{1}}-link"
+                                    href="{{URL::route('worksheet.collectNewSample', array($test->specimenID))}}"
+                                    title="{{trans('messages.reject-title')}}">
+                                    <span class="glyphicon glyphicon-thumbs-up"></span>
+                                    {{'collect new sample'}}
+                                </a>
+                            @endif
+                                
 
                             </td>
                         </tr>

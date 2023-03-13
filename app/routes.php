@@ -143,7 +143,26 @@ Route::group(array("before" => "auth"), function()
         "as"   => "worksheet.index",
         "uses" => "WorksheetController@index"
     ));
+
+    Route::get("/worksheet/reruns", array(
+        "as"   => "worksheet.rerun",
+        "uses" => "WorksheetController@rerun"
+    ));
+
+    Route::get("/worksheet/{id}/collect_new_sample", array(
+        "as"   => "worksheet.collectNewSample",
+        "uses" => "WorksheetController@collectNewSample"
+    ));
+
+    Route::post("/worksheet/collect_new_sample", array(
+        "as"   => "worksheet.collectNewSampleAction",
+        "uses" => "WorksheetController@collectNewSampleAction"
+    ));
    
+    Route::get("/sample/receiving", array(
+        "as"   => "test.receiveSample",
+        "uses" => "TestController@receiveSample"
+    ));
 
     Route::get("/worksheet/{id}/tests", array(
         "as"   => "worksheet.viewWorksheetTests",

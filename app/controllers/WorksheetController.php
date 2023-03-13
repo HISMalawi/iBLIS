@@ -39,6 +39,61 @@ class WorksheetController extends \BaseController {
 		return $rs;
 	}
 
+	public function collectNewSample($specimenID){
+		$specimen = Specimen::find($specimenID);
+		$collectionReason = RejectionReason::all();
+		return View::make('worksheet.collectNewSample')->with('specimen', $specimen)
+						->with('collectionReason', $collectionReason);
+	}
+
+	public function rerun(){
+		$tests = DB::SELECT("SELECT patients_on_art.arv_number,patients_on_art.art_initiation_date,
+						patients_on_art.art_current_regimen,patients.name,patients.gender,
+						tests.time_created,test_types.name AS test_type,
+						specimen_types.name AS specimen_type,
+						specimens.tracking_number AS trackingNumber,
+						specimens.id AS specimenID,
+						specimens.sending_facility_id AS sending_facility,
+						tests.test_status_id AS testStatus,
+						tests.id AS tstID
+						FROM tests 
+						INNER JOIN specimens ON specimens.id = tests.specimen_id 
+						INNER JOIN visits ON visits.id = tests.visit_id 
+						INNER JOIN patients ON patients.id = visits.patient_id 
+						INNER JOIN patients_on_art ON patients_on_art.specimen_id = specimens.id 
+						INNER JOIN specimen_types ON specimen_types.id = specimens.specimen_type_id
+						INNER JOIN test_types ON test_types.id = tests.test_type_id 
+						WHERE tests.test_status_id ='9'");
+		
+		return View::make('worksheet.rerun')
+				->with('tests',$tests);
+	}
+
+	public function collectNewSampleAction(){
+		$testId = Input::get('testId');
+		$measureId = Input::get('testType');	
+
+		$res = DB::SELECT("SELECT id FROM test_results WHERE measure_id='$measureId' AND test_id='$testId'");
+		if(isset($res)){
+			$tst = TestResult::find($res[0]->id);
+			$tst->result = "collect new sample";
+			$tst->save();
+		}else{
+			$re = new TestResult();
+			$re->test_id = $testId;
+			$re->result = "collect new sample";
+			$re->device_name = "";
+			$re->measure_id = $measureId;
+			$re->save();
+		}
+
+		
+
+		$url = Session::get('SOURCE_URL');
+			return Redirect::to($url)->with('message', 'The Specimen was updated successfuly')
+						->with('activeTest', array(""));
+	}
+
 	public function viewWorksheetTests($worksheetId=0){
 	
 		$tests = DB::SELECT("SELECT patients_on_art.arv_number,patients_on_art.art_initiation_date,
@@ -46,6 +101,7 @@ class WorksheetController extends \BaseController {
 						tests.time_created,test_types.name AS test_type,
 						specimen_types.name AS specimen_type,
 						specimens.tracking_number AS trackingNumber,
+						specimens.id AS specimenID,
 						specimens.sending_facility_id AS sending_facility,
 						tests.test_status_id AS testStatus,
 						tests.id AS tstID,
