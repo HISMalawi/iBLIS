@@ -55,7 +55,7 @@
                     </div>
                 </div>
             {{ Form::close() }}
-            <!--Wizard-->
+           
             <!--  form id="wizard7" class="wizard needs-validation" data-style="1" novalidate action="test.saveNewTest" method="post" -->
             {{ Form::open(array('route' => 'test.createOrderRetrospective',  'method' => 'POST', 'id' => 'wizard7', 'class' => "wizard needs-validation", 'data-style'=>"1",'novalidate')) }}
 
