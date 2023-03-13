@@ -2,6 +2,9 @@
 .ec {
   margin-bottom: 0px !important;
 }
+.custom-padding{
+  padding: 0.6rem!important;
+}
 .cus-col {
   display:flex;
   flex-direction: row;
@@ -51,6 +54,16 @@
 
 .wizard > .steps ul li:last-child { margin-right: 0; }
 
+.wizard > .steps > ul > li {
+  display: none;
+}
+
+.previous-btn {
+  position: relative;
+  top: 5px;
+  padding: 8px;
+}
+
 .wizard > .steps ul li > a { background: #fbfbfb; color: #1e2022; border-radius: 0.42rem; display: inline-block; padding: 1rem; }
 
 .wizard > .steps ul li > a .number { margin-right: 4px; font-size: 1.429rem; }
@@ -71,7 +84,7 @@
 
 .wizard .content > .body.current { position: relative; }
 
-.wizard .actions { border-top: 1px solid #e4e6ef; padding-top: 20px; }
+.wizard .actions { position: fixed; width: 90%; bottom: 0px; padding-right: 150px; background-color: white; border-top: 1px solid #e4e6ef; padding-top: 10px; }
 
 .wizard .actions > ul { display: inline-block; float: right; }
 

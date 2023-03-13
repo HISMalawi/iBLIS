@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/jquery-steps/jquery.steps.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/plugins.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('plugins/select2/css/select2.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.css') }}" />
 
     <div>
         <ol class="breadcrumb">
@@ -14,13 +15,24 @@
     </div>
     <div class="container-fluid">
         <div class="row no-gutters">					
-            <div class="col-md-offset-2 col-md-8">
-    <div class="card">
+            <div class="">
+    <div>
         <div class="card-body">
 
         @if (Session::has('message'))
             <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
+            @if(Input::get('printTracking') != null)
+                <div class="">
+                    <a class="btn btn-sm btn-success"
+                        href="{{URL::route('test.print_tracking_number', array(Input::get('printTracking')))}}"
+                        data-toggle="modal" >
+                        <span class="glyphicon glyphicon-print"></span>
+                        Print Tracking Number
+                    </a>
+                </div>
+            @endif
         @endif
+
 
             {{ Form::open(array('route' => array('test.viralLoadSampleEntry'), 'method' => 'GET', 'id' => 'barcodeForm', 'class' => 'hidden')) }}
                 <div class="row">
@@ -31,6 +43,7 @@
                                     <div class="form-group col-lg-6 ec">
                                         {{-- <label class="mt-2" for="small-barcode-one">Scan Barcode : &nbsp; </label> --}}
                                         <input type="search" class=" form-control bar-item barcode" name="search" id="small-barcode">
+                                        
                                     </div>
                                 </div>
                                 
@@ -52,14 +65,12 @@
                 <div class="wizard-content">
 
                     <div class="row">
-                        <div class="row">
-                            <div class="col-md-3 col-md-offset-9 mb-5">
-                              <div class="input-group required text-right">
-                                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
-                                <input class="form-control bar-item barcode_" type="text" type="search" class="form-control" placeholder="Scan tracking number" name="search" id="smallBarcode2" aria-describedby="basic-addon1">
-                              </div>
+                        <div class="col-md-3 col-md-offset-9 mb-5">
+                            <div class="input-group text-right">
+                              <span class="input-group-addon"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
+                              <input class="form-control bar-item barcode_" type="text" type="search" class="form-control" placeholder="Scan tracking number" name="barcode" id="barcode" aria-describedby="basic-addon1">
                             </div>
-                        </div>
+                          </div>
                         <div class="form-group col-lg-12">
                             <div class="card">
                                 <div class="panel panel-default panel-info">
@@ -69,23 +80,28 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-
                                         <div class="form-group col-lg-6 ec">
                                             <label for="district">District : &nbsp; </label>
-                                            <select  class="form-control required" name="district" id="district">
-                                                <option value="" selected="selected">-- Select / Search --</option>
-                                                <option value="Lilongwe">Lilongwe</option>
+                                            <select  class="form-control required district-select" style="float: none;" name="district" id="district">
+                                                <option value="">-- Select district ---</option>
+                                                @foreach ($districts as $district)
+                                                <option value="{{$district->name}}">{{ $district->name }}</option>
+                                                @endforeach
                                             </select>
                                         
+                                            <div style="text-align: center; margin-left: -35px;" id="district-error"></div>
 
                                         </div>
 
                                         <div class="form-group col-lg-6 ec">
                                             <label for="facility">Facility Name : &nbsp;</label>
-                                            <select class="form-control required" name="facility" id="facility">
-                                                <option value="" selected="selected">-- Select / Search --</option>
-                                                <option value="KCH" >KCH</option>
+                                            <select  class="form-control required facility-select" style="float: none;" name="facility" id="facility">
+                                                <option value="">-- Select facility ---</option>
+                                                @foreach ($facilities as $facility)
+                                                <option value="{{$facility->name}}">{{ $facility->name }}</option>
+                                                @endforeach
                                             </select>
+                                            <div style="text-align: center; margin-left: -35px;" id="facility-error"></div>
                                         </div>
                                     </div>
 
@@ -107,42 +123,48 @@
 
                                         <div class="form-group col-lg-6">
                                             <label for="surname">Patient Surname : &nbsp; </label>
-                                            <input type="text" class="form-control required" name="surname" id="p_surname">
+                                            <input type="text" style="float: none;" class="form-control" name="surname" id="p_surname">
+                                            <div style="text-align: center; margin-left: -35px;" id="surname-error"></div>
                                         </div>
 
                                         <div class="form-group col-lg-6">
                                             <label for="firstname">Patient First Name : &nbsp; </label>
-                                            <input type="text" class="form-control required" name="firstname" id="p_first_name">
+                                            <input type="text" style="float: none;" class="form-control" name="firstname" id="p_first_name">
+                                            <div style="text-align: center; margin-left: -35px;" id="firstname-error"></div>
                                         </div>
                                     </div>
 
                                     <div class="row">
 
-                                        <div class="form-group required col-lg-6"> 
+                                        <div class="form-group col-lg-6"> 
                                           
                                             <label for="id">Patient ID : &nbsp; </label>                                                    
-                                            <input style="" type="text" class="form-control required" name="id" id="p_id">
-                                                
+                                            <input style="float: none;"  type="text" class="form-control" name="id" id="p_id">
+                                            <div style="text-align: center; margin-left: -80px !important;" id="id-error"></div>
                                         </div>
 
-                                        <div class="form-group col-lg-6">
+                                        <div class="col-lg-6">
                                             <label for="dob">Date of Birth : &nbsp; </label>
-                                            <input type="date" class="form-control required" name="dob" id="p_dob">
+                                            <div class="input-group text-right date" style="margin-left: 200px;">
+                                                <input style="" placeholder="yyyy/mm/dd" type="text" type="search" class="form-control" id="dob" name="dob">
+                                            </div>
+                                            <div style="text-align: left; margin-left: 200px !important;" id="dob-error"></div>
                                         </div>
+
                                     </div>
 
                                     <fieldset class="row mb-4">
                                         <label class="d-block mb-3" for="dob">Gender / Preg / Bf (tick one) :</label>
                                             
                                             <div class="form-check d-block">
-                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                <input class="form-check-input mx-3" type="radio" name="gender"
                                                     id="gridRadios1" value="Male">
                                                 <label class="form-check-label" for="gridRadios1">
                                                     Male
                                                 </label>
                                             </div>
                                             <div class="form-check d-block">
-                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                <input class="form-check-input mx-3" type="radio" name="gender"
                                                     id="gridRadios2" value="Female Non-Preg./ Bf.">
                                                 <label class="form-check-label" for="gridRadios2">
                                                     Female Non-Preg./ Bf.
@@ -150,7 +172,7 @@
                                             </div>
 
                                             <div class="form-check d-block">
-                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                <input class="form-check-input mx-3" type="radio" name="gender"
                                                     id="gridRadios3" value="Female Pregnant">
                                                 <label class="form-check-label" for="gridRadios3">
                                                     Female Pregnant
@@ -158,43 +180,40 @@
                                             </div>
 
                                             <div class="form-check d-block">
-                                                <input class="form-check-input required mx-3" type="radio" name="gender"
+                                                <input class="form-check-input mx-3" type="radio" name="gender"
                                                     id="gridRadios4" value="Female Breastfeeding">
                                                 <label class="form-check-label" for="gridRadios4">
                                                     Female Breastfeeding
                                                 </label>
                                             </div>
 
+                                            <div style="text-align: left; margin-left: 0px;" id="gender-error"></div>
                                     </fieldset>
+                                    
                                     <?php //var_dump(Input::get('printTracking'));exit; ?>
                                     <div class="row">
 
                                         <div class="form-group col-lg-6">
                                             <label for="phone">Patient/Guardian Phone Number : &nbsp; </label>
-                                            <input type="text" class="form-control required" name="phone" id="p_phone">
+                                            <input type="text" minlength="10" style="float: none;" class="form-control" name="phone" id="p_phone">
+                                            <div id="phone-error"></div>
                                         </div>
 
-                                        <div class="form-group col-lg-6">
-                                            <label for="sample-date">Date Sample Drawn : &nbsp; </label>
-                                            <input type="date" class="form-control required" name="sample-date"
-                                                id="sample_date">
+                                        <div class="col-lg-6">
+                                            <label for="dob">Date Sample Drawn : &nbsp; </label>
+                                            <div class="input-group text-right date" id='sample-drawn-date' style="margin-left: 200px;">
+                                                <input type='text' placeholder="yyyy/mm/dd" class="form-control" id="sample_date" name="sampledate" aria-describedby="sample-drawn-addon" />
+                                            </div>
+                                            <div style="text-align: left; margin-left: 200px !important;" id="sample-date-error"></div>
                                         </div>
+
                                     </div>
 
                                 </div>
                             </div>
                         </div>
                         <div>    
-                        @if(Input::get('printTracking') != null)
-						<div class="">
-							<a class="btn btn-sm btn-success"
-							   href="{{URL::route('test.print_tracking_number', array(Input::get('printTracking')))}}"
-							   data-toggle="modal" >
-								<span class="glyphicon glyphicon-print"></span>
-								Print Tracking Number
-							</a>
-						</div>
-                        @endif
+                        
                     </div> 
                     </div>
 
@@ -249,6 +268,8 @@
                                             </label>
                                         </div>
 
+                                        <div id="reason-error"></div>
+
                                     </fieldset>
 
                                 </div>
@@ -275,19 +296,22 @@
                                 <div class="card-body">
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
-                                            <label for="art-init-date">ART Initiation Date : &nbsp; </label>
-                                            <input type="date" class="form-control required" name="art-init-date"
-                                                id="art-init-date">
+                                        <div class="col-lg-6">
+                                            <label for="dob">ART Initiation Date : &nbsp; </label>
+                                            <div class="input-group text-right date" id='sample-drawn-date' style="margin-left: 200px;">
+                                                <input type='text' placeholder="yyyy/mm/dd" class="form-control" name="artinitdate"
+                                                id="artinitdate" aria-describedby="sample-drawn-addon" />
+                                            </div>
+                                            <div style="text-align: left;" id="art-init-error"></div>
                                         </div>
 
-                                        <div class="form-group required col-lg-6">
+                                        <div class="form-group  col-lg-6">
                                             <fieldset class="row mb-4">
                                                 <label class="d-block mb-3" for="dob">Sample Type : &nbsp; </label>
 
                                                 <div class="form-check d-block">
                                                     <input class="form-check-input mx-3" type="radio"
-                                                        name="sample-type" id="gridRadios9"
+                                                        name="sampletype" id="gridRadios9"
                                                         value="DBS (using capillary tube)">
                                                     <label class="form-check-label" for="gridRadios9">
                                                         DBS (using capillary tube)
@@ -295,13 +319,14 @@
                                                 </div>
                                                 <div class="form-check d-block">
                                                     <input class="form-check-input mx-3" type="radio"
-                                                        name="sample-type" id="gridRadios10" value="Plasma">
+                                                        name="sampletype" id="gridRadios10" value="Plasma">
                                                     <label class="form-check-label" for="gridRadios10">
                                                         Plasma
                                                     </label>
                                                 </div>
 
                                             </fieldset>
+                                            <div style="text-align: left;" id="sample-type-error"></div>
                                         </div>
                                     </div>
 
@@ -476,6 +501,8 @@
 
 
                                             </fieldset>
+
+                                            <div style="text-align: left;" id="regimen-error"></div>
                                         </div>
 
                                     </div>
@@ -506,30 +533,44 @@
                                 <div class="card-body">
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
-                                            <label for="surname">Surname : &nbsp; </label>
-                                            <input type="text" class="form-control required" name="pcs-surname"
-                                                id="pcs-surname">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="surname">Surname : &nbsp; </label>
+                                                <div>
+                                                    <input style="float: none;" type="text" class="form-control" name="pcssurname" id="pcs-surname">
+                                                    <div style="text-align: left;" id="pcssurname-error"></div>
+                                                </div>
+                                            </div>
+                                            
                                         </div>
 
-                                        <div class="form-group col-lg-6">
-                                            <label for="firstname">First Name : &nbsp; </label>
-                                            <input type="text" class="form-control required" name="pcs-firstname"
-                                                id="pcs-firstname">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="firstname">First Name : &nbsp; </label>
+                                                <input type="text" class="form-control" name="pcsfirstname"
+                                                    id="pcs-firstname">
+                                            </div>
+                                            <div style="text-align: left;" id="pcsfirstname-error"></div>
                                         </div>
                                     </div>
 
                                     <div class="row">
 
-                                        <div class="form-group col-lg-6">
-                                            <label for="phone">Phone Number : &nbsp; </label>
-                                            <input type="text" class="form-control required" name="pcs-phone" id="pcs-phone">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="phone">Phone Number : &nbsp; </label>
+                                                <input type="text" minlength="10" class="form-control" name="pcsphone" id="pcs-phone">
+                                            </div>
+                                            <div style="text-align: left;" id="pcsphone-error"></div>
                                         </div>
 
-                                        <div class="form-group col-lg-6">
-                                            <label for="id">HTC Provider ID : &nbsp; </label>
-                                            <input type="text" class="form-control required" name="htc-provider-id"
-                                                id="htc-provider-id">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="id">HTC Provider ID : &nbsp; </label>
+                                                <input type="text" class="form-control" name="htcproviderid"
+                                                    id="htc-provider-id">
+                                            </div>
+                                            <div style="text-align: left;" id="htcproviderid-error"></div>
                                         </div>
                                     </div>
 
@@ -546,234 +587,224 @@
                 <!-- Confirmation section -->
                 <h3>Confirmation</h3>
                 <div class="wizard-content">
-                    
-                  
-                    <div class="text-right">
-                        <div class="input-group" style="width: 300px; justify-self:end;">
-                            
-                        </div>
-                    </div>
-    
-                        <div class="panel-body">
-                            <div class="panel-heading alert bg-secondary">
-                                <h3 class="panel-title"><strong>CONFIRMATION</strong></h3>
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-9 mb-3">
+                                <div class="input-group required text-right">
+                                  <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></span>
+                                  <input class="form-control bar-item barcode_" type="text" type="search" class="form-control" placeholder="Scan barcode" name="small-barcode" id="small-barcode" aria-describedby="basic-addon1">
+                                </div>
                               </div>
                         </div>
-
-                        <div class="wizard-content mt-3">
-                            <div class="panel panel-default panel-info">
-                                <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 1: Health Facility Information</strong></h3>
+                        <div class="mt-1">
+                            <div class="panel panel-info">
+                                
+                                <div class="panel panel-heading">
+                                  <strong>Confirmation: </strong>Please make sure you have entered the correct information as they appear on the EID & Viral Load Requisition Form
                                 </div>
 
-                                <div class="row ma-5 m-5">
+                                <!-- Section 2 confirmation -->
 
-                                    <div class="form-group col-lg-6 ec">
-                                        <label for="district">District : &nbsp; </label>
-                                        <input disabled type="text" class="form-control required" id="confi-district-name">
+                                <div style="margin-top: -20px;">
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                        <strong>Section 1: Health Facility Information</strong>
                                     </div>
-
-                                    <div class="form-group col-lg-6 ec">
-                                        <label for="facility">Facility Name : &nbsp;</label>
-                                        <input disabled type="text" class="form-control required" id="confi-facility-name">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel panel-default panel-info">
-                                <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 2: Patient Information </strong></h3>
-                                </div>
-                                {{-- <div>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><label for="surname">Patient Surname : &nbsp; </label>
-                                            <p id="confi-patient-surname">--</p>
-                                        </li>
-                                        <li class="list-group-item"><label for="firstname">Patient First Name : &nbsp;
-                                            </label>
-                                            <p id="confi-patient-firstname">--</p>
-                                        </li>
-                                        <li class="list-group-item"><label for="id">Patient ID : &nbsp; </label>
-                                            <p id="confi-patient-id">--</p>
-                                        </li>
-                                        <li class="list-group-item"><label for="dob">Date of Birth : &nbsp; </label>
-                                            <p id="confi-patient-dob">--</p>
-                                        </li>
-                                        <li class="list-group-item"><label for="id">Gender / Preg / Bf : &nbsp; </label>
-                                            <p id="confi-patient-gender">--</p>
-                                        </li>
-                                        <li class="list-group-item"><label for="id">Date Sample Drawn : &nbsp; </label>
-                                            <p id="confi-sample-date">--</p>
-                                        </li>
-                                        <li class="list-group-item"><label for="id">Patient/Guardian Phone Number :
-                                                &nbsp; </label>
-                                            <p id="confi-patient-phone">--</p>
-                                        </li>
     
-                                    </ul>
-                                </div> --}}
-                                <div class="card-body">
-                                    <div class="row ma-5 m-5">
-
-                                        <div class="form-group col-lg-6">
-                                            <label for="surname">Patient Surname : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" id="confi-patient-surname">
-                                        </div>
-
-                                        <div class="form-group col-lg-6">
-                                            <label for="firstname">Patient First Name : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" id="confi-patient-firstname">
-                                        </div>
-                                    </div>
-
-                                    <div class="row ma-5 m-5">
-
-                                        <div class="form-group required col-lg-6">
-                                            <div class="row">
-                                                <label for="id">Patient ID : &nbsp; </label>
-                                                <div class="col-md-2" style="margin-left: -1px !important; padding: 0px !important;">
-                                                    <input type="text" disabled style="width: 50px;" class="form-control required" name="side_code" id="confi-side-code">
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-md-4 custom-padding" style="margin-left: 20px !important; margin-bottom: 0px !important;">
+                                                <div class="mt-1">
+                                                    <label for="surname">District : &nbsp; </label>
+                                                    <p id="confi-district-name">--</p>
                                                 </div>
-                                                <div class="col-md-2 text-center" style="width: 0px;padding:0px;margin:0px;">
-                                                    <p class="text-center pt-2">-</p>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <input disabled style="width: 175px;" type="text" class="form-control required" name="id" id="confi-patient-id">
+                                            </div>
+                                            <div class="col-md-4 custom-padding">
+                                                <div class="mt-1">
+                                                    <label for="firstname">Facility : &nbsp;
+                                                    </label>
+                                                    <p id="confi-facility-name">--</p>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="form-group col-lg-6">
-                                            <label for="dob">Date of Birth : &nbsp; </label>
-                                            <input disabled type="text" class="form-control required" name="dob" id="confi-patient-dob">
-                                        </div>
-
-                                        <div class="form-group col-lg-6 mt-3">
-                                            <label for="dob">Gender: </label>
-                                            <input disabled type="text" class="form-control required" name="dob" id="confi-patient-gender">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row ma-5 m-5">
-
-                                        <div class="form-group col-lg-6">
-                                            <label for="confi-patient-phone">Patient/Guardian Phone Number : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" name="phone" id="confi-patient-phone">
-                                        </div>
-
-                                        <div class="form-group col-lg-6">
-                                            <label for="confi-sample-date">Date Sample Drawn : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" name="sample-date"
-                                                id="confi-sample-date">
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="panel panel-default panel-info pb-5">
-                                <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 3: Test Type</strong></h3>
-                                </div>
-                                <div class="row ms-5 mt-3">
-                                    <div class="form-group col-lg-6">
-                                        <label for="confi-test-reason">Reason : &nbsp; </label>
-                                        <input type="text" disabled class="form-control required" id="confi-test-reason">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="panel panel-default panel-info">
-                                <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 4: Patient and Sample Details for Viral Load ONLY</strong></h3>
-                                </div>
-                                <div class="row ma-5 m-5">
 
-                                    <div class="form-group col-lg-6">
-                                        <label for="confi-art-init-date">ART Initiation Date : &nbsp; </label>
-                                        <input type="text" disabled class="form-control required" id="confi-art-init-date">
-                                    </div>
+                                <!-- Section 2 confirmation -->
 
-                                    <div class="form-group col-lg-6">
-                                        <label for="confi-sample-type">Sample Type : &nbsp; </label>
-                                        <input type="text" disabled class="form-control required" id="confi-sample-type">
-                                    </div>
-
-                                    <div class="form-group col-lg-6">
-                                        <label for="confi-curr-art-regimen">Current ART Regimen : &nbsp; </label>
-                                        <input type="text" disabled class="form-control required" id="confi-curr-art-regimen">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel panel-default panel-info">
-                                <div class="panel-heading">
-                                  <h3 class="panel-title"><strong>Section 5: Details of Person Collecting Sample</strong></h3>
-                                </div>
                                 <div>
-                                    <div class="row ma-5 m-5">
-
-                                        <div class="form-group col-lg-6">
-                                            <label for="confi-pcs-surname">Surname : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" id="confi-pcs-surname">
-                                        </div>
-    
-                                        <div class="form-group col-lg-6">
-                                            <label for="confi-pcs-firstname">First Name : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" id="confi-pcs-firstname">
-                                        </div>
-    
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                        <strong>Section 2: Patient Information</strong>
                                     </div>
-
-                                    <div class="row ma-5 m-5">
-
-                                        <div class="form-group col-lg-6">
-                                            <label for="confi-pcs-phone">Phone Number : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" id="confi-pcs-phone">
-                                        </div>
     
-                                        <div class="form-group col-lg-6">
-                                            <label for="confi-htc-provider-id">HTC Provider ID : &nbsp; </label>
-                                            <input type="text" disabled class="form-control required" id="confi-htc-provider-id">
+                                    <div>
+                                        <div class="row " style="padding: 20px;">
+                                            <div class="col-md-4">
+                                                <label for="surname">Patient Surname : &nbsp; </label>
+                                                <p id="confi-patient-surname">--</p>
+                                            </div>
+
+                                            <div class="col-md-4 pb-3">
+                                                <label for="firstname">Patient First Name : &nbsp;
+                                                </label>
+                                                <p id="confi-patient-firstname">--</p>
+                                            </div>
+
+                                            <div class="col-md-4" >
+                                                <label for="id">Patient ID : &nbsp; </label>
+                                                <p id="confi-patient-id">--</p>
+                                            </div>
+
+                                            <div class="col-md-4 pt-3">
+                                                <label for="dob">Date of Birth : &nbsp; </label>
+                                                <p id="confi-patient-dob">--</p>
+                                            </div>
+
+                                            <div class="col-md-4 pt-3" >
+                                                <label for="id">Gender / Preg / Bf : &nbsp; </label>
+                                                <p id="confi-patient-gender">--</p>
+                                            </div>
+
+                                            <div class="col-md-4 pt-3">
+                                                <label for="id">Date Sample Drawn : &nbsp; </label>
+                                                <p id="confi-sample-date">--</p>
+                                            </div>
+                                            
+                                            <div class="col-md-4 pt-3" >
+                                                <label for="id">Patient/Guardian Phone Number : &nbsp; </label>
+                                                <p id="confi-patient-phone">--</p>
+                                            </div>
+                                            
+        
                                         </div>
-    
                                     </div>
                                 </div>
+
+                                <!-- Section 3 confirmation -->
+
+                                <div>
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                        <strong>Section 3: Test Type</strong>
+                                    </div>
+    
+                                    <div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><label for="surname">Reason : &nbsp; </label>
+                                                <p id="confi-test-reason">--</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Section 4 confirmation -->
+
+                                <div>
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                        <strong>Section 4: Patient and Sample Details for Viral Load ONLY</strong>
+                                    </div>
+    
+                                    <div class="row" style="padding-left: 20px;">
+                                        <div class="col-md-4 custom-padding" >
+                                            <div class="mt-1"><label for="id">ART Initiation Date : &nbsp; </label>
+                                                <p id="confi-art-init-date">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 custom-padding" >
+                                            <div class="mt-1"><label for="id">Sample Type : &nbsp; </label>
+                                                <p id="confi-sample-type">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 custom-padding" >
+                                            <div class="mt-1"><label for="id">Current ART Regimen : &nbsp; </label>
+                                                <p id="confi-curr-art-regimen">--</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 5 confirmation -->
+                                <div>
+                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                        <strong>Section 5: Details of Person Collecting Sample</strong>
+                                    </div>
+
+                                    <div class="row" style="padding-left: 20px;">
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">Surname : &nbsp; </label>
+                                                <p id="confi-pcs-surname">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">First name : &nbsp; </label>
+                                                <p id="confi-pcs-firstname">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">Phone number : &nbsp; </label>
+                                                <p id="confi-pcs-phone">--</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 custom-padding" >
+                                            <div class="mt-1"><label for="id">HTC Provider ID : &nbsp; </label>
+                                                <p id="confi-htc-provider-id">--</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <input type="text" hidden  id="action_checker" name="checker">
                                 <input type="text" hidden  id="action_checker" name="test_type" value="Viral Load">
+                                
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!--end: Step 5-->
-            
-			{{-- {{ Form::close() }} --}}
-            <!-- /form -->
-            <!--end:Wizard-->
-            <style>
-                .wizard > .steps > ul > li {
-                    display: none;
-                }
-                .wizard > .actions {
-                    width: 90%;
-                    padding-right: 150px;
-                    background-color: white; /* position the button absolutely */
-                    bottom: 0px; /* position the button 10 pixels from the bottom of the container */
-                }
-            </style>
+                <?php
+                  Session::flash('message', null);  
+                ?>
+            </div>
         </div>
-    </div>
-</div> </div></div>
+    </div> 
+    </div></div>
     <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/validate/validate.min.js') }}"></script>
     <script src="{{ URL::asset('plugins/select2/js/select2.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrap-datepicker.js') }} "></script>
     <script>
 
         $(document).ready(function() {
-            $('#smallBarcode2').keyup(function() {
+
+            $('#dob').datepicker({
+                format: 'yyyy/mm/dd',
+                endDate: new Date(),
+                autoclose: true,
+                todayHighlight: true
+            }).on('change', function(e) {
+                $('#sample_date').datepicker('setStartDate', $('#dob').val());
+                $('#artinitdate').datepicker('setStartDate', $('#dob').val());
+            });
+
+            $('#sample_date').datepicker({
+                format: 'yyyy/mm/dd',
+                startDate: new Date(),
+                endDate: new Date(),
+                autoclose: true,
+                todayHighlight: true
+            })
+            
+            $('#artinitdate').datepicker({
+                format: 'yyyy/mm/dd',
+                endDate: new Date(),
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            $('#barcode').keyup(function() {
                 var value = $(this).val();
 
-                    $('#small-barcode').val(value);
+                $('#small-barcode').val(value);
 
-                    //$('#small-barcode').val().endsWith('$') && $('#barcodeForm').submit()
             });
+
+
         });
 
         //Advanced - with validation
@@ -790,11 +821,31 @@
                     return true;
                 }
 
+                
                 wizard7.validate().settings.ignore = ":disabled,:hidden";
+
                 return wizard7.valid();
+
+                // return true;
+            },
+            onInit: function (event, currentIndex) {
+                // If current step is the first step
+                if (currentIndex === 0) {
+                    // Hide previous button
+                    $('.wizard').find(".actions ul > li:nth-child(1) > a").hide();
+                }
             },
             onStepChanged: function(event, currentIndex, priorIndex) {
+                if (currentIndex === 0) {
+                    // Hide previous button
+                    $('.wizard').find(".actions ul > li:nth-child(1) > a").hide();
+                } else {
+                    // Show previous button
+                    $('.wizard').find(".actions ul > li:nth-child(1) > a").addClass("btn btn-primary previous-btn").show();
 
+                    $('.wizard').find(".actions ul > li:nth-child(1)").addClass(" actions-container");
+                }
+                
                 if (currentIndex == 4 || currentIndex == 5) {
 
                     var district = $('#district').val();
@@ -805,7 +856,7 @@
 
                     var side_code = $('#side_code').val();
                     var p_id = $('#p_id').val();
-                    var p_dob = $('#p_dob').val();
+                    var p_dob = $('#dob').val();
 
                     var p_gender = $("input[name='gender']:checked").val();
 
@@ -814,8 +865,8 @@
 
                     var test_reason = $("input[name='reason']:checked").val();
 
-                    var art_init_date = $('#art-init-date').val();
-                    var sample_type = $("input[name='sample-type']:checked").val();
+                    var art_init_date = $('#artinitdate').val();
+                    var sample_type = $("input[name='sampletype']:checked").val();
 
                     var current_art_regimen = $("input[name='regimen']:checked").val();
 
@@ -824,31 +875,31 @@
                     var pcs_phone = $('#pcs-phone').val();
                     var htc_provider_id = $('#htc-provider-id').val();
 
-                    $('#confi-district-name').val(district);
-                    $('#confi-facility-name').val(facility);
+                    $('#confi-district-name').text(district);
+                    $('#confi-facility-name').text(facility);
 
-                    $('#confi-patient-surname').val(p_surname);
-                    $('#confi-patient-firstname').val(p_first_name);
+                    $('#confi-patient-surname').text(p_surname);
+                    $('#confi-patient-firstname').text(p_first_name);
 
-                    $("#confi-side-code").val(side_code)
-                    $('#confi-patient-id').val(p_id);
-                    $('#confi-patient-dob').val(p_dob);
+                    $("#confi-side-code").text(side_code)
+                    $('#confi-patient-id').text(p_id);
+                    $('#confi-patient-dob').text(p_dob);
 
-                    $('#confi-patient-gender').val(p_gender);
+                    $('#confi-patient-gender').text(p_gender);
 
-                    $('#confi-patient-phone').val(p_phone);
-                    $('#confi-sample-date').val(sample_date);
+                    $('#confi-patient-phone').text(p_phone);
+                    $('#confi-sample-date').text(sample_date);
 
-                    $('#confi-test-reason').val(test_reason);
+                    $('#confi-test-reason').text(test_reason);
 
-                    $('#confi-art-init-date').val(art_init_date);
-                    $('#confi-sample-type').val(sample_type);
+                    $('#confi-art-init-date').text(art_init_date);
+                    $('#confi-sample-type').text(sample_type);
 
-                    $('#confi-curr-art-regimen').val(current_art_regimen);
-                    $('#confi-pcs-surname').val(pcs_surname);
-                    $('#confi-pcs-firstname').val(pcs_firstname);
-                    $('#confi-pcs-phone').val(pcs_phone);
-                    $('#confi-htc-provider-id').val(htc_provider_id);
+                    $('#confi-curr-art-regimen').text(current_art_regimen);
+                    $('#confi-pcs-surname').text(pcs_surname);
+                    $('#confi-pcs-firstname').text(pcs_firstname);
+                    $('#confi-pcs-phone').text(pcs_phone);
+                    $('#confi-htc-provider-id').text(htc_provider_id);
 
                 }
             },
@@ -872,7 +923,7 @@
 
         // Validation
         wizard7.validate({
-            errorClass: 'is-invalid text-danger mt-2',
+            errorClass: 'error-class text-danger mt-2',
             validClass: 'is-valid',
             errorElement: "div",
             ignore: ":hidden",
@@ -896,60 +947,184 @@
                     minlength: 5,
                     maxlength: 12
                 },
-                // Step 4 - Confirmation
-                reminders: {
+                // Step 1
+                district: {
                     required: true
                 },
-                terms_conditions: {
+                facility: {
                     required: true
                 },
+                firstname: {
+                    required: true
+                },
+                surname: {
+                    required: true
+                },
+                id: {
+                    required: true
+                },
+                dob: {
+                    required: true
+                },
+                gender: {
+                    required: true
+                },
+                sampledate: {
+                    required: true
+                },
+                // Step 3 
+                reason: {
+                    required: true
+                },
+                // Step 4
+                regimen: {
+                    required: true
+                },
+                artinitdate: {
+                    required: true
+                },
+                sampletype: {
+                    required: true
+                },
+                // Step 5
+                pcsfirstname: {
+                    required: true
+                },
+                pcssurname: {
+                    required: true
+                },
+                pcsphone: {
+                    required: true,
+                    maxlength: 10,
+                },
+                htcproviderid: {
+                    required: true
+                }
             },
-            // errorPlacement: function(error, element) {
-            //     $(element).parents(".form-group").append(error);
-            // }
+            messages: { 
+                barcode: "Please scan the form barcode", 
+                facility: "Please select a facility", 
+                district: "Please select a district",
+                firstname: "Enter patient first name",
+                surname: "Enter patient surname",
+                id: "Enter patient ID",
+                dob: "Please select patient date of birth",
+                gender: "Please select patient gender",
+                sampledate: "Please select the date when the sample was taken",
+                reason: "Select reason for this test",
+                regimen: "Please select the ART Regimen",
+                artinitdate: "Please the date of art start",
+                sampletype: "Please select the sample type",
+                pcsfirstname: "Please enter sample collector first name",
+                pcssurname: "Please enter sample collector last name",
+                pcsphone: "Please sample collector phone number",
+                htcproviderid: "Please enter the HTC provider id"
+            }, 
+
+            errorPlacement: function(error, element) {
+                
+                if (element.attr("name") === "barcode") {
+                    error.appendTo("#barcode-error");
+                } else if (element.attr("name") === "district") {
+                    error.appendTo("#district-error");
+                }
+                else if (element.attr("name") === "facility") {
+                    error.appendTo("#facility-error");
+                }
+
+                else if (element.attr("name") === "surname") {
+                    error.appendTo("#surname-error");
+                }
+                else if (element.attr("name") === "firstname") {
+                    error.appendTo("#firstname-error");
+                }
+                else if (element.attr("name") === "id") {
+                    error.appendTo("#id-error");
+                }
+                else if (element.attr("name") === "dob") {
+                    error.appendTo("#dob-error");
+                }
+                else if (element.attr("name") === "gender") {
+                    error.appendTo("#gender-error");
+                }
+                else if (element.attr("name") === "phone") {
+                    error.appendTo("#phone-error");
+                }
+                else if (element.attr("name") === "sampledate") {
+                    error.appendTo("#sample-date-error");
+                }
+
+                else if (element.attr("name") === "reason") {
+                    error.appendTo("#reason-error");
+                }
+
+                else if (element.attr("name") === "sampletype") {
+                    error.appendTo("#sample-type-error");
+                }
+                else if (element.attr("name") === "regimen") {
+                    error.appendTo("#regimen-error");
+                }
+                else if (element.attr("name") === "artinitdate") {
+                    error.appendTo("#art-init-error");
+                }
+
+                else if (element.attr("name") === "pcsfirstname") {
+                    error.appendTo("#pcsfirstname-error");
+                }
+                else if (element.attr("name") === "pcssurname") {
+                    error.appendTo("#pcssurname-error");
+                }
+                else if (element.attr("name") === "pcsphone") {
+                    error.appendTo("#pcsphone-error");
+                }
+                else if (element.attr("name") === "htcproviderid") {
+                    error.appendTo("#htcproviderid-error");
+                }
+
+                else {
+                    error.insertAfter(element);
+                }
+            }    
         });
 
-        $('.wizard').find(".actions ul > li > a").addClass("btn bg-primary");
+        $('.wizard').find(".actions ul > li:nth-child(2) > a").addClass("btn btn-primary");
         
-        $('.wizard').find(".actions ul > li:nth-child(3) > a").addClass("btn bg-danger");
+        $('.wizard').find(".actions ul > li:nth-child(3) > a").addClass("btn btn-danger");
 
-        $('.wizard').find(".actions ul > li:nth-child(4) > a").addClass("btn bg-success");
+        $('.wizard').find(".actions ul > li:nth-child(4) > a").addClass("btn btn-success");
+
     </script>
+    
     <script>
+
         $(document).ready(function() {
-
-            var data = [
-                {
-                    id: 0,
-                    text: 'enhancement'
-                },
-                {
-                    id: 1,
-                    text: 'bug'
-                },
-                {
-                    id: 2,
-                    text: 'duplicate'
-                },
-                {
-                    id: 3,
-                    text: 'invalid'
-                },
-                {
-                    id: 4,
-                    text: 'wontfix'
-                }
-            ];
-
-            $('.district-select').select2({
-                theme: 'bootstrap4',
-                data: data,
-            });
 
             $('.facility-select').select2({
                 theme: 'bootstrap4',
-                data: data,
             });
+
+            $($('.facility-select').data('select2').$container).addClass('form-control')
+
+            $('.district-select').on('change', function() {
+                
+                $.ajax({
+                    url: `/filter-facilities/${$('.district-select').val()}`,
+                    async: true,
+                    type: 'GET',
+                    success: function (response) {
+                        var select2 = $('.facility-select');
+                        select2.empty();
+                        select2.append('<option value="">--- Select a facility ---</option>');
+                        $.each(response.data, function (index, value) {
+                            select2.append('<option value="' + value.name + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+
+
+            })
+            
+
         });
     </script>
 @stop

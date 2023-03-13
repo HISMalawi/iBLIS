@@ -51,9 +51,10 @@ class TestController extends \BaseController {
 		
 		if ($search_remote && $searchString && preg_match("/^X/i", $searchString) ){
 			
-			$remoteResults = Sender::search_from_remote($searchString);
+			$remoteResults = Sender::search_from_remote(trim($searchString));
 			
-			$orderResults  = Sender::search_results_from_remote($searchString);
+			$orderResults  = Sender::search_results_from_remote(trim($searchString));
+
 			if ($remoteResults->message != "order not available" ){
 				if(!empty($remoteResults)) {
 					$testCounter = $remoteResults->data->tests;
@@ -356,13 +357,18 @@ P1
 	}
 
 	public function viralLoadSampleEntry(){
+
 		$searchString = Input::get('search');
+
+		$facilities = Facility::where('facility_code','!=','')->get();
+
+		$districts = Facility::where('district','!=','')->select('district AS name')->distinct()->orderBy('district')->get();
 
 		if ($searchString && preg_match("/^X/i", $searchString) ){
 			
-			$remoteResults = Sender::search_from_remote($searchString);
+			$remoteResults = Sender::search_from_remote(trim($searchString));
 			
-			$orderResults  = Sender::search_results_from_remote($searchString);
+			$orderResults  = Sender::search_results_from_remote(trim($searchString));
 			if ($remoteResults->message != "order not available" ){
 				if(!empty($remoteResults)) {
 					$testCounter = $remoteResults->data->tests;
@@ -373,7 +379,7 @@ P1
 							$actName = $tst;
 						}
 						if($actName == "Viral Load"){
-							return View::make('test.remoteorderVL')
+							return View::make('test.remoteorderVL', compact('facilities', 'districts'))
 							->with('test', $remoteResults)
 							->with('tracking_number', $searchString)
 							->with('order_results',$orderResults)
@@ -403,27 +409,36 @@ P1
 		}
 
 
-		return View::make('test.viralLoadSampleEntry');
+		return View::make('test.viralLoadSampleEntry', compact('facilities', 'districts'));
+	}
+
+	public function filterFacilities($district){
+
+		$filteredData = Facility::where('district', $district)->get();
+
+		return Response::json(["data" => $filteredData, "message" => "Success"]);
 	}
 
 	public function eidSampleEntry(){
-		return View::make('test.eidSampleEntry');
+		$facilities = Facility::where('facility_code','!=','')->get();
+		$districts = Facility::where('district','!=','')->select('district AS name')->distinct()->orderBy('district')->get();
+		return View::make('test.eidSampleEntry', compact('facilities', 'districts'));
 	}
 
 
 	public function createOrderRetrospective(){
 	
 		$actionLevel = Input::get('checker');
-		$sampleType = Input::get('sample-type');
+		$sampleType = Input::get('sampletype');
 		$patientSurname = Input::get('surname');
 		$patientFirstname = Input::get('firstname');
 		$patientDOB = Input::get('dob');
 		$patientID =  Input::get('id');
 		$patientGender =  Input::get('gender');
 		$patientNumber =  Input::get('phone');
-		$dateSampleDrawn = Input::get('sample-date');
-		$testType = Input::get('test_type');	
+		$testType = Input::get('test_type');
 		$patRes = Patient::where('patient_number','=',$patientID)->first()['id'];
+		$dateSampleDrawn = Input::get('sampledate')." ". Date('H:i:s');
 
 		if(!isset($patRes)){
 			$newPat = new Patient;
@@ -448,10 +463,10 @@ P1
 		$facilityName = Input::get('facility');
 		$district = Input::get('district');
 		
-		$sampleCollectorFirstName = Input::get('sample_collector_first_name');
-		$sampleCollectorLastName = Input::get('sample_collector_last_name');
-		$sampleCollectorPhone = Input::get('sample_collector_phone');
-		$sampleCollectorHTCProviderID = Input::get('htc-provider-id');
+		$sampleCollectorFirstName = Input::get('pcsfirstname');
+		$sampleCollectorLastName = Input::get('pcssurname');
+		$sampleCollectorPhone = Input::get('pcsphone');
+		$sampleCollectorHTCProviderID = Input::get('htcproviderid');
 	
 		$visit = new Visit;
 		$visit->patient_id = $patRes;
@@ -469,12 +484,13 @@ P1
 		$specimen->specimen_type_id = SpecimenType::where('name', '=', $sampleType)->first()['id'];
 		$specimen->accepted_by = Auth::user()->id;		
 		$specimen->accession_number = Specimen::assignAccessionNumber();
-	    $specimen->tracking_number = "X".Specimen::assignAccessionNumber();
+	  $specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 		$specimen->priority = $reasonForTest;
 		$specimen->drawn_by_id = $sampleCollectorHTCProviderID;
 		$specimen->drawn_by_name = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
 		$specimen->specimen_status_id = Specimen::COLLECTED;
 		$specimen->date_of_collection = $dateSampleDrawn;
+		$specimen->sending_facility_id = $facilityName;
 		$specimen->save();
 
 		$test = new Test;
@@ -495,7 +511,7 @@ P1
 			$lasecBarcode = "101010";
 		}
 		if($testType == "Viral Load"){
-			$artInitiationDate = Input::get('art-init-date');
+			$artInitiationDate = Input::get('artinitdate');
 			$artCurrentRegimen = Input::get('regimen');					
 			$patientOnArt = new Art;
 			$patientOnArt->specimen_id = $specimen->id;
@@ -1098,13 +1114,6 @@ P1
 			return Redirect::to($url)->with('message', 'messages.success-rejecting-specimen')
 						->with('activeTest', array($specimen->test->id));
 		}
-
-
-
-
-
-
-
 
 	}
 

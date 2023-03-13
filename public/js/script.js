@@ -1071,9 +1071,31 @@ $(function(){
 		$('#myModal').modal('hide');
 	}
 
+	function submitVlPrintForm(){
+		document.getElementById('form-vlpatientreport-filter').submit();
+		$('#myModal').modal('hide');
+	}
+
+	function track_printing(specimen_id)		
+		{	
+			var url = "/track_patient_report_printing?specimen_id=" + specimen_id;
+			jQuery.ajax({ async: true,
+					  url : url,
+					  success : function(res)
+					  {	console.log("hello");
+					  	console.log(res);	
+							
+					  },
+					  error : function(err)
+					  {
+					  	console.log(err);
+					  }
+			})
+		}
+
 	function updateValue(obj){
 		obj.getElementsByTagName('input')[0].checked = true
-		document.getElementById("printer_name").value = obj.getAttribute('value');
+		document.getElementById("printer_name").value = obj.getAttribute('value')
 	}
 
 	function selectPrinter(){

@@ -42,13 +42,13 @@
                         <span class="glyphicon glyphicon-filter"></span>{{"Tests For Worksheet No: $worksheetNumber"}}
                       
 
-                                <a style="margin-left:2%" class="btn btn-sm btn-default pull-right" href="javascript:void(0)"
-                                    alt="{{trans('messages.back')}}" title="{{'verified worksheet'}}"
-                                    onClick="window.location.reload()"
-                                    >
-                                    <span class="glyphicon glyphicon-print"> </span>
-                                    {{'Print Results'}}
-                                </a>
+                                @if(isset($worksheet->verified_at))
+                                {{ Form::open(array('url' => 'vlprint/eid_vl_results/'.$worksheet->id, 'class' => 'pull-right', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
+                                {{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+                                {{ Form::button(trans('Print Results'), array('class' => 'btn-sm btn-success', 
+                                'onclick' => "selectPrinter()")) }}
+                                {{Form::close()}}
+                                @endif
 
                                 <a class="{{(!$worksheetNumber) ? 'main-view main-view-'.$worksheetNumber : ''}} pull-right btn btn-sm btn-success start-test" 
                                         href="javascript:void(0)" 
@@ -58,7 +58,7 @@
                                         >
                                         
                                         <span class="glyphicon glyphicon-thumbs-up"></span>
-                                        {{"Worksheet Verified"}}
+                                        {{"Verify Worksheet"}}
                                 </a>                       
                            
                     </div>
@@ -313,4 +313,35 @@
         Session::forget('activeTest');
         Session::forget('search_string');
     ?>
+<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+
+		<!-- - content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel" style="text-align: left;">
+					Select Printer
+				</h4>
+			</div>
+			<div class="modal-body">
+        <span style="text-align:center;">
+          <table align="center" id="printers">
+			   @foreach($available_printers AS $printer)
+			  <tr onmousedown="updateValue(this)" value="{{$printer}}">
+				  <td><input type="radio" class="printer_radio_button" value="{{$printer}}" name="printer_name"/></td>
+				  <td style="text-align: left; padding-left:50px;">{{$printer}}</td>
+			  </tr>
+			  @endforeach
+		  </table>
+        </span>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" 
+						onclick="submitVlPrintForm()">Okay</button>
+					<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 @stop

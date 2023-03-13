@@ -220,7 +220,6 @@ P1
 	
 		if(Input::has('pdf')){
 			if(!Input::has('page')){
-				
 				$url = Request::url()."?pdf=true&page=true";
 
 				$fileName = "patientreport".$id."_".$date.".pdf";
@@ -271,9 +270,69 @@ P1
 				->with('specimen_id', $spe_id )
 				->with('spdetails',$specimen)
 				->with('available_printers', Config::get('kblis.A4_printers'))
-				->withInput(Input::all());
-		
+				->withInput(Input::all());		
+	}
 
+	public function VlPatientReport($test_id){
+		$test = Test::where('id', '=', $test_id)->first();
+		$specimen = $test->specimen;
+		$visit = Visit::where('id', '=', $test->visit_id)->first();
+		$patient = $visit->patient;
+		$patient_on_art = Art::where('specimen_id', '=', $specimen->id)->first();
+		$obj = new PatientReportPrintStatus;
+		$printTimes = $obj->get_print_status($visit->id);
+		// $sending_facility = Facility::where('name', '=', $specimen->sending_facility_id)->first();
+		$sending_facility = $specimen->sending_facility_id;
+		return View::make('reports.patient.exportvl')
+		->with('test', $test)
+		->with('location', $visit->ward_or_location)
+		->with('specimen', $specimen)
+		->with('patient', $patient)
+		->with('printTimes', $printTimes)
+		->with('patient_on_art', $patient_on_art)
+		->with('sending_facility', $sending_facility);
+	}
+	public function BulkPrintVlPatientReport($worksheet_id){
+		$tests = Test::where('worksheet_id', '=',$worksheet_id)->get();
+		$printer = Input::get("printer_name");
+		foreach($tests as $test){
+			$printUrl = url('')."/vlpatientreport/{$test->id}"; 	
+			$fileName = "vlpatientreport".$worksheet_id."_".$test->id.".pdf";
+			$process = new Process("xvfb-run -a wkhtmltopdf --footer-font-size 10 --footer-center 'Page [page]/[toPage]' -s A4 -T 2mm -L 2mm -R 2mm '$printUrl' $fileName");
+			$process->run();
+			$process = new Process("lp -d $printer $fileName");
+			$process->run();
+			if($process->isSuccessful()){
+				$this->trackVlPatientReportPrinting($test->id);
+			}
+			$process = new Process("rm $fileName");
+			$process->run();	
+		}
+		return Redirect::route('worksheet.index');
+	}
+
+	public function PrintVlPatientReport($test_id){
+		$printUrl = url('')."/vlpatientreport/{$test_id}"; 	
+		$fileName = "vlpatientreport_".$test->id.".pdf";
+		$process = new Process("xvfb-run -a wkhtmltopdf --footer-font-size 10 --footer-center 'Page [page]/[toPage]' -s A4 -T 2mm -L 2mm -R 2mm '$printUrl' $fileName");
+		$process->run();
+		$process = new Process("lp -d $printer $fileName");
+		$process->run();
+		if($process->isSuccessful()){
+			$this->trackVlPatientReportPrinting($test_id);
+		}
+		$process = new Process("rm $fileName");
+		$process->run();	
+		return Redirect::route('worksheet.index');
+	}
+
+	public function trackVlPatientReportPrinting($test_id){
+		$test = Test::where('id', '=', $test_id)->first();
+		$specimen_id = $test->specimen_id;
+		$obj = new PatientReportPrintStatus;
+		$obj->specimen_id = $specimen_id;
+		$obj->printed_by =  $user_id = Auth::user()->id;;
+		$obj->save();
 	}
 
 	public function trackPatientReportPrint()

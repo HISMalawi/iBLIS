@@ -2,14 +2,13 @@
 <?php
 	$active = array("","","","","","", "", "", "","","");
 	$key = explode("?",str_replace("/", "?", Request::path()));
-	//var_dump($key);exit;
+	// var_dump($key);
 	switch ($key[0]) {
 		case 'home': $active[0] = "active"; break;
 		case 'patient': $active[1] = "active"; break;
-		case 'test 3':	
-			case 'test 2': $active[2] = "active"; break;
-		case 'test': $active[3] = "active"; break;
-		case 'test': $active[4] = "active"; break;			
+		case 'worksheet': $active[3] = "active"; break;	
+		case 'test': $active[4] = "active"; break;
+		// case 'test': $active[4] = "active"; break;			
 		case 'labconfig': 
 		case 'instrument':
 		case 'reportconfig':

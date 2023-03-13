@@ -328,7 +328,7 @@
 
                                                                         @if($test->test_status->name == "verified")
                                                                                 By:
-                                                                                    {{ $test->verifiedBy->name }}
+                                                                                    {{ $test->verifiedBy['name'] }}
 
                                                                         @endif  
 
@@ -342,7 +342,7 @@
                                                                   <br /> <br /> <br />
 
                                                                   <b>Performed By</b> <br />
-                                                                        {{ $test->testedBy->name}}<br />
+                                                                        {{ $test->testedBy['name']}}<br />
                                                                         On {{ $test->time_completed }}
                                                                         @if($test->resultDevices())
                                                                                 <br /><br />

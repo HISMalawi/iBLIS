@@ -100,6 +100,21 @@ Route::group(array("before", "print"), function()
         "uses" => "ReportController@printReport"
     ));
 
+    Route::any("/vlpatientreport/{id}", array(
+        "as" => "reports.patient.exportvl",
+        "uses" => "ReportController@VlPatientReport"
+    ));
+    
+    Route::any("/vlprint/eid_vl_results/{id}", array(
+        "as" => "reports.patient.vlpatientreport",
+        "uses" => "ReportController@BulkPrintVlPatientReport"
+    ));
+
+    Route::any("/vlprint/eid_vl_results/test/{test_id}", array(
+        "as" => "reports.patient.printvlpatientreport",
+        "uses" => "ReportController@PrintVlPatientReport"
+    ));
+
     Route::any("/departments_summary_report", array(
         "as"   => "reports.departments_summary",
         "uses" => "ReportController@departments_summary"
@@ -179,9 +194,14 @@ Route::group(array("before" => "auth"), function()
         "uses" => "WorksheetController@rerunTest"
     ));
     
-     Route::get("viralLoadSampleEntry",array(
+    Route::get("viralLoadSampleEntry",array(
         "as" => "test.viralLoadSampleEntry",
         "uses" => "TestController@viralLoadSampleEntry"
+    ));
+
+    Route::get("/filter-facilities/{district}",array(
+        "as" => "test.filterFacilities",
+        "uses" => "TestController@filterFacilities"
     ));
     
     Route::post("createOrderRetrospective",array(
