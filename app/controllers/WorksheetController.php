@@ -9,7 +9,6 @@ class WorksheetController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
 		$worksheets = DB::select("SELECT * FROM worksheets ORDER BY id DESC");
 		return View::make('worksheet.index')
 				->with('worksheets',$worksheets)
