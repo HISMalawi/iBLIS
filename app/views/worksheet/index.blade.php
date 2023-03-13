@@ -120,30 +120,38 @@
                                 <td>
                                         
                                         
-
-                                    @if(isset($worksheet->verified_at))
-                                    {{ Form::open(array('url' => 'vlprint/eid_vl_results/'.$worksheet->id, 'class' => 'form-inline', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
-                                    {{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
-                                    {{ Form::button(trans('Print Results'), array('class' => 'btn-success', 
-				        	        'onclick' => "selectPrinter()")) }}
-                                    {{Form::close()}}
-                                    @endif
+                                    
                                     @if(!isset($worksheet->verified_at) && isset($worksheet->completed_at))
-                                        <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
-                                            href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
-                                            title="{{trans('messages.verify-title')}}">
-                                                <span class="glyphicon glyphicon-thumbs-up"></span>
-                                                {{'verify results'}}
-                                        </a>
-                                    @else
-
-                                        <a class="main-view main-view-{{$worksheet->id}} btn btn-sm btn-success" id="verify-{{$worksheet->id}}-link"
-                                            href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
-                                            title="{{trans('messages.verify-title')}}">
-                                                <span class="glyphicon glyphicon-eye-open"></span>
-                                                {{'view tests'}}
-                                        </a>
+                                    
+                                            <a class=" btn btn-sm btn-success"
+                                                href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
+                                                title="{{trans('messages.verify-title')}}">
+                                                    <span class="glyphicon glyphicon-thumbs-up" ></span>
+                                                    {{'Verify results'}}
+                                            </a>
                                     @endif
+
+                                        <a class="btn btn-sm btn-success"
+                                            href="{{ URL::route('worksheet.viewWorksheetTests', array($worksheet->id)) }}"
+                                            title="{{trans('messages.verify-title')}}">
+                                                <span class="glyphicon glyphicon-eye-open" ></span>
+                                                {{'View tests'}}
+                                        </a>
+
+                                                                                                                                                                                                                            
+                                        @if(isset($worksheet->verified_at))
+                                            {{ Form::open(array('url' => 'vlprint/eid_vl_results/'.$worksheet->id, 'class' => 'form-inline', 'id'=>'form-vlpatientreport-filter', 'method'=>'POST')) }}
+                                            {{ Form::hidden('printer_name', '', array('id' => 'printer_name')) }}
+
+                                                
+                                                <button type="button" style="margin-top:1.5%;" class="btn btn-sm btn-default" onclick="selectPrinter()"/>
+                                                    <i class="glyphicon glyphicon-print">Print results</i>
+                                                </button>
+
+                                            {{Form::close()}}  
+                                    @endif
+
+
                                 </td>
                             </tr>
                         @endif

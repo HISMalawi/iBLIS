@@ -293,6 +293,7 @@ P1
 		->with('sending_facility', $sending_facility);
 	}
 	public function BulkPrintVlPatientReport($worksheet_id){
+		
 		$tests = Test::where('worksheet_id', '=',$worksheet_id)->get();
 		$printer = Input::get("printer_name");
 		foreach($tests as $test){

@@ -12,8 +12,7 @@ class WorksheetController extends \BaseController {
 		//
 		$worksheets = DB::select("SELECT * FROM worksheets ORDER BY id DESC");
 		return View::make('worksheet.index')
-				->with('worksheets',$worksheets)
-				->with('available_printers', Config::get('kblis.A4_printers'));
+				->with('worksheets',$worksheets);
 	}
 
 
@@ -115,12 +114,10 @@ class WorksheetController extends \BaseController {
 						INNER JOIN test_results ON test_results.test_id = tests.id 
 						INNER JOIN test_types ON test_types.id = tests.test_type_id 
 						WHERE worksheet_id ='$worksheetId'");
-		$worksheet = Worksheet::where('id', '=', $worksheetId)->first();
+
 		return View::make('worksheet.viewWorksheetTest')
 				->with('tests',$tests)
-				->with('worksheetNumber',$worksheetId)
-				->with('worksheet', $worksheet)
-				->with('available_printers', Config::get('kblis.A4_printers'));
+				->with('worksheetNumber',$worksheetId);
 		
 	}
 
