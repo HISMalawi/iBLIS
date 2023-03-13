@@ -605,7 +605,7 @@
                                 <!-- Section 2 confirmation -->
 
                                 <div style="margin-top: -20px;">
-                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                    <div style="background-color: #ececec !important; padding: 5px !important;">
                                         <strong>Section 1: Health Facility Information</strong>
                                     </div>
     
@@ -631,7 +631,7 @@
                                 <!-- Section 2 confirmation -->
 
                                 <div>
-                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                    <div style="background-color: #ececec !important; padding: 5px !important;">
                                         <strong>Section 2: Patient Information</strong>
                                     </div>
     
@@ -681,7 +681,7 @@
                                 <!-- Section 3 confirmation -->
 
                                 <div>
-                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                    <div style="background-color: #ececec !important; padding: 5px !important;">
                                         <strong>Section 3: Test Type</strong>
                                     </div>
     
@@ -697,7 +697,7 @@
                                 <!-- Section 4 confirmation -->
 
                                 <div>
-                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                    <div style="background-color: #ececec !important; padding: 5px !important;">
                                         <strong>Section 4: Patient and Sample Details for Viral Load ONLY</strong>
                                     </div>
     
@@ -722,7 +722,7 @@
 
                                 <!-- Section 5 confirmation -->
                                 <div>
-                                    <div class="custom-padding" style="background-color: #f9fafb;">
+                                    <div style="background-color: #ececec !important; padding: 5px !important;">
                                         <strong>Section 5: Details of Person Collecting Sample</strong>
                                     </div>
 
