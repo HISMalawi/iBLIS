@@ -10,6 +10,8 @@ class FastTrackedViralLoadTests extends Migration {
 	 *
 	 * @return void
 	 */
+
+	 /* changed schema*/
 	public function up()
 	{
 		Schema::create('fast_tracked_viral_load_tests', function(Blueprint $table)
