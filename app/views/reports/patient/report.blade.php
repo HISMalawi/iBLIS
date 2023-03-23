@@ -392,39 +392,49 @@
 								<td style="width: 10;">
 							
 								<b>Test Status </b> <br />
-    							        @if ($test->test_status->name == "verified")
-                                                                        {{"Authorised"}}
-                                                                @elseif ($test->test_status->name == "completed")
-                                                                       {{"Authorization Pending"}}
-                                                                @else
-                                                                        {{"Testing Pending"}}
-                                                                @endif
+    						@if ($test->test_status->name == "verified")
+								{{"Authorised"}}
+								@elseif ($test->test_status->name == "completed")
+								{{"Authorization Pending"}}
+								@else
+								{{"Testing Pending"}}
+								@endif
+								<br />
+								@if($test->test_status->name == "verified")
+									By:
+									<?php  
+										$user = DB::select(DB::raw('Select name from users where id ='.$test->verified_by) );
+											if ($user){
+												echo $user[0]->name;
+											}else{
+												echo 'unknown';
+											}
+									?>
+								@endif  
+								<br />
 
-                                                                <br />
-
-                                                                        @if($test->test_status->name == "verified")
-                                                                                By:
-                                                                                    {{ $test->verifiedBy["name"] }}
-
-                                                                        @endif  
-
-                                                                  <br />
-
-                                                                        @if($test->test_status->name == "verified")
-                                                                          On: 
-                                                                           {{ $test->time_verified }}
-                                                                        @endif  
-
-                                                                  <br /> <br /> <br />
+								@if($test->test_status->name == "verified")
+									On: 
+										{{ $test->time_verified }}
+								@endif  
+								<br /> <br /> <br />
 		
-								  <b>Performed By</b> <br />
-									{{ $test->testedBy["name"]}}<br />
-									On {{ $test->time_completed }}
-									@if($test->resultDevices())
-										<br /><br />
-										<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>					
-									@endif
+								<b>Performed By</b> <br />
+									<?php  
+										$user = DB::select(DB::raw('Select name from users where id ='.$test->tested_by) );
+											if ($user){
+												echo $user[0]->name;
+											}else{
+												echo 'unknown';
+											}
+									?>
+								<br />
+								On {{ $test->time_completed }}
+								@if($test->resultDevices())
 									<br /><br />
+									<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>					
+								@endif
+								<br /><br />
 
 								</td>
 							@endif
