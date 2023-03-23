@@ -13,7 +13,7 @@ class WorksheetController extends \BaseController {
 		return View::make('worksheet.index')
 				->with('worksheets',$worksheets)
 				->with('available_printers', Config::get('kblis.A4_printers'));
-	}
+	} 
 
 
 	/**
