@@ -60,7 +60,7 @@
                 @endif
             </div>
 
-            <div class="pull-right">
+            <div >
 
                 <ul class="nav navbar-nav navbar-right">
                     <li >
@@ -69,7 +69,29 @@
                 </ul>
 
             </div>
+            @if (isset($completed_tests))
+                <div class="pull-right" style="margin-right:56px">
+
+                    <ul class="nav navbar-nav">
+                        <li >
+                            <span class="navbar-brand"> <a href= "/test/completed_tests" style="text-decoration: none;!important; color: #999;" id="completed_tests">{{"Unauthorized tests($completed_tests)"}}</a></span>
+                        </li>
+                    </ul>
+
+                </div>
+            @endif
+
 
         </div>
     </div>
 @show
+
+<style>
+#completed_tests{
+    text-decoration: none!important; 
+    color: #999;
+}
+#completed_tests:hover{
+    color: white!important;
+}
+</style>
