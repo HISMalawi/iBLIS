@@ -48,7 +48,7 @@ class Worksheet extends Eloquent
 				$res->verified_at =  date('Y-m-d H:i:s');
 				$res->save();
 
-				$tests = DB::SELECT("SELECT * FROM tests WHERE worksheet_id='$worksheetNumber'");
+				$tests = DB::SELECT("SELECT * FROM tests WHERE worksheet_id='$worksheetNumber' AND tests.test_status_id !='9'");
 				if(count($tests) > 0){
 					foreach($tests as $test){
 						$tst = Test::find($test->id);

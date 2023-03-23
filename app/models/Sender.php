@@ -35,6 +35,8 @@ class Sender
         //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         //     $result = json_decode(curl_exec($ch));
         // }
+
+       
       
         return $result;
     }
@@ -198,8 +200,7 @@ class Sender
         $testStatus = 2;
         $specimenStatusWord = "specimen-accepted";
        
-        if(count(explode("-",$tracking_number)) > 1){
-            
+        if(count(explode("-",$tracking_number)) > 1){            
             $statusAction = explode("-",$tracking_number)[1];
             if($statusAction == "accept"){
                 $specimenStatus = SpecimenStatus::where('name', 'specimen-accepted')->first()->id;
@@ -397,6 +398,7 @@ class Sender
 
                     $tst = Test::find($testID);
 			        $tst->worksheet_id = $fast[5];
+                    $tst->test_status_id = 4;
 			        $tst->save();
                     FastTrackedViralLoadTest::syncFastTrackedTest($fast[4]);
                 }

@@ -1076,6 +1076,11 @@ $(function(){
 		$('#myModal').modal('hide');
 	}
 
+
+	function cancelConfirm(){
+		$('#confirm').modal('hide');
+	}
+
 	function track_printing(specimen_id)		
 		{	
 			var url = "/track_patient_report_printing?specimen_id=" + specimen_id;
@@ -1102,6 +1107,12 @@ $(function(){
 		$("#printer_name").value = '';
 		$(".printer_radio_button").prop( "checked", false );//Uncheck printer
 		$('#myModal').modal('show');
+	}
+
+	function confirmAuth(){
+		$("#printer_name").value = '';
+		$(".printer_radio_button").prop( "checked", false );//Uncheck printer
+		$('#confirm').modal('show');
 	}
 
 	function unsetPrinterValue()

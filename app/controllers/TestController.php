@@ -484,7 +484,7 @@ P1
 		$specimen->specimen_type_id = SpecimenType::where('name', '=', $sampleType)->first()['id'];
 		$specimen->accepted_by = Auth::user()->id;		
 		$specimen->accession_number = Specimen::assignAccessionNumber();
-	  $specimen->tracking_number = "X".Specimen::assignAccessionNumber();
+	  	$specimen->tracking_number = "X".Specimen::assignAccessionNumber();
 		$specimen->priority = $reasonForTest;
 		$specimen->drawn_by_id = $sampleCollectorHTCProviderID;
 		$specimen->drawn_by_name = $sampleCollectorFirstName ." ".$sampleCollectorLastName;
@@ -552,6 +552,7 @@ P1
 
 			$tst = Test::find($testID);
 			$tst->worksheet_id = $fast[5];
+			$tst->test_status_id = 4;
 			$tst->save();
 			FastTrackedViralLoadTest::syncFastTrackedTest($fast[4]);
 		}

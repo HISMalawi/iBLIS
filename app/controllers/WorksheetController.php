@@ -29,7 +29,7 @@ class WorksheetController extends \BaseController {
 	public function worksheetVerified(){
 		$worksheetId= Input::get('id');		
 		$res = Worksheet::verifiedWorksheet($worksheetId);
-		return $res;
+		//return $res;
 	}
 
 	public function rerunTest(){	

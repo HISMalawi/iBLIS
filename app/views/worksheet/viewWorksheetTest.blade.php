@@ -56,13 +56,14 @@
                                         href="javascript:void(0)" 
                                         data-test-id="{{$worksheetNumber}}" data-url="{{ URL::route('worksheet.worksheetVerified') }}"
                                         title="{{trans('messages.start-test-title')}}"
-                                        onClick="window.location.reload()"
+                                        onclick="cancelConfirm();"
                                         style="margin-right:1.5%"
                                         >
                                         
                                         <span class="glyphicon glyphicon-thumbs-up"></span>
-                                        {{"Verify Worksheet"}}
-                                </a>                       
+                                        {{"Aprove Worksheet"}}
+                                </a>
+                                                     
                            
                     </div>
                     <div class="col-md-1">
@@ -102,7 +103,8 @@
                                     $sending_facility = $rs[0]->name;
                                 }
                             }
-                            $testStatus = TestStatus::find($test->testStatus)->name;                           
+                            $testStatus = TestStatus::find($test->testStatus)->name;      
+                                                
                         ?>
 
                         <tr>    
@@ -117,19 +119,19 @@
                             <td> {{$test->result}}</td>
                             <td>
                                
-                            @if($test->result != "collect new sample")
+                            @if($testStatus == "completed" && $testStatus != "re-run")
                              
                                 <a class="{{(!$test->tstID) ? 'main-view main-view-'.$test->tstID : ''}}  btn btn-sm btn-danger start-test" 
                                         href="javascript:void(0)" 
                                         data-test-id="{{$test->tstID}}" data-url="{{ URL::route('worksheet.rerunTest') }}"
                                         title="{{trans('messages.start-test-title')}}"
-                                        onClick="window.location.reload()"
+                                        onclick="window.location.reload()"
                                         >
                                         <span class="glyphicon glyphicon-thumbs-down"></span>
                                         {{'re-run test'}}
                                 </a>
                             @endif
-                            @if($test->result != "collect new sample")
+                            @if($testStatus == "completed")
                                
                                 <a class="btn btn-sm btn-warning" id="reject-{{1}}-link"
                                     href="{{URL::route('worksheet.collectNewSample', array($test->specimenID))}}"
@@ -345,6 +347,45 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>    
 </div>
+
+
+
+<div id="confirm" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog">
+
+		<!-- - content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel" style="text-align: left;">
+					Approval Confirmation
+				</h4>
+			</div>
+			<div class="modal-body">
+        <span style="text-align:center;">
+           Are You Sure, You want to Approve?
+        </span>
+				<div class="modal-footer">					
+
+                        <a class="btn btn-sm btn-success start-test" 
+                                        href="javascript:void(0)" 
+                                        data-test-id="{{$worksheetNumber}}" data-url="{{ URL::route('worksheet.worksheetVerified') }}"
+                                        title="{{trans('messages.start-test-title')}}"
+                                        onclick="cancelConfirm();"
+                                        style="margin-right:1.5%"
+                                        >
+                                        
+                                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                                        {{"Yes, Approve"}}
+                                </a>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>    
+</div>
+
+
 @stop

@@ -106,9 +106,10 @@ class InterfacerController extends \BaseController
                     $worksheetId = $workshetChecker[2];
                     $asignedTests = $workshetChecker[1];
 
-                    if ($asignedTests <= Worksheet::WORKSHEET_LIMIT){
+                    if ($asignedTests < Worksheet::WORKSHEET_LIMIT){
                         $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
                         $test_worksheet->worksheet_id = $worksheetId;
+                        $test_worksheet->test_status_id = 4;
                         $test_worksheet->save();
 
                         $testId = $test_worksheet->id;
@@ -137,6 +138,7 @@ class InterfacerController extends \BaseController
                         
                         $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
                         $test_worksheet->worksheet_id = $worksheetId;
+                        $test_worksheet->test_status_id = 4;
                         $test_worksheet->save();
 
                         $testId = $test_worksheet->id;
@@ -161,6 +163,7 @@ class InterfacerController extends \BaseController
                     
                     $test_worksheet = Test::find(DB::select("SELECT id FROM tests WHERE specimen_id='$checkSpec[1]'")[0]->id);
                     $test_worksheet->worksheet_id = $worksheetId;
+                    $test_worksheet->test_status_id = 4;
                     $test_worksheet->save();
 
                     $testId = $test_worksheet->id;

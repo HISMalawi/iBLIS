@@ -68,7 +68,8 @@
 									$art_start_date = $test->data->other->art_start_date;
 									$art_start_date  = date('Y-m-d', strtotime($art_start_date));
 
-
+									$arv_number = explode("-",$arv_number)[2];
+								
 									$createdByFirst = explode(" ",$test->data->other->sample_created_by->name)[0];
 									$createdBySecond = explode(" ",$test->data->other->sample_created_by->name)[1];
 
@@ -478,13 +479,14 @@
 			var pGender = "{{$patientGender}}";
 
 			var pDOB = "{{$patientDOB}}";
+			var arv_number = "{{$arv_number}}";
 			
 			var siteCode = "{{$siteCode}}";
-			var hybridId = siteCode +" - "+pID;
+			var hybridId = siteCode +" - "+ arv_number;
 			document.getElementById('pSurname').value = pSecond;
 			document.getElementById('pId').value = hybridId;
 			document.getElementById('pFirst').value = pFirst;
-			
+			document.getElementById('birthday').value = pDOB;
 			if(pGender == "M"){
 				document.getElementById('male').checked = true;
 			}else if(pGender == "F"){
@@ -512,7 +514,7 @@
 			}
 
 			var regimen = "{{$regimen}}";
-			var arv_number = "{{$arv_number}}";
+			
 			var art_start_date = "{{$art_start_date}}";
 			var sampleType = "{{$sampleType}}";
 
