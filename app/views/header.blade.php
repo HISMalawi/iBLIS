@@ -69,17 +69,23 @@
                 </ul>
 
             </div>
-            @if (isset($completed_tests))
-                <div class="pull-right" style="margin-right:56px">
 
-                    <ul class="nav navbar-nav">
-                        <li >
-                            <span class="navbar-brand"> <a href= "/test/completed_tests" style="text-decoration: none;!important; color: #999;" id="completed_tests">{{"Unauthorized tests($completed_tests)"}}</a></span>
-                        </li>
-                    </ul>
+ 
+            <div class="pull-right" style="margin-right:56px">
 
-                </div>
-            @endif
+                <ul class="nav navbar-nav">
+                    <li >
+                        <span class="navbar-brand"> <a href= "/test?completed_tests=true" style="text-decoration: none;!important; color: #999;" id="completed_tests">Unauthorized tests(<?php  
+                                    $location = Session::get("location_id");
+                                    $completedTests = DB::select(DB::raw("Select count(distinct t.id) as count from tests t inner join test_types tt
+                                    on tt.id=t.test_type_id where tt.test_category_id=$location and t.test_status_id=4"))[0];
+                                    echo $completedTests->count;
+                                ?>)
+                        </a></span>
+                    </li>
+                </ul>
+
+            </div>
 
 
         </div>
