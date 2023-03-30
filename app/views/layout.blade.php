@@ -13,7 +13,7 @@
         <script type="text/javascript" src="{{ URL::asset('js/bootstrap.min.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/jquery.dataTables.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/dataTables.bootstrap.js') }}"></script>
-        <script type="text/javascript" src="{{ URL::asset('js/script.js') }} "></script>
+        <script type="text/javascript" src="{{ URL::asset('js/script.js?v=2') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/spin.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('highcharts/highcharts.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('highcharts/exporting.js') }} "></script>
