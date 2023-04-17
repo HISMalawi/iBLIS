@@ -66,23 +66,24 @@
 	@if (Session::has('message'))
 		<div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
 	@endif	
-	<strong>
-		<p> {{ trans('messages.infection-report') }} - 
-			<?php $from = isset($input['start'])?$input['start']:date('01-m-Y');?>
-			<?php $to = isset($input['end'])?$input['end']:date('d-m-Y');?>
-			<?php $period = "";?>
-			@if($from!=$to)
-				{{trans('messages.from').' '.$from.' '.trans('messages.to').' '.$to}}
-				<?php $period = $from.'_'.$to; ?>
-			@else
-				{{trans('messages.for').' '.date('d-m-Y')}}
-				<?php $period = date('d-m-Y'); ?>
-			@endif
-		</p>
-
-	</strong>
-		<div class="table-responsive">
-			<table class="table table-condensed report-table-border">
+	
+		<div id="exportTable" class="table-responsive">
+			<strong id="title">
+				<p> {{ trans('messages.infection-report') }} - 
+					<?php $from = isset($input['start'])?$input['start']:date('01-m-Y');?>
+					<?php $to = isset($input['end'])?$input['end']:date('d-m-Y');?>
+					<?php $period = "";?>
+					@if($from!=$to)
+						{{trans('messages.from').' '.$from.' '.trans('messages.to').' '.$to}}
+						<?php $period = $from.'_'.$to; ?>
+					@else
+						{{trans('messages.for').' '.date('d-m-Y')}}
+						<?php $period = date('d-m-Y'); ?>
+					@endif
+				</p>
+		
+			</strong>
+			<table  class="table table-condensed report-table-border">
 				<thead>
 					<tr>
 						<th rowspan="2">{{ Lang::choice('messages.test',1) }}</th>
@@ -224,38 +225,32 @@
 
 
 <script type="text/javascript">
-	document.getElementById("exp").style.display = "inline";
-	$("#export").click(function(e)
-	{  var period = '<?php echo($period); ?>';	  
-		exportTableToCSV(period +'_'+'infection_report.csv');
+
+	function slugify(title) {
+		return title
+			.toLowerCase()
+			.replace(/[^\w\s]/g, '')
+			.replace(/\s+/g, '_')
+			.trim()
+			.slice(1, -1);
+	}
+
+	$("#export").click(function(e) {
+
+		let table = document.getElementById('exportTable');
+		let html = table.outerHTML;
+
+		var fileName = slugify($('#title').text());
+
+		var downloadLink = document.createElement('a');
+		downloadLink.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + btoa(html));
+		downloadLink.setAttribute('download', fileName);
+
+		downloadLink.click();
+
+		e.preventDefault();
 	})
-
-	function downloadCSV(csv, filename) {
-		    var csvFile;
-		    var downloadLink;
-		    csvFile = new Blob([csv], {type: "text/csv"});
-		    downloadLink = document.createElement("a");
-		    downloadLink.download = filename;
-		    downloadLink.href = window.URL.createObjectURL(csvFile);
-		    downloadLink.style.display = "none";
-		    document.body.appendChild(downloadLink);
-		    downloadLink.click();
-	}
-
-	function exportTableToCSV(filename) {
-		var period = '<?php echo($period); ?>';
-	    var csv = [];
-	    var rows = document.querySelectorAll("table tr");
-	   	var row = [];		   	
-	  
-	    for (var i = 0; i < rows.length; i++) {
-	        var row = [], cols = rows[i].querySelectorAll("td, th");	        
-	        for (var j = 0; j < cols.length; j++) 
-	            row.push(cols[j].innerText);	        
-	        csv.push(row.join(","));   	             
-	    }
-	    downloadCSV(csv.join("\n"), filename);
-	}
+	document.getElementById("exp").style.display = "inline";
 	
 </script>
 @stop
