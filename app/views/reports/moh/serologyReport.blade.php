@@ -66,6 +66,7 @@
 			<table class="table table-striped table-hover table-condensed" >
 				<tbody>
                 @include("reportHeader")
+								<h3 hidden id="title">MoH Serology Department Report</h3>
 								<h4 id="data_y" style="color:green">Data for the Year: <span id='data_year'></span> </h4>
                 <table class="table table-bordered">
                     <tbody>
@@ -163,10 +164,32 @@
 
 <script type="text/javascript">
 
+	function slugify(title) {
+		return title
+			.toLowerCase()
+			.replace(/[^\w\s]/g, '')
+			.replace(/\s+/g, '_')
+			.trim()
+	}
+
+
 	$("#btnExport").click(function(e) {
-    window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
-    e.preventDefault();
-    })
+			
+		let html = $('#dvData').html();
+
+		var originalText = $('#data_year').text();
+
+		var fileName = slugify(`${$('#title').text()} ${originalText}`);
+
+		var downloadLink = document.createElement('a');
+		downloadLink.setAttribute('href', 'data:application/vnd.ms-excel,' + encodeURIComponent(html));
+
+		downloadLink.setAttribute('download', fileName);
+
+		downloadLink.click();
+
+		e.preventDefault();
+	});
 
 	function retrieveData(){
 		reportShowSpinerDisableBtn();

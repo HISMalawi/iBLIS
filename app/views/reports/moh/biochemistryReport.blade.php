@@ -20,11 +20,11 @@
 								</div>
 								<div class="col-sm-2">
 									<select id="yr" class="form-control" name="year"> 
-                                            @foreach($years AS $year)
-                                                <option value="<?php echo $year; ?>">{{$year}} </option>
-                                            @endforeach
-                                        </select>
-						        </div>
+										@foreach($years AS $year)
+												<option value="<?php echo $year; ?>">{{$year}} </option>
+										@endforeach
+									</select>
+						    </div>
 							</div>
 						</div>					                     
 						
@@ -65,7 +65,8 @@
 			<table class="table table-striped table-hover table-condensed" >
 				<tbody>
                 @include("reportHeader")
-								<h4 id="data_y" style="color:green">Data for the Year: <span id='data_year'></span> </h4>
+								<h3 hidden id="title">MoH Biochemistry Department Report</h3>
+								<h4 style="color:green">Data for the Year: <span id='data_year'></span> </h4>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
@@ -162,9 +163,31 @@
 
 <script type="text/javascript">
 
+	function slugify(title) {
+		return title
+			.toLowerCase()
+			.replace(/[^\w\s]/g, '')
+			.replace(/\s+/g, '_')
+			.trim()
+	}
+
+
 	$("#btnExport").click(function(e) {
-    window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#dvData').html()));
-    e.preventDefault();
+			
+			let table = document.getElementById('dvData');
+			let html = table.outerHTML;
+
+			var originalText = $('#data_year').text();
+
+			var fileName = slugify(`${$('#title').text()} ${originalText}`);
+
+			var downloadLink = document.createElement('a');
+			downloadLink.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + btoa(html));
+			downloadLink.setAttribute('download', fileName);
+
+			downloadLink.click();
+
+			e.preventDefault();
     })
 
 	function retrieveData(){
