@@ -24,7 +24,7 @@
             @include("header")
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-2 sidebar" style="width:15% !important;">
+                    <div class="col-md-2 sidebar">
                         @include("sidebar")
                     </div>
                     <div class="col-md-10 col-md-offset-2 main" id="the-one-main" style="width:85% !important;margin-left: 15% !important;
