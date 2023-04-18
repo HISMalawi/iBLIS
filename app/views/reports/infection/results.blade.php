@@ -115,6 +115,7 @@
 
 						$testTotal = 0;
 						$resultTotal = 0;
+						$malariaTotal = 0;
 					?>
 					
 					@forelse($infectionData as $inf)
@@ -191,10 +192,18 @@
 							$testRow.="<td rowspan='NEW_RESULT'>RESULT_TOTAL</td>";
 						}
 
-						if($measureCount == 0)
+						if($measureCount == 0){
 							$testTotal = $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
-						else
-							$testTotal += $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
+						}
+						else{
+							if($currentTest =='Malaria Screening'){
+								$testTotal = $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
+								$malariaTotal += $testTotal;
+								$testTotal = $malariaTotal;
+							}else{
+								$testTotal += $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
+							}
+						}
 
 						if(strcmp($currentTest, $inf->test_name) == 0 && $testCount == 0){
 							$testRow.="<td style='display: none;' class='test_total not-exported' rowspan='NEW_TEST'>TEST_TOTAL</td>";
