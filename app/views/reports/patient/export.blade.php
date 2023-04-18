@@ -315,42 +315,55 @@
 											@if($test->tested_by !=0)
 												    <td style="width: 100px;">
 
-                                                                <b>Test Status </b> <br />
-                                                                @if ($test->test_status->name == "verified")
-                                                                        {{"Authorised"}}
-                                                                @elseif ($test->test_status->name == "completed")
-                                                                       {{"Authorization Pending"}}
-                                                                @else
-                                                                        {{"Testing Pending"}}
-                                                                @endif
+											<b>Test Status </b> <br />
+											@if ($test->test_status->name == "verified")
+															{{"Authorised"}}
+											@elseif ($test->test_status->name == "completed")
+															{{"Authorization Pending"}}
+											@else
+															{{"Testing Pending"}}
+											@endif
 
-                                                                <br />
+											<br />
 
-                                                                        @if($test->test_status->name == "verified")
-                                                                                By:
-                                                                                    {{ $test->verifiedBy["name"] }}
+											@if($test->test_status->name == "verified")
+													<?php  
+													$user = DB::select(DB::raw('Select name from users where id ='.$test->verified_by) );
+														if ($user){
+															echo $user[0]->name;
+														}else{
+															echo 'unknown';
+														}
+												?>
+											@endif  
 
-                                                                        @endif  
+											<br />
 
-                                                                  <br />
+														@if($test->test_status->name == "verified")
+															On:
+																{{ $test->time_verified }}
+														@endif  
 
-                                                                        @if($test->test_status->name == "verified")
-                                                                          On:
-                                                                           {{ $test->time_verified }}
-                                                                        @endif  
+											<br /> <br /> <br />
 
-                                                                  <br /> <br /> <br />
+											<b>Performed By</b> <br />
+											<?php  
+											$user = DB::select(DB::raw('Select name from users where id ='.$test->tested_by) );
+												if ($user){
+													echo $user[0]->name;
+												}else{
+													echo 'unknown';
+												}
+											?>
+										<br />
+											On {{ $test->time_completed }}
+											@if($test->resultDevices())
+															<br /><br />
+															<b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
+											@endif
+											<br /><br />
 
-                                                                  <b>Performed By</b> <br />
-                                                                        {{ $test->testedBy["name"]}}<br />
-                                                                        On {{ $test->time_completed }}
-                                                                        @if($test->resultDevices())
-                                                                                <br /><br />
-                                                                                <b><i> {{ 'Using:  '.$test->resultDevices() }}</i></b>
-                                                                        @endif
-                                                                        <br /><br />
-
-                                                                </td>
+											</td>
  											@endif
 
 										</tr>

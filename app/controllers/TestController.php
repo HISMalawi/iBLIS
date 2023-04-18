@@ -107,37 +107,64 @@ class TestController extends \BaseController {
 		}
 		else
 		{
-			// List all the active tests
-			if (str_is('*ARCHIVES*', strtoupper($location))) {
-				$tests = Test::orderBy('time_created', 'DESC');	
-			}else if (str_is('*RECEPTION*', strtoupper($location))) {
-				if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
-					$date_today= date_create()->format('Y-m-d');
-					$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
-					$tests = Test::orderBy('time_created', 'DESC')->where('time_created', '>', $date_limit);
-				}else{
-					$tests = Test::orderBy('time_created', 'DESC');
-				}		
-			}else {
-				if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
-					$date_today= date_create()->format('Y-m-d');
-					$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
+			if (isset($input['completed_tests'])){
+				// List all the completed tests
+				if (str_is('*ARCHIVES*', strtoupper($location))) {
 					$tests = DB::table('tests')
-					->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
-					->select('tests.*')
-					->where('test_types.test_category_id', '=', Session::get("location_id"))
-					->where('tests.time_created', '>', $date_limit)
-					->orderBy('time_created', 'DESC');
+						->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+						->select('tests.*')
+						->where('test_types.test_category_id', '=', Session::get("location_id"))
+						->where('tests.test_status_id', '=', 4)
+						->orderBy('time_created', 'DESC');	
+				}else if (str_is('*RECEPTION*', strtoupper($location))) {
+					$tests = DB::table('tests')
+						->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+						->select('tests.*')
+						->where('test_types.test_category_id', '=', Session::get("location_id"))
+						->where('tests.test_status_id', '=', 4)
+						->orderBy('time_created', 'DESC');
 				}else {
 					$tests = DB::table('tests')
-					->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
-					->select('tests.*')
-					->where('test_types.test_category_id', '=', Session::get("location_id"))
-					->orderBy('time_created', 'DESC');
+						->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+						->select('tests.*')
+						->where('test_types.test_category_id', '=', Session::get("location_id"))
+						->where('tests.test_status_id', '=', 4)
+						->orderBy('time_created', 'DESC');
 				}
-				
+			}
+			else{
+				// List all the active tests
+				if (str_is('*ARCHIVES*', strtoupper($location))) {
+					$tests = Test::orderBy('time_created', 'DESC');	
+				}else if (str_is('*RECEPTION*', strtoupper($location))) {
+					if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
+						$date_today= date_create()->format('Y-m-d');
+						$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
+						$tests = Test::orderBy('time_created', 'DESC')->where('time_created', '>', $date_limit);
+					}else{
+						$tests = Test::orderBy('time_created', 'DESC');
+					}		
+				}else {
+					if (Config::get('kblis.limit-days') && Config::get('kblis.limit-days') > 0){
+						$date_today= date_create()->format('Y-m-d');
+						$date_limit = date('Y-m-d', strtotime($date_today. '-'.Config::get('kblis.limit-days').'days'));
+						$tests = DB::table('tests')
+						->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+						->select('tests.*')
+						->where('test_types.test_category_id', '=', Session::get("location_id"))
+						->where('tests.time_created', '>', $date_limit)
+						->orderBy('time_created', 'DESC');
+					}else {
+						$tests = DB::table('tests')
+						->join('test_types', 'test_types.id', '=', 'tests.test_type_id')
+						->select('tests.*')
+						->where('test_types.test_category_id', '=', Session::get("location_id"))
+						->orderBy('time_created', 'DESC');
+					}
+				}
 			}
 		}
+
 		// Create Test Statuses array. Include a first entry for ALL
 		$statuses = array('all')+TestStatus::all()->lists('name','id');
 
