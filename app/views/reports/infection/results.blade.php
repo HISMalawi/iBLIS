@@ -48,7 +48,7 @@
 	    	</span>
 	    	<span id="exp" style="display: none;">
 	    		{{ Form::button("<span class='glyphicon glyphicon-export'></span> ".trans('messages.csv'), 
-			    			    array('class' => 'btn btn-success', 'id' => 'export', 'type' => 'button', 'onclick' => "export()")) }}
+			    			    array('class' => 'btn btn-success', 'id' => 'exportBtn', 'type' => 'button')) }}
 	    	</span>
 		    
 	    </div>
@@ -93,7 +93,7 @@
 						<th colspan="{{ count($ageRanges) }}">{{ trans('messages.measure-age-range') }}</th>
 						<th rowspan="2">{{ trans('messages.mf-total') }}</th>
 						<th rowspan="2">{{ Lang::choice('messages.total',1) }}</th>
-						<th rowspan="2">{{ trans('messages.total-tests') }}</th>
+						<th style='display: none;' class='not-exported' rowspan="2">{{ trans('messages.total-tests') }}</th>
 					</tr>
 					<tr>
 						@foreach($ageRanges as $ageRange => $description)
@@ -173,8 +173,8 @@
 							$currentMeasure = $inf->measure_name;
 							$currentResult = $inf->result;
 
-							$testRow="<tr>";
-							$testRow.="<td rowspan='NEW_TEST'>".$inf->test_name."</td>";
+							$testRow="<tr class='tests'>";
+							$testRow.="<td class='test_name' rowspan='NEW_TEST'>".$inf->test_name."</td>";
 							$testRow.="<td rowspan='NEW_MEASURE'>".$inf->measure_name."</td>";
 							$testRow.="<td rowspan='NEW_RESULT'>".$inf->result."</td>";
 						}
@@ -197,7 +197,7 @@
 							$testTotal += $inf->RC_U_5 + $inf->RC_5_15 + $inf->RC_A_15;
 
 						if(strcmp($currentTest, $inf->test_name) == 0 && $testCount == 0){
-							$testRow.="<td rowspan='NEW_TEST'>TEST_TOTAL</td>";
+							$testRow.="<td style='display: none;' class='test_total not-exported' rowspan='NEW_TEST'>TEST_TOTAL</td>";
 						}
 
 						$testRow.="</tr>";
@@ -226,6 +226,16 @@
 
 <script type="text/javascript">
 
+	$(document).ready(function () {
+		let testsRows = document.querySelectorAll("tr.tests");
+		for (let i = 0; i < testsRows.length; i++) {
+			let testRow = testsRows[i];
+      let testName = testRow.querySelector("td.test_name").innerHTML;
+      let testTotal = testRow.querySelector("td.test_total").innerHTML;
+			console.log(testName, testTotal);
+		}
+	});
+
 	function slugify(title) {
 		return title
 			.toLowerCase()
@@ -235,9 +245,15 @@
 			.slice(1, -1);
 	}
 
-	$("#export").click(function(e) {
+	$("#exportBtn").click(function(e) {
 
-		let table = document.getElementById('exportTable');
+		let table = document.getElementById('exportTable')
+		// Remove elements with display none
+		var elements = table.querySelectorAll('.not-exported');
+		elements.forEach(function(element) {
+			element.parentNode.removeChild(element);
+		});
+
 		let html = table.outerHTML;
 
 		var fileName = slugify($('#title').text());
