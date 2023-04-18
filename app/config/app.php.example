@@ -94,7 +94,8 @@ return array(
 
 	'url' => 'http://iblis',
 
-	'version' => 'v2.6.6',
+	'version' => 'v2.6.7',
+	'useDefaultAccessionNumberLength' => true,
 
 	/*
 	|--------------------------------------------------------------------------
