@@ -219,6 +219,18 @@
 					{{$testRow}}
 				</tbody>
 			</table>
+
+			<table class="table table-condensed report-table-border">
+				<h1>Summary</h1>
+				<thead>
+					<tr>
+						<th>Tests</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody id="summary-body">
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
@@ -228,11 +240,17 @@
 
 	$(document).ready(function () {
 		let testsRows = document.querySelectorAll("tr.tests");
+		var tableBody = $('#summary-body');
 		for (let i = 0; i < testsRows.length; i++) {
 			let testRow = testsRows[i];
       let testName = testRow.querySelector("td.test_name").innerHTML;
       let testTotal = testRow.querySelector("td.test_total").innerHTML;
-			console.log(testName, testTotal);
+			
+			var testsRow = $('<tr>');
+			
+      $('<td>').html(testName).appendTo(testsRow);
+      $('<td>').html(testTotal).appendTo(testsRow);
+			tableBody.append(testsRow);
 		}
 	});
 
