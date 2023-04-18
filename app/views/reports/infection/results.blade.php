@@ -199,7 +199,7 @@
 							if($currentTest =='Malaria Screening'){
 								if($malariaTotal == 0){
 									$malariaTotal = DB::select(DB::raw("SELECT COUNT(*) AS count FROM tests t INNER JOIN test_types tt ON tt.id=t.test_type_id WHERE tt.name='$currentTest'
-								 	AND t.time_created BETWEEN '$from' AND '$to' AND t.test_status_id IN (4,5)"));
+								 	AND substr(t.time_created,1,10) BETWEEN '$from' AND '$to' AND t.test_status_id IN (4,5)"));
 								 	$testTotal = $malariaTotal[0]->count;
 								}else{
 									$testTotal = $malariaTotal[0]->count;
