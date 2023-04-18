@@ -588,3 +588,7 @@ table.table.report-table-border > tbody > tr > td{
 #test-actions{
     padding: 0px !important;
 }
+
+.completed_test:hover{
+    text-decoration: underline;
+}

@@ -59,17 +59,25 @@
             <div class="container-fluid">
                 <div class="row less-gutter">
                     <div class="col-md-11">
-                        <span class="glyphicon glyphicon-filter"></span>{{trans('messages.list-tests')}}
+                        <span class="glyphicon glyphicon-filter"></span>{{trans('messages.list-tests')}}  
+                        <span class="pull-right completed_test"> <a href= "/test?completed_tests=true" style="text-decoration: none;!important; color: #fff;" id="completed_tests">Unauthorized tests(<?php  
+                            $location = Session::get("location_id");
+                            $completedTests = DB::select(DB::raw("Select count(distinct t.id) as count from tests t inner join test_types tt
+                            on tt.id=t.test_type_id where tt.test_category_id=$location and t.test_status_id=4"))[0];
+                            echo $completedTests->count;
+                        ?>)
+                        </a></span>
                         @if(Auth::user()->can('request_test'))
                     	{{$request_test = false}}
-			<div class="panel-btn">
-                        	@if($request_test == true)
-			    		<a class="btn btn-sm btn-info" href="javascript:void(0)"
-                        	        	data-toggle="modal" data-target="#new-test-modal">
-                                		<span class="glyphicon glyphicon-plus-sign"></span>
-                                		{{trans('messages.new-test')}}
-                            		</a>
-				@endif
+                        <div class="panel-btn">
+                    
+                            @if($request_test == true)
+                                <a class="btn btn-sm btn-info" href="javascript:void(0)"
+                                    data-toggle="modal" data-target="#new-test-modal">
+                                    <span class="glyphicon glyphicon-plus-sign"></span>
+                                    {{trans('messages.new-test')}}
+                                </a>
+                            @endif
                         </div>
                         @endif
                     </div>
