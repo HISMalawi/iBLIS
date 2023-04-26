@@ -713,6 +713,7 @@ class Test extends Eloquent
 			OR (v.ward_or_location LIKE  '%$q%')
 		) OR t.specimen_id = (
 			SELECT DISTINCT sp.id FROM specimens sp WHERE sp.accession_number='$accession_number'
+			OR sp.tracking_number = '$q'
 		)
 		OR t.test_type_id IN (
 			SELECT DISTINCT tt.id FROM test_types tt WHERE tt.name LIKE '%$q%') ORDER BY t.id DESC LIMIT 20000";
