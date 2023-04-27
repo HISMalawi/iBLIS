@@ -110,29 +110,29 @@
 										</div>
 									</div>
 
-
-									<div class="col-sm-6" style="border: 1px solid skyblue; padding:7px">
-										<div class="row">
-											<div class="col-md-5">
-												<p><strong>{{"Arv Number"}}</strong></p></div>
-											<div class="col-md-7">
-												{{$test->data->other->arv_number}}</div></div>
-										<div class="row">
-											<div class="col-md-5">
-												<p><strong>{{ "Art Start Date" }}</strong></p></div>
-											<div class="col-md-7">
-												{{date('d-m-Y', strtotime($test->data->other->art_start_date))}}
+									@if(isset($test->data->other->arv_number))
+										<div class="col-sm-6" style="border: 1px solid skyblue; padding:7px">
+											<div class="row">
+												<div class="col-md-5">
+													<p><strong>{{"Arv Number"}}</strong></p></div>
+												<div class="col-md-7">
+													{{$test->data->other->arv_number}}</div></div>
+											<div class="row">
+												<div class="col-md-5">
+													<p><strong>{{ "Art Start Date" }}</strong></p></div>
+												<div class="col-md-7">
+													{{date('d-m-Y', strtotime($test->data->other->art_start_date))}}
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-5">
+													<p><strong> Art Regimen </strong></p></div>
+												<div class="col-md-7">
+													{{ $test->data->other->art_regimen }}
+												</div>
 											</div>
 										</div>
-										<div class="row">
-											<div class="col-md-5">
-												<p><strong> Art Regimen </strong></p></div>
-											<div class="col-md-7">
-												{{ $test->data->other->art_regimen }}
-											</div>
-										</div>
-									
-									</div>
+									@endif
 
 								</div>							
 
