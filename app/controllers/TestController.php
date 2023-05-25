@@ -1438,12 +1438,12 @@ P1
 
 			if ($isCrossMatch)
 			{
-			    $rr = DB::SELECT(DB::raw("SELECT * FROM test_results WHERE result='$res'"));
-			    if(count($rr)>0){
-				$tr_id = $rr[0]->test_id;
-			    	DB::DELETE("DELETE FROM test_results WHERE test_id='$tr_id'");		
-			    	$isCrossMatch = false;
-			    }	
+				$rr = DB::select(DB::raw("SELECT test_id FROM test_results WHERE result = :res"), ['res' => $res]);
+				if (count($rr) > 0) {
+					$testIds = array_column($rr, 'test_id');
+					DB::table('test_results')->whereIn('test_id', $testIds)->delete();
+					$isCrossMatch = false;
+				}
 			}
 
 			if($machine_name && $res) {
