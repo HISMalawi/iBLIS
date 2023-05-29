@@ -1102,13 +1102,13 @@ P1
 				"TB LAM Total" => "SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
-									WHERE tt.name = 'TB LAM'
+									WHERE tt.name IN ('TB LAM', 'Urine Lam')
 									AND substr(t.time_created,1,7) = '$period'",
 
 				"TB LAM Positive" =>"SELECT count(distinct t.id) AS test_count FROM tests t 
 									INNER JOIN test_types tt ON tt.id=t.test_type_id
 									INNER JOIN test_results tr ON t.id = tr.test_id
-									WHERE tt.name = 'TB LAM'
+									WHERE tt.name IN ('TB LAM', 'Urine Lam')
 									AND tr.result IN ('Positive', 'Postive')
 									AND substr(t.time_created,1,7) = '$period'",
 
