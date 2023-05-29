@@ -226,6 +226,9 @@ class Sender
             $patient->phone_number = "";
             $patient->patient_number = DB::table('patients')->max('id')+1;
             $patient->save();
+        } else {
+            $patient->dob = date_create($order->data->other->patient->dob);
+            $patient->save();
         }
   
         if(!$specimen){
