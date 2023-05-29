@@ -3390,7 +3390,7 @@ P1
 		v.ward_or_location, t.time_completed, tt.name AS test_name, m.name AS measure_name, tr.result
 		FROM tests t INNER JOIN test_types tt ON tt.id = t.test_type_id INNER JOIN test_results tr ON t.id = tr.test_id
 		INNER JOIN measures m ON tr.measure_id = m.id INNER JOIN visits v ON v.id = t.visit_id
-		INNER JOIN patients p ON p.id = v.patient_id WHERE tt.name IN ('Malaria Screening','Malaria Screening (Paeds)') AND (substr(t.time_created,1,10) BETWEEN '$start_date' AND '$end_date')
+		INNER JOIN patients p ON p.id = v.patient_id WHERE tt.name IN ('Malaria Screening','Malaria Screening (Paeds)', 'Malaria Blood Film', 'MRDT ..', 'MRDT') AND (substr(t.time_created,1,10) BETWEEN '$start_date' AND '$end_date')
 		AND tr.result NOT IN ('', '0') AND m.name IN ('Blood film', 'Results','Malaria Species','MRDT')";
 		$data = DB::select(DB::raw($sql_query));
 		return $data;
@@ -3455,11 +3455,11 @@ P1
 			
 			$result_arr = array('No parasite seen', 'No parasite', 'no parasites seen', 'nps', 'NMPS','no malaria palasite seen', 'no malaria parasite seen');
 			$neg_micro_results = array_map('strtoupper', $result_arr);
-			$m_micro = array_map('strtoupper', array('Blood film', 'Malaria Species'));
+			$m_micro = array_map('strtoupper', array('BLOOD FILM', 'MALARIA SPECIES', 'RESULTS'));
 
 			foreach($data as $d){
 				array_push($wards, $d->ward_or_location);
-				if($d->measure_name == 'MRDT' && $d->result == 'Positive'){
+				if($d->measure_name == 'MRDT' && (strtoupper($d->result) ==  'POSITIVE' || strtoupper($d->result) == 'POSTIVE')){
 					if($d->age <= 5){
 						array_push($pos_mrdt_u5, $d->ward_or_location);
 						array_push($pos_mrdt_uu5, $d->id);
@@ -3488,7 +3488,7 @@ P1
 						}
 					}
 				}
-				elseif($d->measure_name == 'MRDT' && $d->result == 'Negative'){
+				elseif($d->measure_name == 'MRDT' && (strtoupper($d->result) ==  'NEGATIVE')){
 					if($d->age <= 5){
 						array_push($neg_mrdt_u5, $d->ward_or_location);
 						array_push($neg_mrdt_uu5, $d->id);
@@ -3517,7 +3517,7 @@ P1
 						}
 					}
 				}
-				elseif($d->measure_name == 'MRDT' && $d->result == 'Invalid'){
+				elseif($d->measure_name == 'MRDT' && (strtoupper($d->result) ==  'INVALID')){
 					if($d->age <= 5){
 						array_push($inv_mrdt_u5, $d->ward_or_location);
 						array_push($inv_mrdt_uu5, $d->id);
