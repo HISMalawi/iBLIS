@@ -2339,7 +2339,7 @@ P1
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film') 
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name IN ('Blood film', 'Results','Malaria Species')
@@ -2350,7 +2350,7 @@ P1
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film')  
 								AND ts.name  IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name IN ('Blood film', 'Results','Malaria Species')
@@ -2364,7 +2364,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film') 
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) <= 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2378,7 +2378,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film') 
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) > 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2392,7 +2392,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film') 
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) <= 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2407,7 +2407,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film')  
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) > 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2422,7 +2422,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film') 
 								AND p.dob IS NULL
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2436,7 +2436,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'Malaria Blood Film') 
 								AND p.dob IS NULL
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2449,7 +2449,7 @@ P1
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'MRDT ..', 'MRDT')
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name = 'MRDT'
@@ -2461,7 +2461,7 @@ P1
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'MRDT ..', 'MRDT') 
 								AND ts.name  IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name = 'MRDT'
@@ -2474,7 +2474,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'MRDT ..', 'MRDT')
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) <= 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2488,7 +2488,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'MRDT ..', 'MRDT')
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) <= 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2502,7 +2502,7 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'MRDT ..', 'MRDT')
 								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) > 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
@@ -2516,8 +2516,8 @@ P1
 								INNER JOIN visits v ON v.id = t.visit_id	
 								INNER JOIN patients p ON p.id = v.patient_id
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
-								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) <= 5)
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'MRDT ..', 'MRDT') 
+								AND (substr(t.time_created,1,4) - substr(p.dob,1,4) > 5)
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name = 'MRDT' 
@@ -2528,7 +2528,7 @@ P1
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
 								INNER JOIN measures m ON m.id = tr.measure_id
-								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)') 
+								WHERE tt.name IN ('Malaria Screening', 'Malaria Screening (Paeds)', 'MRDT ..', 'MRDT')
 								AND ts.name  IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' 
 								AND m.name = 'MRDT'
