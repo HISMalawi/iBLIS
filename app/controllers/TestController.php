@@ -1438,7 +1438,9 @@ P1
 
 			if ($isCrossMatch)
 			{
-				$rr = DB::select(DB::raw("SELECT test_id FROM test_results WHERE result = :res"), ['res' => $res]);
+				$rr = DB::select(DB::raw("SELECT test_id FROM test_results WHERE result <> '' 
+					AND result = :res AND measure_id = :measure_id ORDER BY time_entered DESC
+    			LIMIT 15000"), ['res' => $res, 'measure_id' => 126 ]);
 				if (count($rr) > 0) {
 					$testIds = array_column($rr, 'test_id');
 					DB::table('test_results')->whereIn('test_id', $testIds)->delete();
