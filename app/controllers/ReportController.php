@@ -2537,7 +2537,7 @@ P1
 			"Trypanosome tests" => "SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
-								WHERE tt.name = 'Trypanosome tests' 
+								WHERE tt.name IN ('Trypanosome tests', 'TRYPANOSOMIASIS')
 								AND ts.name IN ('verified', 'completed')
 								AND substr(t.time_created,1,7) = '$period' ",
 
@@ -2545,9 +2545,9 @@ P1
 								INNER JOIN test_types tt ON tt.id = t.test_type_id
 								INNER JOIN test_statuses ts ON ts.id = t.test_status_id
 								INNER JOIN test_results tr ON tr.test_id = t.id 
-								WHERE tt.name = 'Trypanosome tests' 
+								WHERE tt.name IN ('Trypanosome tests', 'TRYPANOSOMIASIS')
 								AND ts.name IN ('verified', 'completed')
-								AND tr.result = 'Positive'
+								AND tr.result IN ('Positive', 'Seen')
 								AND substr(t.time_created,1,7) = '$period' ",
 
 			"Urine microscopy total" =>"SELECT COUNT(DISTINCT t.id) AS test_count FROM tests t 
