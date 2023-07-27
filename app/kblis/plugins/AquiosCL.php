@@ -75,6 +75,9 @@ class AquiosCL extends \KBLIS\Instrumentation\AbstractInstrumentor
         };
 
         
+        if (!empty($json["machine_name"])){
+            $results["machine_name"] = $json["machine_name"];
+        }
         return $results;
 
     }

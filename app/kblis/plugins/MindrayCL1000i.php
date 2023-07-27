@@ -61,6 +61,9 @@ public function getResult($specimen_id = 0,$tracking_number = 0)
 					$results["machine_name"] = $json["machine_name"];
 				}
 
+        if (!empty($json["machine_name"])){
+            $results["machine_name"] = $json["machine_name"];
+        }
         return $results;
 
     }
