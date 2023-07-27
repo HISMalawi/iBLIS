@@ -605,7 +605,7 @@ P1
 	public function extractBloodBankMohDiagnonisticStats($indicator,$month,$year){
 		$period = $year."-".$month;
 		$data = array(
-		"Blood grouping done on Patients" => "SELECT count(*) AS test_count FROM tests t
+		"Blood grouping done on Patients" => "SELECT count(DISTINCT t.id) AS test_count FROM tests t
 								WHERE t.test_status_id IN 
 									(SELECT id FROM test_statuses WHERE name IN ('verified', 'completed'))
 								AND t.test_type_id = 
@@ -645,7 +645,9 @@ P1
 							AND t.test_type_id = 
 								(SELECT id FROM test_types WHERE name = 'Cross-match')
 							AND t.visit_id IN 
-								(SELECT id FROM visits WHERE ward_or_location IN ('Others', 'Other'))			
+								(SELECT id FROM visits WHERE ward_or_location NOT IN ('Labour', 'Labour Ward', 'EM LW', 'Maternity','PNW', '2A', '2B', '3A', '3B', 'LW', 'Maternity Ward', 'CWA', 'CWB', 'CWC', 'EM Nursery', 'Under 5 Clinic', 'ward 9','Paediatric Ward','Paeds Neuro',
+								 'Nursery', 'Paediatric', 'Peads Special Care Ward', 'Paeds Medical','Peads Isolation Centre', 'Paediatric Surgical', 'Paediatric Medical','Paeds Orthopedic',
+								 'Children\'s ward', 'Peads Moyo', 'Peads Nursery', 'Peads Oncology', 'Peads Orthopeadics', 'Peads Surgical Ward', 'Mercy James Paediatric Centre'))			
 							AND substr(t.time_created,1,7) = '$period'",
 		
 		"X-matches done on patients with Hb ≤ 6.0g/dl" => "SELECT COUNT(DISTINCT ot.id) AS test_count 
@@ -3524,7 +3526,7 @@ P1
 					}
 					else{
 						array_push($inv_mrdt_o5, $d->ward_or_location);
-						array_push($inv_mrdt_0o5, $d->id);
+						array_push($inv_mrdt_oo5, $d->id);
 					}
 				}
 				elseif(in_array(strtoupper($d->measure_name), $m_micro) && !in_array(strtoupper($d->result), $neg_micro_results)){
