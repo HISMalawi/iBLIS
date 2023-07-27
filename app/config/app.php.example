@@ -95,7 +95,7 @@ return array(
 	'url' => 'http://iblis',
 
 	'version' => 'v2.7.2',
-	'defaultAutoLogOutTime' => 15, // 15minutes
+	'defaultAutoLogOutTime' => 30, // 30minutes
 	'useDefaultAccessionNumberLength' => true,
 
 	/*
