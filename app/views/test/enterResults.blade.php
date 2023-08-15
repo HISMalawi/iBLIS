@@ -59,20 +59,20 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6">
-                    {{ Form::open(array('route' => array('test.saveResults',$test->id), 'method' => 'POST',
+                        {{ Form::open(array('route' => array('test.saveResults',$test->id), 'method' => 'POST',
                         'id' => 'form-enter-results')) }}
-		        @if($test->testType->instruments->count() > 0)
-				<?php
-                                	$typeid = $test->test_type_id;
-                                	$r = DB::select(DB::raw("SELECT instruments.name FROM instruments INNER JOIN instrument_testtypes ON instruments.id = instrument_testtypes.instrument_id WHERE instrument_testtypes.test_type_id ='$typeid' LIMIT 1"));
-                                	$machine_name = $r[0]->name;
-			        	#var_dump($machine_name);exit;
-                        	 ?>
+                        @if($test->testType->instruments->count() > 0)
+                        <?php
+                                            $typeid = $test->test_type_id;
+                                            $r = DB::select(DB::raw("SELECT instruments.name FROM instruments INNER JOIN instrument_testtypes ON instruments.id = instrument_testtypes.instrument_id WHERE instrument_testtypes.test_type_id ='$typeid' LIMIT 1"));
+                                            $machine_name = $r[0]->name;
+                                #var_dump($machine_name);exit;
+                                    ?>
 
-				 {{ Form::hidden('machine_name', $machine_name, array('id' => 'machine_name')) }}
-                        @endif
+                        {{ Form::hidden('machine_name', $machine_name, array('id' => 'machine_name')) }}
+                                @endif
 
-                        @foreach($test->testType->measures as $measure)
+                                @foreach($test->testType->measures as $measure)
                             <div class="form-group">
                                 <?php
                                 $ans = "";
@@ -161,8 +161,8 @@
                                 </span> '.trans('messages.save-test-results'),
                                 array('class' => 'btn btn-default', 'onclick' => 'submit()')) }}
                         </div>
-                    {{ Form::close() }}
-                    @if(count($test->testType->organisms)>0)
+                        {{ Form::close() }}
+                        @if(count($test->testType->organisms)>0)
                         <div class="panel panel-success">  <!-- Patient Details -->
                             <div class="panel-heading">
                                 <h3 class="panel-title">{{trans("messages.culture-worksheet")}}</h3>
@@ -233,21 +233,21 @@
                                                         ?>
                                                     @endforeach
                                                 @endif
-                                                {{ ($cnt%3==0)?"<div class='row $zebra'>":"" }}
-                                                <?php
-                                                    $cnt++;
-                                                    $zebra = (((int)$cnt/2)%2==1?"row-striped":"");
-                                                ?>
-                                                <div style="display: {{$checked ? '' : 'none'}}" class="col-md-5" id="organism{{$value->id}}">
-                                                    <label  class="checkbox">
-                                                        
-                                                        <input type="checkbox" name="organism[]" value="{{ $value->id}}" {{ $checked }} onchange="javascript:showSusceptibility(<?php echo $value->id; ?>)" />{{$value->name}}
-                                                        
-                                                        <button type="button" style="color:red;font-size:35px;" class="close" 
-                                                        onclick="cancelSelectedOrganism({{$value->id}},{{$test->id}})">&times;</button>
-                                                    </label>
+                                                <div class="row {{ ($cnt % 3 == 0) ? $zebra : '' }}">
+                                                    <?php
+                                                        $cnt++;
+                                                        $zebra = (((int)$cnt/2)%2==1?"row-striped":"");
+                                                    ?>
+                                                    <div style="display: {{$checked ? '' : 'none'}}" class="col-md-5" id="organism{{$value->id}}">
+                                                        <label  class="checkbox">
+                                                            
+                                                            <input type="checkbox" name="organism[]" value="{{ $value->id}}" {{ $checked }} onchange="javascript:showSusceptibility(<?php echo $value->id; ?>)" />{{$value->name}}
+                                                            
+                                                            <button type="button" style="color:red;font-size:35px;" class="close" 
+                                                            onclick="cancelSelectedOrganism({{$value->id}},{{$test->id}})">&times;</button>
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                                {{ ($cnt%3==0)?"</div>":"" }}
                                                 <?php $checked = false ?>
                                             @endforeach
                                         </div>
@@ -323,8 +323,7 @@
                                 {{ Form::close() }}
                                     <?php $checker = false ?>
                                 @endforeach
-                              </div>
-                            </div> <!-- ./ panel-body -->
+                            </div>
                         </div>
                         @endif
                     </div>
