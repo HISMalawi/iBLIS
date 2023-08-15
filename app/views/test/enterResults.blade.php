@@ -125,31 +125,6 @@
 
 									</div>
                                 @elseif ( $measure->isFreeText() ) 
-                                    @if( $measure->name == "Clinical Data" && $location_name == true )
-                                        <div class="form-group">
-                                            {{ Form::label($fieldName, $measure->name) }}
-                                            <?php
-                                                $sense = '';
-                                                $datepicker = '';
-
-                                                if($measure->name=="Sensitivity"||$measure->name=="sensitivity"){
-                                                    $sense = ' sense'.$test->id;
-                                                }
-                                                if($measure->name == "Expiry Date"){
-                                                    $datepicker = ' datepicker';
-                                                }
-                                            ?>
-                                            {{Form::text($fieldName, $ans, 
-                                                array('style' => 'display: none', 'id' => 'data_txtxt' ,'class' => 'form-control'.$sense.$datepicker))}}
-
-
-                                            {{ Form::button('<span >
-                                            </span> '.'Enter '.$measure->name,
-                                            array('class' => 'btn btn-default', 'onclick' => 'load_data_modal()')) }}
-                                        </div>
-
-                                    
-                                    @else
                                         {{ Form::label($fieldName, $measure->name) }}
                                         <?php
                                             $sense = '';
@@ -163,8 +138,6 @@
                                             }
                                         ?>
                                         {{Form::text($fieldName, $ans, array('class' => 'form-control'.$sense.$datepicker))}}
-
-                                    @endif
                                 @endif
 
                                     <span class="unit pull-right">
@@ -172,25 +145,17 @@
                                     </span>
                             </div>
                         @endforeach
-                             @if($location_name == true )
-                                <div class="form-group">
-                                    {{ Form::label('interpretation', trans('messages.remarks')) }}
-                                    {{ Form::textarea('interpretation', $test->interpretation, 
-                                        array( 'style' => 'display: none', 'id' => 'remarks_txtxt', 'class' => 'form-control result-interpretation', 'rows' => '2')) }}
-
-                                    {{ Form::button('<span >
-                                    </span> '.'Enter '. trans('messages.remarks'),
-                                    array('class' => 'btn btn-default', 'onclick' => 'load_remarks_modal()')) }}
-
-                                </div>
-                                
-                            @else
-                                <div class="form-group">
-                                    {{ Form::label('interpretation', trans('messages.remarks')) }}
-                                    {{ Form::textarea('interpretation', $test->interpretation, 
-                                        array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
-                                </div>
-                            @endif
+                            
+                        {{ Form::label('interpretation', trans('messages.remarks')) }}
+                        <div style="margin-left: 200px;">
+                        {{ Form::textarea('interpretation', $test->interpretation) }}
+                            <script>
+                                $(document).ready(function () {
+                                        CKEDITOR.replace('interpretation');
+                                });
+                                </script>
+                        </div>
+                        
                         <div class="form-group actions-row" style="margin-top: 50px;">
                             {{ Form::button('<span class="glyphicon glyphicon-save">
                                 </span> '.trans('messages.save-test-results'),
@@ -648,8 +613,12 @@
                 <div class="modal-body">
                 
                     <div class="modal-data">
-                        <textarea name="remarks" id="remarks_txt"  cols="110" rows="25" placeholder="type here"> 
-                        </textarea>
+                        <textarea name="remarks" id="remarks_txt"></textarea>
+                        <script>
+                        $(document).ready(function () {
+                            CKEDITOR.replace('remarks_txt');
+                        });
+                        </script>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -145,8 +145,14 @@
 		                @endforeach
 		                <div class="form-group">
 		                    {{ Form::label('interpretation', trans('messages.remarks')) }}
-		                    {{ Form::textarea('interpretation', $test->interpretation, 
-		                        array('class' => 'form-control result-interpretation', 'rows' => '2')) }}
+												<div style="margin-left: 200px;">
+														{{ Form::textarea('interpretation', $test->interpretation) }}
+														<script>
+														$(document).ready(function () {
+																CKEDITOR.replace('interpretation');
+														});
+														</script>
+												</div>
 		                </div>
 		                <div class="form-group actions-row" align="left">
 							{{ Form::button('<span class="glyphicon glyphicon-save"></span> '.trans('messages.update-test-results'),
