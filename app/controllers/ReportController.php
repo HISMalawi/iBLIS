@@ -6809,7 +6809,7 @@ P1
   			IN (SELECT wards.name FROM wards) 
   			AND test_types.name='Culture & Sensitivity' 
   			AND (SUBSTRING(tests.time_created,1,7) ='$ward_check_date') 
-  			GROUP BY iblis.visits.ward_or_location 
+  			GROUP BY visits.ward_or_location 
   			Order By visits.visit_type ";
 
   		$ward_counts = DB::select(DB::raw($sql));

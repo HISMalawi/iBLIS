@@ -26,6 +26,7 @@ class Measure extends Eloquent
 	const ALPHANUMERIC = 2;
 	const AUTOCOMPLETE = 3;
 	const FREETEXT = 4;
+	const RICHTEXT = 5;
 
 	/**
 	 * Measure Range relationship
@@ -96,6 +97,15 @@ class Measure extends Eloquent
 	public function isNumeric()
 	{
 		if($this->measureType->id == Measure::NUMERIC){
+			return true;
+		}
+		else 
+			return false;
+	}
+
+	public function isRichText()
+	{
+		if($this->measureType->id == Measure::RICHTEXT){
 			return true;
 		}
 		else 

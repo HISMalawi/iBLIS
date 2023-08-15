@@ -96,6 +96,18 @@
 		                            <span class='alert'>
 
 		                            </span>
+																@elseif ( $measure->isRichText()) 
+											{{ Form::label($fieldName , $measure->name) }}
+											<div style="margin-left: 200px;">
+											{{ Form::textarea($fieldName, $ans)}}
+											<script>
+												$(document).ready(function () {
+														var id = <?php echo json_encode($fieldName); ?>;
+														CKEDITOR.replace(id);
+												});
+												</script>
+
+									</div>
 								@elseif ( $measure->isAlphanumeric() || $measure->isAutocomplete() ) 
 			                        <?php
 			                        $measure_values = array();

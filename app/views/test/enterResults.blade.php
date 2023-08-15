@@ -111,6 +111,19 @@
                                         'data-measureid' => $measure->id
                                         )) 
                                     }}
+                                    </span>
+                                @elseif ( $measure->isRichText()) 
+                                {{ Form::label($fieldName , $measure->name) }}
+											<div style="margin-left: 200px;">
+											{{ Form::textarea($fieldName)}}
+											<script>
+												$(document).ready(function () {
+														var id = <?php echo json_encode($fieldName); ?>;
+														CKEDITOR.replace(id);
+												});
+												</script>
+
+									</div>
                                 @elseif ( $measure->isFreeText() ) 
                                     @if( $measure->name == "Clinical Data" && $location_name == true )
                                         <div class="form-group">
@@ -153,6 +166,7 @@
 
                                     @endif
                                 @endif
+
                                     <span class="unit pull-right">
                                         {{($measure->unit)}}
                                     </span>
@@ -650,6 +664,7 @@
 
 
 <script type="text/javascript">
+
         
     function load_remarks_modal()
     {

@@ -89,7 +89,7 @@ class MeasureController extends \BaseController {
             $measure->unit = $data['unit'];
             $measure->description = $data['description'];
             $measure->save();
-            if ($measureTypeId != Measure::FREETEXT) {
+            if ($measureTypeId != Measure::FREETEXT && $measureTypeId != Measure::RICHTEXT) {
                 if ($measureTypeId == Measure::NUMERIC){
                     $val['agemin'] = $data['agemin'];
                     $val['agemax'] = $data['agemax'];

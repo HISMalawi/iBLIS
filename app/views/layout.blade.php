@@ -15,6 +15,7 @@
         <script type="text/javascript" src="{{ URL::asset('js/dataTables.bootstrap.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/script.js?v=2') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/spin.js') }} "></script>
+        <script type="text/javascript" src="{{ URL::asset('js/ckeditor/ckeditor.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('highcharts/highcharts.js') }} "></script>
         <script type="text/javascript" src="{{ URL::asset('highcharts/exporting.js') }} "></script>
         <title>{{ Config::get('kblis.name') }} {{ Config::get('app.version') }}</title>
@@ -36,6 +37,7 @@
             </div>
         </div>
         @include("footer")
+       
     </body>
 
     <script>
