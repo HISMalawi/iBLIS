@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Artisan;
 
 
 Artisan::add(new NlimsAunthenticate); //authenticating ready for user creation at nlims
@@ -18,4 +19,5 @@ Artisan::add(new IndexTests);
 Artisan::add(new UpdateElasticIndex);
 // Artisan::add(new FixCode);
 Artisan::add(new AuthorizeCompletedTests);
+Artisan::add(new AlterResultColumnType);
 
