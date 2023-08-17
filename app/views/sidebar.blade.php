@@ -300,7 +300,7 @@
 					</li>
 					<li>
 						<div>
-						 <a href="{{ URL::route("reports.aggregate.cultureSensitivityCounts")}}">
+						 <a href="{{ URL::route('reports.aggregate.cultureSensitivityCounts')}}">
 								<span class="glyphicon glyphicon-tag"></span> {{trans('messages.tab_label')}}</a>
 						</div>
 					</li>
@@ -308,6 +308,12 @@
 						<div><a href="{{ URL::route('reports.malariaMicroscopy')}}">
 							<span class="glyphicon glyphicon-tag"></span>
 							{{Lang::choice('messages.malaria-report', 2)}}</a>
+						</div>
+					</li>
+					<li>
+						<div><a href="{{ URL::route('reports.bloodDonorRegister')}}">
+							<span class="glyphicon glyphicon-tag"></span>
+							{{Lang::choice('messages.blood-donor-register', 2)}}</a>
 						</div>
 					</li>
 					

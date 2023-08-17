@@ -810,5 +810,6 @@ return array(
     'create-test-panel' => 'Create Test Panel',
     'edit-test-panel' => 'Edit Test Panel',
     'success-updating-test-panel' => 'The test panel has been succesfully updated!',
-    'success-creating-test-panel' => 'The test panel has been succesfully created!'
+    'success-creating-test-panel' => 'The test panel has been succesfully created!',
+    'blood-donor-register' => 'Blood Donor Register'
 );

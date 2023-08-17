@@ -634,6 +634,10 @@ Route::group(array("before" => "auth"), function()
             "as"   => "reports.malariaMicroscopy",
             "uses" => "ReportController@malariaMicroscopy"
         ));
+        Route::get("/blood_donor_register", array(
+            "as"   => "reports.bloodDonorRegister",
+            "uses" => "ReportController@bloodDonorRegister"
+        ));
         Route::post("/malariamicroscopy", array(
             "as"   => "reports.malariaMicroscopy",
             "uses" => "ReportController@malariaMicroscopyResults"

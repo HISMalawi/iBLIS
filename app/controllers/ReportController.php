@@ -7023,4 +7023,24 @@ P1
 
   	}
 
+		public function bloodDonorRegister()
+		{
+			$searchString = Input::get('search');
+			if(empty($searchString)) {
+				$donor = Test::where('test_type_id', '=', TestType::getTestTypeIdByTestName('Blood Donor Test'))
+						->orderBy('time_created', 'desc')
+						->limit(100)
+						->get();
+			} 
+			else {
+				$search = Input::get('search');
+				$donor = Test::searchOn($search)->where('test_type_id', '=', TestType::getTestTypeIdByTestName('Blood Donor Test'))
+						->orderBy('time_created', 'desc')
+						->limit(100)
+						->get();
+			}
+			return View::make('reports.blooddonorregister.index')
+						->with('donors',$donor);
+		}
+
 }
