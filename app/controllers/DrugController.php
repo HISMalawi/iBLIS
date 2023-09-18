@@ -5,7 +5,8 @@ use Illuminate\Database\QueryException;
  * Contains drugs resources  
  * 
  */
-class DrugController extends \BaseController {
+class DrugController extends \BaseController
+{
 
 	/**
 	 * Display a listing of the resource.
@@ -17,7 +18,7 @@ class DrugController extends \BaseController {
 		//List all drugs
 		$drugs = Drug::orderBy('name', 'ASC')->get();
 		//Load the view and pass the drugs
-		return View::make('drug.index')->with('drugs',$drugs);
+		return View::make('drug.index')->with('drugs', $drugs);
 	}
 
 
@@ -43,25 +44,26 @@ class DrugController extends \BaseController {
 		//Validation
 		$rules = array('name' => 'required|unique:drugs,name');
 		$validator = Validator::make(Input::all(), $rules);
-	
+
 		//process
-		if($validator->fails()){
+		if ($validator->fails()) {
 			return Redirect::back()->withErrors($validator);
-		}else{
+		} else {
 			//store
 			$drug = new Drug;
 			$drug->name = Input::get('name');
 			$drug->description = Input::get('description');
-			$drug->hl7_identifier = Input::get('hl7_identifier');
-			$drug->hl7_text = Input::get('hl7_text');
-            $drug->hl7_coding_system = Input::get('hl7_coding_system');
-			try{
+			$drug->hl7_identifier = '';
+			$drug->hl7_text = '';
+			$drug->hl7_coding_system = '';
+			try {
 				$drug->save();
 				$url = Session::get('SOURCE_URL');
-            
-            	return Redirect::to($url)
-					->with('message', trans('messages.success-creating-drug')) ->with('activedrug', $drug ->id);
-			}catch(QueryException $e){
+
+				return Redirect::to($url)
+					->with('message', trans('messages.success-creating-drug'))->with('activedrug', $drug->id);
+			} catch (QueryException $e) {
+				var_dump($e);
 				Log::error($e);
 			}
 		}
@@ -79,7 +81,7 @@ class DrugController extends \BaseController {
 		//show a drug
 		$drug = Drug::find($id);
 		//show the view and pass the $drug to it
-		return View::make('drug.show')->with('drug',$drug);
+		return View::make('drug.show')->with('drug', $drug);
 	}
 
 
@@ -119,16 +121,16 @@ class DrugController extends \BaseController {
 			$drug = Drug::find($id);
 			$drug->name = Input::get('name');
 			$drug->description = Input::get('description');
-            $drug->hl7_identifier = Input::get('hl7_identifier');
-            $drug->hl7_text = Input::get('hl7_text');
-            $drug->hl7_coding_system = Input::get('hl7_coding_system');
+			$drug->hl7_identifier = Input::get('hl7_identifier');
+			$drug->hl7_text = Input::get('hl7_text');
+			$drug->hl7_coding_system = Input::get('hl7_coding_system');
 			$drug->save();
 
 			// redirect
 			$url = Session::get('SOURCE_URL');
-            
-            return Redirect::to($url)
-				->with('message', trans('messages.success-updating-drug')) ->with('activetestcategory', $drug ->id);
+
+			return Redirect::to($url)
+				->with('message', trans('messages.success-updating-drug'))->with('activetestcategory', $drug->id);
 		}
 	}
 
@@ -155,20 +157,20 @@ class DrugController extends \BaseController {
 		$drug = Drug::find($id);
 
 		/*$testCategoryInUse = TestType::where('test_category_id', '=', $id)->first();
-		if (empty($testCategoryInUse)) {
-		    // The test category is not in use
-			$testcategory->delete();
-		} else {
-		    // The test category is in use
-		    $url = Session::get('SOURCE_URL');
-            
-            return Redirect::to($url)
-		    	->with('message', trans('messages.failure-test-category-in-use'));
-		}*/
+			if (empty($testCategoryInUse)) {
+					// The test category is not in use
+				$testcategory->delete();
+			} else {
+					// The test category is in use
+					$url = Session::get('SOURCE_URL');
+							
+							return Redirect::to($url)
+						->with('message', trans('messages.failure-test-category-in-use'));
+			}*/
 		// redirect
-			$url = Session::get('SOURCE_URL');
-            
-            return Redirect::to($url)
+		$url = Session::get('SOURCE_URL');
+
+		return Redirect::to($url)
 			->with('message', trans('messages.success-deleting-drug'));
 	}
 }
