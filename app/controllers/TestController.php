@@ -174,27 +174,22 @@ class TestController extends \BaseController {
 
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
-
 		$testIds = $tests->lists('id');
-
-		//Make sure that if first or last element is a panel sub test,
-		// pull all tests in that panel and append to pagination results- Baobab
-
-		if ($tests->last() && $tests->last()->panel_id){
-			$missingPanelTests = Test::where('panel_id', $tests->last()->panel_id)
-									->whereNotIn('id', $testIds);
-
-			$testIds = array_merge($testIds, $missingPanelTests->lists('id'));
+		// Load tests in panels regardless of the department they belong to
+		if ($tests){
+			foreach($tests as $test_)
+			{
+				if ($test_->panel_id){
+					$missingPanelTests = Test::where('panel_id', $test_->panel_id)
+											->whereNotIn('id', $testIds);
+					
+					$testIds = array_merge($testIds, $missingPanelTests->lists('id'));
+				
+				}
+			}
+			rsort($testIds);
 		}
 
-		if ($tests->first() && $tests->first()->panel_id){
-
-			$missingPanelTests = Test::where('panel_id', $tests->first()->panel_id)
-				->whereNotIn('id', $testIds);
-
-			$testIds = array_merge($missingPanelTests->lists('id'), $testIds);
-		}
-		
 		if(count($tests) == 0 && Session::has('search_string')){
 			Session::set('message', 'Test does not belong to current lab section');
 		}
@@ -204,7 +199,6 @@ class TestController extends \BaseController {
 			$validator_remote_message = $input['validator_remote_message'];
 			Session::set('message', $validator_remote_message );
 		}
-
 		
 		// Load the view and pass it the tests
 		return View::make('test.index')
