@@ -20,4 +20,5 @@ Artisan::add(new UpdateElasticIndex);
 // Artisan::add(new FixCode);
 Artisan::add(new AuthorizeCompletedTests);
 Artisan::add(new AlterResultColumnType);
+Artisan::add(new ExtendTestToCancerSection);
 
