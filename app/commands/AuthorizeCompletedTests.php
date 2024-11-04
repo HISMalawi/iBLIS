@@ -1,53 +1,37 @@
 <?php
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 class AuthorizeCompletedTests extends Command {
 
-	/**
-	 * The console command name.
-	 *
-	 * @var string
-	 */
 	protected $name = 'authorize:completed';
+	protected $description = 'Authorizes completed tests starting from a specified date.';
 
-	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
-	protected $description = 'Authorizes completed tests start from specified date.';
+	protected $users = [
+		"Haematology" => ["tumbie", "lkadango"],
+		"Microbiology" => ["kzingwangwa", "ejphillipo"],
+		"Parasitology" => ["MAWONGA", "FKumwenda"],
+		"Blood bank" => ["WizdomK", "Kamulanjeh"],
+		"Biochemistry" => ["fredson", "achilenje"]
+	];
 
-	/**
-	 * Create a new command instance.
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 	}
 
-	/**
-	 * Execute the console command.
-	 *
-	 * @return mixed
-	 */
-	public function fire()
-	{
-		//Date authorized == date test completed
-		// keep a log of all test authorized
-		$max_date = '2022-09-01';
-		$date_now = date('Y-m-d H:i:s');
-		$authorizerID = 1;
-		$testIDs = Test::where('time_created','<', $max_date)->where('test_status_id', '=', Test::COMPLETED)->lists('id');
+	public function fire() {
+		$startDate = $this->argument('start_date');;
+		$endDate = $this->argument('end_date');
+		$currentDate = date('Y-m-d H:i:s');
+		$testIDs = Test::where('time_created', '>', $startDate)
+			->where('time_created', '<', $endDate)
+			->where('test_status_id', '=', Test::COMPLETED)
+			->lists('id');
 		$total_test_affected_arr = [];
 
-		//CSV file
-		if(sizeof($testIDs)>0){
-			$file_headers = array('Test ID', 'Test Status', 'Test Date Create', 'Test Date Complete','Test Date Authorized', 'Test Accession Number');
+		if (sizeof($testIDs) > 0) {
+			$file_headers = ['Test ID', 'Test Status', 'Test Date Create', 'Test Date Complete', 'Test Date Authorized', 'Test Accession Number'];
 			$before = fopen('before_authorization.csv', 'w');
 			fputcsv($before, $file_headers);
 			fclose($before);
@@ -56,133 +40,131 @@ class AuthorizeCompletedTests extends Command {
 			fclose($after);
 		}
 
-		foreach($testIDs as $testID){
+		foreach ($testIDs as $testID) {
 			$test = Test::find($testID);
-			if($test->testStatus->name != 'verified'){
-				array_push($total_test_affected_arr, $testID);
-				// Keep track of tests before authorization
-				$before_auth_csv = fopen('before_authorization.csv', 'a');
-				$file_arr = [
-					$test->id, $test->testStatus->name, $test->time_created, $test->time_completed, $test->time_verified, $test->specimen->accession_number
-				];
-				fputcsv($before_auth_csv, $file_arr);
-				fclose($before_auth_csv);
+			if ($test && $test->testStatus->name != 'verified') {
+				$total_test_affected_arr[] = $testID;
+				$authorizerID = $this->getRandomAuthorizer($test->testType->testCategory->name);
 
-				$date_of_authorization = $test->time_completed;
-				if(!$test->panel_id) {
-					$test->test_status_id = Test::VERIFIED;
-					$test->time_verified = $date_of_authorization;
-					$test->verified_by = $authorizerID;
-					$test->save();
-
-						$dat = new UnsyncOrder;
-						$dat->specimen_id = $testID;
-						$dat->data_not_synced = "verified";
-						$dat->data_level = "test";
-						$dat->sync_status = "not-synced";
-						$dat->updated_by_name = "";
-						$dat->updated_by_id = "" ;
-						$dat->save();
-
-					$testIds = array($testID);
-				
-					$count = DB::select(DB::raw("SELECT tests.specimen_id AS specimen_id FROM tests WHERE tests.id=$testID"));
-
-					if($count[0]->specimen_id)
-					{   $id =$count[0]->specimen_id;				
-						$co = DB::select(DB::raw("SELECT * FROM tests WHERE specimen_id='$id'"));
-						if(count($co)>1)
-						{
-							$ver = Test::VERIFIED;
-							DB::update(DB::raw("UPDATE tests SET tests.test_status_id ='$ver'
-												WHERE tests.specimen_id='$id'
-												AND
-												(tests.test_type_id ='29'AND tests.test_type_id ='30')"));
-								$dat = new UnsyncOrder;
-								$dat->specimen_id = $id;
-								$dat->data_not_synced = "verified";
-								$dat->data_level = "specimen";
-								$dat->sync_status = "not-synced";
-								$dat->updated_by_name = "";
-								$dat->updated_by_id = "" ;
-								$dat->save();
-						}				
-					}			
+				if($authorizerID !== NULL){
+					$timeCompleted = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $test->time_completed);
+					$timeCompleted->addMinutes(20);
+					$this->writeToCSV('before_authorization.csv', $test);
+					$date_of_authorization = $timeCompleted ?? $currentDate;
+					if (!$test->panel_id) {
+						$this->authorizeSingleTest($test, $authorizerID, $date_of_authorization);
+					} else {
+						$this->authorizePanelTests($test, $authorizerID, $date_of_authorization);
+					}
+					$test = Test::find($testID);
+					$this->writeToCSV('after_authorization.csv', $test);
+					echo "Authorized test with id: " . $testID . "\n";
 				}else{
-					Test::where('panel_id', $test->panel_id)
-							->update(
-								array(
-									'test_status_id' => Test::VERIFIED,
-									'time_verified' => $date_of_authorization,
-									'verified_by' => $authorizerID
-									)
-							);
-					$testIds = Test::where('panel_id', $test->panel_id)->lists('id');
+					echo "Could not find an authorizer for test with id: " . $testID . "\n Skipping...";
 				}
-				//Fire of entry verified event
-				foreach($testIds As $id) {
-					Event::fire('test.verified', array($id));
-						$dat = new UnsyncOrder;
-						$dat->specimen_id = $id;
-						$dat->data_not_synced = "verified";
-						$dat->data_level = "test";
-						$dat->sync_status = "not-synced";
-						$dat->updated_by_name = "";
-						$dat->updated_by_id = "" ;
-						$dat->save();
-				}
-
-				// Keep track of tests after authorization
-				$test = Test::find($testID);
-				$after_auth_csv = fopen('after_authorization.csv', 'a');
-				$file_arr = [
-					$test->id, $test->testStatus->name, $test->time_created, $test->time_completed, $test->time_verified, $test->specimen->accession_number
-				];
-				fputcsv($after_auth_csv, $file_arr);
-				fclose($after_auth_csv);
-				echo "Authorizing test with id: ".$testID."\n";
+				
 			}
-			
 		}
 
-		// Summary of data from the script
+		$this->writeSummary($currentDate, $endDate, sizeof($total_test_affected_arr));
+	}
+
+	private function authorizeSingleTest($test, $authorizerID, $date_of_authorization) {
+		$test->test_status_id = Test::VERIFIED;
+		$test->time_verified = $date_of_authorization;
+		$test->verified_by = $authorizerID;
+		$test->save();
+
+		$this->createUnsyncOrder($test->id, "test");
+
+		$count = DB::select(DB::raw("SELECT tests.specimen_id AS specimen_id FROM tests WHERE tests.id=$test->id"));
+		if (isset($count[0]->specimen_id)) {
+			$id = $count[0]->specimen_id;
+			$co = DB::select(DB::raw("SELECT * FROM tests WHERE specimen_id='$id'"));
+			if (count($co) > 1) {
+				$ver = Test::VERIFIED;
+				DB::update(DB::raw("UPDATE tests SET tests.test_status_id ='$ver' WHERE tests.specimen_id='$id' AND (tests.test_type_id = '29' OR tests.test_type_id = '30')"));
+				$this->createUnsyncOrder($id, "specimen");
+			}
+		}
+
+		Event::fire('test.verified', [$test->id]);
+	}
+
+	private function getRandomAuthorizer($department)
+    {
+	
+        $users = $this->users[$department] ?? null;
+        if ($users && count($users) > 0) {
+            $userName = array_rand($users);
+            return User::where('username', $users[$userName])->where('deleted_at', NULL)->pluck('id');
+        }
+        return null;
+    }
+
+	private function authorizePanelTests($test, $authorizerID, $date_of_authorization) {
+		Test::where('panel_id', $test->panel_id)->update([
+			'test_status_id' => Test::VERIFIED,
+			'time_verified' => $date_of_authorization,
+			'verified_by' => $authorizerID
+		]);
+
+		$testIds = Test::where('panel_id', $test->panel_id)->lists('id');
+		foreach ($testIds as $id) {
+			Event::fire('test.verified', [$id]);
+			$this->createUnsyncOrder($id, "test");
+		}
+	}
+
+	private function createUnsyncOrder($specimen_id, $data_level) {
+		$dat = new UnsyncOrder;
+		$dat->specimen_id = $specimen_id;
+		$dat->data_not_synced = "verified";
+		$dat->data_level = $data_level;
+		$dat->sync_status = "not-synced";
+		$dat->updated_by_name = "";
+		$dat->updated_by_id = "";
+		$dat->save();
+	}
+
+	private function writeToCSV($filename, $test) {
+		$file = fopen($filename, 'a');
+		$file_arr = [
+			$test->id,
+			$test->testStatus->name,
+			$test->time_created,
+			$test->time_completed,
+			$test->time_verified,
+			$test->specimen->accession_number
+		];
+		fputcsv($file, $file_arr);
+		fclose($file);
+	}
+
+	private function writeSummary($currentDate, $endDate, $total_count) {
 		$sum_data = [
 			Config::get('kblis.facility_name'),
-			$date_now,
-			sizeof($total_test_affected_arr),
-			"All completed tests created before ".$max_date,
+			$currentDate,
+			$total_count,
+			"All completed tests created before " . $endDate,
 			"All tests to have authorized status",
 			"Date authorized equal date completed"
 		];
-		$headers = array('Facility Name ', 'Date Script Run', 'Total Tests Affected', 'Criteria Before Auth Status','Criteria After Auth Status', 'Criteria Auth Time');
+		$headers = ['Facility Name ', 'Date Script Run', 'Total Tests Affected', 'Criteria Before Auth Status', 'Criteria After Auth Status', 'Criteria Auth Time'];
 		$d = fopen('summary_from_script.csv', 'w');
 		fputcsv($d, $headers);
 		fputcsv($d, $sum_data);
 		fclose($d);
 	}
 
-	/**
-	 * Get the console command arguments.
-	 *
-	 * @return array
-	 */
-	protected function getArguments()
-	{
-		return array(
-			array('example', InputArgument::REQUIRED, 'An example argument.'),
-		);
+	protected function getArguments() {
+		return [
+            ['start_date', InputArgument::REQUIRED, 'The start date in format YYYY-MM-DD.'],
+            ['end_date', InputArgument::REQUIRED, 'The end date in format YYYY-MM-DD.'],
+        ];
 	}
 
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return array(
-			array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
-		);
+	protected function getOptions() {
+		return [];
 	}
-
 }
