@@ -21,3 +21,4 @@ log/*.log
 *.lbl
 labstatreport*
 app/config/key
+authorize_users.json

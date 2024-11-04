@@ -8,17 +8,26 @@ class AuthorizeCompletedTests extends Command {
 	protected $name = 'authorize:completed';
 	protected $description = 'Authorizes completed tests starting from a specified date.';
 
-	protected $users = [
-		"Haematology" => ["tumbie", "lkadango"],
-		"Microbiology" => ["kzingwangwa", "ejphillipo"],
-		"Parasitology" => ["MAWONGA", "FKumwenda"],
-		"Blood bank" => ["WizdomK", "Kamulanjeh"],
-		"Biochemistry" => ["fredson", "achilenje"]
-	];
+	protected $users = [];
 
 	public function __construct() {
 		parent::__construct();
+		$this->users = $this->readUsersFromJSON();
 	}
+
+	private function readUsersFromJSON() {
+        $users = [];
+        $jsonFilePath = 'authorize_users.json';
+
+        if (file_exists($jsonFilePath)) {
+            $jsonData = file_get_contents($jsonFilePath);
+            $users = json_decode($jsonData, true);
+        } else {
+            echo "Could not find users.json file.\n";
+        }
+        
+        return $users;
+    }
 
 	public function fire() {
 		$startDate = $this->argument('start_date');;
