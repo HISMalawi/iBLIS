@@ -75,7 +75,7 @@ class AuthorizeCompletedTests extends Command {
 			}
 		}
 
-		$this->writeSummary($currentDate, $endDate, sizeof($total_test_affected_arr));
+		$this->writeSummary($startDate, $endDate, sizeof($total_test_affected_arr));
 	}
 
 	private function authorizeSingleTest($test, $authorizerID, $date_of_authorization) {
