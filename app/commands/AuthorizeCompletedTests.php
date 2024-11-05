@@ -155,9 +155,9 @@ class AuthorizeCompletedTests extends Command {
 			Config::get('kblis.facility_name'),
 			$currentDate,
 			$total_count,
-			"All completed tests created before " . $endDate,
+			"All completed tests created between " . $currentDate . " and " . $endDate,
 			"All tests to have authorized status",
-			"Date authorized equal date completed"
+			"Date authorized equal date completed plus 20 minutes"
 		];
 		$headers = ['Facility Name ', 'Date Script Run', 'Total Tests Affected', 'Criteria Before Auth Status', 'Criteria After Auth Status', 'Criteria Auth Time'];
 		$d = fopen('summary_from_script.csv', 'w');
