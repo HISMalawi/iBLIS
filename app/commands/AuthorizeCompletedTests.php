@@ -3,36 +3,50 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
-class AuthorizeCompletedTests extends Command {
+class AuthorizeCompletedTests extends Command
+{
 
 	protected $name = 'authorize:completed';
 	protected $description = 'Authorizes completed tests starting from a specified date.';
 
 	protected $users = [];
 
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct();
 		$this->users = $this->readUsersFromJSON();
 	}
 
-	private function readUsersFromJSON() {
-        $users = [];
-        $jsonFilePath = 'authorize_users.json';
+	private function readUsersFromJSON()
+	{
+		$users = [];
+		$jsonFilePath = 'authorize_users.json';
 
-        if (file_exists($jsonFilePath)) {
-            $jsonData = file_get_contents($jsonFilePath);
-            $users = json_decode($jsonData, true);
-        } else {
-            echo "Could not find users.json file.\n";
-        }
-        
-        return $users;
-    }
+		if (file_exists($jsonFilePath)) {
+			$jsonData = file_get_contents($jsonFilePath);
+			$users = json_decode($jsonData, true);
+		} else {
+			echo "Could not find users.json file.\n";
+		}
 
-	public function fire() {
+		return $users;
+	}
+
+	protected function create_dir($start_date, $end_date)
+	{
+		$dirName = 'public/exports/' . $start_date . '-' . $end_date;
+		if (!file_exists($dirName)) {
+			mkdir($dirName, 0777, true);
+		}
+		return $dirName;
+	}
+
+	public function fire()
+	{
 		$startDate = $this->argument('start_date');;
 		$endDate = $this->argument('end_date');
 		$currentDate = date('Y-m-d H:i:s');
+		$dir = $this->create_dir($startDate, $endDate);
 		$testIDs = Test::where('time_created', '>', $startDate)
 			->where('time_created', '<', $endDate)
 			->where('test_status_id', '=', Test::COMPLETED)
@@ -40,11 +54,11 @@ class AuthorizeCompletedTests extends Command {
 		$total_test_affected_arr = [];
 
 		if (sizeof($testIDs) > 0) {
-			$file_headers = ['Test ID', 'Test Status', 'Test Date Create', 'Test Date Complete', 'Test Date Authorized', 'Test Accession Number'];
-			$before = fopen('before_authorization.csv', 'w');
+			$file_headers = ['Test ID', 'Test Status', 'Test Date Create', 'Test Date Complete', 'Authorized By', 'Test Date Authorized', 'Test Accession Number'];
+			$before = fopen($dir . '/before_authorization.csv', 'w');
 			fputcsv($before, $file_headers);
 			fclose($before);
-			$after = fopen('after_authorization.csv', 'w');
+			$after = fopen($dir . '/after_authorization.csv', 'w');
 			fputcsv($after, $file_headers);
 			fclose($after);
 		}
@@ -55,30 +69,32 @@ class AuthorizeCompletedTests extends Command {
 				$total_test_affected_arr[] = $testID;
 				$authorizerID = $this->getRandomAuthorizer($test->testType->testCategory->name);
 
-				if($authorizerID !== NULL){
+				if ($authorizerID !== NULL) {
 					$timeCompleted = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $test->time_completed);
 					$timeCompleted->addMinutes(20);
-					$this->writeToCSV('before_authorization.csv', $test);
+					$this->writeToCSV($dir . '/before_authorization.csv', $test);
 					$date_of_authorization = $timeCompleted ?? $currentDate;
-					if (!$test->panel_id) {
-						$this->authorizeSingleTest($test, $authorizerID, $date_of_authorization);
-					} else {
-						$this->authorizePanelTests($test, $authorizerID, $date_of_authorization);
+					if ($test->test_status_id = Test::COMPLETED && $test->time_verified == null) {
+						if (!$test->panel_id) {
+							$this->authorizeSingleTest($test, $authorizerID, $date_of_authorization);
+						} else {
+							$this->authorizePanelTests($test, $authorizerID, $date_of_authorization);
+						}
 					}
-					$test = Test::find($testID);
-					$this->writeToCSV('after_authorization.csv', $test);
+					$new_test = Test::find($testID);
+					$this->writeToCSV($dir . '/after_authorization.csv', $new_test);
 					echo "Authorized test with id: " . $testID . "\n";
-				}else{
+				} else {
 					echo "Could not find an authorizer for test with id: " . $testID . "\n Skipping...";
 				}
-				
 			}
 		}
 
 		$this->writeSummary($startDate, $endDate, sizeof($total_test_affected_arr));
 	}
 
-	private function authorizeSingleTest($test, $authorizerID, $date_of_authorization) {
+	private function authorizeSingleTest($test, $authorizerID, $date_of_authorization)
+	{
 		$test->test_status_id = Test::VERIFIED;
 		$test->time_verified = $date_of_authorization;
 		$test->verified_by = $authorizerID;
@@ -101,17 +117,18 @@ class AuthorizeCompletedTests extends Command {
 	}
 
 	private function getRandomAuthorizer($department)
-    {
-	
-        $users = $this->users[$department] ?? null;
-        if ($users && count($users) > 0) {
-            $userName = array_rand($users);
-            return User::where('username', $users[$userName])->where('deleted_at', NULL)->pluck('id');
-        }
-        return null;
-    }
+	{
 
-	private function authorizePanelTests($test, $authorizerID, $date_of_authorization) {
+		$users = $this->users[$department] ?? null;
+		if ($users && count($users) > 0) {
+			$userName = array_rand($users);
+			return User::where('username', $users[$userName])->where('deleted_at', NULL)->pluck('id');
+		}
+		return null;
+	}
+
+	private function authorizePanelTests($test, $authorizerID, $date_of_authorization)
+	{
 		Test::where('panel_id', $test->panel_id)->update([
 			'test_status_id' => Test::VERIFIED,
 			'time_verified' => $date_of_authorization,
@@ -125,7 +142,8 @@ class AuthorizeCompletedTests extends Command {
 		}
 	}
 
-	private function createUnsyncOrder($specimen_id, $data_level) {
+	private function createUnsyncOrder($specimen_id, $data_level)
+	{
 		$dat = new UnsyncOrder;
 		$dat->specimen_id = $specimen_id;
 		$dat->data_not_synced = "verified";
@@ -136,13 +154,15 @@ class AuthorizeCompletedTests extends Command {
 		$dat->save();
 	}
 
-	private function writeToCSV($filename, $test) {
+	private function writeToCSV($filename, $test)
+	{
 		$file = fopen($filename, 'a');
 		$file_arr = [
 			$test->id,
 			$test->testStatus->name,
 			$test->time_created,
 			$test->time_completed,
+			$test->verifiedBy["username"],
 			$test->time_verified,
 			$test->specimen->accession_number
 		];
@@ -150,7 +170,9 @@ class AuthorizeCompletedTests extends Command {
 		fclose($file);
 	}
 
-	private function writeSummary($currentDate, $endDate, $total_count) {
+	private function writeSummary($currentDate, $endDate, $total_count)
+	{
+		$dir = $this->create_dir($currentDate, $endDate);
 		$sum_data = [
 			Config::get('kblis.facility_name'),
 			$currentDate,
@@ -160,20 +182,22 @@ class AuthorizeCompletedTests extends Command {
 			"Date authorized equal date completed plus 20 minutes"
 		];
 		$headers = ['Facility Name ', 'Date Script Run', 'Total Tests Affected', 'Criteria Before Auth Status', 'Criteria After Auth Status', 'Criteria Auth Time'];
-		$d = fopen('summary_from_script.csv', 'w');
+		$d = fopen($dir . '/summary_from_script.csv', 'w');
 		fputcsv($d, $headers);
 		fputcsv($d, $sum_data);
 		fclose($d);
 	}
 
-	protected function getArguments() {
+	protected function getArguments()
+	{
 		return [
-            ['start_date', InputArgument::REQUIRED, 'The start date in format YYYY-MM-DD.'],
-            ['end_date', InputArgument::REQUIRED, 'The end date in format YYYY-MM-DD.'],
-        ];
+			['start_date', InputArgument::REQUIRED, 'The start date in format YYYY-MM-DD.'],
+			['end_date', InputArgument::REQUIRED, 'The end date in format YYYY-MM-DD.'],
+		];
 	}
 
-	protected function getOptions() {
+	protected function getOptions()
+	{
 		return [];
 	}
 }

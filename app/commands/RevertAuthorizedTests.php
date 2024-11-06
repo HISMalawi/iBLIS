@@ -12,31 +12,70 @@ class RevertAuthorizedTests extends Command {
         parent::__construct();
     }
 
+    protected function create_dir($start_date, $end_date) {
+		$dirName = 'public/exports/'.$start_date.'-'.$end_date;
+		if (!file_exists($dirName)) {
+			mkdir($dirName, 0777, true);
+		}
+		return $dirName;
+	}
+
+    public function  index_unsync_orders(){
+        $indexName = 'idx_specimen_id';
+        $tableName = 'unsync_orders';
+        $indexExists = DB::select("SHOW INDEX FROM $tableName WHERE Key_name = ?", [$indexName]);
+        if (empty($indexExists)) {
+            DB::statement("CREATE INDEX $indexName ON $tableName (specimen_id)");
+        }
+    }
+
     public function fire() {
-        if (($handle = fopen('after_authorization.csv', 'r')) !== FALSE) {
+        $this->index_unsync_orders();
+
+        $startDate = $this->argument('start_date');;
+		$endDate = $this->argument('end_date');
+		$dir = $this->create_dir($startDate, $endDate);
+
+        if (($handle = fopen($dir.'/after_authorization.csv', 'r')) !== FALSE) {
             fgetcsv($handle);
             $revertedTests = [];
 
             while (($data = fgetcsv($handle)) !== FALSE) {
                 $testID = $data[0];
+                array_push($revertedTests, $testID);
+            }
+            fclose($handle);
 
+            if (sizeof($revertedTests) > 0) {
+                $file_headers = ['Test ID', 'Test Status', 'Test Date Create', 'Test Date Complete', 'Authorized By', 'Test Date Authorized', 'Test Accession Number'];
+                $before = fopen($dir.'/before_reverting.csv', 'w');
+                fputcsv($before, $file_headers);
+                fclose($before);
+                $after = fopen($dir.'/after_reverting.csv', 'w');
+                fputcsv($after, $file_headers);
+                fclose($after);
+            }
+
+            foreach ($revertedTests as $testID) {
                 $test = Test::find($testID);
                 if ($test) {
-                    $test->test_status_id = Test::COMPLETED;
-                    $test->time_verified = null;
-                    $test->verified_by = null;
-                    $test->save();
-
-                    $this->removeUnsyncOrder($test->specimen_id);
-
-                    $revertedTests[] = $testID;
-                    echo "Reverted authorization for test ID: " . $testID . "\n";
+                    if($test->test_status_id == Test::VERIFIED && $test->time_verified !== null) {
+                        $this->writeToCSV($dir.'/before_reverting.csv', $test);
+                        $test->test_status_id = Test::COMPLETED;
+                        $test->time_verified = null;
+                        $test->verified_by = null;
+                        $test->save();
+                        $new_test = Test::find($testID);
+                        $this->removeUnsyncOrder($test->specimen_id);
+                        $this->writeToCSV($dir.'/after_reverting.csv', $new_test);
+                        echo "Reverted authorization for test ID: " . $testID . "\n";
+                    } else {
+                        echo "Test ID: " . $testID . " not found. Skipping...\n";
+                    }
                 } else {
                     echo "Test ID: " . $testID . " not found. Skipping...\n";
                 }
             }
-
-            fclose($handle);
             $this->writeRevertSummary($revertedTests);
         } else {
             echo "Could not open after_authorization.csv for reading.\n";
@@ -48,8 +87,26 @@ class RevertAuthorizedTests extends Command {
         echo "Removed UnsyncOrder entries for specimen ID: " . $specimen_id . "\n";
     }
 
+    private function writeToCSV($filename, $test) {
+		$file = fopen($filename, 'a');
+		$file_arr = [
+			$test->id,
+			$test->testStatus->name,
+			$test->time_created,
+			$test->time_completed,
+            $test->verifiedBy["username"] ?? "",
+			$test->time_verified,
+			$test->specimen->accession_number
+		];
+		fputcsv($file, $file_arr);
+		fclose($file);
+	}
+
     private function writeRevertSummary($revertedTests) {
-        $summaryFile = 'revert_summary.csv';
+        $startDate = $this->argument('start_date');;
+		$endDate = $this->argument('end_date');
+		$dir = $this->create_dir($startDate, $endDate);
+        $summaryFile = $dir.'/revert_summary.csv';
         $summaryData = [
             'Total Tests Reverted',
             count($revertedTests),
@@ -66,10 +123,13 @@ class RevertAuthorizedTests extends Command {
     }
 
     protected function getArguments() {
-        return [];
-    }
+		return [
+            ['start_date', InputArgument::REQUIRED, 'The start date in format YYYY-MM-DD.'],
+            ['end_date', InputArgument::REQUIRED, 'The end date in format YYYY-MM-DD.'],
+        ];
+	}
 
-    protected function getOptions() {
-        return [];
-    }
+	protected function getOptions() {
+		return [];
+	}
 }
