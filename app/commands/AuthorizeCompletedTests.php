@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 class AuthorizeCompletedTests extends Command
 {
 
-	protected $name = 'authorize:completed';
+	protected $name = 'authorize:completed_tests';
 	protected $description = 'Authorizes completed tests starting from a specified date.';
 
 	protected $users = [];

@@ -5,7 +5,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class RevertAuthorizedTests extends Command {
 
-    protected $name = 'revert:authorized';
+    protected $name = 'revert:backend_authorized_tests';
     protected $description = 'Reverts the authorization of completed tests using the after_authorization CSV.';
 
     public function __construct() {
@@ -108,11 +108,15 @@ class RevertAuthorizedTests extends Command {
 		$dir = $this->create_dir($startDate, $endDate);
         $summaryFile = $dir.'/revert_summary.csv';
         $summaryData = [
-            'Total Tests Reverted',
-            count($revertedTests),
+			Config::get('kblis.facility_name'),
+			date('Y-m-d H:i:s'),
+			count($revertedTests),
+			"All tests authorized via backend that were created between " . $startDate . " and " . $endDate,
+			"All tests to have completed status",
+			"Date authorized equal to null",
             'Test IDs Reverted: ' . implode(', ', $revertedTests)
-        ];
-        $headers = ['Summary Data', 'Count', 'Details'];
+		];
+        $headers = ['Facility Name ', 'Date Script Run', 'Total Tests Affected', 'Criteria Before Reverting Auth Status', 'Criteria After Reverting Status', 'Criteria Reverting Time', 'Details'];
         
         $file = fopen($summaryFile, 'w');
         fputcsv($file, $headers);
