@@ -65,20 +65,25 @@ class AuthorizeCompletedTests extends Command
 
 		foreach ($testIDs as $testID) {
 			$test = Test::find($testID);
+			$this->writeToCSV($dir . '/before_authorization.csv', $test);
 			if ($test && $test->testStatus->name != 'verified') {
-				$total_test_affected_arr[] = $testID;
 				$authorizerID = $this->getRandomAuthorizer($test->testType->testCategory->name);
-
 				if ($authorizerID !== NULL) {
+					$total_test_affected_arr[] = $testID;
 					$timeCompleted = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $test->time_completed);
 					$timeCompleted->addMinutes(20);
-					$this->writeToCSV($dir . '/before_authorization.csv', $test);
 					$date_of_authorization = $timeCompleted ?? $currentDate;
 					if ($test->test_status_id = Test::COMPLETED && $test->time_verified == null) {
 						if (!$test->panel_id) {
 							$this->authorizeSingleTest($test, $authorizerID, $date_of_authorization);
 						} else {
 							$this->authorizePanelTests($test, $authorizerID, $date_of_authorization);
+						}
+					}elseif ($test->test_status_id = Test::COMPLETED && $test->time_verified != null) {
+						if (!$test->panel_id) {
+							$this->authorizeSingleTest($test, $test->verified_by ?? $authorizerID, $test->time_verified);
+						} else {
+							$this->authorizePanelTests($test, $test->verified_by ?? $authorizerID, $test->time_verified);
 						}
 					}
 					$new_test = Test::find($testID);
